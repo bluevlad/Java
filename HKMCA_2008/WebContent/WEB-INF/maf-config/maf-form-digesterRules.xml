@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE digester-rules PUBLIC
+         "-//Jakarta Apache //DTD digester-rules XML V1.0//EN"
+         "digester-rules.dtd">
+
+<digester-rules>
+	<object-create-rule pattern="configuration" classname="maf.mdb.beans.DBConfigBean" />
+	<set-properties-rule pattern="configuration">
+		<alias attr-name="defaultConn" prop-name="defaultConn" />
+	</set-properties-rule>
+	<pattern value="configuration/conn">
+		<object-create-rule classname="maf.mdb.beans.DbcpInfoBean" />
+		<set-properties-rule>
+			<alias attr-name="driverClassName" prop-name="driverClassName" />
+			<alias attr-name="url" prop-name="url" />
+			<alias attr-name="username" prop-name="username" />
+			<alias attr-name="password" prop-name="password" />
+			<alias attr-name="defaultAutoCommit" prop-name="defaultAutoCommit" />
+			<alias attr-name="defaultReadOnly" prop-name="defaultReadOnly" />
+			<alias attr-name="maxWait" prop-name="maxWait" />
+			<alias attr-name="maxIdle" prop-name="maxIdle" />
+			<alias attr-name="minIdle" prop-name="minIdle" />
+			<alias attr-name="maxActive" prop-name="maxActive" />
+			<alias attr-name="testOnBorrow" prop-name="testOnBorrow" />
+			<alias attr-name="testOnReturn" prop-name="testOnReturn" />
+			<alias attr-name="testWhileIdle" prop-name="testWhileIdle" />
+			<alias attr-name="timeBetweenEvictionRunsMillis" prop-name="timeBetweenEvictionRunsMillis" />
+			<alias attr-name="numTestsPerEvictionRun" prop-name="numTestsPerEvictionRun" />
+			<alias attr-name="minEvictableIdleTimeMillis" prop-name="minEvictableIdleTimeMillis" />
+			<alias attr-name="whenExhaustedAction" prop-name="whenExhaustedAction" />	
+			<alias attr-name="use" prop-name="use" />		
+		</set-properties-rule>
+		<set-next-rule methodname="addConn" />
+	</pattern>
+</digester-rules>

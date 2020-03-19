@@ -1,0 +1,34 @@
+/*
+ * Created on 2006. 5. 22.
+ *
+ * Copyright (c) 2004 UBQ All rights reserved.
+ */
+package maf.base;
+
+
+public class BasePoolableObject  {
+    // for  CommonPool
+	private long creationTime = 0;
+    private boolean active = false;
+    
+    /**
+     * CommonPool ฐüทร 
+     * @param b
+     */
+    public void setActive(boolean b) {
+    	this.active = b;;
+    }
+    
+    public boolean isActive() {
+    	return this.active;
+    }
+    
+    public boolean isTimeOut() {
+    	return System.currentTimeMillis() - this.creationTime > 60 * 1000 * 10;
+    }
+    
+    public BasePoolableObject() {
+    	this.creationTime = System.currentTimeMillis();
+    	System.out.println(getClass() + " invoke !!!");
+    }
+}

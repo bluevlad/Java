@@ -1,0 +1,196 @@
+@charset "utf-8";
+
+/* ###########################################################################
+ Maf Common Style sheet
+########################################################################### */
+	/* href */
+	a{
+	   text-decoration:none; 
+	   cursor:pointer;
+	}
+	a:link, a:visited, a.named:visited {
+		color: #78777C;
+		text-decoration: none;
+	}
+	a:active, a:hover, a[name]:hover {
+		text-decoration: underline;
+	}
+
+	/* font tag overwrite */
+	font{font-size:12px !important}
+
+	/* fonts */
+	body,th,td,p,div,span,a,input,select,textarea,ul,ol,dl,h1,h2,h3,h4,h5,h6,li,big,small,b,pre.sunfont,font{
+		font-family:Arial,Helvetica,FreeSans,"Luxi-sans","Nimbus Sans L",sans-serif
+	}
+	code,kbd,tt,pre,pre *,code *,code a,kbd a,tt a,pre a,code span,kbd span,tt span,pre span,pre b,pre font{
+		font-family:Monaco,Courier,"Courier New"
+	}
+
+	/* font sizes */
+    body,th,td,p,div,span,a,ul,ol,dl,li,select,input,textarea,code,kbd,tt,pre,code a,kbd a,tt a,pre a,code span,kbd span,tt span,pre span,h6,h6 a,h6 span{
+        font-size:12px
+    }
+	.smaller,.smaller a,small,.small,small span,.small span,.small a,small a,div.sitelinks,div.sitelinks a,#breadcrumb a,#breadcrumb,.breadcrumb a,.breadcrumb,div.footlinks,div.footlinks a,.a5 a,.a5 span{
+		font-size:11px
+	}
+    
+	/* form */
+	form{display:inline;margin:0;padding:0;border:none;}
+
+    input.submit {
+        cursor: pointer !important;
+        color:#333333;
+    }
+    
+    input, checkbox, select, textarea {
+        border-top: 1px solid #b3becd;
+        border-right: 1px solid #b3becd;
+        border-bottom: 1px solid #b3becd;
+        border-left: 1px solid #b3becd;
+        color: #78777C;
+        background: #fff;
+    }
+    input[type=checkbox], input[type=radio] {
+        border: none;
+    }
+    input.text {
+        border-top: 3px solid #b3becd;
+    }
+    input:hover, input:focus, textarea:hover, textarea:focus {
+		background-color: #FFFFCE;
+	}
+
+    image,img {
+     border: 0 none; 
+    }
+
+	/* for borwser margin  */
+	li img {
+		vertical-align: middle; /* for IE imge margin */
+	}
+	
+/******************************************************
+**
+** Function 
+*******************************************************/	
+
+.hidden {
+	display:none;
+}
+.center {
+	text-align: center;
+}
+.right {
+	text-align: right;
+}
+.frmImgButton {
+	color:#ff0000;
+}
+#lbl_required {
+	padding-right:4px;
+	background: url(/maf_images/bullet/required.gif) no-repeat  right;
+
+}
+#lbl_comment {
+	color: #909090;
+}
+
+
+input.dropdown {
+	background: url(/maf_images/icon/select_down.gif) no-repeat  right;
+}
+/* Text Button 처리 mfmt:button */
+		span.txtbtnl {
+			padding-left:4px;
+			background-color: transparent;
+			background-image: url(/maf_images/button_txt/txtbtn_h21_left.gif);
+			background-position:  top left;
+		}
+		span.txtbtnr {
+			padding-left: 3px;
+			padding-right: 7px;
+			background-color: transparent;
+			background-image: url(/maf_images/button_txt/txtbtn_h21_bg.gif);
+			background-position: top right;
+			min-width:120px;
+		}
+
+		span.txtbtn {
+			position:left;
+			padding-top:4px;			
+			padding-bottom:3px;
+			position:relative;
+			border:0px solid #ff00ff;
+			height: 1.5em;
+			cursor: pointer;
+			font-family: arial;
+			font-size: 13px;
+			font-style: normal;
+			text-decoration: none;
+			vertical-align: baseline;
+			background-repeat: no-repeat;
+			white-space:nowrap;
+		}
+		a > span.txtbtn {
+			cursor: pointer;
+			text-decoration: none !important;
+			white-space:nowrap;
+		}
+		a:link > span.txtbtn {
+			color:#5E5E5E !important;
+			white-space:nowrap;
+		}		
+		a:hover > span.txtbtnr {
+			color:#5E5E5E;
+			background-image: url(/maf_images/button_txt/txtbtn_h21_bg_over.gif);
+			background-position: top right;
+		}
+		a:hover > span.txtbtnl {
+			color:#b85003;
+			background-image: url(/maf_images/button_txt/txtbtn_h21_left_over.gif);
+			background-position: top left;
+		}
+
+/* round table */	
+	table .round > td.tl {
+	 width:4px;
+	 background-image: url(/maf_images/corner_tl_sharp.gif);
+	 background-position:top left;
+	 background-repeat:no-repeat;
+	}
+	
+	table .round > td.tr {
+	 width:4px;
+	 background-image: url(/maf_images/corner_tr_sharp.gif);
+	 background-position:top right;
+	 background-repeat:no-repeat;
+	}
+	
+	table .round > td.bl {
+	 background-image: url(/maf_images/corner_bl_sharp.gif);
+	 background-position:bottom left;
+	 background-repeat:no-repeat;
+	}
+	
+	table .round > td.br {
+
+	 background-image: url(/maf_images/corner_br_sharp.gif);
+	 background-position:bottom right;
+	 background-repeat:no-repeat;
+	}
+	
+	.link {
+		cursor: pointer;
+	}
+	
+	.noborder  * {
+		border:0px none !important;
+		border-bottom:0px none !important;
+	}
+	
+	.clear {clear:both;}
+	#clear {clear:both;}
+	.simplebox{
+		border:1px solid #e0e0e0;
+	}

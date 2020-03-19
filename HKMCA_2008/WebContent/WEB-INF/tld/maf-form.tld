@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE taglib
+  PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN"
+  "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+<taglib>
+	<tlib-version>1.0</tlib-version>
+	<jsp-version>1.2</jsp-version>
+	<short-name>mf</short-name>
+	<uri>/WEB-INF/tld/maf-form.tld</uri>
+	<display-name>HTML Form 지원용 Tag lib</display-name>
+	<description>HTML Form 지원용 Tag lib</description>
+	<tag>
+		<name>form</name>
+		<tag-class>maf.web.tags.form.MafFormTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<name>name</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>field name</description>
+		</attribute>
+		<attribute>
+			<name>id</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>field id</description>
+		</attribute>
+		<attribute>
+			<name>action</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>field name</description>
+		</attribute>
+		<attribute>
+			<name>method</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>method {get|post}</description>
+		</attribute>
+		<attribute>
+			<name>onSubmit</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description></description>
+		</attribute>
+		<attribute>
+			<name>enctype</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description></description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>input</name>
+		<tag-class>maf.web.tags.form.MafInputTag</tag-class>
+		<body-content>JSP</body-content>
+		<description>HTML 폼 Input 정보를 그려 준다.</description>
+		<attribute>
+			<name>name</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>field name</description>
+		</attribute>
+		<attribute>
+			<name>value</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>field value</description>
+		</attribute>
+		<attribute>
+			<name>type</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>field type (hidden|text|radio|checkbox)</description>
+		</attribute>
+		<attribute>
+			<name>size</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>field size</description>
+		</attribute>
+		<attribute>
+			<name>maxlength</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>maxlength</description>
+		</attribute>
+        <attribute>
+            <name>tabindex</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <description>tabindex</description>
+        </attribute>
+		<attribute>
+			<name>cssStyle</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>html css style</description>
+		</attribute>
+		<attribute>
+			<name>cssClass</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>html css class</description>
+		</attribute>
+		<attribute>
+			<name>readonly</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>html class(disable) [true:false]</description>
+		</attribute>
+		<!--  for Validation -->
+		<attribute>
+			<name>curValue</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>현재값</description>
+		</attribute>
+		<attribute>
+			<name>required</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>필수여부(true|false}</description>
+		</attribute>
+		<attribute>
+			<name>match</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<description>validation match</description>
+		</attribute>
+		<attribute>
+			<name>hname</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>field name</description>
+		</attribute>
+		<attribute>
+			<name>option</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>validate option</description>
+		</attribute>
+		<attribute>
+			<name>onclick</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>onClick</description>
+		</attribute>
+		<attribute>
+			<name>checked</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>checked</description>
+		</attribute>
+		<attribute>
+			<name>onkeypress</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>onClick</description>
+		</attribute>
+		<attribute>
+			<name>onkeyup</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>onClick</description>
+		</attribute>
+		<attribute>
+			<name>onfocus</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>onblur</description>
+		</attribute>
+		<attribute>
+			<name>onblur</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>onblur</description>
+		</attribute>
+		<attribute>
+			<name>onchange</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>onChange event</description>
+		</attribute>		
+		<attribute>
+			<name>dojoType</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>dojoType</description>
+		</attribute>
+		<!-- <dynamic-attributes>true</dynamic-attributes> -->
+	</tag>
+	<tag>
+		<name>textarea</name>
+		<tag-class>maf.web.tags.form.MafTextareaTag</tag-class>
+		<body-content>JSP</body-content>
+		<description>HTML 폼 Input 정보를 그려 준다.</description>
+		<attribute>
+			<name>name</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>field name</description>
+		</attribute>
+		<attribute>
+			<name>value</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>field value</description>
+		</attribute>
+		<attribute>
+			<name>size</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>field size</description>
+		</attribute>
+		<attribute>
+			<name>style</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>html style</description>
+		</attribute>
+		<attribute>
+			<name>cssClass</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>html class</description>
+		</attribute>
+		<attribute>
+			<name>cssStyle</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>html style</description>
+		</attribute>
+		<attribute>
+			<name>hname</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>html style</description>
+		</attribute>
+		<attribute>
+			<name>cols</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>html class</description>
+		</attribute>
+		<attribute>
+			<name>rows</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>html class</description>
+		</attribute>
+		<attribute>
+			<name>required</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>필수여부(true|false}</description>
+		</attribute>
+		<!-- <dynamic-attributes>true</dynamic-attributes> -->
+	</tag>
+	<tag>
+		<name>select</name>
+		<tag-class>maf.web.tags.form.MafSelectTag</tag-class>
+		<body-content>JSP</body-content>
+		<description>HTML select 정보를 그려 준다.</description>
+		<attribute>
+			<name>codeGroup</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>code group</description>
+		</attribute>
+		<attribute>
+			<name>items</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>List or Map items(Map일 경우 keyValue와 keyText안써도 됨, 
+				List는  keyValue와 keyText가 필수이며 List는 Object의 List형태 여야 함,
+				Object 에서 값을 가져오는 방법은 jstl의 방법을 따름  )</description>
+		</attribute>
+		<attribute>
+			<name>keyValue</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>items의 한요소에서 value값을 가져오는 method 이름</description>
+		</attribute>
+		<attribute>
+			<name>keyText</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>items의 한요소에서 text값을 가져오는 method 이름</description>
+		</attribute>
+		<attribute>
+			<name>curValue</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>현재값(select 의 경우 selected, checkbox/radio의 경우 checked 처리</description>
+		</attribute>
+		<attribute>
+			<name>onchange</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>onChange event</description>
+		</attribute>
+		<attribute>
+			<name>onclick</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>onClick event</description>
+		</attribute>
+		<attribute>
+			<name>onchange</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>onchange event</description>
+		</attribute>
+		<attribute>
+			<name>cssStyle</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>html css style</description>
+		</attribute>
+		<attribute>
+			<name>cssClass</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>html class</description>
+		</attribute>
+		<attribute>
+			<name>name</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>name attribute</description>
+		</attribute>
+		<attribute>
+			<name>id</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>id attribute</description>
+		</attribute>
+		<attribute>
+			<name>size</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>size attribute</description>
+		</attribute>
+		<attribute>
+			<name>htmlmultiple</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>multiple attribute</description>
+		</attribute>
+		<attribute>
+			<name>required</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>필수여부(true|false}</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>option</name>
+		<tag-class>maf.web.tags.form.MafOptionTag</tag-class>
+		<body-content>JSP</body-content>
+		<description>HTML option 정보를 그려 준다.</description>
+		<attribute>
+			<name>value</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>field name</description>
+		</attribute>
+		<attribute>
+			<name>text</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>option text</description>
+		</attribute>
+		<attribute>
+			<name>curValue</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>현재값</description>
+		</attribute>
+		<attribute>
+			<name>selected</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>select 여부 true | false</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>submit</name>
+		<tag-class>maf.web.tags.form.MafSubmitTag</tag-class>
+		<body-content>JSP</body-content>
+		<description>Maps key to localized message and performs parametric replacement</description>
+		<attribute>
+			<name>key</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Message key to be looked up.</description>
+		</attribute>
+		<attribute>
+			<name>bundle</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Localization context in whose resource bundle the message key is looked up.</description>
+		</attribute>
+		<attribute>
+			<name>name</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>input attribute name</description>
+		</attribute>
+		<attribute>
+			<name>value</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>input attribute value</description>
+		</attribute>
+		<attribute>
+			<name>icon</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>input attribute value</description>
+		</attribute>
+		<attribute>
+			<name>type</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<description>input attribute type ( RESET| 이 아니면 내부에서 처리 SUBMIT|IMAGE) BUTTON은 HTML3.2 표준 Type이 아님 )</description>
+		</attribute>
+		<attribute>
+			<name>locale</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>locale of var.(for debuging)</description>
+		</attribute>
+		<!-- <dynamic-attributes>true</dynamic-attributes>-->
+	</tag>
+	<tag>
+		<name>button</name>
+		<tag-class>maf.web.tags.form.MafButtonTag</tag-class>
+		<body-content>JSP</body-content>
+		<description>Maps key to localized message and performs parametric replacement</description>
+		<attribute>
+			<name>key</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Message key to be looked up.</description>
+		</attribute>
+		<attribute>
+			<name>bundle</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Localization context in whose resource bundle the message key is looked up.</description>
+		</attribute>
+		<attribute>
+			<name>var</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Name of the exported scoped variable which stores the localized message.</description>
+		</attribute>
+		<attribute>
+			<name>scope</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Scope of var.</description>
+		</attribute>
+		<attribute>
+			<name>param</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Supplies an argument for parametric replacement to a containing &lt;message&gt; tag, Object, Object[], Colletion 가능
+			</description>
+		</attribute>
+		<attribute>
+			<name>locale</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>locale of var.(for debuging)</description>
+		</attribute>
+		<attribute>
+			<name>icon</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>input attribute value</description>
+		</attribute>
+		<attribute>
+			<name>onclick</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>onClick</description>
+		</attribute>
+		<attribute>
+			<name>href</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>href url</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>label</name>
+		<tag-class>maf.web.tags.form.MafLabelTag</tag-class>
+		<body-content>empty</body-content>
+		<description>label을 그려준다.(required조건시 해당 style class 표시)</description>
+		<attribute>
+			<name>name</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>field Name</description>
+		</attribute>
+		<attribute>
+			<name>for</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>for attribute</description>
+		</attribute>
+		<attribute>
+			<name>remark</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>desription</description>
+		</attribute>		
+	</tag>
+	<tag>
+		<name>header</name>
+		<tag-class>maf.web.tags.form.MafHeaderTag</tag-class>
+		<description>단순 Header을 그려준다.</description>
+		<attribute>
+			<name>name</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>field Name</description>
+		</attribute>
+		<attribute>
+			<name>sort</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>sort 기능 부여 여부 (true|false) </description>
+		</attribute>
+		<attribute>
+			<name>remark</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>desription</description>
+		</attribute>		
+	</tag>
+	
+</taglib>

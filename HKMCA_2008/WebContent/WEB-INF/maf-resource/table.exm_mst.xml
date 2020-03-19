@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//UBQ//DTD maf-command config XML V1.0//EN"
+         "resourceBundle.dtd">
+<bundle defaultLocale="ko">
+    <resource key="exmid" >
+        <message locale="ko" value="시험코드" />
+    </resource>
+    <resource key="exmowner" >
+        <message locale="ko" value="시험소유자" />
+    </resource>
+    <resource key="exmtitle" >
+        <message locale="ko" value="시험제목" />
+    </resource>
+    <resource key="exmdesc" >
+        <message locale="ko" value="시험내용" />
+    </resource>
+    <resource key="exm_sdat" >
+        <message locale="ko" value="시험시작일시" />
+    </resource>
+    <resource key="exm_edat" >
+        <message locale="ko" value="시험종료일시" />
+    </resource>
+    <resource key="exmcnt5">
+        <message locale="ko" value="많이어려움문제수" />
+        <message locale="en" value="Very difficult" />
+    </resource>
+    <resource key="exmcnt4">
+        <message locale="ko" value="어려움문제수" />
+        <message locale="en" value="Difficult" />
+    </resource>
+    <resource key="exmcnt3">
+        <message locale="ko" value="보통문제수" />
+        <message locale="en" value="Normal" />
+    </resource>
+    <resource key="exmcnt2">
+        <message locale="ko" value="쉬움문제수" />
+        <message locale="en" value="Easy" />
+    </resource>
+    <resource key="exmcnt1">
+        <message locale="ko" value="아주쉬움문제수" />
+        <message locale="en" value="Very easy" />
+    </resource>
+    <resource key="exmtime" >
+        <message locale="ko" value="시험시간" />
+    </resource>
+    <resource key="exmtops" >
+        <message locale="ko" value="부정방지적용여부" />
+    </resource>
+    <resource key="exmview" >
+        <message locale="ko" value="시험결과공개여부" />
+    </resource>
+    <resource key="exmopen" >
+        <message locale="ko" value="시험점수공개여부" />
+    </resource>
+    <resource key="exmpage" >
+        <message locale="ko" value="페이지당문제수" />
+    </resource>
+    <resource key="setid" >
+        <message locale="ko" value="문제 set id" />
+    </resource>
+    <resource key="viewrand" >
+        <message locale="ko" value="보기문항섞기" />
+    </resource>
+    <resource key="owntype" >
+        <message locale="ko" value="시험 owner 유형" />
+    </resource>
+    <resource key="questions" >
+        <message locale="ko" value="문제수" />
+    </resource>
+    <resource key="rstfinal">
+        <message locale="ko" value="응시여부" />
+        <message locale="en" value="is Applied" />
+    </resource>
+    <resource key="rstcont">
+        <message locale="ko" value="응시횟수[재응시를 할 경우 1씩 증가]" />
+        <message locale="en" value="Applied Count" />
+    </resource>
+    <resource key="rst_sdt">
+        <message locale="ko" value="응시시작시각" />
+        <message locale="en" value="Start Date" />
+    </resource>
+    <resource key="rst_edt">
+        <message locale="ko" value="응시종료시각" />
+        <message locale="en" value="End Date" />
+    </resource>
+    <resource key="rstatscore">
+        <message locale="ko" value="객관식점수[선택형, 단답형 채점 점수]" />
+        <message locale="en" value="객관식점수[선택형, 단답형 채점 점수]" />
+    </resource>
+    <resource key="rstatid">
+        <message locale="ko" value="객관식채점id" />
+        <message locale="en" value="객관식채점id" />
+    </resource>
+    <resource key="rstat_dt">
+        <message locale="ko" value="객관식채점등록일" />
+        <message locale="en" value="객관식채점등록일" />
+    </resource>
+    <resource key="rstmtscore">
+        <message locale="ko" value="논술형 채점" />
+        <message locale="en" value="논술형 채점" />
+    </resource>
+    <resource key="rstmtid">
+        <message locale="ko" value="논술형 채점id" />
+        <message locale="en" value="논술형 채점id" />
+    </resource>
+    <resource key="rstmt_dt">
+        <message locale="ko" value="논술형 채점등록일" />
+        <message locale="en" value="논술형 채점등록일" />
+    </resource>
+    <resource key="rstoffscore">
+        <message locale="ko" value="오프라인점수[오프라인점수를 등록하거나  강사 가점(+) 처리 할 수도 있다]" />
+        <message locale="en" value="오프라인점수[오프라인점수를 등록하거나  강사 가점(+) 처리 할 수도 있다]" />
+    </resource>
+    <resource key="rstoffid">
+        <message locale="ko" value="오프라인채점id" />
+        <message locale="en" value="오프라인채점id" />
+    </resource>
+    <resource key="rstoff_dt">
+        <message locale="ko" value="오프라인채점등록일" />
+        <message locale="en" value="오프라인채점등록일" />
+    </resource>
+    <resource key="rstflag">
+        <message locale="ko" value="시험채점여부[y : 채점, n : 미채점]" />
+        <message locale="en" value="is Marked" />
+    </resource>
+    <resource key="rst_status">
+        <message locale="ko" value="시험 진행 상태" />
+        <message locale="en" value="Status" />
+    </resource>
+    <resource key="correct_yn">
+        <message locale="ko" value="O/X" />
+        <message locale="en" value="O/X" />
+    </resource>
+    <resource key="passing_yn">
+        <message locale="ko" value="헙격여부" />
+        <message locale="en" value="Success or Failure" />
+    </resource>
+    <resource key="usransw">
+        <message locale="ko" value="Answer" />
+        <message locale="en" value="Answer" />
+    </resource>
+    <resource key="usrscore">
+        <message locale="ko" value="획득점수" />
+        <message locale="en" value="Score" />
+    </resource>
+</bundle>

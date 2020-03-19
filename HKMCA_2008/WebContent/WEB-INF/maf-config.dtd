@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- 
+	 mvc conrol Configuration
+	 Version : 1.0	(2009.03.30)
+	 Author : Rainend
+-->
+
+<!ELEMENT maf-app (pathConfig | resolver | resource )*>
+
+<!--HTML Path 정보를 지님-->
+<!ELEMENT pathConfig (contextPath | contextImagePath | siteTemplate)*>
+<!--ContextPath
+<jh:CPATH/>-->
+<!ELEMENT contextPath (#PCDATA)>
+<!--Image 파일의 경로 <br/>
+ <jh:IPATH/>-->
+<!ELEMENT contextImagePath (#PCDATA)>
+<!ELEMENT siteTemplate EMPTY>
+<!ATTLIST siteTemplate
+	src 	CDATA  #REQUIRED 
+	path 	CDATA  #REQUIRED
+>
+
+<!ELEMENT resolver (locale_resolver | site_resolver | resource_resolver )*>
+<!--Locale 구분을 찾아 내기 위한 resolver class 를 정의 <br/>
+implements LocaleResolver.java.LocaleResolver -->
+<!ELEMENT locale_resolver (#PCDATA)>
+<!--Site 구분을 찾아 내기 위한 resolver class 를 정의 <br/>
+implements LocaleResolver.java.SiteResolver-->
+<!ELEMENT site_resolver (#PCDATA)>
+<!--Site 구분을 찾아 내기 위한 resolver class 를 정의 <br/>
+implements LocaleResolver.java.ResourceResolver-->
+<!ELEMENT resource_resolver (#PCDATA)>
+
+<!ELEMENT resource (dbms|smtp)*>
+<!ELEMENT dbms EMPTY>
+<!ATTLIST dbms 
+	name 	CDATA  #REQUIRED 
+	type 	CDATA  #REQUIRED
+	default	(true|false) "true"
+>
+<!ELEMENT smtp EMPTY>
+<!ATTLIST smtp 
+	host 	CDATA  #REQUIRED 
+	userid 	CDATA  #REQUIRED
+	password 	CDATA  #REQUIRED
+>

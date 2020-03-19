@@ -1,0 +1,62 @@
+img {border:none}
+
+BODY {scrollbar-face-color: #F2F2F2;
+scrollbar-shadow-color: #999999;
+scrollbar-highlight-color: #FFFFFF;
+scrollbar-3dlight-color: #999999;
+scrollbar-darkshadow-color: #FFFFFF;
+scrollbar-track-color: #FFFFFF;
+scrollbar-arrow-color: #999999}
+
+form {margin:0; color: #5E5E5D;FONT-FAMILY:, arial; FONT-SIZE: 9pt;;letter-spacing:-0.02em; text-decoration:none;line-height:12pt;}
+
+A:link {color:#666666; text-decoration:none; font-size:9pt;}
+A:visited {color:#666666; text-decoration:none; font-size:9pt;}
+A:active {color:#4169e1; text-decoration:none; font-size:9pt;}
+A:hover {color:#3333FF; text-decoration:underline; font-size:9pt;}
+
+font {font-family:; font-size:9pt; line-height:18px;}
+.b { font-size:8pt  ; line-height: 14px ; font-face:;}
+.text01 { font-family: "u"; font-size: 9pt; color: #FFFFFF; line-height: 14pt; font-weight:bold; letter-spacing:-1pt;}
+.numbersjackpot { font-family: "u"; font-size: 21pt; color: #FFFFFF; line-height: 22pt; font-weight:bold; letter-spacing:-1pt;}
+.size {font-family:; font-size:12pt; line-height:18px; font-weight:bold;}
+.s {font-family:; font-size:8pt; line-height:15px;}
+.size_ {font-family:; font-size:11pt; line-height:18px; font-weight:bold;}
+.ten {font-family:; font-size:10pt; line-height:18px; font-weight:bold;}
+
+.support {font-family:; font-size:9pt; line-height:15px;}
+
+
+td {font-family:; font-size:9pt; color:#666666;line-height:18px;}
+.a {font-family:; font-size:9pt; color:#0000FF;line-height:25px; text-decoration:underline}
+
+.sample {  background-color: #E8F0FC; border-color: #798EAE 798EAE 798EAE 798EAE; border-style: solid; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px}
+
+a.blue:link {color:#1e90ff; text-decoration:none; font-size:10pt;}
+a.blue:visited {color:#1e90ff; text-decoration:none; font-size:10pt;}
+a.blue:active {color:#1e90ff; text-decoration:none; font-size:10pt;}
+a.blue:hover {color:#4169e1; text-decoration:underline; font-size:10pt;}
+
+td.submenu        {color:#000000; text-decoration:none; font-size:9pt;}
+a.submenu:link    {color:#000000; text-decoration:none; font-size:9pt;}
+a.submenu:visited {color:#000000; text-decoration:none; font-size:9pt;}
+a.submenu:active  {color:#000000; text-decoration:none; font-size:9pt;}
+a.submenu:hover   {color:#000000; text-decoration:none; font-size:9pt;}
+
+.form {border:1px solid #CDCDCD;font-family:;font-size:12px; color:#555555;}
+.form4 {border:1px solid #6D6D6D;font-family:;font-size:12px; color:#B1B1B1;}
+.form2 {border:1px solid #E4DCBA;font-family:;font-size:12px; color:#555555;}
+.form3 {border:1px solid #CDCDCD;font-family:;font-size:12px; color:#555555; background-color:#F8F8F8; padding-left:5px; padding-right:5px; padding-top:5px; padding-bottom:5px;}
+
+.txt{font-family:; color:#666666; text-decoration:none; font-size:9pt;}
+
+.com { font-family: "u"; font-size: 9pt; color: #666666; line-height: 12pt; letter-spacing:-1pt;}
+
+.consult_input { BORDER-RIGHT: #CCCCCC 1px solid; BORDER-TOP: #CCCCCC 1px solid; BORDER-LEFT: #CCCCCC 1px solid; BORDER-BOTTOM: #CCCCCC 1px solid; BACKGROUND-COLOR: #ffffff; font-size:9pt; color:#666666; }
+.consult_textarea { BORDER-RIGHT: #cccccc 1px solid; BORDER-TOP: #cccccc 1px solid; BORDER-LEFT: #cccccc 1px solid; BORDER-BOTTOM: #cccccc 1px solid; BACKGROUND-COLOR: #ffffff }
+
+/*메인 공지*/
+.notice {font-family:"돋움"; font-size:11px; color:#8E9DA6; }
+
+/*메인 공지- 날짜*/
+.notice_ {font-family:"돋움"; font-size:12px; color:#8E9DA6; }

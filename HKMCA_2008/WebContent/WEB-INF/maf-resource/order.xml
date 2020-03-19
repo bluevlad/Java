@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-resource PUBLIC "-//UBQ//DTD maf-command config XML V1.0//EN" "resourceBundle.dtd">
+
+<bundle defaultLocale="ko">
+    <resource key="ord_cd" >
+        <message locale="ko" value="주문코드" />
+    </resource>
+    <resource key="cpn_use" >
+        <message locale="ko" value="쿠폰사용여부" />
+    </resource>
+    <resource key="coupon_no" >
+        <message locale="ko" value="쿠폰번호" />
+    </resource>
+    <resource key="ord_sta" >
+        <message locale="ko" value="주문상태" />
+    </resource>
+    <resource key="ord_dt" >
+        <message locale="ko" value="주문일자" />
+    </resource>
+    <resource key="ord_det_no" >
+        <message locale="ko" value="주문상세코드" />
+    </resource>
+    <resource key="ord_det_sta" >
+        <message locale="ko" value="주문상세상태" />
+    </resource>
+    <resource key="snd_dt" >
+        <message locale="ko" value="발송일" />
+    </resource>
+    <resource key="total_pay" >
+        <message locale="ko" value="주문총액" />
+    </resource>
+    <resource key="discount" >
+        <message locale="ko" value="할인액" />
+    </resource>
+    <resource key="order_pay" >
+        <message locale="ko" value="결재금액" />
+    </resource>
+    <resource key="qty" >
+        <message locale="ko" value="주문수량" />
+    </resource>
+</bundle>

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//UBQ//DTD maf-command config XML V1.0//EN"
+         "mvc-configuration.dtd">
+<configuration>
+	<global-view></global-view>
+    
+<action uri="PrdMng.do" type="modules.xadmin.product.PrdMngAction" desc="제품관리" title="제품관리"
+    jsppath="/WEB-INF/jsp/xadmin/product/prdmng/" default="list">
+	<action-view>
+		<view-info name="list" uri="list.jsp" useTemplate="www" />
+        <view-info name="add" uri="edit.jsp" useTemplate="www" />
+		<view-info name="edit" uri="edit.jsp" useTemplate="www" />
+	</action-view>
+	<cmds>
+		<cmd name="list" method="cmdList" formname="frm1" />
+		<cmd name="add" method="cmdAdd" formname="frm1" />
+		<cmd name="edit" method="cmdEdit" formname="frm1" />
+        <cmd name="insert" method="cmdInsert" />
+		<cmd name="update" method="cmdUpdate" />
+		<cmd name="delete" method="cmdDelete" />
+	</cmds>
+    <forms>
+        <form name="frm1" bundle="product">
+            <input name="cat_cd" message="cat_cd" type="text"/>
+            <input name="cat_nm" message="cat_nm" type="text" />
+	        <input name="prd_cd" message="prd_cd" type="text"/>
+            <input name="prd_nm" message="prd_nm" type="text" />
+            <input name="p_cat_cd" message="p_cat_cd" type="text"/>
+            <input name="p_cat_nm" message="p_cat_nm" type="text"/>
+	        <input name="imp_type" message="imp_type" type="text" />
+            <input name="prd_type" message="prd_type" type="text" />
+            <input name="company" message="company" type="text" />
+	        <input name="prd_price" message="prd_price" type="text" />
+            <input name="nor_price" message="nor_price" type="text" />
+            <input name="dis_price" message="dis_price" type="text" />
+            <input name="prd_desc" message="prd_desc" type="text" />
+            <input name="dis_abt_cd" message="dis_abt" type="text" bundle="table.dis_abt" />
+	        <input name="reg_dt" message="reg_dt" type="text" />
+            <input name="active_yn" bundle="common" message="active_yn" type="text"></input>
+        </form>
+    </forms>
+</action>
+	
+<action uri="comMng.do" type="modules.xadmin.product.PrdCompanyMngAction" desc="업체관리" title="업체관리"
+    jsppath="/WEB-INF/jsp/xadmin/product/prdcom/" default="list">
+    <action-view>
+        <view-info name="list" uri="list.jsp" useTemplate="www" />
+        <view-info name="add" uri="edit.jsp" useTemplate="www" />
+        <view-info name="edit" uri="edit.jsp" useTemplate="www" />
+    </action-view>
+    <cmds>
+        <cmd name="list" method="cmdList" formname="frm1" />
+        <cmd name="add" method="cmdAdd" formname="frm1" />
+        <cmd name="edit" method="cmdEdit" formname="frm1" />
+        <cmd name="insert" method="cmdInsert" />
+        <cmd name="update" method="cmdUpdate" />
+        <cmd name="delete" method="cmdDelete" />
+    </cmds>
+    <forms>
+        <form name="frm1" bundle="product">
+			<input name="com_cd" message="com_cd" type="text" required="true"/>
+			<input name="com_nm" message="com_nm" type="text" />
+			<input name="com_desc" message="com_desc" type="text" />
+			<input name="com_usr" message="com_usr" type="text" />
+			<input name="com_phone" message="com_phone" type="text" />
+			<input name="com_zipcode" message="com_zipcode" type="text" />
+			<input name="com_addr" message="com_addr" type="text" />
+			<input name="com_org_img" message="com_org_img" type="text" />
+			<input name="com_new_img" message="com_new_img" type="text" />
+			<input name="com_banner_yn" message="com_banner_yn" type="text" />
+			<input name="com_url" message="com_url" type="text" />
+            <input name="active_yn" bundle="common" message="active_yn" type="text"></input>
+        </form>
+    </forms>
+</action>
+    
+<action uri="catalogMng.do" type="modules.xadmin.product.CatalogMngAction" title="e-카탈로그 관리" desc="e-카탈로그 관리"
+   jsppath="/WEB-INF/jsp/xadmin/product/catalog/" default="default">
+    <action-view>
+        <view-info name="default" uri="default.jsp" useTemplate="www" />
+        <view-info name="tree" uri="tree.jsp" useTemplate="inner_frame" />
+        <view-info name="edit" uri="edit.jsp" useTemplate="inner_frame" />
+        <view-info name="write" uri="edit.jsp" useTemplate="inner_frame" />
+    </action-view>
+    <cmds>
+        <cmd name="default" method="cmdDefault" />
+        <cmd name="tree" method="cmdTree" authtype="R" />
+        <cmd name="add" method="cmdAdd" formname="frm1" />
+        <cmd name="edit" method="cmdEdit" formname="frm1" />
+        <cmd name="insert" method="cmdInsert" />
+        <cmd name="update" method="cmdUpdate" />
+        <cmd name="delete" method="cmdDelete" />
+    </cmds>
+    <forms>
+        <form name="frm1" bundle="table.catalog">
+            <input name="cat_id" message="cat_id" type="text"/>
+            <input name="cat_nm" message="cat_nm" type="text" />
+            <input name="comments" message="comments" type="text"/>
+            <input name="lvl" message="lvl" type="text" />
+            <input name="p_cat_id" message="p_cat_id" type="text"/>
+            <input name="s_img" message="s_img" type="text"/>
+            <input name="l_img" message="l_img" type="text" />
+            <input name="viw" message="viw" type="text" />
+        </form>
+    </forms>
+</action>
+
+<action uri="prdReqMng.do" type="modules.xadmin.product.PrdReqMngAction" title="키즈보이스신청관리" desc="키즈보이스신청관리"
+	jsppath="/WEB-INF/jsp/xadmin/product/prdreqmng/" default="list">
+	<action-view>
+		<view-info name="list" uri="list.jsp" useTemplate="www" />
+		<view-info name="edit" uri="edit.jsp" useTemplate="www" />
+        <view-info name="add" uri="edit.jsp" useTemplate="www" />
+	</action-view>
+	<cmds>
+        <cmd name="list" method="cmdList" formname="frm1" />
+        <cmd name="add" method="cmdAdd" formname="frm1" />
+		<cmd name="edit" method="cmdEdit" formname="frm1" />
+        <cmd name="insert" method="cmdInsert" />
+		<cmd name="update" method="cmdUpdate" />
+		<cmd name="delete" method="cmdDelete" />
+	</cmds>
+    <forms>
+        <form name="frm1" bundle="product">
+            <input name="prd_cd" message="prd_cd" type="text" required="true"/>
+            <input name="prd_nm" message="prd_nm" type="text" />
+            <input name="prd_price" message="prd_price" type="text" />
+            <input name="reg_dt" message="reg_dt" type="text" />
+            <input name="sup_area" message="sup_area" type="text" />
+            <input name="sup_cnt" message="sup_cnt" type="text" />
+            <input name="area" message="area" type="text" />
+            <input name="req_user" message="req_user" type="text" />
+            <input name="req_phone" message="req_phone" type="text" />
+            <input name="req_mobile" message="req_mobile" type="text" />
+            <input name="req_addr" message="req_addr" type="text" />
+            <input name="dpt_user" message="dpt_user" type="text" />
+            <input name="dpt_phone" message="dpt_phone" type="text" />
+            <input name="dpt_mobile" message="dpt_mobile" type="text" />
+            <input name="sup_dt" message="sup_dt" type="text" />
+            <input name="req_type" message="req_type" type="text" />
+            <input name="req_price" message="req_price" type="text" />
+            <input name="comments" message="comments" type="text" />
+        </form>
+    </forms>
+</action>
+	
+<action title="보급통계" uri="PrdStat.do" type="modules.xadmin.product.PrdStatAction"
+    jsppath="/WEB-INF/jsp/xadmin/product/prdstat" default="prd" >
+    <action-view>
+        <view-info name="prd" uri="prd.jsp" useTemplate="www" />
+        <view-info name="area" uri="area.jsp" useTemplate="www" />
+        <view-info name="kids" uri="kids.jsp" useTemplate="www" />
+    </action-view>
+    <cmds>
+        <cmd name="prd" method="cmdPrd" formname="frm1" />
+        <cmd name="area" method="cmdArea" formname="frm1" />
+    </cmds>
+    <forms>
+        <form name="frm1" bundle="product">
+            <input name="prd_nm" message="prd_nm" type="text" />
+            <input name="area" message="area" type="text" />
+            <input name="prd_price" message="prd_price" type="text" />
+            <input name="prd_cnt" message="prd_cnt" type="text"/>
+            <input name="prd_req_sum" message="prd_req_sum" type="text"/>
+            <input name="prd_prd_sum" message="prd_prd_sum" type="text"/>
+        </form>
+    </forms>
+</action>
+
+</configuration>

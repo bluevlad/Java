@@ -1,0 +1,241 @@
+/* CSS Document */
+
+#div_logo {
+    position:absolute;
+    font:30px bold;
+    color:#014376;
+    top:15px;
+    left:30px;
+    height:20px;
+    width:72px;
+}
+#div_global{
+    position:absolute;
+    top:30px;
+    left:150px;
+    height:25px;
+    width:800px;
+}
+
+/* 상단 메뉴  */
+#div_topMenu {
+	/*235590*/
+	background: url(/images/global/topMenubg.gif) no-repeat 0  0;
+	top:0px; letf:0px;
+	margin-left:10px;
+	margin-top:70px;
+    padding-top:0px;
+	padding-left:0px;
+	width:950px;
+}
+#div_r1 {
+    top:0px;
+    height: 100px;
+    background: #FFFFFF;
+    border: 1px solid #ffffff  ;    
+}
+#div_r2 {
+	display:block;
+	border:0px solid #ff0000;
+	margin:0;padding:0;
+}
+#div_r2_inner{
+	float:left;
+	display:block;
+	border:0px solid #0000ff;
+	margin:0;padding:0;
+}
+	
+#div_r3 {
+	display:block;
+	height:70px;
+	padding-left:164px;
+	margin-top:80px;
+	border:0px solid #ff0000;
+	background: url(/images/global/bottom.gif) no-repeat 0  0;
+}
+
+#div_leftMenu {
+    margin-top:15px;
+    padding-left:0px;
+    width:180px;
+    border:0px solid #080302;
+    background-color:#FFFFFF;
+}
+#div_leftMenu_container {
+    float:left;
+    width:148px;
+    margin:0;
+    padding:0;
+    border:0px solid #080302;
+}
+#div_leftMenu h1 {
+    background: url(/maf_images/snb/tit_top.gif);
+    font-size:16px;
+    color:#FFFFFF;
+    padding-top:10px; 
+    padding-left:15px;
+    padding-bottom:5px;
+}
+#div_bottomMenu {
+    margin-left:15px;
+    margin-top:30px;
+    padding-left:0px;
+    width:950px;
+}
+#sitemap {
+    padding-left:50px;
+}
+#sitemap h1 {
+	background: url(/css/maf/lmenu_bullet.gif) no-repeat left;
+	font-size:16px;
+	color:#014376;
+	padding-left:12px;
+}
+
+#div_login {
+    background: url(/images/login/login_bg.gif) no-repeat;
+    margin-top:50px;
+    margin-left:130px;
+    width:600px;
+    height:200px;
+    padding-left:220px;
+    padding-top:120px;
+}
+
+/* 본문 내용 */
+#div_contents_container  {
+	top:40px;
+	margin-left:10px;
+	margin-top:18px;
+	display:block;
+	border:0px solid #f030f0;
+	width:760px;
+}
+
+#div_title_container  {
+	padding-top: 10px;
+	margin-bottom:13px;
+	padding-left:30px;
+	border:0px solid #ff0000;
+	height:35px;
+	width:750px !important;
+	background:url(/maf_images/common/tit_navi.gif) no-repeat ;
+}
+#div_title_container .title {
+	float:left;
+	display:block;
+	color:#222133;
+	font-size:16px;
+	font-weight:bold;
+    padding:0 5px 0 0;
+}
+#div_title_container .navi {
+    margin-right:10px;
+    float:right;
+    display:block;
+    border:0px solid #ff0000;
+}
+#div_title_container .help {
+	margin-right:45px;
+	float:right;
+    display:block;
+    font-size:11px;
+}
+
+#div_lecinfo {
+    margin-top:5px;
+    margin-left:10px;
+    padding:5px;
+    width:170px;
+    background:#6A94C4;
+    color:#ffffff;
+}
+
+/**
+*
+* 검색 영역 
+*
+*/
+.searchContainer {
+	padding-left:20px;
+	padding-right:20px;
+	padding-top:22px;
+	padding-bottom:22px;
+	margin-bottom:20px;
+
+	width:700px !important;
+	border:1px solid #DCDCDC;
+	clear:both;
+}
+.searchContainer h1 {
+	font-size:12px;
+}
+
+.searchContainer table.search {
+	width:700px;	
+	background:#F5F5F5;
+}
+.searchContainer table.search td{
+	background:#F5F5F5;
+}
+.searchContainer table.search th{
+	float:right;
+	background:#F5F5F5;
+	height:15px;
+}
+.searchContainer table.searchBtn {
+	margin-top:14px;
+	margin-right:14px;
+	width:100%;
+	border:0px solid #ff0000;
+}
+
+.searchContainer table.searchBtn td{
+	text-align:right;
+}
+
+/**
+*
+* 리스트 영역 
+*
+*/
+.listContainer {
+    width:745px;
+    border:0px solid #DCDCDC;
+}
+
+.listContainer table.list {
+    width:100%; 
+}
+
+.listContainer table.viewBtn {
+    margin-top:10px;
+    margin-right:5px;
+}
+
+/**
+*
+* View 영역 
+*
+*/
+.viewContainer {
+    width:745px;
+}
+
+.viewContainer h1 {
+	font-size:12px;
+}
+
+.viewContainer table.viewBtn {
+    margin-top:5px;
+    margin-right:5px;
+    border:0px solid #ff0000;
+}
+
+.viewBtn {
+    margin-top:5px;
+    margin-right:5px;
+    padding-bottom:2px;
+border:0px solid #ff0000;
+}

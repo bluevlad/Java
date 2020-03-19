@@ -1,0 +1,38 @@
+##먼저 root 권한으로 로그인
+
+##오라클권한획득
+
+su - oracle
+
+##오라클이설치된 bin디렉토리로 이동
+
+예)
+
+cd /data/app/oracle/product/10g/bin
+ 
+
+##sqlplus 실행
+
+sqlplus /nolog
+ 
+
+##sysdba로 연결
+
+connect sys/암호 as sysdba
+ 
+
+##시작명령
+
+startup
+ 
+
+##종료
+
+exit
+ 
+
+##bin디렉토리에서 리스너 상태보기 및 시작
+
+lsnrctl status
+
+lsnrctl start

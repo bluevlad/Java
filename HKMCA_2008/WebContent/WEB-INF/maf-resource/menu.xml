@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-resource PUBLIC "-//UBQ//DTD maf-command config XML V1.0//EN" "resourceBundle.dtd">
+
+<bundle defaultLocale="ko">
+  <resource key="M10" desc="Introduction" type="text">
+    <message locale="en" value="Introduction" />
+    <message locale="ko" value="사용자" />
+  </resource>
+  <resource key="M1010" type="text">
+    <message locale="en" value="Introduction" />
+    <message locale="ko" value="시험응시" />
+  </resource>
+  <resource key="M1020" type="text">
+    <message locale="ko" value="자유게시판" />
+  </resource>
+  <resource key="M1030" type="text">
+    <message locale="ko" value="사진게시판" />
+  </resource>
+  <resource key="M1040" type="text">
+    <message locale="ko" value="조직도" />
+  </resource>
+  <resource key="M1050" type="text">
+    <message locale="ko" value="파트너" />
+  </resource>
+  <resource key="M1060" type="text">
+    <message locale="ko" value="오시는길" />
+  </resource>
+  <resource key="M1070" type="text">
+    <message locale="ko" value="공지사항" />
+  </resource>
+  <resource key="M1080" type="text">
+    <message locale="ko" value="자유게시판" />
+  </resource>
+  <resource key="M1090" type="text">
+    <message locale="ko" value="사진게시판" />
+  </resource>
+  <resource key="M20" type="text">
+    <message locale="ko" value="사용자" />
+  </resource>
+  <resource key="M30" type="text">
+    <message locale="en" value="Classroom" />
+    <message locale="ko" value="학습자" />
+  </resource>
+  <resource key="M3020" type="text">
+    <message locale="en" value="Lecture" />
+    <message locale="ko" />
+  </resource>
+  <resource key="M40" type="text">
+    <message locale="en" value="Classroom(Tutor)" />
+    <message locale="ko" value="교수자" />
+  </resource>
+  <resource key="M4030" type="text">
+    <message locale="ko" value="수강생관리" />
+  </resource>
+  <resource key="M4040" type="text">
+    <message locale="ko" value="평가기준관리" />
+  </resource>
+  <resource key="M4050" type="text">
+    <message locale="ko" value="진도관리" />
+  </resource>
+  <resource key="M4099" type="text">
+    <message locale="ko" value="강의게시판" />
+  </resource>
+  <resource key="M50" type="text">
+    <message locale="ko" value="학사관리" />
+  </resource>
+  <resource key="M5010" type="text">
+    <message locale="ko" value="과정관리" />
+  </resource>
+  <resource key="M501010" type="text">
+    <message locale="en" value="Course Admin" />
+    <message locale="ko" value="과정관리" />
+  </resource>
+  <resource key="M501020" type="text">
+    <message locale="ko" value="과목관리" />
+  </resource>
+  <resource key="M501030" type="text">
+    <message locale="ko" value="개설과목관리" />
+  </resource>
+  <resource key="M5020" type="text">
+    <message locale="en" value="Contents Management" />
+    <message locale="ko" value="강의안관리" />
+  </resource>
+  <resource key="M502010" type="text">
+    <message locale="ko" value="컨텐츠관리" />
+  </resource>
+  <resource key="M5030" type="text">
+    <message locale="en" value="e-Test Mng." />
+    <message locale="ko" value="시험관리" />
+  </resource>
+  <resource key="M503010" type="text">
+    <message locale="en" value="Exam Pool Mng." />
+    <message locale="ko" value="문제은행" />
+  </resource>
+  <resource key="M503020" type="text">
+    <message locale="en" value="Exam Template Mng." />
+    <message locale="ko" value="시험세트관리" />
+  </resource>
+  <resource key="M5040" type="text">
+    <message locale="ko" value="과제관리" />
+  </resource>
+  <resource key="M504010" type="text">
+    <message locale="ko" value="과제은행" />
+  </resource>
+  <resource key="M5050" type="text">
+    <message locale="en" value="Course Registration" />
+    <message locale="ko" value="수강신청관리" />
+  </resource>
+  <resource key="M5060" type="text">
+    <message locale="ko" value="설문문항관리" />
+  </resource>
+  <resource key="M60" type="text">
+    <message locale="ko" value="경매" />
+  </resource>
+  <resource key="M6010" type="text">
+    <message locale="ko" value="강의안관리" />
+  </resource>
+  <resource key="M6020" type="text">
+    <message locale="ko" value="수강생관리" />
+  </resource>
+  <resource key="M6030" type="text">
+    <message locale="ko" value="평가기준관리" />
+  </resource>
+  <resource key="M6040" type="text">
+    <message locale="ko" value="진도관리" />
+  </resource>
+  <resource key="M6050" type="text">
+    <message locale="ko" value="시험관리" />
+  </resource>
+  <resource key="M6060" type="text">
+    <message locale="ko" value="과제관리" />
+  </resource>
+  <resource key="M6070" type="text">
+    <message locale="ko" value="설문관리" />
+  </resource>
+  <resource key="M6080" type="text">
+    <message locale="ko" value="점수관리" />
+  </resource>
+  <resource key="M6090" type="text">
+    <message locale="ko" value="종합성적표" />
+  </resource>
+  <resource key="M70" type="text">
+    <message locale="ko" value="경매관리" />
+  </resource>
+  <resource key="M7010" type="text">
+    <message locale="ko" value="강의계획서" />
+  </resource>
+  <resource key="M7020" type="text">
+    <message locale="ko" value="강의" />
+  </resource>
+  <resource key="M7030" type="text">
+    <message locale="ko" value="학습진도조회" />
+  </resource>
+  <resource key="M7040" type="text">
+    <message locale="ko" value="최종성적조회" />
+  </resource>
+  <resource key="M7050" type="text">
+    <message locale="ko" value="시험응시" />
+  </resource>
+  <resource key="M7060" type="text">
+    <message locale="ko" value="과제물제출" />
+  </resource>
+  <resource key="M7070" type="text">
+    <message locale="ko" value="설문응시" />
+  </resource>
+  <resource key="M71" type="text">
+    <message locale="ko" value="상점관리" />
+  </resource>
+  <resource key="M80" type="text">
+    <message locale="ko" value="운영관리" />
+  </resource>
+  <resource key="M8020" type="text">
+    <message locale="ko" value="게시판관리" />
+  </resource>
+  <resource key="M802010" type="text">
+    <message locale="ko" value="게시판 그룹 관리" />
+  </resource>
+  <resource key="M802020" type="text">
+    <message locale="ko" value="게시판정보관리" />
+  </resource>
+  <resource key="M8040" type="text">
+    <message locale="ko" value="온라인폴관리" />
+  </resource>
+  <resource key="M8050" type="text">
+    <message locale="ko" value="시험관리" />
+  </resource>
+  <resource key="M90" type="text">
+    <message locale="en" value="Administrator" />
+    <message locale="ko" value="시스템관리" />
+  </resource>
+  <resource key="M9010" type="text">
+    <message locale="en" value="Member Mng." />
+    <message locale="ko" value="회원권한관리" />
+  </resource>
+  <resource key="M901010" type="text">
+    <message locale="ko" value="회원관리" />
+  </resource>
+  <resource key="M901020" type="text">
+    <message locale="ko" value="회원권한관리" />
+  </resource>
+  <resource key="M9020" type="text">
+    <message locale="en" value="Log" />
+    <message locale="ko" value="시스템 상태보기" />
+  </resource>
+  <resource key="M9030" type="text">
+    <message locale="en" value="Stat" />
+    <message locale="ko" value="통계" />
+  </resource>
+  <resource key="M903010" type="text">
+    <message locale="en" value="Login Stat" />
+    <message locale="ko" value="접속통계" />
+  </resource>
+  <resource key="M903020" type="text">
+    <message locale="en" value="Member Stat" />
+    <message locale="ko" value="회원통계" />
+  </resource>
+  <resource key="M903030" type="text">
+    <message locale="en" value="Log Location Stat" />
+    <message locale="ko" value="지역별접속현황" />
+  </resource>
+  <resource key="M9040" type="text">
+    <message locale="en" value="Menu Mng." />
+    <message locale="ko" value="메뉴관리" />
+  </resource>
+  <resource key="M904001" type="text">
+    <message locale="ko" value="사이트관리" />
+  </resource>
+  <resource key="M904010" type="text">
+    <message locale="en" value="Menu Mng." />
+    <message locale="ko" value="메뉴정보관리" />
+  </resource>
+  <resource key="M904020" type="text">
+    <message locale="en" value="Menu-Auth Mng." />
+    <message locale="ko" value="메뉴권한관리" />
+  </resource>
+  <resource key="M904030" type="text">
+    <message locale="en" value="Menu Description Mng." />
+    <message locale="ko" value="메뉴설명" />
+  </resource>
+  <resource key="M9050" type="text">
+    <message locale="en" value="Code Mng." />
+    <message locale="ko" value="코드관리" />
+  </resource>
+  <resource key="M905010" type="text">
+    <message locale="en" value="Language Mng." />
+    <message locale="ko" value="언어관리" />
+  </resource>
+  <resource key="M905020" type="text">
+    <message locale="en" value="Message Mng." />
+    <message locale="ko" value="메세지관리" />
+  </resource>
+  <resource key="M905030" type="text">
+    <message locale="en" value="Code Group Mng." />
+    <message locale="ko" value="코드정보관리" />
+  </resource>
+  <resource key="M9060" type="text">
+    <message locale="ko" value="게시판정보관리" />
+  </resource>
+  <resource key="M9070" type="text">
+    <message locale="ko" value="설문관리" />
+  </resource>
+  <resource key="M907010" type="text">
+    <message locale="ko" value="설문은행" />
+  </resource>
+  <resource key="M907020" type="text">
+    <message locale="ko" value="설문세트관리" />
+  </resource>
+  <resource key="M907030" type="text">
+    <message locale="ko" value="설문관리" />
+  </resource>
+  <resource key="M907040" type="text">
+    <message locale="ko" value="온라인폴관리자" />
+  </resource>
+  <resource key="M9080" type="text">
+    <message locale="ko" value="시험관리" />
+  </resource>
+  <resource key="M908010" type="text">
+    <message locale="ko" value="문제은행" />
+  </resource>
+  <resource key="M908020" type="text">
+    <message locale="ko" value="시험세트관리" />
+  </resource>
+  <resource key="M908030" type="text">
+    <message locale="ko" value="시험관리" />
+  </resource>
+  <resource key="M908040" type="text">
+    <message locale="ko" value="시험응시" />
+  </resource>
+  <resource key="M91" type="text">
+    <message locale="ko" value="쪽지함" />
+  </resource>
+  <resource key="M99" type="text">
+    <message locale="en" value="SiteMap" />
+    <message locale="ko" value="사이트맵" />
+  </resource>
+</bundle>
+

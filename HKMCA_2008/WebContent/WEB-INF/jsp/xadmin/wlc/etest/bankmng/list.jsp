@@ -1,0 +1,132 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"%>
+<%@ include file="/WEB-INF/jspf/prelude_jsp12.jspf"%>
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+	function doWrite(){
+	    var frm = getObject("myform");
+		if(frm) {
+		    frm.cmd.value = "add";
+		    frm.submit();
+		}
+	}
+	
+	function doView(code){
+		var frm = getObject("myform");
+	    
+		if(frm) {
+			frm.cmd.value = "edit";
+			frm.queid.value = code; 
+			frm.submit();
+		}
+	}
+    function doSearch(frm) {
+		if(frm) {
+   			frm.cmd.value = "list";
+			frm.miv_page.value = 1;
+			return true;
+		}     
+    }
+
+    function doUpload(){
+        var frm = getObject("myform");
+            frm.cmd.value = "upload";
+            frm.submit();
+    }
+    function doViewLang(code){
+        var frm = getObject("myform");
+        
+        if(frm) {
+            frm.cmd.value = "editLang";
+            frm.queid.value = code; 
+            frm.submit();
+        }
+    }
+    function doTransUpload(){
+        var frm = getObject("myform");
+            frm.cmd.value = "transUpload";
+            frm.submit();
+    }
+//-->
+</SCRIPT>
+
+<mf:form action="${control_action}" method="post" name="myform" id="myform" onSubmit="return frmSubmit(this,'list');return false; ">
+<mf:input type="hidden" name="LISTOP" value="${LISTOP.serializeUrl}" />
+<mf:input type="hidden" name="miv_page" value="1" />
+<mf:input type="hidden" name="cmd" value="list" />
+<mf:input type="hidden" name="queid" value="" />
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+    <tr>
+        <td>
+            <div class="searchContainer">
+            <table width="100%" border="0" cellspacing="0" cellpadding="2">
+                <col width="15%">
+                <col width="85%">
+                <tr>
+                    <th><mf:label name="sjt_cd" /></th>
+                    <td>
+                        <jsp:include page="/WEB-INF/jsp/common/sel_sjt.jsp" flush="true">
+                            <jsp:param name="os_crs" value='<%=request.getParameter("os_crs")%>'/>
+                            <jsp:param name="os_sjt" value='<%=request.getParameter("os_sjt")%>'/>
+                            <jsp:param name="destination" value='<%=request.getAttribute("destination")%>'/>
+                        </jsp:include>
+                    </td>
+                </tr>
+                <tr>
+                    <th><mf:label name="quetitle" /></th>
+                    <td><mf:input name="s_quetitle" type="text" size="50" value="${LISTOP.ht.s_quetitle}" /></td>
+                </tr>
+            </table>
+            <table border="0" cellspacing="0" cellpadding="2" class="searchBtn">
+                <tr>
+                    <td><mf:button onclick="frmSubmit('myform','list')" bundle="button" key="search" icon="icon_search" /></td>
+                </tr>
+            </table>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+        <div class="listContainer">
+        <table width="100%" border="0" cellspacing="0" cellpadding="2" class="list " enableAlternateRows="true" rowAlternateClass="alternateRow">
+            <thead>
+                <tr>
+                    <th><mf:header name="queid" sort="true"/></th>
+                    <th><mf:header name="quetitle" sort="true"/></th>
+                    <th><mf:header name="quetype" sort="true"/></th>
+                    <th><mf:header name="quelevel" sort="true"/></th>
+                    <th><mf:header name="quescore" sort="true"/></th>
+                    <th><mfmt:message bundle="common" key="active_yn" /></th>
+                    <th><mfmt:message bundle="common" key="upt_dt" /></th>
+                    <th>*</th>
+                </tr>
+            </thead>
+            <tbody>
+                <c:forEach var="item" items="${navigator.list}" varStatus="status">
+                    <tr>
+                        <td class='center'><mh:out value="${item.queid}" td="true" /></td>
+                        <td align="left"><a href='javascript:doView("<c:out value="${item.queid}"/>");' title='<mh:out value="${item.quetitle}" escapeJS="true"/>'><mh:out value="${item.quetitle}" td="true" bytes="50"/></a></td>
+                        <td class='center'><mh:out value="${item.quetype}" td="true" codeGroup="ETEST.QTYPE" /></td>
+                        <td align="center"><mh:out value="${item.quelevel}" td="true" codeGroup="ETEST.QLEVEL" /></td>
+                        <td align="center"><mh:out value="${item.quescore}" td="true" /></td>
+                        <td align="center"><mh:out value="${item.active_yn}" codeGroup="ACTIVE_YN" td="true" /></td>
+                        <td align="center"><mh:out value="${item.upt_dt}" format="fulldate"  /></td>
+                        <td align="center"><mf:button bundle="button" key="translate" onclick="doViewLang('${item.queid}')" /></td>
+                    </tr>
+                </c:forEach>
+            </tbody>
+        </table>
+        </div>
+        </td>
+    </tr>
+</table>
+</mf:form>
+<table width="100%" border="0" cellspacing="0" cellpadding="2" class="viewBtn">
+    <tr>
+        <td align="right">
+            <mf:button bundle="button" key="add" onclick="doWrite()" icon="icon_add" /> 
+            <mf:button bundle="button" key="excelupload" onclick="doUpload()" icon="icon_add" />
+        </td>
+    </tr>
+</table>
+<jsp:include page="/WEB-INF/layout/lib/navigator.jsp" flush="true" />

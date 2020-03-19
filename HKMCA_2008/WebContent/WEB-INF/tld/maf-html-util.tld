@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
+                        web-jsptaglibrary_2_0.xsd"
+	version="2.0">
+
+	<description>HTML 지원용 Tag lib</description>
+	<display-name></display-name>
+	<tlib-version>1.0</tlib-version>
+	<short-name>mhu</short-name>
+	<uri>/WEB-INF/tld/maf-html-util.tld</uri>
+
+	<function>
+		<description>
+			New line to br tag
+		</description>
+		<name>nl2br</name>
+		<function-class>
+			maf.util.HTMLUtil
+		</function-class>
+		<function-signature>
+			java.lang.String nl2br(java.lang.String)
+		</function-signature>
+		<example>
+			${mhu:nl2br(java.lang.String s)}
+		</example>
+	</function>
+
+	<function>
+		<description>
+			New line to def
+		</description>
+		<name>nl2brdef</name>
+		<function-class>
+			maf.util.HTMLUtil
+		</function-class>
+		<function-signature>
+			java.lang.String nl2br(java.lang.String, java.lang.String)
+		</function-signature>
+		<example>
+			${mhu:nl2brdef(java.lang.String s,  java.lang.String def)}
+		</example>
+	</function>
+
+	<function>
+		<description>
+			한글 파일명 Link를 걸기 위해 Url은 Encording 한후 +를 %20으로 처리
+		</description>
+		<name>rawURLEncode</name>
+		<function-class>
+			maf.util.HTMLUtil
+		</function-class>
+		<function-signature>
+			java.lang.String rawURLEncode(java.lang.String)
+		</function-signature>
+		<example>
+			${mhu:rawURLEncode(java.lang.String s)}
+		</example>
+	</function>
+
+	<function>
+		<description>
+			null 값을 공백문자 로 변환한다.
+		</description>
+		<name>null2nbsp</name>
+		<function-class>
+			maf.util.HTMLUtil
+		</function-class>
+		<function-signature>
+			java.lang.Object null2nbsp(java.lang.Object)
+		</function-signature>
+		<example>
+			${mhu:null2nbsp(java.lang.Object s)}
+		</example>
+	</function>
+
+	<function>
+		<description>
+			null 값을 기본 문자열로 치환 
+		</description>
+		<name>nvl</name>
+		<function-class>
+			maf.Util
+		</function-class>
+		<function-signature>
+			java.lang.Object nvl(java.lang.Object, java.lang.Object)
+		</function-signature>
+		<example>
+			${mhu:nvl(java.lang.Object obj, java.lang.Object def}
+		</example>
+	</function>
+
+	<function>
+		<description>
+			htmlspecialchars
+		</description>
+		<name>htmlspecialchars</name>
+		<function-class>
+			maf.util.HTMLUtil
+		</function-class>
+		<function-signature>
+			java.lang.String htmlspecialchars(java.lang.String)
+		</function-signature>
+		<example>
+			${mhu:htmlspecialchars(java.lang.String s)}
+		</example>
+	</function>
+
+	<function>
+		<description>
+			List 를 m * n 의 배열로 return
+		</description>
+		<name>getMatrix</name>
+		<function-class>
+			maf.Util
+		</function-class>
+		<function-signature>
+			java.util.List getMatrix(java.util.List, int)
+		</function-signature>
+		<example>
+			${mhu:getMatrix(java.util.List list, int sz)}
+		</example>
+	</function>
+	
+	<function>
+		<description>
+			입력된 스트링을 지정된 길이만큼 Byte단위로 남기고 나머지를  잘라낸다.!
+		</description>
+		<name>getByteCut</name>
+		<function-class>
+			maf.util.StringUtil
+		</function-class>
+		<function-signature>
+			java.lang.String getByteCut(java.lang.String, int)
+		</function-signature>
+		<example>
+			${mhu:getByteCut(java.lang.String s, int sz)}
+		</example>
+	</function>
+
+	<function>
+		<description>
+			multiplier번 반복한 input_str을 반환합니다. 
+     		multiplier는 0 이상이여야 합니다. multiplier를 0으로 설정하면, 빈 문자열을 반환합니다. 
+		</description>
+		<name>strRepeat</name>
+		<function-class>
+			maf.util.StringUtil
+		</function-class>
+		<function-signature>
+			java.lang.String strRepeat(java.lang.String, int)
+		</function-signature>
+		<example>
+			${mhu:strRepeat(param:info, int multiplier)}
+		</example>
+	</function>
+
+	<function>
+		<description>
+			첫글자만 대문자로 나머지는 소문자로 
+		</description>
+		<name>Capitailize</name>
+		<function-class>
+			maf.util.StringUtil
+		</function-class>
+		<function-signature>
+			java.lang.String Capitailize(java.lang.String)
+		</function-signature>
+		<example>
+			${mhu:Capitailize(param:info)}
+		</example>
+	</function>
+
+	<function>
+		<description>
+			비어 있지 않은경우 앞뒤에 문자 삽입
+		</description>
+		<name>capsule</name>
+		<function-class>
+			maf.util.StringUtil
+		</function-class>
+		<function-signature>
+			java.lang.String capsule(java.lang.String, java.lang.Object, java.lang.String)
+		</function-signature>
+		<example>
+			${mhu:capsule(java.lang.String pre, java.lang.Object, java.lang.String after)}
+		</example>
+	</function>
+
+	<function>
+		<description>
+			오브젝트의 mtthod를 수행하여 값을 돌려 준다. 단 Parameter는 하나만 됨 
+		</description>
+		<name>invoke</name>
+		<function-class>
+			maf.util.JstlSupport
+		</function-class>
+		<function-signature>
+			java.lang.Object invoke(java.lang.Object, java.lang.String, java.lang.Object)
+		</function-signature>
+		<example>
+			${mhu:invoke(object, methodName, param)}
+		</example>
+	</function>
+	
+	<function>
+		<description>
+			JS Script용 문자열 만듬 '나 "를 \'와 \""로 전환 
+		</description>
+		<name>JSaddSlashes</name>
+		<function-class>
+			maf.util.HTMLUtil
+		</function-class>
+		<function-signature>
+			java.lang.String JSaddSlashes(java.lang.String)
+		</function-signature>
+		<example>
+			${mhu:JSaddSlashes(string)}
+		</example>
+	</function>
+
+	<function>
+		<description>
+			', " 를 제거
+		</description>
+		<name>stripQuote</name>
+		<function-class>
+			maf.util.StringUtil
+		</function-class>
+		<function-signature>
+			java.lang.String stripQuote(java.lang.String)
+		</function-signature>
+		<example>
+			${mhu:stripQuote(string)}
+		</example>
+	</function>
+	/*****************************************************************
+	*
+	*  HTML Tag용 
+	* 
+	**/
+	<function>
+		<description>
+			Checkbox를 그려준다.
+		</description>
+		<name>HtmlCheckbox</name>
+		<function-class>
+			maf.taglib.MiHtmlTag
+		</function-class>
+		<function-signature>
+			java.lang.String getHtmlCheckbox(java.lang.String, java.lang.String, java.lang.Object)
+		</function-signature>
+		<example>
+			${mhu:HtmlCheckbox(name, value, curValue)}
+		</example>
+	</function>
+	
+	<function>
+		<description>
+			Radio를 그려준다.
+		</description>
+		<name>HtmlRadio</name>
+		<function-class>
+			maf.was.taglib.MiHtmlTag
+		</function-class>
+		<function-signature>
+			java.lang.String getHtmlRadio(java.lang.String, java.lang.String, java.lang.String)
+		</function-signature>
+		<example>
+			${mhu:HtmlRadio(name, value, curValue)}
+		</example>
+	</function>
+	
+	<function>
+		<description>
+			Select의 Option하나를 그려준다.
+		</description>
+		<name>HtmlOption</name>
+		<function-class>
+			maf.was.taglib.MiHtmlTag
+		</function-class>
+		<function-signature>
+			java.lang.String getHtmlOption(java.lang.String, java.lang.String, java.lang.Object)
+		</function-signature>
+
+		<example>
+			${mhu:HtmlOption(value, text, curValue)}
+		</example>
+	</function>
+	
+	<function>
+		<description>
+			Select의 Option을  그려준다. Map의 List 구조체에서 
+		</description>
+		<name>HtmlOptions</name>
+		<function-class>
+			maf.was.taglib.MiHtmlTag
+		</function-class>
+		<function-signature>
+			java.lang.String getHtmlOptions(java.util.List, java.lang.String, java.lang.String, java.lang.Object)
+		</function-signature>
+
+		<example>
+			${mhu:HtmlOption(value, key_value, key_caption, curValue)}
+		</example>
+	</function>
+	
+	<function>
+		<description>
+			Code_Det의 options을 그려준다.
+		</description>
+		<name>CodeOptions</name>
+		<function-class>
+			maf.was.taglib.MiHtmlTag
+		</function-class>
+		<function-signature>
+			java.lang.String getCodeOptions(java.lang.String, java.lang.Object)
+		</function-signature>
+
+		<example>
+			${mhu:CodeOptions(group_cd,  curValue)}
+		</example>
+	</function>
+	
+
+	<function>
+		<description>
+			가로 Bar graph를 그린다.
+		</description>
+		<name>HtmlBarGraphH</name>
+		<function-class>
+			maf.was.taglib.MiHtmlTag
+		</function-class>
+		<function-signature>
+			java.lang.String getHtmlBarGraphH(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+		</function-signature>
+
+		<example>
+			${mhu:HtmlBarGraphH(width, height, percent, image, bgcolor(transparent))}
+		</example>
+	</function>
+	
+</taglib>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE digester-rules PUBLIC
+         "-//Jakarta Apache //DTD digester-rules XML V1.0//EN"
+         "digester-rules.dtd">
+
+<digester-rules>
+	<object-create-rule pattern="configuration" classname="maf.web.mvc.configuration.ActionConfiguration" />
+	<set-properties-rule pattern="configuration">
+		<alias attr-name="desc" prop-name="desc" />
+	</set-properties-rule>
+
+	<pattern value="configuration/template-list/template-info">
+		<object-create-rule classname="maf.web.mvc.configuration.TemplateInfoConfig" />
+		<set-properties-rule>
+			<alias attr-name="name" prop-name="name" />
+			<alias attr-name="desc" prop-name="desc" />
+			<alias attr-name="uri" prop-name="uri" />
+			<alias attr-name="useSiteTemplate" prop-name="useSiteTemplateByString" />
+		</set-properties-rule>
+		<pattern value="template-map">
+			<object-create-rule classname="maf.web.mvc.configuration.TemplateMapConfig" />
+			<set-properties-rule>
+				<alias attr-name="name" prop-name="name" />
+				<alias attr-name="uri" prop-name="uri" />
+			</set-properties-rule>
+			<set-next-rule methodname="addTemplateMapConfig" />
+		</pattern>
+		<pattern value="site-template">
+			<object-create-rule classname="maf.web.mvc.configuration.SiteTemplateConfig" />
+			<set-properties-rule>
+				<alias attr-name="site" prop-name="site" />
+				<alias attr-name="uri" prop-name="uri" />
+			</set-properties-rule>
+			<set-next-rule methodname="addSiteTemplateConfig" />
+		</pattern>
+		<set-next-rule methodname="addTemplateInfoConfig" />
+	</pattern>
+	<pattern value="configuration/global-view/view-info">
+		<object-create-rule classname="maf.web.mvc.configuration.ViewInfoConfig" />
+		<set-properties-rule>
+			<alias attr-name="desc" prop-name="desc" />
+			<alias attr-name="type" prop-name="type" />
+			<alias attr-name="uri" prop-name="uri" />
+			<alias attr-name="useTemplate" prop-name="useTemplate" />
+			<alias attr-name="pgid" prop-name="pgid" />
+		</set-properties-rule>
+		<set-next-rule methodname="addViewInfoConfig" />
+	</pattern>
+	<pattern value="configuration/action">
+		<object-create-rule classname="maf.web.mvc.configuration.ActionConfig" />
+		<set-properties-rule>
+			<alias attr-name="desc" prop-name="desc" />
+			<alias attr-name="title" prop-name="title" />
+			<alias attr-name="type" prop-name="type" />
+			<alias attr-name="uri" prop-name="uri" />
+			<alias attr-name="pgid" prop-name="pgid" />
+			<alias attr-name="default" prop-name="defaultCmd" />
+			<alias attr-name="param" prop-name="param" />
+			<alias attr-name="debug" prop-name="debug" />
+			<alias attr-name="jsppath" prop-name="jsppath" />
+			
+		</set-properties-rule>
+		<pattern value="aliases/alias">
+			<object-create-rule classname="maf.web.mvc.configuration.ActionAlias" />
+			<set-properties-rule>
+				<alias attr-name="title" prop-name="title" />
+				<alias attr-name="desc" prop-name="desc" />
+				<alias attr-name="uri" prop-name="uri" />
+				<alias attr-name="pgid" prop-name="pgid" />
+				<alias attr-name="default" prop-name="defaultCmd" />
+				<alias attr-name="param" prop-name="param" />
+			</set-properties-rule>
+			<set-next-rule methodname="addAlias" />
+		</pattern>
+		<pattern value="cmds/cmd">
+			<object-create-rule classname="maf.web.mvc.configuration.CmdConfig" />
+			<set-properties-rule>
+				<alias attr-name="name" prop-name="name" />
+				<alias attr-name="method" prop-name="method" />
+				<alias attr-name="from" prop-name="from" />
+				<alias attr-name="desc" prop-name="desc" />
+				<alias attr-name="formname" prop-name="formName" />
+				<alias attr-name="authtype" prop-name="authtype" />
+				<alias attr-name="cmdtype" prop-name="cmdtype" />
+			</set-properties-rule>
+			<set-next-rule methodname="addCmdConfig" />
+		</pattern>
+		<pattern value="forms/form">
+			<object-create-rule classname="maf.web.mvc.configuration.FormConfig" />
+			<set-properties-rule>
+				<alias attr-name="name" prop-name="name" />
+				<alias attr-name="bundle" prop-name="bundle" />
+			</set-properties-rule>
+			<pattern value="input">
+				<object-create-rule classname="maf.web.mvc.configuration.InputConfig" />
+				<set-properties-rule>
+					<alias attr-name="name" prop-name="name" />
+					<alias attr-name="bundle" prop-name="bundle" />
+					<alias attr-name="message" prop-name="message" />	
+					<alias attr-name="type" prop-name="type" />		
+					<alias attr-name="codegroup" prop-name="codegroup" />	
+					<alias attr-name="required" prop-name="required" />	
+					<alias attr-name="maxlength" prop-name="maxlength" />			
+					<alias attr-name="minlength" prop-name="minlength" />			
+					<alias attr-name="arg0" prop-name="arg0" />
+					<alias attr-name="arg1" prop-name="arg1" />
+					<alias attr-name="arg2" prop-name="arg2" />		
+				</set-properties-rule>		
+				<pattern value="constraint">
+					<object-create-rule classname="maf.web.mvc.configuration.ConstraintConfig" />
+					<set-properties-rule>
+						<alias attr-name="validatorName" prop-name="validatorName" />
+						<alias attr-name="value" prop-name="value" />
+						<alias attr-name="arg0" prop-name="arg0" />
+						<alias attr-name="arg1" prop-name="arg1" />
+						<alias attr-name="arg2" prop-name="arg2" />
+					</set-properties-rule>		
+					<set-next-rule methodname="addConstraintConfig" />				
+				</pattern>
+				<set-next-rule methodname="addInputConfig" />	
+			</pattern>
+			<set-next-rule methodname="addFormConfig" />
+		</pattern>		
+		<pattern value="action-view/view-info">
+			<object-create-rule classname="maf.web.mvc.configuration.ViewInfoConfig" />
+			<set-properties-rule>
+				<alias attr-name="name" prop-name="name" />
+				<alias attr-name="uri" prop-name="uri" />
+				<alias attr-name="redirect" prop-name="redirectByString" />
+				<alias attr-name="useTemplate" prop-name="templateName" />
+				<alias attr-name="pgid" prop-name="pgid" />
+				<alias attr-name="type" prop-name="type" />
+			</set-properties-rule>
+			<set-next-rule methodname="addViewInfoConfig" />
+		</pattern>
+		<set-next-rule methodname="addCommandConfig" />
+	</pattern>
+</digester-rules>

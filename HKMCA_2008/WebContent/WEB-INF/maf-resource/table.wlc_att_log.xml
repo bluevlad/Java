@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-resource PUBLIC "-//UBQ//DTD maf-command config XML V1.0//EN" "resourceBundle.dtd">
+
+<bundle defaultLocale="ko">
+  <resource key="att_dat" type="text">
+    <message locale="ko" value="출석일" />
+  </resource>
+  <resource key="att_cnt" type="text">
+    <message locale="ko" value="출석횟수" />
+  </resource>
+  <resource key="acs_s_tm" type="text">
+    <message locale="ko" value="최초접속일시" />
+  </resource>
+  <resource key="acs_e_tm" type="text">
+    <message locale="ko" value="최종접속일시" />
+  </resource>
+</bundle>

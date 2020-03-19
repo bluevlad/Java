@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//UBQ//DTD maf-command config XML V1.0//EN"
+         "mvc-configuration.dtd">
+<configuration>
+
+<global-view>
+</global-view>
+
+    <action uri="basket.do" type="modules.mall.order.BasketAction" desc="장바구니" title="장바구니"
+        jsppath="/WEB-INF/jsp/order/" default="basket">
+        <action-view>
+            <view-info name="basket" uri="basket.jsp" useTemplate="www" />
+            <view-info name="coupon" uri="coupon.jsp" useTemplate="popup" />
+        </action-view>
+        <cmds>
+            <cmd name="basket" method="cmdBasket" formname="frm1" authtype="R" />
+            <cmd name="act" method="cmdAct" formname="frm1" authtype="C" />
+            <cmd name="update" method="cmdUpdate" formname="frm1" authtype="C" />
+            <cmd name="delete" method="cmdDelete" formname="frm1" authtype="C" />
+            <cmd name="coupon" method="cmdCoupon" formname="frm1" authtype="C" />
+        </cmds>
+    </action>
+
+    <action uri="order.do" type="modules.mall.order.user.OrderAction" desc="상품주문" title="상품"
+        jsppath="/WEB-INF/jsp/order/user/" default="list" debug="true">
+        <action-view>
+            <view-info name="list" uri="list.jsp" useTemplate="www" />
+            <view-info name="view" uri="view.jsp" useTemplate="www" />
+            <view-info name="ord_view" uri="ord_view.jsp" useTemplate="www" />
+        </action-view>
+        <cmds>
+            <cmd name="list" method="cmdList" formname="frm1" authtype="R" />
+            <cmd name="view" method="cmdView" formname="frm1" authtype="R" />
+            <cmd name="ord_view" method="cmdOrdView" formname="frm1" authtype="R" />
+            <cmd name="order" method="cmdOrder" formname="frm1" authtype="C" />
+        </cmds>
+        <forms>
+            <form name="frm1" bundle="order">
+                <input name="ord_cd" message="ord_cd" type="text" required="true"/>
+                <input name="usn" message="usn" type="text" bundle="table.jmf_user"/>
+                <input name="prd_nm" message="prd_nm" type="text" bundle="product" />
+                <input name="prd_type" message="prd_type" type="text" bundle="product" />
+                <input name="cpn_use" message="cpn_use" type="text" />
+                <input name="ord_sta" message="ord_sta" type="text" />
+                <input name="ord_det_sta" message="ord_det_sta" type="text" />
+                <input name="ord_dt" message="ord_dt" type="text" />
+                <input name="snd_dt" message="snd_dt" type="text" />
+                <input name="total_pay" message="total_pay" type="text" />
+                <input name="discount" message="discount" type="text" />
+                <input name="qty" message="qty" type="text" />
+                <input name="psell_price" message="psell_price" type="text" bundle="product" />
+            </form>
+        </forms>
+    </action>
+
+</configuration>

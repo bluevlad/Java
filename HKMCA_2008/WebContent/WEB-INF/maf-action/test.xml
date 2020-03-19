@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE maf-resource PUBLIC
+         "-//UBQ//DTD maf-command config XML V1.0//EN"
+         "mvc-configuration.dtd">
+<configuration>
+	<global-view></global-view>
+	<action uri="Test01.do" type="modules.app.Test01Action" desc="Test01Action" title="Test01Action" default="list">
+		<action-view>
+			<view-info name="list" uri="/WEB-INF/jsp/Test01/list.jsp" useTemplate="www" />
+			<view-info name="view" uri="/WEB-INF/jsp/Test01/view.jsp" useTemplate="www" />
+			<view-info name="edit" uri="/WEB-INF/jsp/Test01/edit.jsp" useTemplate="www" />
+			<view-info name="add" uri="/WEB-INF/jsp/Test01/add.jsp" useTemplate="www" />
+		</action-view>
+		<cmds>
+			<cmd name="list" method="cmdList" formname="frm1" />
+			<cmd name="view" method="cmdView" formname="frm1" />
+			<cmd name="edit" method="cmdEdit" formname="frm1" />
+			<cmd name="update" method="cmdUpdate" formname="frm1" from="edit" />
+			<cmd name="insert" method="cmdInsert" formname="frm1" from="update" />
+			<cmd name="add" method="cmdAdd" formname="frm1" from="update" />
+			<cmd name="delete" method="cmdDelete" formname="frm1" from="delete" />
+		</cmds>
+		<forms>
+			<form name="frm1" bundle="table.Test01">
+				<input name="id" message="form.id" type="text " required="true"/>
+				<input name="title" message="form.title" type="text" required="true"/>
+				<input name="contents" message="form.contents" type="text"></input>
+				<input name="reg_dt" message="form.reg_dt" type="text"></input>
+				<input name="stard_date" message="form.stard_date" type="text"></input>
+				<input name="end_date" message="form.end_date" type="text"></input>
+				<input name="category" message="form.category" type="text"></input>
+				<input name="reg_nm" message="form.reg_nm" type="text" bundle="common"></input>
+			</form>
+		</forms>
+	</action>
+	<action uri="LangTest.do" type="test.LangTestAction" desc="test.LangTestAction" title="test.LangTestAction" default="list">
+		<action-view>
+			<view-info name="list" uri="/WEB-INF/jsp/test/LangTest/list.jsp" useTemplate="www" />
+			<view-info name="view" uri="/WEB-INF/jsp/test/LangTest/view.jsp" useTemplate="www" />
+			<view-info name="edit" uri="/WEB-INF/jsp/test/LangTest/edit.jsp" useTemplate="www" />
+			<view-info name="add" uri="/WEB-INF/jsp/test/LangTest/add.jsp" useTemplate="www" />
+		</action-view>
+		<cmds>
+			<cmd name="list" method="cmdList" formname="frm1" />
+			<cmd name="view" method="cmdView" formname="frm1"  />
+			<cmd name="edit" method="cmdEdit" formname="frm1"  />
+			<cmd name="update" method="cmdUpdate" formname="frm1" from="edit" authtype="U" />
+			<cmd name="insert" method="cmdInsert" formname="frm1" from="update" authtype="C" />
+			<cmd name="add" method="cmdAdd" formname="frm1" from="update" authtype="C" />
+			<cmd name="delete" method="cmdDelete" formname="frm1" from="delete" authtype="D" />
+		</cmds>
+		<forms>
+			<form name="frm1" bundle="table.maf_lang_iso639_1">
+				<input name="code" message="code" type="text" ></input>
+				<input name="allnames" message="allnames" type="text" ></input>
+				<input name="active_yn" message="active_yn" type="text" ></input>
+				<input name="local_name" message="local_name" type="text" ></input>
+				<input name="reg_nm" message="reg_nm" type="text" bundle="common"></input>
+			</form>
+		</forms>
+	</action>
+</configuration>

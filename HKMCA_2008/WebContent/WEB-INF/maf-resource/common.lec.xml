@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-resource PUBLIC "-//UBQ//DTD maf-command config XML V1.0//EN" "resourceBundle.dtd">
+
+<bundle defaultLocale="ko">
+	<resource key="is_grad" type="text">
+		<message locale="en" value="Completed" />
+		<message locale="ko" value="수료여부" />
+	</resource>
+	<resource key="sel.mail_grp.msg1" type="text">
+		<message locale="en" value="Please select mailing group" />
+		<message locale="ko" value="발송할 메일그룹을 선택하세요" />
+	</resource>
+	<resource key="lesson_status.browsed" type="text">
+		<message locale="en" value="Example" />
+		<message locale="ko" value="맛보기" />
+	</resource>
+	<resource key="lesson_status.completed" type="text">
+		<message locale="en" value="Training completed" />
+		<message locale="ko" value="학습완료" />
+	</resource>
+	<resource key="lesson_status.failed" type="text">
+		<message locale="en" value="Training completed / fail" />
+		<message locale="ko" value="학습완료/불합격" />
+	</resource>
+	<resource key="lesson_status.incomplete" type="text">
+		<message locale="en" value="Training not completed" />
+		<message locale="ko" value="학습미완료" />
+	</resource>
+	<resource key="lesson_status.not_attempted" type="text">
+		<message locale="en" value="Training not started" />
+		<message locale="ko" value="미학습" />
+	</resource>
+	<resource key="lesson_status.pass" type="text">
+		<message locale="en" value="Training completed / pass" />
+		<message locale="ko" value="학습완료/합격" />
+	</resource>
+	<resource key="lecture.approval1" type="text">
+		<message locale="en" value="Automatic course registration approval" />
+		<message locale="ko" value="자동수강승인" />
+	</resource>
+	<resource key="lecture.approval2" type="text">
+		<message locale="en" value="Need manager approval" />
+		<message locale="ko" value="관리자승인필요" />
+	</resource>
+	<resource key="content.info" type="text">
+		<message locale="en" value="Contents Information"/>
+		<message locale="ko" value="컨텐츠정보" />
+	</resource>
+	<resource key="content.select" type="text">
+		<message locale="ko" value="컨텐츠선택" />
+	</resource>
+	<resource key="lecture.content.type3" type="text">
+		<message locale="en" value="External linked contents" />
+		<message locale="ko" value="외부연결컨텐츠" />
+	</resource>
+	<resource key="lecture.insurance1" type="text">
+		<message locale="en" value="Apply" />
+		<message locale="ko" value="적용" />
+	</resource>
+	<resource key="lecture.insurance2" type="text">
+		<message locale="en" value="Not applied" />
+		<message locale="ko" value="미적용" />
+	</resource>
+	<resource key="lecture.online" type="text">
+		<message locale="en" value="On Line" />
+		<message locale="ko" value="온라인" />
+	</resource>
+	<resource key="lecture.offline" type="text">
+		<message locale="en" value="Off Line" />
+		<message locale="ko" value="오프라인" />
+	</resource>
+	<resource key="lecture.blended" type="text">
+		<message locale="en" value="Branded" />
+		<message locale="ko" value="블랜디드" />
+	</resource>
+	<resource key="lecture.regular" type="text">
+		<message locale="en" value="Regular Course" />
+		<message locale="ko" value="정규과정" />
+	</resource>
+	<resource key="lecture.open" type="text">
+		<message locale="en" value="Open" />
+		<message locale="ko" value="개설" />
+	</resource>
+	<resource key="lecture.end" type="text">
+		<message locale="en" value="Conclude" />
+		<message locale="ko" value="종료" />
+	</resource>
+	<resource key="lecture.close" type="text">
+		<message locale="en" value="Close" />
+		<message locale="ko" value="폐쇄" />
+	</resource>
+	<resource key="lecture.free" type="text">
+		<message locale="en" value="Free of charge" />
+		<message locale="ko" value="무료" />
+	</resource>
+	<resource key="lecreq.number" type="text">
+		<message locale="en" value="Course group" />
+		<message locale="ko" value="수강차수" />
+	</resource>
+	<resource key="lecterm" type="text">
+		<message locale="en" value="Course period" />
+		<message locale="ko" value="강의기간" />
+	</resource>
+	<resource key="lectype" type="text">
+		<message locale="en" value="Course type" />
+		<message locale="ko" value="강의유형" />
+	</resource>
+	<resource key="lec_stat" type="text">
+		<message locale="en" value="Course open state" />
+		<message locale="ko" value="개설상태" />
+	</resource>
+	<resource key="user_stat" type="text">
+		<message locale="en" value="Course study state" />
+		<message locale="ko" value="학습상태" />
+	</resource>
+	<resource key="user_stat.request" type="text">
+		<message locale="en" value="Course request" />
+		<message locale="ko" value="수강신청" />
+	</resource>
+	<resource key="user_stat.cancel" type="text">
+		<message locale="en" value="Cancellation request" />
+		<message locale="ko" value="취소신청" />
+	</resource>
+	<resource key="user_stat.cancel.completed" type="text">
+		<message locale="en" value="Cancellation completed" />
+		<message locale="ko" value="취소완료" />
+	</resource>
+	<resource key="user_stat.completed" type="text">
+		<message locale="en" value="Course study completed" />
+		<message locale="ko" value="학습완료" />
+	</resource>
+	<resource key="user_stat.ing" type="text">
+		<message locale="en" value="Course in progress" />
+		<message locale="ko" value="학습중" />
+	</resource>
+	<resource key="title.grad" type="text">
+		<message locale="en" value="Graduate" />
+		<message locale="ko" value="수료자" />
+	</resource>
+	<resource key="title.is_grad" type="text">
+		<message locale="en" value="Y/N" />
+		<message locale="ko" value="수료여부" />
+	</resource>
+	<resource key="title.is_grad.G" type="text">
+		<message locale="en" value="Completed" />
+		<message locale="ko" value="수료" />
+	</resource>
+	<resource key="title.is_grad.N" type="text">
+		<message locale="en" value="Not completed" />
+		<message locale="ko" value="미수료" />
+	</resource>
+	<resource key="title.item.chulsuk" type="text">
+		<message locale="en" value="Attendance" />
+		<message locale="ko" value="출석" />
+	</resource>
+	<resource key="title.item.homework" type="text">
+		<message locale="en" value="Homework / Assignment" />
+		<message locale="ko" value="과제" />
+	</resource>
+	<resource key="title.item.leccode" type="text">
+		<message locale="en" value="Course code" />
+		<message locale="ko" value="강의코드" />
+	</resource>
+	<resource key="title.item.lecname" type="text">
+		<message locale="en" value="Course name" />
+		<message locale="ko" value="강의명" />
+	</resource>
+	<resource key="ce_final_grade.date" type="text">
+		<message locale="en" value="Completion date" />
+		<message locale="ko" value="수료일" />
+	</resource>
+	<resource key="ce_final_grade.tot_score" type="text">
+		<message locale="en" value="Completion score" />
+		<message locale="ko" value="수료점수" />
+	</resource>
+	<resource key="classroom.request.start" type="text">
+		<message locale="en" value="Day count (from course registration date)" />
+		<message locale="ko" value="수강신청일로부터" />
+	</resource>
+	<resource key="insurance.lec_req.is_insurance" type="text">
+		<message locale="en" value="Application system" />
+		<message locale="ko" value="지원제도" />
+	</resource>
+	<resource key="insurance.return.price.total" type="text">
+		<message locale="en" value="Total refund" />
+		<message locale="ko" value="환급총액" />
+	</resource>
+    <resource key="progress.basis.mng" type="text">
+        <message locale="ko" value="진도기준관리" />
+        <message locale="en" value="Progress Basis Management" />
+    </resource>
+    <resource key="progressbasis.basis01" type="text">
+        <message locale="ko" value="하루에 4장 이하만 학습가능하도록 제한." />
+        <message locale="en" value="4 or more new contents (thesis/courses) cannot be studied a day." />
+    </resource>
+    <resource key="progressbasis.basis02" type="text">
+        <message locale="ko" value="지난강의 및 강의기간 사이에만 학습가능." />
+        <message locale="en" value="지난강의 및 강의기간 사이에만 학습가능." />
+    </resource>
+    <resource key="progressbasis.basis03" type="text">
+        <message locale="ko" value="하루 최대 학습가능시간(이전 차시 복습 시간 제외) 제한." />
+        <message locale="en" value="Maximum daily training hours are limited (not including reviews of previous chapters)" />
+    </resource>
+    <resource key="progressbasis.basis04" type="text">
+        <message locale="ko" value="강의록을 반드시 순서대로 학습 제한." />
+        <message locale="en" value="The course lecture can be viewed in sequence." />
+    </resource>
+    <resource key="progressbasis.basis05" type="text">
+        <message locale="en" value="Actual training time needs to exceed standard to obtain progress credit" />
+        <message locale="ko" value="실 학습시간이 기준시간 이상이어야 진도이수." />
+    </resource>
+    <resource key="progressbasis.basis06_1" type="text">
+        <message locale="ko" value="학습진도가" />
+        <message locale="en" value="Exam can be taken when total training progress exceeds x%" />
+    </resource>
+    <resource key="progressbasis.basis06_2" type="text">
+        <message locale="ko" value="% 이상 일 경우 시험응시 가능." />
+        <message locale="en" value="." />
+    </resource>
+    <resource key="progressbasis.isuse" type="text">
+        <message locale="ko" value="사용여부" />
+        <message locale="en" value="Active flag" />
+    </resource>
+    <resource key="progressbasis.msg1" type="text">
+        <message locale="ko" value="※ 교육생의 효율적인 교육을 위하여 아래에서 적합한 진도정책을 선택하세요." />
+        <message locale="en" value="※ please select the appropriate progress policy for effective training" />
+    </resource>
+    <resource key="progressbasis.msg2" type="text">
+        <message locale="ko" value="강의록 순서대로 학습 조건." />
+        <message locale="en" value="The course lecture can be viewed in sequence." />
+    </resource>
+    <resource key="progressbasis.msg3" type="text">
+        <message locale="ko" value="분" />
+        <message locale="en" value="Minute(s)" />
+    </resource>
+    <resource key="progressbasis.msg4" type="text">
+        <message locale="ko" value="숫자로만 입력해야 합니다." />
+        <message locale="en" value="Only numbers should be input" />
+    </resource>
+    <resource key="progressbasis.msg5" type="text">
+        <message locale="ko" value="하루 최대 학습가능시간" />
+        <message locale="en" value="Maximum daily training hours possible" />
+    </resource>
+    <resource key="progressbasis.title" type="text">
+        <message locale="ko" value="내용" />
+        <message locale="en" value="Content" />
+    </resource>
+    <resource key="estimat.basis.mng" type="text">
+        <message locale="ko" value="평가기준관리" />
+        <message locale="en" value="Estimate Basis Management" />
+    </resource>
+    <resource key="finished_score" type="text">
+        <message locale="ko" value="수료점수" />
+        <message locale="en" value="Passing score" />
+    </resource>
+    <resource key="limit_study_time" type="text">
+        <message locale="ko" value="수료기준학습시간" />
+        <message locale="en" value="Minimum study time for lecture completion" />
+    </resource>
+</bundle>

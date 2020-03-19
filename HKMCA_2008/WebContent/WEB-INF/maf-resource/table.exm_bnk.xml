@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//UBQ//DTD maf-command config XML V1.0//EN"
+         "resourceBundle.dtd">
+<bundle defaultLocale="ko">
+    <resource key="queid" >
+        <message locale="ko" value="문제 번호" />
+    </resource>
+    <resource key="queowner" >
+        <message locale="ko" value="소유자" />
+    </resource>
+    <resource key="sjt_cd" >
+        <message locale="ko" value="과목명" />
+    </resource>
+    <resource key="quetitle" >
+        <message locale="ko" value="질문" />
+    </resource>
+    <resource key="quetext" >
+        <message locale="ko" value="문제지문" />
+    </resource>
+    <resource key="queimag" >
+        <message locale="ko" value="문제이미지" />
+    </resource>
+    <resource key="queviw1" >
+        <message locale="ko" value="보기1" />
+    </resource>
+    <resource key="queviw2" >
+        <message locale="ko" value="보기2" />
+    </resource>
+    <resource key="queviw3" >
+        <message locale="ko" value="보기3" />
+    </resource>
+    <resource key="queviw4" >
+        <message locale="ko" value="보기4" />
+    </resource>
+    <resource key="queviw5" >
+        <message locale="ko" value="보기5" />
+    </resource>
+    <resource key="queviw6" >
+        <message locale="ko" value="보기6" />
+    </resource>
+    <resource key="queviw7" >
+        <message locale="ko" value="보기7" />
+    </resource>
+    <resource key="queviw8" >
+        <message locale="ko" value="보기8" />
+    </resource>
+    <resource key="queviw9" >
+        <message locale="ko" value="보기9" />
+    </resource>
+    <resource key="queviw10" >
+        <message locale="ko" value="보기10" />
+    </resource>
+    <resource key="quecount" >
+        <message locale="ko" value="보기수" />
+    </resource>
+    <resource key="quedesc" >
+        <message locale="ko" value="해설" />
+    </resource>
+    <resource key="quedescimg" >
+        <message locale="ko" value="해설이미지" />
+    </resource>
+    <resource key="queansw" >
+        <message locale="ko" value="정답 " />
+    </resource>
+    <resource key="quescore" >
+        <message locale="ko" value="배점" />
+    </resource>
+    <resource key="quetype" >
+        <message locale="ko" value="유형" />
+    </resource>
+    <resource key="quelevel" >
+        <message locale="ko" value="난이도" />
+    </resource>
+</bundle>   

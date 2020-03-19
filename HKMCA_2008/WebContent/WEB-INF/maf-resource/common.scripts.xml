@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-resource PUBLIC "-//UBQ//DTD maf-command config XML V1.0//EN" "resourceBundle.dtd">
+
+<bundle defaultLocale="ko">
+    <resource key="zipcode.addr.input" type="text">
+        <message locale="ko" value="☞ 찾고자 하는 주소를 입력하세요." />
+        <message locale="en" value="☞ 찾고자 하는 주소를 입력하세요." />
+    </resource>
+    <resource key="zipcode.form.notfound" type="text">
+        <message locale="ko" value="입력폼이 정의되지 않았습니다." />
+        <message locale="en" value="i can't found form name" />
+    </resource>
+    <resource key="zipcode.addr2.input" type="text">
+        <message locale="ko" value="상세주소를 입력해 주십시요." />
+        <message locale="en" value="상세주소를 입력해 주십시요." />
+    </resource>
+    <resource key="iduse.input" type="text">
+        <message locale="ko" value="☞ 원하는 아이디를 입력하세요." />
+    </resource>
+    <resource key="alert.delete" type="text">
+        <message locale="ko" value="☞ 해당 정보들이 모두 삭제됩니다. 그래도 삭제하시겠습니까?" />
+        <message locale="en" value="All selected information will be deleted. Do you wish to continue?" />
+    </resource>
+    <resource key="alert.save" type="text">
+        <message locale="ko" value="☞ 해당 정보들을 저장하시겠습니까?" />
+        <message locale="en" value="Do you wish to Save?" />
+    </resource>
+    <resource key="menu.add" type="text">
+        <message locale="ko" value="☞ 하위메뉴를 작성하시겠습니까?" />
+    </resource>
+	<resource key="lb.lec_chp.script.msg1" type="text">
+        <message locale="ko" value="☞ 강의컨텐츠 표준을 선택하세요." />
+	    <message locale="en" value="Please select the course contents standard." />
+	</resource>
+	<resource key="wla_rat_mst.msg1" type="text">
+        <message locale="ko" value="☞ 평가비율의 합은 100%가 되도록 다시 조정해주십시요." />
+	    <message locale="en" value="Please adjust each grading rate for the total sum to 100%." />
+	</resource>
+	<resource key="only.number" type="text">
+        <message locale="ko" value="☞ 숫자로만 입력해야 합니다." />
+	    <message locale="en" value="Please input only with numbers." />
+	</resource>
+	<resource key="alert.sel0" type="text">
+        <message locale="ko" value="☞ 조건을 선택하십시요." />
+	    <message locale="en" value="Please select the condition." />
+	</resource>
+	<resource key="alert.score.limit.fail" type="text">
+        <message locale="ko" value="점수는 0~100 사이의 숫자로 입력하세요." />
+	    <message locale="en" value="Please input the scores using numbers between 0~100." />
+	</resource>
+    <resource key="alert.add" type="text">
+        <message locale="ko" value="등록하시겠습니까?" />
+        <message locale="en" value="Do you wish to register?" />
+    </resource>
+    <resource key="alert.add.info" type="text">
+        <message locale="ko" value="등록할 항목을 선택하십시오." />
+        <message locale="en" value="Please select the item(s) to register." />
+    </resource>
+    <resource key="alert.copy" type="text">
+        <message locale="ko" value="해당항목을 복사하시겠습니까?" />
+        <message locale="en" value="Do you wish to copy the selected item?" />
+    </resource>
+    <resource key="alert.desc" type="text">
+        <message locale="ko" value="내용을 입력하세요." />
+        <message locale="en" value="Pelase input content." />
+    </resource>
+    <resource key="alert.email" type="text">
+        <message locale="ko" value="☞ email형식이 아닙니다. email형식에 맞게 입력하십시요." />
+        <message locale="en" value="&lt;? E-mail form이 뭐죠?&gt; Form is invalid. Please input in e-mail form." />
+    </resource>
+    <resource key="alert.file" type="text">
+        <message locale="ko" value="파일명은 공백없이 영문과 _ 으로 구성됩니다." />
+        <message locale="en" value="The file name should be comprised of alphabets and underscore(_) without any blank spaces." />
+    </resource>
+    <resource key="alert.info1" type="text">
+        <message locale="ko" value="☞ 삭제할 항목을 선택하십시오." />
+        <message locale="en" value="Please select the item(s) to delete." />
+    </resource>
+    <resource key="alert.info2" type="text">
+        <message locale="ko" value="☞ 선택한 항목을 삭제하겠습니까?" />
+        <message locale="en" value="Do you wish to deleted the selected item(s)?" />
+    </resource>
+    <resource key="alert.member.msg3" type="text">
+        <message locale="ko" value="☞ ID를 입력해주세요." />
+        <message locale="en" value="Please input ID." />
+    </resource>
+    <resource key="alert.member.msg4" type="text">
+        <message locale="ko" value="☞ 이름을 입력해주세요." />
+        <message locale="en" value="Please input the name." />
+    </resource>
+    <resource key="alert.only.alphanum" type="text">
+        <message locale="ko" value="☞ 영문자, 숫자만 사용하여 입력하십시요." />
+        <message locale="en" value="Please use alphabet letter and numbers only." />
+    </resource>
+    <resource key="alert.only.alphanumdash" type="text">
+        <message locale="ko" value="☞ 영문자, 숫자,대시(_)만 사용하여 입력하십시요." />
+        <message locale="en" value="Please use alphabet letter, numbers and underscores only." />
+    </resource>
+    <resource key="alert.only.number" type="text">
+        <message locale="ko" value="☞ 숫자[0~9]만 사용하여 입력하십시요." />
+        <message locale="en" value="Please use single digit numbers only (0~9)." />
+    </resource>
+    <resource key="alert.percent.limit.fail" type="text">
+        <message locale="ko" value="평가비율은 0~100 사이의 숫자로 입력하세요." />
+        <message locale="en" value="Please input the grading rate using numbers between 0~100." />
+    </resource>
+    <resource key="alert.post" type="text">
+        <message locale="ko" value="☞ 주소를 입력해주세요." />
+        <message locale="en" value="Please input the address." />
+    </resource>
+    <resource key="classroom.right.button.not.use" type="text">
+        <message locale="ko" value="☞ 마우스 오른쪽 버튼을 사용할 수 없습니다." />
+        <message locale="en" value="The right mouse button cannot be used." />
+    </resource>
+    <resource key="mail.msg1" type="text">
+        <message locale="ko" value="☞ 보내는사람 항목에 메일주소를 입력해주세요." />
+        <message locale="en" value="Please input the mail address in the sender column." />
+    </resource>
+    <resource key="mail.msg2" type="text">
+        <message locale="ko" value="☞ 받는사람 항목에 메일주소를 입력해주세요." />
+        <message locale="en" value="Please input the mail address in the receipient column." />
+    </resource>
+    <resource key="mail.msg3" type="text">
+        <message locale="en" value="Please input the mail title." />
+        <message locale="ko" value="☞ 메일제목을 입력해 주세요." />
+    </resource>
+    <resource key="score.rate.100" type="text">
+        <message locale="ko" value="평가비율의 합을 100으로 입력하세요." />
+        <message locale="en" value="Please input the total grading rate sum as 100." />
+    </resource>
+	<resource key="alert.not.select" type="text">
+        <message locale="ko" value="☞ 대상을 선택하십시오." />
+	    <message locale="en" value="Please select item." />
+	</resource>
+	<resource key="report.marking.notfound" type="text">
+        <message locale="ko" value="검색된 학습자가 없습니다." />
+	    <message locale="en" value="No trainee found." />
+	</resource>
+	<resource key="report.marking.notselect" type="text">
+        <message locale="ko" value="선택된 학습자가 없습니다." />
+	    <message locale="en" value="Please select trainee." />
+	</resource>
+	<resource key="alert.login" type="text">
+        <message locale="ko" value="먼저 로그인하여 주십시오." />
+	    <message locale="en" value="Please log-in." />
+	</resource>
+	<resource key="req.dup" type="text">
+        <message locale="ko" value="이미 수강한 과목입니다." />
+	</resource>
+	<resource key="confirm.apply" type="text">
+        <message locale="ko" value="해당 과정을 수강신청 하시겠습니까?" />
+	    <message locale="en" value="Do you wish to the register the selected course?" />
+	</resource>
+    <resource key="pager.delete" type="text">
+        <message locale="ko" value="쪽지를 삭제 하시겠습니까?" />
+    </resource>
+    <resource key="auction.bid_price.not" type="text">
+        <message locale="ko" value="입찰금액이 최소입찰 가능금액보다 낮습니다. 다시 입찰해주세요." />
+    </resource>
+    <resource key="auction.bid.buy_price.ok" type="text">
+        <message locale="ko" value="즉시구매가로 입찰하시겠습니까?" />
+    </resource>
+</bundle>

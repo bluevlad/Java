@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "resourceBundle.dtd">
+<bundle defaultLocale="en">
+	<resource key="org_cd">
+		<message locale="ko" value="조직코드" />
+		<message locale="en" value="Org. No" />
+	</resource>
+	<resource key="p_org_cd">
+		<message locale="ko" value="상위조직코드" />
+		<message locale="en" value="Prev Org. No" />
+	</resource>
+	<resource key="org_type">
+		<message locale="ko" value="조직유형" />
+		<message locale="en" value="Type" />
+	</resource>
+	<resource key="org_name">
+		<message locale="ko" value="조직명" />
+		<message locale="en" value="Org Name" />
+	</resource>
+	<resource key="nation">
+		<message locale="ko" value="국가" />
+		<message locale="en" value="Nation" />
+	</resource>
+	<resource key="active_flag">
+		<message locale="ko" value="활성화" />
+		<message locale="en" value="Active" />
+	</resource>
+	<resource key="addr">
+		<message locale="ko" value="Address" />
+		<message locale="en" value="Address" />
+	</resource>
+</bundle>

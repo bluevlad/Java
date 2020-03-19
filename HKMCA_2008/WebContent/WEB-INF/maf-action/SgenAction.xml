@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//UBQ//DTD maf-command config XML V1.0//EN"
+         "mvc-configuration.dtd">
+<configuration>
+<template-list>
+	<template-info name="inner" uri="/web_src/intranet/_inner.jsp" />
+	<template-info name="NeoSgen" uri="/WEB-INF/jsp/mafapp/neoSzen/layout.jsp" />
+</template-list>
+
+<global-view>
+</global-view>
+
+<action uri="Sgen.do" type="modules.sgen.SgenAction" desc="sgen" title="sgen" default="tablelist">
+	<action-view>
+		<view-info name="tablelist" uri="/WEB-INF/jsp/sgen/tablelist.jsp" useTemplate="inner" />
+		<view-info name="dao" uri="/WEB-INF/jsp/sgen/tablelist_db.jsp" useTemplate="inner" />
+		<view-info name="xml" uri="/WEB-INF/jsp/sgen/tablelist_xml.jsp" useTemplate="inner" />
+		<view-info name="add" uri="/WEB-INF/jsp/sgen/add.jsp" useTemplate="inner" />
+		<view-info name="edit" uri="/WEB-INF/jsp/sgen/edit.jsp" useTemplate="inner" />
+		<view-info name="list" uri="/WEB-INF/jsp/sgen/list.jsp" useTemplate="inner" />
+		<view-info name="view" uri="/WEB-INF/jsp/sgen/view.jsp" useTemplate="inner" />
+	</action-view>
+	<cmds>
+		<cmd name="tablelist" method="cmdTablelist" />
+		<cmd name="dao" method="cmdTablelist" />
+		<cmd name="xml" method="cmdTablelist" />
+		<cmd name="add" method="cmdTablelist" />
+		<cmd name="edit" method="cmdTablelist" />
+		<cmd name="list" method="cmdTablelist" />
+		<cmd name="view" method="cmdTablelist" />
+	</cmds>
+</action>
+
+<action uri="NeoSgen.do" type="modules.sgen.NeoSgen" default="default">
+	<action-view>
+		<view-info name="JavaAction" uri="/WEB-INF/jsp/mafapp/dbadmin/tpl01/JavaAction.jsp" useTemplate="NeoSgen" />
+		<view-info name="JavaDB" uri="/WEB-INF/jsp/mafapp/dbadmin/tpl01/JavaDB.jsp" useTemplate="NeoSgen" />
+		<view-info name="JavaActionConfig" uri="/WEB-INF/jsp/mafapp/dbadmin/tpl01/JavaActionConfig.jsp" useTemplate="NeoSgen" />
+		<view-info name="JavaResourceConfig" uri="/WEB-INF/jsp/mafapp/dbadmin/tpl01/JavaResourceConfig.jsp" useTemplate="NeoSgen" />
+		<view-info name="JspList" uri="/WEB-INF/jsp/mafapp/dbadmin/tpl01/JspList.jsp" useTemplate="NeoSgen" />
+		<view-info name="JspView" uri="/WEB-INF/jsp/mafapp/dbadmin/tpl01/JspView.jsp" useTemplate="NeoSgen" />
+		<view-info name="JspEdit" uri="/WEB-INF/jsp/mafapp/dbadmin/tpl01/JspEdit.jsp" useTemplate="NeoSgen" />
+		<view-info name="JspAdd" uri="/WEB-INF/jsp/mafapp/dbadmin/tpl01/JspAdd.jsp" useTemplate="NeoSgen" />
+		<view-info name="default" uri="blank.jsp"  useTemplate="NeoSgen" />
+	</action-view>
+	<cmds>
+		<cmd name="default" method="getJavaSource"/>
+		<cmd name="JavaAction" method="getJavaSource"/>
+		<cmd name="JavaDB" method="getJavaSource"/>
+		<cmd name="JavaActionConfig" method="getJavaSource"/>
+		<cmd name="JavaResourceConfig" method="getJavaSource"/>
+		<cmd name="JspList" method="getJavaSource"/>
+		<cmd name="JspView" method="getJavaSource"/>
+		<cmd name="JspEdit" method="getJavaSource"/>
+		<cmd name="JspAdd" method="getJavaSource"/>
+	</cmds>
+</action>
+</configuration>

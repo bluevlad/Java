@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE maf-command PUBLIC
+         "-//UBQ//DTD maf-command config XML V1.0//EN"
+         "resourceBundle.dtd">
+<bundle defaultLocale="ko">
+    <resource key="atn_cd" >
+        <message locale="ko" value="경매코드" />
+    </resource>
+    <resource key="atn_nm" >
+        <message locale="ko" value="경매명" />
+    </resource>
+    <resource key="prd_cd" >
+        <message locale="ko" value="제품코드" />
+    </resource>
+    <resource key="atn_usn" >
+        <message locale="ko" value="경매등록자" />
+    </resource>
+    <resource key="reg_dt" >
+        <message locale="ko" value="경매등록일시" />
+    </resource>
+    <resource key="upt_dt" >
+        <message locale="ko" value="최종수정일시" />
+    </resource>
+    <resource key="end_dt" >
+        <message locale="ko" value="입찰마감일시" />
+    </resource>
+    <resource key="atn_price" >
+        <message locale="ko" value="입찰가" />
+    </resource>
+    <resource key="str_price" >
+        <message locale="ko" value="경매시작가" />
+    </resource>
+    <resource key="buy_price" >
+        <message locale="ko" value="직접구매가" />
+    </resource>
+    <resource key="end_price" >
+        <message locale="ko" value="최종경매가" />
+    </resource>
+    <resource key="bid_price" >
+        <message locale="ko" value="경매낙찰가" />
+    </resource>
+    <resource key="bid_usn" >
+        <message locale="ko" value="경매낙찰자" />
+    </resource>
+    <resource key="bid_dt" >
+        <message locale="ko" value="경매낙찰일시" />
+    </resource>
+    <resource key="atn_dt" >
+        <message locale="ko" value="경매참여일시" />
+    </resource>
+    <resource key="atn_stat" >
+        <message locale="ko" value="경매상태" />
+    </resource>
+</bundle>

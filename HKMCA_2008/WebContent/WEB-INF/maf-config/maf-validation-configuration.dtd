@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- 
+	 mvc conrol Configuration
+-->
+<!-- 
+	configuration is the root element. 
+-->
+<!ELEMENT validation (validator)*>
+<!ELEMENT validator EMPTY>
+<!ATTLIST validator
+	name 	CDATA  #REQUIRED 
+	type 	CDATA  #REQUIRED 
+	desc 	CDATA #IMPLIED 
+	message CDATA #IMPLIED 	
+	bundle	CDATA #IMPLIED
+>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE maf-resource PUBLIC
+         "-//UBQ//DTD maf-command config XML V1.0//EN"
+         "mvc-configuration.dtd">
+<configuration>
+
+<global-view></global-view>
+<action uri="survey.do" type="modules.survey.SurveyAction" desc="설문참여" default="list">
+	<action-view>
+		<view-info name="list" uri="/WEB-INF/jsp/survey/list.jsp" useTemplate="www" />
+		<view-info name="view" uri="/WEB-INF/jsp/survey/view.jsp" useTemplate="www" />
+	</action-view>
+	<cmds>
+		<cmd name="list" method="cmdList" formname="frm1" authtype="R" />
+		<cmd name="view" method="cmdView" formname="frm1" authtype="R" />
+		<cmd name="survey" method="cmdSurvey" formname="frm1" from="update" authtype="U" />
+	</cmds>
+	<forms>
+		<form name="frm1" bundle="survey">
+			<input name="surveyid" message="surveyid" type="text" required="true" />
+			<input name="surveytitle" message="surveytitle" type="text" />
+			<input name="surveydesc" message="surveydesc" type="text" />
+			<input name="survey_sdat" message="survey_sdat" type="text" />
+			<input name="survey_edat" message="survey_edat" type="text" />
+			<input name="active_yn" bundle="common" message="select.use" type="text" required="true" />
+		</form>
+	</forms>
+</action>
+
+<action uri="Sursurvey.do" type="modules.app.survey.action.SursurveyAction" desc="sursurvey" title="sursurvey" default="list">
+    <action-view>
+        <view-info name="list" uri="/WEB-INF/jsp/survey/admin/survey/list.jsp" useTemplate="inner" />
+        <view-info name="view" uri="/WEB-INF/jsp/survey/admin/survey/view.jsp" useTemplate="inner" />
+        <view-info name="edit" uri="/WEB-INF/jsp/survey/admin/survey/edit.jsp" useTemplate="inner" />
+        <view-info name="add" uri="/WEB-INF/jsp/survey/admin/survey/add.jsp" useTemplate="inner" />
+        <view-info name="pop" uri="/WEB-INF/jsp/survey/admin/survey/pop.jsp" useTemplate="popup" />
+        <view-info name="preview" uri="/WEB-INF/jsp/survey/admin/preview/set.jsp" useTemplate="popup" />
+    </action-view>
+    <cmds>
+        <cmd name="list" method="cmdList" />
+        <cmd name="view" method="cmdView" />
+        <cmd name="pop" method="cmdPop" />
+        <cmd name="preview" method="cmdPreview" />
+        <cmd name="edit" method="cmdEdit" formname="sample" />
+        <cmd name="update" method="cmdUpdate" formname="sample" from="edit" authtype="U" />
+        <cmd name="insert" method="cmdInsert" formname="update" authtype="C"/>
+        <cmd name="add" method="cmdadd" from="update" authtype="C"/>
+    </cmds>
+</action>
+
+
+<action uri="Sur.do" type="modules.app.survey.action.SurAction" desc="설문참여" title="설문참여" default="list">
+    <action-view>
+        <view-info name="list" uri="/WEB-INF/jsp/survey/user/sur/list.jsp" useTemplate="inner" />
+        <view-info name="view" uri="/WEB-INF/jsp/survey/user/sur/view.jsp" useTemplate="inner" />
+        <view-info name="edit" uri="/WEB-INF/jsp/survey/user/sur/edit.jsp" useTemplate="inner" />
+        <view-info name="add" uri="/WEB-INF/jsp/survey/user/sur/add.jsp" useTemplate="inner" />
+        <view-info name="pop" uri="/WEB-INF/jsp/survey/user/sur/pop.jsp" useTemplate="popup" />
+        <view-info name="preview" uri="/WEB-INF/jsp/survey/user/sur/preview/set.jsp" useTemplate="popup" />
+    </action-view>
+    <cmds>
+        <cmd name="list" method="cmdList" />
+        <cmd name="view" method="cmdView" />
+        <cmd name="pop" method="cmdPop" />
+        <cmd name="preview" method="cmdPreview" />
+        <cmd name="edit" method="cmdEdit" formname="sample" />
+        <cmd name="update" method="cmdUpdate" formname="sample" from="edit" authtype="U" />
+        <cmd name="insert" method="cmdInsert" formname="update" authtype="C"/>
+        <cmd name="add" method="cmdadd" from="update" authtype="C"/>
+    </cmds>
+</action>
+
+</configuration>

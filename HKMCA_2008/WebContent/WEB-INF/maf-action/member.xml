@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//UBQ//DTD maf-command config XML V1.0//EN"
+         "mvc-configuration.dtd">
+<configuration>
+	<global-view></global-view>
+    
+    <action uri="member.do" type="modules.member.MemberAction" desc="개인정보" title="개인정보"
+    jsppath="/WEB-INF/jsp/member/" default="default">
+        <action-view>
+            <view-info name="default" uri="edit.jsp" useTemplate="etc" />
+            <view-info name="edit" uri="edit.jsp" useTemplate="etc" />
+        </action-view>
+        <cmds>
+            <cmd name="default" method="cmdDefault" formname="frm1" />
+            <cmd name="edit" method="cmdEdit" formname="frm1" />
+            <cmd name="insert" method="cmdInsert" />
+            <cmd name="update" method="cmdUpdate" />
+            <cmd name="delete" method="cmdDelete" />
+        </cmds>
+        <forms>
+            <form name="frm1" bundle="table.maf_user">
+	            <input name="usn" message="usn" type="text" required="true"/>
+	            <input name="userid" message="userid" type="text" />
+	            <input name="passwd" message="passwd" type="text" />
+	            <input name="nm" message="nm" type="text" />
+	            <input name="nick_nm" message="nick_nm" type="text" />
+	            <input name="nm_eng" message="nm_eng" type="text" />
+	            <input name="active_yn" message="active_yn" type="text" required="true"/>
+	            <input name="pin" message="pin" type="text" />
+	            <input name="pos_nm" message="pos_nm" type="text" />
+	            <input name="hp" message="hp" type="text" />
+	            <input name="tel" message="tel" type="text" />
+	            <input name="fax" message="fax" type="text" />
+	            <input name="email" message="email" type="text" />
+	            <input name="add" message="add" type="text" />
+	            <input name="remarks" message="remarks" type="text" />
+	            <input name="org_cd" message="org_cd" type="text" />
+                <input name="active_yn" message="table.isuse" type="text" bundle="common"></input>
+                <input name="reg_dt" message="table.reg_dt" type="text" bundle="common"></input>
+            </form>     
+        </forms>
+    </action>
+    
+</configuration>

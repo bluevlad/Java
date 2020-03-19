@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-resource PUBLIC "-//UBQ//DTD maf-command config XML V1.0//EN" "resourceBundle.dtd">
+
+<bundle defaultLocale="ko">
+    <resource key="itm_id" >
+        <message locale="ko" value="강의안코드" />
+    </resource>
+    <resource key="launch_data" >
+        <message locale="ko" value="컨텐츠화일" />
+    </resource>
+    <resource key="itm_title" >
+        <message locale="ko" value="제목" />
+    </resource>
+    <resource key="itm_prerequisites" >
+        <message locale="ko" value="선수강의안" />
+    </resource>
+    <resource key="itm_type" >
+        <message locale="ko" value="강의안유형(on:온라인컨텐츠,of:오프라인수업)" />
+    </resource>
+    <resource key="itm_maxtimeallowed" >
+        <message locale="ko" value="기준학습시간" />
+    </resource>
+    <resource key="itm_sequence" >
+        <message locale="ko" value="강의안순서" />
+    </resource>
+    <resource key="itm_lvl" >
+        <message locale="ko" value="계층순서" />
+    </resource>
+    <resource key="itm_pid" >
+        <message locale="ko" value="강의안 상위코드" />
+    </resource>
+    <resource key="week" >
+        <message locale="ko" value="주" />
+    </resource>
+    <resource key="chpnumb" >
+        <message locale="en" value="No" />
+        <message locale="ko" value="차시" />
+    </resource>
+    <resource key="htmcode" >
+        <message locale="en" value="Contents Number" />
+        <message locale="ko" value="컨텐츠코드" />
+    </resource>
+    <resource key="totpage" >
+        <message locale="ko" value="총페이지수" />
+    </resource>
+    <resource key="cnt_size" >
+        <message locale="ko" value="화면사이즈" />
+    </resource>
+    <resource key="cnt_width" >
+        <message locale="en" value="Width" />
+        <message locale="ko" value="화면넓이" />
+    </resource>
+    <resource key="cnt_height" >
+        <message locale="en" value="Height" />
+        <message locale="ko" value="화면높이" />
+    </resource>
+    <resource key="chp_sdat" >
+        <message locale="en" value="Course start date" />
+        <message locale="ko" value="강의시작일" />
+    </resource>
+    <resource key="chp_edat" >
+        <message locale="en" value="Course completion date" />
+        <message locale="ko" value="강의종료일" />
+    </resource>
+    <resource key="upt_dt" >
+        <message locale="ko" value="수정일" />
+    </resource>
+    <resource key="upt_id" >
+        <message locale="ko" value="수정자" />
+    </resource>
+    <resource key="lec_cd" >
+        <message locale="ko" value="개설과목코드" />
+    </resource>
+</bundle>

@@ -1,0 +1,41 @@
+/* 김창환 (2011.1.9) */
+@charset "utf-8";
+
+/* 메인 갤러리 */
+.main_img{width:920px;padding:20px 20px 20px 10px;margin-top:15px;border:1px solid #388ab1;overflow:hidden;*zoom:1}
+.main_img_btn_left{float:left;margin:30px 30px 0 0;padding-left:30px;cursor:pointer}
+.main_img_btn_right{float:left;margin:30px 30px 0 0;cursor:pointer}
+.anyClass{float:left}
+.anyClass ul li{margin-right:35px}
+.anyClass ul li.last{margin-right:30px}
+
+.main_sub_img{width:920px;padding:5px 15px 5px 15px;margin-top:10px;border:0px solid #388ab1;overflow:hidden;*zoom:1}
+.main_sub_img td{border:1px solid #b1b047;background:#f8f8d8;}
+
+/* 서비스 전체 보기 */
+.memu_total{margin-top:15px;border:1px solid #ccc;clear:both;font-weight:bold;*zoom:1}
+.memu_total ul.body{overflow:hidden;color:#555;padding:10px 25px;*zoom:1}
+.memu_total ul.body li{float:left;padding:0 0 0 10px;margin-right:60px;text-align:left}
+.memu_total ul.body li span{background:url(/images/main/bu_con.gif) no-repeat 0 1px;padding-left:12px}
+.memu_total ul.body li p{background:url(/images/main/bu_con2.gif) no-repeat 3px 7px;padding-left:30px;font-size:12px;color:#666;font-weight:normal;letter-spacing:-1px}
+.memu_total ul.body li p.mar{margin-top:5px}
+.memu_total ul.body li a {color:#555;}
+.memu_total ul.body li a:hover{color:#006dc3;text-decoration:none;}	
+.trigger{background:#eaeaea url(/images/main/toggle2.gif) no-repeat 810px 1px;overflow:hidden;color:#333;padding:2px 30px 4px 10px;text-align:left;*zoom:1}
+.trigger a {display:block;}
+.trigger a:hover {color:#333}
+.active {background-position:900px 0px;}
+
+/* 공지사항 */
+.notice{width:450px;toverflow:hidden;}
+.notice table{width:100%}
+.notice table th{padding:1px 2px 1px 3px;height:25px;background:url(/images/main/bu_notice.gif) no-repeat 3px 13px;border-bottom:1px solid #ccc;font-weight:normal;text-align:left}
+.notice table td{padding:1px 2px 1px 3px;border-bottom:1px solid #ccc;text-align:right}
+
+/* 좌측메뉴  */
+.snb{width:180px;float:left;background:url(/maf_images/snb/bg_snb.gif) repeat-y;font-weight:bold;overflow:hidden;}
+.snb ul{overflow:hidden;padding-top:13px}
+.snb ul li{background:url(/maf_images/snb/bu_snb.gif) no-repeat 0 12px;padding:6px 0 3px 8px;color:#666;margin-left:30px}
+.snb ul li a{color:#666}
+.snb_on a{color:#1d72b3 !important}
+.snb_on {color:#1d72b3 !important}

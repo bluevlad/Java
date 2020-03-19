@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-resource PUBLIC "-//UBQ//DTD maf-command config XML V1.0//EN" "resourceBundle.dtd">
+
+<bundle defaultLocale="ko">
+    <resource key="insert.ok" type="text">
+        <message locale="ko" value="등록되었습니다." />
+        <message locale="en" value="Registered." />
+    </resource>
+    <resource key="insert.fail" type="text">
+        <message locale="ko" value="등록하지 못하였습니다." />
+        <message locale="en" value="Registration could not be completed." />
+    </resource>
+    <resource key="update.ok" type="text">
+        <message locale="ko" value="수정되었습니다." />
+        <message locale="en" value="Modified." />
+    </resource>
+    <resource key="update.fail" type="text">
+        <message locale="ko" value="수정하지 못하였습니다." />
+        <message locale="en" value="could not be modified." />
+    </resource>
+    <resource key="delete.ok" type="text">
+        <message locale="ko" value="삭제되었습니다." />
+        <message locale="en" value="Deleted" />
+    </resource>
+    <resource key="delete.fail" type="text">
+        <message locale="ko" value="삭제하지 못하였습니다." />
+        <message locale="en" value="Deletion could not be completed." />
+    </resource>
+    <resource key="message.insert.ok" type="text">
+        <message locale="ko" value="{0}개의 레코드가 정상적으로 등록 되었습니다."/>
+        <message locale="en" value="{0} record(s) inserted." />
+    </resource>
+    <resource key="message.update.ok" type="text">
+        <message locale="ko" value="{0}개의 레코드가 정상적으로 수정되었습니다." />
+        <message locale="en" value="{0} record(s) updated" />
+    </resource>
+    <resource key="message.delete.ok" type="text">
+        <message locale="ko" value="{0}개의 레코드가 정상적으로 삭제 되었습니다."/>
+        <message locale="en" value="{0} records deleted."/>
+    </resource>
+    <resource key="id.notuse" type="text">
+        <message locale="ko" value="아이디를 사용할 수 있습니다." />
+    </resource>
+    <resource key="id.use" type="text">
+       <message locale="ko" value="중복된 아이디입니다." />
+    </resource>
+    <resource key="upload.ok" >
+        <message locale="ko" value="정상적으로 업로드 되었습니다."/>
+        <message locale="en" value="Upload success."/>
+    </resource>         
+    <resource key="upload.fail" >
+        <message locale="ko" value="업로드에 실패했습니다."/>
+        <message locale="en" value="Upload failed."/>
+    </resource>         
+    <resource key="message.error.title" type="text">
+        <message locale="ko" value="서비스에 문제가 발생했습니다." />
+        <message locale="en" value="The server encountered an error." />
+    </resource>
+    <resource key="navigator.noDataFound" >
+        <message locale="ko" value="조건에 맞는 자료가 없습니다."/>
+        <message locale="en" value="There is no data."/>
+    </resource>
+    <resource key="message.error.auth" type="text">
+        <message locale="ko" value="접근권한 에러발생" />
+        <message locale="en" value="Unauthorized Access" />
+    </resource>
+    <resource key="error.session" type="text">
+        <message locale="ko" value="보안을 위해 접속종료되었습니다." />
+        <message locale="en" value="Your session is expired." />
+    </resource>
+    <resource key="error.system" type="text">
+        <message locale="ko" value="시스템 에러입니다. 관리자에게 문의바랍니다." />
+        <message locale="en" value="System Error!!!" />
+    </resource>
+    <resource key="delete.fail.existChild" >
+        <message locale="ko" value="하위코드가 존재하여 삭제할 수 없습니다."/>
+        <message locale="en" value="Can not delete because exist subcode."/>
+    </resource>
+    <resource key="file.delete.success" type="text">
+        <message locale="ko" value="해당 파일[{0}]을 삭제하였습니다." />
+        <message locale="en" value="The selected file(s) has been deleted." />
+    </resource>
+    <resource key="file.delete.fail" type="text">
+        <message locale="ko" value="해당 파일[{0}] 삭제중 오류가 발생했습니다." />
+        <message locale="en" value="An error has occurred during file{0} deletion." />
+    </resource>
+    <resource key="file.delete.fail.auth" type="text">
+        <message locale="ko" value="해당 파일[{0}] 삭제권한이 없습니다." />
+        <message locale="en" value="Please confirm authorization to delete file." />
+    </resource>
+    <resource key="file.delete.fail.notfound" type="text">
+        <message locale="ko" value="해당 파일[{0}]이 존재하지 않습니다." />
+        <message locale="en" value="The selected file does not exist." />
+    </resource>
+    <resource key="file.filetype.check" >
+        <message locale="ko" value="형식에 맞는 파일을 첨부하십시오."/>
+        <message locale="en" value="Invalid File Type."/>
+    </resource>     
+    <resource key="reqbatch.info" type="text">
+        <message locale="ko" value="&lt;font color=red&gt;  일괄 등록 파일 포맷에 맞지않는 데이터를 등록할 경우 에러가 발생합니다. &lt;/font&gt; " />
+        <message locale="en" value="An error will occur if the file format is not correct." />
+    </resource>
+    <resource key="reqbatch.info1" type="text">
+        <message locale="ko" value="&lt;font color=red&gt; 포맷에 맞게 정확한 파일을 등록하시기 바랍니다. &lt;/font&gt;" />
+        <message locale="en" value="Please register a file in correct format." />
+    </resource>
+    <resource key="reqbatch.info3" type="text">
+        <message locale="ko" value="&lt;font color=red&gt; 파일포맷양식 다운받기. &lt;/font&gt;" />
+        <message locale="en" value="Download file format form." />
+    </resource>
+    <resource key="mail.send.ok" type="text">
+        <message locale="en" value="Mail has been sent." />
+        <message locale="ko" value="메일을 발송하였습니다." />
+    </resource>
+    <resource key="mail.send.fail" type="text">
+        <message locale="en" value="An error has occurred during mailing sending." />
+        <message locale="ko" value="메일 발송 중 오류가 발생하였습니다." />
+    </resource>
+    <resource key="noti.mail.info" type="text">
+        <message locale="ko" value="※ 철자에 틀리지 않게 주의해 주십시요." />
+        <message locale="en" value="※ 철자에 틀리지 않게 주의해 주십시요." />
+    </resource>
+    <resource key="noti.mail.member_id" type="text">
+        <message locale="ko" value="※ 회원ID을 사용할때는 &quot;$%MEMBERID%$&quot; 입니다." />
+        <message locale="en" value="※ Userid :  &quot;$%MEMBERID%$&quot; " />
+    </resource>
+    <resource key="noti.mail.member_nm" type="text">
+        <message locale="ko" value="※ 이름을 사용할때는 &quot;$%MEMBERNAME%$&quot; 입니다." />
+        <message locale="en" value="※ Username :  &quot;$%MEMBERNAME%$&quot;" />
+    </resource>
+    <resource key="noti.mail.receive" type="text">
+        <message locale="ko" value="※ 받을사람을 2인이상 입력할때에는 ; 로 구분하여 입력하세요( 예: user1@mail.com;user2@mail.com)" />
+        <message locale="en" value="※ 받을사람을 2인이상 입력할때에는 ; 로 구분하여 입력하세요( 예: user1@mail.com;user2@mail.com)" />
+    </resource>
+    <resource key="noti.mail.send" type="text">
+        <message locale="ko" value="메일발송이 완료되었습니다." />
+        <message locale="en" value="Mail send has been completed." />
+    </resource>
+    <resource key="noti.mail.tmplt.msg1" type="text">
+        <message locale="ko" value="※ 메일템플릿을 사용할 경우엔 먼저 메일템플릿을 선택해 주시기 바랍니다." />
+        <message locale="en" value="※ 메일템플릿을 사용할 경우엔 먼저 메일템플릿을 선택해 주시기 바랍니다." />
+    </resource>
+    <resource key="poll.ok" type="text">
+        <message locale="ko" value="설문에 응해주셔서 감사합니다." />
+    </resource>
+    <resource key="poll.fail" type="text">
+        <message locale="ko" value="설문응답중 에러가 발생했습니다." />
+    </resource>
+    <resource key="zipcode.comment" type="text">
+        <message locale="ko" value="☞ 찾고자 하는 주소를 입력하세요." />
+    </resource>
+    <resource key="zipcode.addr.write" type="text">
+        <message locale="ko" value="☞ 해당되는 주소를 선택하세요." />
+    </resource>
+
+    <resource key="auction.insert.ok" type="text">
+        <message locale="ko" value="경매에 입찰되었습니다." />
+    </resource>
+    <resource key="auction.insert.fail" type="text">
+        <message locale="ko" value="경매입찰 도중에 에러가 발생했습니다. 잠시후에 다시 시도해주시기 바랍니다." />
+    </resource>
+    <resource key="auction.update.ok" type="text">
+        <message locale="ko" value="입찰정보가 변경되었습니다." />
+    </resource>
+    <resource key="auction.update.fail" type="text">
+        <message locale="ko" value="입찰정보 변경중 에러가 발생했습니다." />
+    </resource>
+    <resource key="auction.delete.ok" type="text">
+        <message locale="ko" value="입찰을 취소했습니다." />
+    </resource>
+    <resource key="auction.delete.fail" type="text">
+        <message locale="ko" value="입찰 취소중 에러가 발생했습니다. 잠시후에 다시 시도해주시기 바랍니다." />
+    </resource>
+    <resource key="auction.bid.buy_price.ok" type="text">
+        <message locale="ko" value="즉시구매가로 입찰하셨습니다." />
+    </resource>
+    <resource key="auction.bid.buy_price.fail" type="text">
+        <message locale="ko" value="즉시구매가 입찰 도중에 에러가 발생했습니다. 잠시후에 다시 시도해주시기 바랍니다." />
+    </resource>
+</bundle>

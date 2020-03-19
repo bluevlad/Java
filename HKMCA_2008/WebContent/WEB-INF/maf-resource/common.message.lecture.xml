@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-resource PUBLIC "-//UBQ//DTD maf-command config XML V1.0//EN" "resourceBundle.dtd">
+
+<bundle defaultLocale="ko">
+    <resource key="insert.ok" type="text">
+        <message locale="ko" value="강의가 개설되었습니다." />
+        <message locale="en" value="Registered." />
+    </resource>
+    <resource key="insert.fail" type="text">
+        <message locale="ko" value="강의를 개설하지 못하였습니다." />
+        <message locale="en" value="Registration could not be completed." />
+    </resource>
+    <resource key="update.ok" type="text">
+        <message locale="ko" value="강의정보가 수정되었습니다." />
+        <message locale="en" value="Modified." />
+    </resource>
+    <resource key="update.fail" type="text">
+        <message locale="ko" value="강의정보를 수정하지 못하였습니다." />
+        <message locale="en" value="could not be modified." />
+    </resource>
+    <resource key="delete.ok" type="text">
+        <message locale="ko" value="강의가 삭제되었습니다." />
+        <message locale="en" value="Deleted" />
+    </resource>
+    <resource key="delete.fail" type="text">
+        <message locale="ko" value="강의를 삭제하지 못하였습니다." />
+        <message locale="en" value="Deletion could not be completed." />
+    </resource>
+	<resource key="reopen.ok" type="text">
+        <message locale="ko" value="과정이 재개설 되었습니다." />
+		<message locale="en" value="The course has been reopened." />
+	</resource>
+	<resource key="reopen.fail" type="text">
+        <message locale="ko" value="과정재개설중 오류가 발생하였습니다." />
+		<message locale="en" value="An error has occurred during course reopening." />
+	</resource>
+  <resource key="admin.skilleval.score.insert" type="text">
+    <message locale="en" value="Do you wish to register the operator (instructor/trainer) score?" />
+    <message locale="ko" value="관리자 점수 등록을 하시겠습니까?" />
+  </resource>
+  <resource key="bas.diploma.fail" type="text">
+    <message locale="en" value="An error has occurred during certificate request." />
+    <message locale="ko" value="증명서 신청 중 오류가 발생하였습니다." />
+  </resource>
+  <resource key="bas.diploma.ok" type="text">
+    <message locale="en" value="Certificate request has been successfully made." />
+    <message locale="ko" value="증명서 신청이 접수되었습니다." />
+  </resource>
+  <resource key="calcel.lecture.nothing" type="text">
+    <message locale="en" value="There are no courses to cancel." />
+    <message locale="ko" value="수강취소가 가능한 강의가 없습니다." />
+  </resource>
+	<resource key="classroom.lecture.end" type="text">
+		<message locale="ko" value="강의창을 종료하시겠습니까?" />
+        <message locale="en" value="Progress update could not be saved." />
+	</resource>
+  <resource key="classroom.not.saved" type="text">
+    <message locale="en" value="Progress update could not be saved." />
+    <message locale="ko" value="진도저장에 실패하였습니다." />
+  </resource>
+  <resource key="classroom.saved.ok" type="text">
+    <message locale="en" value="Progress update has been successfully saved." />
+    <message locale="ko" value="진도저장에 성공하였습니다." />
+  </resource>
+  <resource key="delete_fail.sub2" type="text">
+    <message locale="en" value="Cannot delete due to a course already registered." />
+    <message locale="ko" value="실제로 개설된 과정이 존재하므로 삭제할 수 없습니다." />
+  </resource>
+  <resource key="final.grade.cert_not" type="text">
+    <message locale="en" value="There is a trainee (student) whose score has not been graded. Please try again after all scores have been graded." />
+    <message locale="ko" value="성적처리 되지 않은 수강자가 있습니다. 성적처리 후 다시 실행하십시오." />
+  </resource>
+  <resource key="final.grade.cert_ok" type="text">
+    <message locale="en" value="Completed." />
+    <message locale="ko" value="수료처리하였습니다." />
+  </resource>
+  <resource key="final.score.insert_fail" type="text">
+    <message locale="en" value="Grading cannot be conducted. Please register the grading standard." />
+    <message locale="ko" value="평가기준이나 학점기준을 등록하지 않아 채점하지 못하였습니다." />
+  </resource>
+  <resource key="final.score.insert_ok" type="text">
+    <message locale="en" value="Grading completed." />
+    <message locale="ko" value="채점하였습니다." />
+  </resource>
+  <resource key="home.lecture.nothing" type="text">
+    <message locale="en" value="There are no courses open." />
+    <message locale="ko" value="개설된 강의가 없습니다." />
+  </resource>
+  <resource key="notice.prflecnotfound" type="text">
+    <message locale="en" value="There are no courses in session." />
+    <message locale="ko" value="강의중인 과목이 없습니다." />
+  </resource>
+  <resource key="notice.stdlecnotfound" type="text">
+    <message locale="en" value="There is no course in progress." />
+    <message locale="ko" value="수강중인 과목이 없습니다." />
+  </resource>
+  <resource key="rate.update.fail" type="text">
+    <message locale="en" value="An error has occurred while modifying evaluation rates." />
+    <message locale="ko" value="평가비율 수정 중 오류가 발생하였습니다." />
+  </resource>
+  <resource key="rate.update.ok" type="text">
+    <message locale="en" value="Evaluation rate(s) has been modified." />
+    <message locale="ko" value="평가비율을 수정하였습니다." />
+  </resource>
+  <resource key="report.notfound" type="text">
+    <message locale="en" value="Homework has not been assigned. Please contact the operator (administrator) for details." />
+    <message locale="ko" value="과제 문제출제가 이루어 지지 않았습니다. 자세한 사항은 운영자에게 문의하세요." />
+  </resource>
+  <resource key="req.applyfail" type="text">
+    <message locale="en" value="Course could not be registered." />
+    <message locale="ko" value="수강신청에 실패하였습니다." />
+  </resource>
+  <resource key="req.cancel" type="text">
+    <message locale="en" value="Do you really wish to cancel the course registration?" />
+    <message locale="ko" value="정말로 수강취소를 하시겠습니까?" />
+  </resource>
+  <resource key="req.cancel.agree.result.fail" type="text">
+    <message locale="en" value="Course cancellation approval could not be completed. Please try again." />
+    <message locale="ko" value="수강취소 승인에 실패하였습니다. &lt;br&gt; 다시 실행하십시오." />
+  </resource>
+  <resource key="req.cancel.result" type="text">
+    <message locale="en" value="Cancellation request of course registration has been received. Final cancellation will be made once the request is approved by the course operator." />
+    <message locale="ko" value="수강취소가 접수되었습니다. &lt;br&gt;운영자의 승인이 이루어지면 수강취소가 이루어집니다." />
+  </resource>
+  <resource key="req.cancel.result.fail" type="text">
+    <message locale="en" value="Course registration has not been cancelled." />
+    <message locale="ko" value="수강취소하지 못하였습니다." />
+  </resource>
+  <resource key="req.cancel.result.ok" type="text">
+    <message locale="en" value="Course cancellation has been approved." />
+    <message locale="ko" value="수강취소 승인이 이루어졌습니다." />
+  </resource>
+  <resource key="req.cancel.result2" type="text">
+    <message locale="en" value="Course registration has been cancelled." />
+    <message locale="ko" value="수강취소가 이루어졌습니다." />
+  </resource>
+  <resource key="req.canlisten.rigthnow" type="text">
+    <message locale="en" value="Course has been registered. Course can be accessed during the designated period." />
+    <message locale="ko" value="수강신청이 이루어졌습니다. 강의기간에 바로 강의를 수강할 수 있습니다." />
+  </resource>
+  <resource key="req.dup" type="text">
+    <message locale="en" value="This course has been already applied for." />
+    <message locale="ko" value="이미 수강신청을 한 강의입니다." />
+  </resource>
+  <resource key="req.lecture.nothing" type="text">
+    <message locale="en" value="There is no course requested for registration." />
+    <message locale="ko" value="수강신청중인 강의가 없습니다." />
+  </resource>
+  <resource key="req.need.admition" type="text">
+    <message locale="en" value="Course has been registered. Course can be accessed after operator's approval." />
+    <message locale="ko" value="수강신청이 이루어졌습니다. 운영장의 승인이 이루어진 후 강의를 수강할 수 있습니다." />
+  </resource>
+  <resource key="req.not.company" type="text">
+    <message locale="en" value="You are not eligible for this course." />
+    <message locale="ko" value="이 과정은 수강대상이 아니므로 수강신청을 할 수 없습니다." />
+  </resource>
+  <resource key="req.nothing" type="text">
+    <message locale="en" value="There is no course registration information." />
+    <message locale="ko" value="수강신청 정보가 없습니다." />
+  </resource>
+  <resource key="req.ok.result.fail" type="text">
+    <message locale="en" value="Course registration could not be approved. Please try again." />
+    <message locale="ko" value="수강승인에 실패하였습니다. &lt;br&gt; 다시 실행하십시오." />
+  </resource>
+  <resource key="req.ok.result.ok" type="text">
+    <message locale="en" value="Course has been successfully registered." />
+    <message locale="ko" value="수강승인이 이루어졌습니다." />
+  </resource>
+  <resource key="rpt.deselect.fail" type="text">
+    <message locale="en" value="An error has occurred during cancelation of homework assignment." />
+    <message locale="ko" value="과제 출제 취소 중 오류가 발생하였습니다." />
+  </resource>
+  <resource key="rpt.deselect.ok" type="text">
+    <message locale="en" value="Homework assignment has been cancelled." />
+    <message locale="ko" value="과제 출제를 취소하였습니다." />
+  </resource>
+  <resource key="score.fail" type="text">
+    <message locale="en" value="An error has occurred during grading." />
+    <message locale="ko" value="점수 처리 중 오류가 발생하였습니다." />
+  </resource>
+  <resource key="score.ok" type="text">
+    <message locale="en" value="Grading has been completed." />
+    <message locale="ko" value="점수를 처리하였습니다." />
+  </resource>
+  <resource key="noti.lec_chp.msg1" type="text">
+    <message locale="en" value="※"/>
+    <message locale="ko" value="※ SCO제작정보[컨텐츠 실제 URL]을 입력하지 않으면 목차로만 이용합니다." />
+  </resource>
+  <resource key="noti.lec_chp.msg2" type="text">
+    <message locale="en" value="There is no course overview registered." />
+    <message locale="ko" value="등록된 강의안이 없습니다." />
+  </resource>
+  <resource key="noti.lec_chp.msg3" type="text">
+    <message locale="en" value="Chapter" />
+    <message locale="ko" value="단계" />
+  </resource>
+  <resource key="noti.lec_chp.msg4" type="text">
+    <message locale="en" value="If the course type is offline, please click on ‘offline’ to apply for the course."/>
+    <message locale="ko" value="※ 강의유형이 오프라인인 경우 참가신청을 하기위해서는 'OFFLINE'을 클릭하세요." />
+  </resource>
+  <resource key="noti.lec_chp.msg5" type="text">
+    <message locale="en" value="There are no applicants." />
+    <message locale="ko" value="참가신청자가 없습니다." />
+  </resource>
+  <resource key="noti.lecmst.prg.basis.msg01" type="text">
+    <message locale="en" value="Please select the appropriate progress policy for effective training." />
+    <message locale="ko" value="교육생의 효율적인 교육을 위하여 아래에서 적합한 진도정책을 선택하세요." />
+  </resource>
+  <resource key="noti.lecmst.prg.basis.msg02" type="text">
+    <message locale="en" value="강의록 순서대로 학습 조건." />
+    <message locale="ko" value="강의록 순서대로 학습 조건." />
+  </resource>
+  <resource key="noti.lecmst.prg.basis.msg03" type="text">
+    <message locale="en" value="4 or more new contents (thesis/courses) cannot be studied a day." />
+    <message locale="ko" value="하루에 4개 이상의 새로운 Contents(주제/강의)를 학습할 수 없습니다." />
+  </resource>
+  <resource key="noti.lecmst.prg.basis.msg04" type="text">
+    <message locale="en" value="※ 다음과 같은 방식으로 학습을 유도합니다." />
+    <message locale="ko" value="※ 다음과 같은 방식으로 학습을 유도합니다." />
+  </resource>
+  <resource key="noti.lecmst.prg.basis.msg05" type="text">
+    <message locale="en" value="※ 4 or more new contents (thesis/courses) cannot be studied a day." />
+    <message locale="ko" value="※ 하루에 4개 이상의 새로운 Contents(주제/강의)를 학습할 수 없습니다." />
+  </resource>
+  <resource key="noti.lecmst.prg.basis.msg0601" type="text">
+    <message locale="en" value="※ 하루 최대 학습할 수 있는 시간(이전 차시 복습 시간 제외)은" />
+    <message locale="ko" value="※ 하루 최대 학습할 수 있는 시간(이전 차시 복습 시간 제외)은" />
+  </resource>
+  <resource key="noti.lecmst.prg.basis.msg0602" type="text">
+    <message locale="en" value="분 입니다. 금일 학습시간은" />
+    <message locale="ko" value="분 입니다. 금일 학습시간은" />
+  </resource>
+  <resource key="noti.lecmst.prg.basis01" type="text">
+    <message locale="en" value="Maximum daily study chapter is limited." />
+    <message locale="ko" value="하루에 4개 이하만 학습가능하도록 제한." />
+  </resource>
+  <resource key="noti.lecmst.prg.basis01.msg" type="text">
+    <message locale="en" value="※ Maximum daily study chapter is limited."/>
+    <message locale="ko" value="※ 하루에 4개 이하의 강의만 진도진행할 수 있습니다." />
+  </resource>
+  <resource key="noti.lecmst.prg.basis02" type="text">
+    <message locale="en" value="지난강의 및 강의기간 사이에만 학습가능." />
+    <message locale="ko" value="지난강의 및 강의기간 사이에만 학습가능." />
+  </resource>
+  <resource key="noti.lecmst.prg.basis02.msg" type="text">
+    <message locale="en" value="※ 지난 강의 및 강의일정에 해당 하는 날짜의 강의만 조회할 수 있습니다. 해당 강의에 링크가 없으면 강의를 조회할 수 있는 기간이 아닙니다." />
+    <message locale="ko" value="※ 지난 강의 및 강의일정에 해당 하는 날짜의 강의만 조회할 수 있습니다. 해당 강의에 링크가 없으면 강의를 조회할 수 있는 기간이 아닙니다." />
+  </resource>
+  <resource key="noti.lecmst.prg.basis03" type="text">
+    <message locale="en" value="Maximum daily study time is limited." />
+    <message locale="ko" value="하루 최대 학습가능시간(이전 차시 복습 시간 제외) 제한." />
+  </resource>
+  <resource key="noti.lecmst.prg.basis03.msg01" type="text">
+    <message locale="en" value="※ Maximum daily study time is limited. ({0} ) minutes."/>
+    <message locale="ko" value="※ 하루 최대 학습할 수 있는 시간(이전 차시 복습 시간 제외)은 {0}분 입니다." />
+  </resource>
+  <resource key="noti.lecmst.prg.basis03.msg02" type="text">
+    <message locale="en" value="minutes" />
+    <message locale="ko" value="분 입니다." />
+  </resource>
+  <resource key="noti.lecmst.prg.basis04" type="text">
+    <message locale="en" value="The course lecture can be viewed in sequence." />
+    <message locale="ko" value="강의록을 반드시 순서대로 학습 제한." />
+  </resource>
+  <resource key="noti.lecmst.prg.basis04.msg" type="text">
+    <message locale="en" value="※ The course lecture can be viewed in sequence." />
+    <message locale="ko" value="※ 강의를 순서대로만 학습할 수 있습니다." />
+  </resource>
+  <resource key="noti.lecmst.prg.basis05" type="text">
+    <message locale="en" value="Progress recognized when the actual training time exceeds the standard time." />
+    <message locale="ko" value="실 학습시간이 기준시간 이상이어야 진도이수." />
+  </resource>
+  <resource key="noti.lecmst.prg.basis05.msg" type="text">
+    <message locale="en" value="※ The next lecture can be accessed when the actual study time exceeds the standard study time." />
+    <message locale="ko" value="※ 실제 학습 시간이 기준 학습 시간 이상이어야, 다음 진도를 조회할 수 있습니다." />
+  </resource>
+  <resource key="noti.lecmst.prg.basis06" type="text">
+    <message locale="en" value="Progress update recognized exam is passed." />
+    <message locale="ko" value="강의평가(학습이해도)를 통과해야 진도이수." />
+  </resource>
+  <resource key="noti.lecmst.prg.basis06.msg" type="text">
+    <message locale="en" value="※ 강의평가(학습이해도)를 통과해야 다음 진도를 조회할 수 있습니다." />
+    <message locale="ko" value="※ 강의평가(학습이해도)를 통과해야 다음 진도를 조회할 수 있습니다." />
+  </resource>
+  <resource key="noti.lecmst.prg.basis06_1.msg" type="text">
+    <message locale="en"  value="※ The exam can be accessed when the course has been studied over {0}%." />
+    <message locale="ko" value="※ 학습진도가 {0}% 이상 일 경우 시험응시가 가능합니다." />
+  </resource>
+
+  <resource key="noti.lecmst.prg.basis07.msg" type="text">
+    <message locale="en" value="※ If you wish to select a menu other than the course during the course viewing, please ensure to close the course lecture pop up window before." />
+    <message locale="ko" value="※ 강의 수강 중 강의 메뉴 외에 다른 메뉴를 선택시 받드시 강의 팝업창을 닫고 선택을 하여주십시요." />
+  </resource>
+  <resource key="noti.lecmst.lecreq.msg" type="text">
+    <message locale="en" value="※ 강의코드 혹은 강의명을 클릭하시면 해당 강의의 수강생을 관리할 수 있습니다." />
+    <message locale="ko" value="※ 강의코드 혹은 강의명을 클릭하시면 해당 강의의 수강생을 관리할 수 있습니다." />
+  </resource>
+  <resource key="noti.mail.leccode" type="text">
+    <message locale="en" value="※ Lecture Code : &quot;$%LECCODE%$&quot;" />
+    <message locale="ko" value="※ 강의코드를 사용할때는 &quot;$%LECCODE%$&quot; 입니다." />
+  </resource>
+  <resource key="noti.mail.lecname" type="text">
+    <message locale="en" value="※ Lecture Name : &quot;$%LECNAME%$&quot; " />
+    <message locale="ko" value="※ 강의명을 사용할때는 &quot;$%LECNAME%$&quot; 입니다." />
+  </resource>
+    <resource key="table.regist" type="text">
+        <message locale="ko" value="첨삭지도를 등록합니다." />
+        <message locale="en" value="Corrected instruction will be registered" />
+    </resource>
+    <resource key="table.regist.not" type="text">
+        <message locale="ko" value="첨삭지도를 등록하지 않습니다." />
+        <message locale="en" value="Coreected instruction will not be registered" />
+    </resource>
+</bundle>

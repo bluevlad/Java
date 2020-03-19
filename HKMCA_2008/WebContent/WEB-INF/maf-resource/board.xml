@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-resource PUBLIC "-//UBQ//DTD maf-command config XML V1.0//EN" "resourceBundle.dtd">
+
+<bundle defaultLocale="ko">
+  <resource key="board.desc" type="text">
+    <message locale="en" value="※Drag and Drop small picture into editor then you can edit picture size and position." />
+    <message locale="ko" value="※이미지 파일을 내용입력 부분에 Drag하여 놓고 편집할 수 있습니다." />
+  </resource>
+  <resource key="board.unuse" type="text">
+    <message locale="en" value="Not Use" />
+    <message locale="ko" value="미사용" />
+  </resource>
+  <resource key="board.use" type="text">
+    <message locale="en" value="Use" />
+    <message locale="ko" value="사용" />
+  </resource>
+  <resource key="button.search" type="text">
+    <message locale="en" value="Search" />
+    <message locale="ko" value="검색" />
+  </resource>
+  <resource key="label.type" type="text">
+    <message locale="en" value="Contents" />
+    <message locale="ko" value="검색조건" />
+  </resource>
+  <resource key="label.contents" type="text">
+    <message locale="en" value="Contents" />
+    <message locale="ko" value="내용" />
+  </resource>
+  <resource key="label.regdt" type="text">
+    <message locale="en" value="Post" />
+    <message locale="ko" value="등록일" />
+  </resource>
+  <resource key="label.replies" type="text">
+    <message locale="en" value="Replies" />
+    <message locale="ko" value="답글" />
+  </resource>
+  <resource key="label.title" type="text">
+    <message locale="en" value="Title" />
+    <message locale="ko" value="제목" />
+  </resource>
+  <resource key="label.view" type="text">
+    <message locale="en" value="Views " />
+    <message locale="ko" value="조회수" />
+  </resource>
+  <resource key="label.writer" type="text">
+    <message locale="en" value="Writer" />
+    <message locale="ko" value="글쓴이" />
+  </resource>
+  <resource key="label.password" type="text">
+    <message locale="en" value="Password" />
+    <message locale="ko" value="비밀번호" />
+  </resource>
+  <resource key="title.board.allfilecoutn" type="text">
+    <message locale="en" value="Total Attach file Size" />
+    <message locale="ko" value="총첨부파일" />
+  </resource>
+  <resource key="title.board.allview" type="text">
+    <message locale="en" value="All" />
+    <message locale="ko" value="전체보기" />
+  </resource>
+  <resource key="title.board.board" type="text">
+    <message locale="en" value="Normal" />
+    <message locale="ko" value="일반 게시판" />
+  </resource>
+  <resource key="title.board.boarddel" type="text">
+    <message locale="en" value="Delete" />
+    <message locale="ko" value="삭제" />
+  </resource>
+  <resource key="title.board.boardlogin" type="text">
+    <message locale="en" value="Please login to write your message" />
+    <message locale="ko" value="Login 하셔야 쓰기가 가능합니다." />
+  </resource>
+  <resource key="title.board.boardtype" type="text">
+    <message locale="en" value="Type Of Board" />
+    <message locale="ko" value="게시판 타입" />
+  </resource>
+  <resource key="title.board.boardutype" type="text">
+    <message locale="en" value="Type" />
+    <message locale="ko" value="유형" />
+  </resource>
+  <resource key="title.board.burru" type="text">
+    <message locale="en" value="Category" />
+    <message locale="ko" value="분류" />
+  </resource>
+  <resource key="title.board.burrusearch" type="text">
+    <message locale="en" value="Category Search" />
+    <message locale="ko" value="분류검색" />
+  </resource>
+  <resource key="title.board.burruwire" type="text">
+    <message locale="en" value="Make Categroy" />
+  <message locale="ko" value="분류작성" />
+  </resource>
+  <resource key="title.board.cate" type="text">
+    <message locale="en" value="User Category" />
+ <message locale="ko" value="사용자 카테고리" />
+  </resource>
+  <resource key="title.board.category" type="text">
+    <message locale="en" value="Category" />
+    <message locale="ko" value="카테고리" />
+  </resource>
+  <resource key="title.board.click" type="text">
+    <message locale="en" value="저장 버튼은 한번만 클릭하세요" />
+    <message locale="ko" value="저장 버튼은 한번만 클릭하세요" />
+  </resource>
+  <resource key="title.board.club_id" type="text">
+    <message locale="en" value="커뮤니티코드" />
+    <message locale="ko" value="커뮤니티코드" />
+  </resource>
+  <resource key="title.board.coment" type="text">
+    <message locale="en" value="Comment" />
+    <message locale="ko" value="부가설명" />
+  </resource>
+  <resource key="title.board.countadd" type="text">
+    <message locale="en" value="add" />
+    <message locale="ko" value="개수추가" />
+  </resource>
+  <resource key="title.board.countlist" type="text">
+    <message locale="en" value="Posts" />
+    <message locale="ko" value="Posts" />
+  </resource>
+  <resource key="title.board.data" type="text">
+    <message locale="en" value="Data Bank" />
+    <message locale="ko" value="자료실" />
+  </resource>
+  <resource key="title.board.datejijun" type="text">
+    <message locale="en" value="날짜 지정" />
+    <message locale="ko" value="날짜 지정" />
+  </resource>
+  <resource key="title.board.deletelist" type="text">
+    <message locale="en" value="Deleted message" />
+    <message locale="ko" value="삭제글" />
+  </resource>
+  <resource key="title.board.exm" type="text">
+    <message locale="en" value="예) 공지,질문 식으로 ','를 구분됩니다." />
+    <message locale="ko" value="예) 공지,질문 식으로 ','를 구분됩니다." />
+  </resource>
+  <resource key="title.board.filecount" type="text">
+    <message locale="en" value="Attach file count" />
+    <message locale="ko" value="파일 첨부 갯수" />
+  </resource>
+  <resource key="title.board.first" type="text">
+    <message locale="en" value="Notice" />
+    <message locale="ko" value="공지사항" />
+  </resource>
+  <resource key="title.board.group" type="text">
+    <message locale="en" value="Group" />
+    <message locale="ko" value="관리그룹" />
+  </resource>
+  <resource key="title.board.gunhan" type="text">
+    <message locale="en" value="Authorization" />
+    <message locale="ko" value="권한" />
+  </resource>
+  <resource key="title.board.heusgotype" type="text">
+    <message locale="en" value="Use Recycle Bin" />
+    <message locale="ko" value="해우소 사용여부" />
+  </resource>
+  <resource key="title.board.heuso" type="text">
+    <message locale="en" value="Recycle Bin" />
+    <message locale="ko" value="해우소" />
+  </resource>
+  <resource key="title.board.htmluse" type="text">
+    <message locale="en" value="HTML use" />
+    <message locale="ko" value="HTML사용여부" />
+  </resource>
+  <resource key="title.board.imageview" type="text">
+    <message locale="en" value="View Image" />
+  </resource>
+  <resource key="title.board.injung" type="text">
+    <message locale="en" value="Authority" />
+    <message locale="ko" value="인증" />
+  </resource>
+  <resource key="title.board.leccode" type="text">
+    <message locale="en" value="Lecture Code" />
+    <message locale="ko" value="강좌코드" />
+  </resource>
+  <resource key="title.board.listview" type="text">
+    <message locale="en" value="List" />
+    <message locale="ko" value="목록" />
+  </resource>
+  <resource key="title.board.modify" type="text">
+    <message locale="en" value="Edit" />
+    <message locale="ko" value="편집" />
+  </resource>
+  <resource key="title.board.now" type="text">
+    <message locale="en" value="Now" />
+    <message locale="ko" value="현재" />
+  </resource>
+  <resource key="title.board.pagelist" type="text">
+    <message locale="en" value="Max item per page" />
+    <message locale="ko" value="페이지별 리스트수" />
+  </resource>
+  <resource key="title.board.pagelist.cmt" type="text">
+    <message locale="en" value="* 앨범게시판의 경우 4의 배수로 해주세요." />
+    <message locale="ko" value="* 앨범게시판의 경우 4의 배수로 해주세요." />
+  </resource>
+  <resource key="title.board.passexm" type="text">
+    <message locale="en" value="*등록시 입력한 암호를&lt;br&gt; 입력해 주세요." />
+    <message locale="ko" value="*등록시 입력한 암호를&lt;br&gt; 입력해 주세요." />
+  </resource>
+  <resource key="title.board.passworld" type="text">
+    <message locale="en" value="Password" />
+    <message locale="ko" value="비밀번호" />
+  </resource>
+  <resource key="title.board.pgid" type="text">
+    <message locale="en" value="Page ID" />
+    <message locale="ko" value="화면코드" />
+  </resource>
+  <resource key="title.board.picadd" type="text">
+    <message locale="en" value="Attach" />
+    <message locale="ko" value="첨부" />
+  </resource>
+  <resource key="title.board.picboard" type="text">
+    <message locale="en" value="album" />
+    <message locale="ko" value="앨범게시판" />
+  </resource>
+  <resource key="title.board.picexm" type="text">
+    <message locale="en" value="KB/ Max 10MB " />
+    <message locale="ko" value="KB/ 전체 10MB까지 가능 " />
+  </resource>
+  <resource key="title.board.picnewboard" type="text">
+    <message locale="en" value="Photo News" />
+    <message locale="ko" value="사진뉴스게시판" />
+  </resource>
+  <resource key="title.board.picture" type="text">
+    <message locale="en" value="Picture" />
+    <message locale="ko" value="사진" />
+  </resource>
+  <resource key="title.board.prefilecheck" type="text">
+    <message locale="en" value="기존 등록한 파일 중 삭제할 파일은 체크하세요." />
+    <message locale="ko" value="기존 등록한 파일 중 삭제할 파일은 체크하세요." />
+  </resource>
+  <resource key="title.board.pre" type="text">
+    <message locale="en" value="Prev" />
+    <message locale="ko" value="이전" />
+  </resource>
+  <resource key="title.board.next" type="text">
+    <message locale="en" value="Next" />
+    <message locale="ko" value="다음" />
+  </resource>
+  <resource key="title.board.current" type="text">
+    <message locale="en" value="Current" />
+    <message locale="ko" value="현재" />
+  </resource>
+  <resource key="title.board.prenext" type="text">
+    <message locale="en" value="Prev, Next" />
+    <message locale="ko" value="이전, 다음" />
+  </resource>
+  <resource key="title.board.preveiw" type="text">
+    <message locale="en" value="Preview" />
+    <message locale="ko" value="미리보기" />
+  </resource>
+  <resource key="title.board.queswrite" type="text">
+    <message locale="en" value="Comment" />
+    <message locale="ko" value="부가설명" />
+  </resource>
+  <resource key="title.board.reply" type="text">
+    <message locale="en" value="Reply" />
+    <message locale="ko" value="답변" />
+  </resource>
+  <resource key="title.board.rewrite" type="text">
+    <message locale="en" value="Answer" />
+    <message locale="ko" value="답변" />
+  </resource>
+  <resource key="title.board.script" type="text">
+    <message locale="en" value="게시판을 삭제하면 복구 할수 없습니다.삭제하시겟습니까?" />
+    <message locale="ko" value="게시판을 삭제하면 복구 할수 없습니다.삭제하시겟습니까?" />
+  </resource>
+  <resource key="title.board.searchlist" type="text">
+    <message locale="en" value="Did not match any documents" />
+    <message locale="ko" value="검색된 게시물이 없습니다." />
+  </resource>
+  <resource key="title.board.size" type="text">
+    <message locale="en" value="Capacity" />
+    <message locale="ko" value="용량" />
+  </resource>
+  <resource key="title.board.space" type="text">
+    <message locale="en" value="Max File Capacity" />
+    <message locale="ko" value="최대 파일 용량" />
+  </resource>
+  <resource key="title.board.syadatesy" type="text">
+    <message locale="en" value="Administrator Date" />
+    <message locale="ko" value="관리자 지정 날짜" />
+  </resource>
+  <resource key="title.board.sysdate" type="text">
+    <message locale="en" value="System Date" />
+    <message locale="ko" value="시스템 날짜" />
+  </resource>
+  <resource key="title.board.title" type="text">
+    <message locale="en" value="Board ID" />
+    <message locale="ko" value="게시판 아이디" />
+  </resource>
+  <resource key="title.board.titlename" type="text">
+    <message locale="en" value="Title" />
+    <message locale="ko" value="게시판명" />
+  </resource>
+  <resource key="title.board.top" type="text">
+    <message locale="en" value="Max " />
+    <message locale="ko" value="최대 적재량" />
+  </resource>
+  <resource key="title.board.uploadfile" type="text">
+    <message locale="en" value="Attach Files" />
+    <message locale="ko" value="파일올리기" />
+  </resource>
+  <resource key="title.board.usefile" type="text">
+    <message locale="en" value="File in use" />
+    <message locale="ko" value="사용중인 파일" />
+  </resource>
+  <resource key="title.board.user" type="text">
+    <message locale="en" value="Write reply " />
+    <message locale="ko" value="사용자 리플" />
+  </resource>
+  <resource key="title.board.userment" type="text">
+    <message locale="en" value="Write short reply" />
+    <message locale="ko" value="사용자 코멘트" />
+  </resource>
+  <resource key="title.board.usetype" type="text">
+    <message locale="en" value="Use or not" />
+    <message locale="ko" value="게시판 사용여부" />
+  </resource>
+  <resource key="title.board.usn" type="text">
+    <message locale="en" value="관리자USN" />
+    <message locale="ko" value="관리자USN" />
+  </resource>
+  <resource key="title.board.viewcount" type="text">
+    <message locale="en" value="Views" />
+    <message locale="ko" value="조회" />
+  </resource>
+  <resource key="title.board.viewtotalview" type="text">
+    <message locale="en" value="Views" />
+    <message locale="ko" value="조회수" />
+  </resource>
+  <resource key="title.board.wireday" type="text">
+    <message locale="en" value="Post" />
+  </resource>
+  <resource key="title.board.write" type="text">
+    <message locale="en" value="Write Authority" />
+    <message locale="ko" value="쓰기권한" />
+  </resource>
+  <resource key="title.board.writeboar" type="text">
+    <message locale="en" value="Write" />
+    <message locale="ko" value="쓰기" />
+  </resource>
+  <resource key="title.board.writedays" type="text">
+    <message locale="en" value="Post" />
+  </resource>
+  <resource key="title.board.writeuser" type="text">
+    <message locale="en" value="Writer" />
+  </resource>
+  <resource key="title.grant_comment" type="text">
+    <message locale="en" value="Write short reply" />
+    <message locale="ko" value="간단한 답글 쓰기" />
+  </resource>
+  <resource key="title.grant_delete" type="text">
+    <message locale="en" value="Delete Authority" />
+    <message locale="ko" value="삭제 권한" />
+  </resource>
+  <resource key="title.grant_html" type="text">
+    <message locale="en" value="Use HTML Authority" />
+    <message locale="ko" value="HTML 사용 권한" />
+  </resource>
+  <resource key="title.grant_list" type="text">
+    <message locale="en" value="List View Authority" />
+    <message locale="ko" value="목록 보기 권한" />
+  </resource>
+  <resource key="title.grant_notice" type="text">
+    <message locale="en" value="Notice Writhe Authority" />
+    <message locale="ko" value="공지사항 작성 권한" />
+  </resource>
+  <resource key="title.grant_reply" type="text">
+    <message locale="en" value="Write Reply Authority" />
+    <message locale="ko" value="답변쓰기 권한" />
+  </resource>
+  <resource key="title.grant_secret" type="text">
+    <message locale="en" value="See Confidencial Authority" />
+    <message locale="ko" value="비밀글 보기 권한" />
+  </resource>
+  <resource key="title.grant_view" type="text">
+    <message locale="en" value="View Authority" />
+    <message locale="ko" value="내용 보기 권한 " />
+  </resource>
+  <resource key="title.grant_write" type="text">
+    <message locale="en" value="Grant Authority" />
+    <message locale="ko" value="글쓰기 권한" />
+  </resource>
+  <resource key="title.search" type="text">
+    <message locale="en" value="Search" />
+    <message locale="ko" value="검색" />
+  </resource>
+</bundle>

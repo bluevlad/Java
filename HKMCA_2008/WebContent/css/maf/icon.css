@@ -1,0 +1,48 @@
+.icon_search {
+	background-image: url(/maf_images/button_icon/search.gif);
+	background-position: 2 2;
+	background-repeat: no-repeat;
+	padding: 2px 8px 2px 22px !important;
+}
+
+.icon_add {
+	background-image: url(/maf_images/button_icon/add.gif);
+	background-position: 2 2;
+	background-repeat: no-repeat;
+	padding: 2px 8px 2px 22px !important;
+}
+
+.icon_delete {
+	background-image: url(/maf_images/button_icon/delete.gif);
+	background-position: 2 2;
+	background-repeat: no-repeat;
+	padding: 2px 8px 2px 22px !important;
+}
+
+.icon_edit {
+	background-image: url(/maf_images/button_icon/edit.gif);
+	background-position: 2 2;
+	background-repeat: no-repeat;
+	padding: 2px 8px 2px 22px !important;
+}
+
+.icon_list {
+	background-image: url(/maf_images/button_icon/list.gif);
+	background-position: 2 2;
+	background-repeat: no-repeat;
+	padding: 2px 8px 2px 22px !important;
+}
+
+.icon_save {
+	background-image: url(/maf_images/button_icon/save.gif);
+	background-position: 2 2;
+	background-repeat: no-repeat;
+	padding: 2px 8px 2px 22px !important;
+}
+
+.icon_reset {
+	background-image: url(/maf_images/button_icon/reset.gif);
+	background-position: 2 2;
+	background-repeat: no-repeat;
+	padding: 2px 8px 2px 22px !important;
+}

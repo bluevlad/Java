@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//UBQ//DTD maf-command config XML V1.0//EN"
+         "mvc-configuration.dtd">
+<configuration>
+	<global-view></global-view>
+    
+	<action uri="Prd.do" type="modules.mall.product.PrdAction" desc="제품정보" title="제품정보"
+	    jsppath="/WEB-INF/jsp/mall/product/" default="list">
+	    <action-view>
+	        <view-info name="list" uri="list.jsp" useTemplate="www" />
+	        <view-info name="view" uri="view.jsp" useTemplate="www" />
+            <view-info name="search" uri="search.jsp" useTemplate="popup" />
+	    </action-view>
+	    <cmds>
+	        <cmd name="list" method="cmdList" formname="frm1" />
+	        <cmd name="view" method="cmdView" formname="frm1" />
+            <cmd name="search" method="cmdSearch" formname="frm1" />
+	    </cmds>
+	    <forms>
+	        <form name="frm1" bundle="product">
+	            <input name="cat_cd" message="cat_cd" type="text"/>
+	            <input name="cat_nm" message="cat_nm" type="text" />
+	            <input name="prd_cd" message="prd_cd" type="text"/>
+	            <input name="prd_nm" message="prd_nm" type="text" />
+	            <input name="p_cat_cd" message="p_cat_cd" type="text"/>
+	            <input name="p_cat_nm" message="p_cat_nm" type="text"/>
+	            <input name="imp_type" message="imp_type" type="text" />
+	            <input name="company" message="company" type="text" />
+	            <input name="prd_price" message="prd_price" type="text" />
+	            <input name="nor_price" message="nor_price" type="text" />
+	            <input name="dis_price" message="dis_price" type="text" />
+	            <input name="prd_desc" message="prd_desc" type="text" />
+	            <input name="dis_abt_cd" message="dis_abt" type="text" bundle="table.dis_abt" />
+	            <input name="reg_dt" message="reg_dt" type="text" />
+	            <input name="active_yn" bundle="common" message="active_yn" type="text"></input>
+	        </form>
+	    </forms>
+	</action>
+
+</configuration>

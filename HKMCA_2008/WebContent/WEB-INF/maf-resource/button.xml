@@ -1,0 +1,347 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-resource PUBLIC "-//UBQ//DTD maf-command config XML V1.0//EN" "resourceBundle.dtd">
+
+<bundle defaultLocale="ko" desc="표준 버튼">
+	<resource key="home" type="text">
+		<message locale="ko" value="메인" />
+		<message locale="en" value="HOME" />
+	</resource>
+	<resource key="button.login" type="text">
+		<message locale="ko" value="로그인" />
+		<message locale="en" value="Log in" />
+	</resource>
+	<resource key="button.logout" type="text">
+		<message locale="ko" value="로그아웃" />
+		<message locale="en" value="Log Out" />
+	</resource>
+    <resource key="add" type="text">
+        <message locale="ko" value="등록" />
+        <message locale="en" value="Add" />
+        <message locale="zh" value="加" />
+    </resource>
+	<resource key="batch" type="text">
+		<message locale="ko" value="일괄등록" />
+		<message locale="en" value="Add by file" />
+	</resource>
+	<resource key="confirm" type="text">
+        <message locale="ko" value="확인" />
+	    <message locale="en" value="Confirm" />
+	</resource>
+	<resource key="edit" type="text">
+        <message locale="ko" value="수정" />
+	    <message locale="en" value="Edit" />
+	</resource>
+	<resource key="save" type="text">
+        <message locale="ko" value="저장" />
+	    <message locale="en" value="Save" />
+	</resource>
+	<resource key="delete" type="text">
+        <message locale="ko" value="삭제" />
+	    <message locale="en" value="Delete" />
+	</resource>
+	<resource key="cancel" type="text">
+        <message locale="ko" value="취소" />
+	    <message locale="en" value="Cancel" />
+	</resource>
+	<resource key="list" type="text">
+        <message locale="ko" value="목록" />
+	    <message locale="en" value="List" />
+	</resource>
+    <resource key="add2" type="text">
+        <message locale="ko" value="추가" />
+        <message locale="en" value="Add" />
+    </resource>
+	<resource key="select" type="text">
+        <message locale="ko" value="선택" />
+	    <message locale="en" value="Select" />
+	</resource>
+    <resource key="close" type="text">
+        <message locale="ko" value="닫기" />
+        <message locale="en" value="Close" />
+    </resource>
+	<resource key="search" type="text">
+        <message locale="ko" value="검색" />
+	    <message locale="en" value="Search" />
+	    <message locale="zh" value="搜索" />
+	</resource>
+	<resource key="reset" type="text">
+        <message locale="ko" value="초기화" />
+	    <message locale="en" value="Reset" />
+	</resource>
+    <resource key="recom" type="text">
+        <message locale="ko" value="추천" />
+        <message locale="en" value="Recommendation" />
+    </resource>
+    <resource key="reply" type="text">
+        <message locale="ko" value="답변" />
+        <message locale="en" value="Reply" />
+    </resource>
+    <resource key="print" type="text">
+        <message locale="ko" value="인쇄" />
+        <message locale="en" value="Print" />
+    </resource>
+    <resource key="more" type="text">
+        <message locale="ko" value="More"/>
+        <message locale="en" value="More" />
+    </resource>
+    <resource key="send" type="text">
+        <message locale="ko" value="보내기" />
+        <message locale="en" value="Send" />
+    </resource>
+    <resource key="prev" type="text">
+        <message locale="ko" value="이전" />
+        <message locale="en" value="Previous" />
+    </resource>
+    <resource key="next" type="text">
+        <message locale="ko" value="다음" />
+        <message locale="en" value="Next" />
+    </resource>
+    <resource key="prevP" type="text">
+        <message locale="ko" value="&lt;&lt; 이전페이지" />
+        <message locale="en" value="Pevious Page" />
+    </resource>
+    <resource key="nextP" type="text">
+        <message locale="ko" value="다음페이지 &gt;&gt;" />
+        <message locale="en" value="Next Page" />
+    </resource>
+    <resource key="left" type="text">
+        <message locale="ko" value="&lt;" />
+        <message locale="en" value="previous Page" />
+    </resource>
+    <resource key="left.all" type="text">
+        <message locale="ko" value="&lt;&lt;" />
+        <message locale="en" value="Start Page" />
+    </resource>
+    <resource key="right" type="text">
+        <message locale="ko" value="&gt;" />
+        <message locale="en" value="&gt;" />
+    </resource>
+    <resource key="right.all" type="text">
+        <message locale="ko" value="&gt;&gt;" />
+        <message locale="en" value="&gt;&gt;" />
+    </resource>
+    <resource key="img.next" type="text">
+        <message locale="ko" value="▶" />
+        <message locale="en" value="▶" />
+    </resource>
+    <resource key="img.prev" type="text">
+        <message locale="ko" value="◀" />
+        <message locale="en" value="◀" />
+    </resource>
+    <resource key="img.next.all" type="text">
+        <message locale="ko" value="▶▶" />
+        <message locale="en" value="▶▶" />
+    </resource>
+    <resource key="img.prev.all" type="text">
+        <message locale="ko" value="◀◀" />
+        <message locale="en" value="◀◀" />
+    </resource>
+    <resource key="plus" type="text">
+        <message locale="ko" value="+" />
+        <message locale="en" value="+" />
+    </resource>
+    <resource key="minus" type="text">
+        <message locale="ko" value="-" />
+        <message locale="en" value="-" />
+    </resource>
+	<resource key="email.send" type="text">
+        <message locale="ko" value="메일발송" />
+	    <message locale="en" value="Send Mail" />
+	</resource>
+    <resource key="sms.send" type="text">
+        <message locale="ko" value="SMS발송" />
+        <message locale="en" value="Send SMS" />
+    </resource>
+	<resource key="excel.down" type="text">
+        <message locale="ko" value="엑셀파일다운로드" />
+	    <message locale="en" value="Excel File Download" />
+	</resource>
+	<resource key="excel.up" type="text">
+        <message locale="ko" value="엑셀파일업로드" />
+	    <message locale="en" value="Excel File Upload" />
+	</resource>
+	<resource key="excelupload" type="text">
+        <message locale="ko" value="엑셀파일등록" />
+	    <message locale="en" value="Register excel file" />
+	</resource>
+	<resource key="transExcelupload" type="text">
+        <message locale="ko" value="번역용 엑셀파일등록" />
+	    <message locale="en" value="Register excel file for Translate" />
+	</resource>
+	<resource key="codeAdd" type="text">
+        <message locale="ko" value="코드추가" />
+	    <message locale="en" value="Add code" />
+	</resource>
+	<resource key="groupAdd" type="text">
+        <message locale="ko" value="그룹추가" />
+	    <message locale="en" value="Add group" />
+	</resource>
+    <resource key="survey.result" type="text">
+        <message locale="ko" value="결과보기" />
+        <message locale="en" value="View Result" />
+    </resource>
+	<resource key="lec.copysubject" type="text">
+        <message locale="ko" value="과목복사기능" />
+	    <message locale="en" value="Copy Lecture" />
+	</resource>
+	<resource key="lec.approve" type="text">
+        <message locale="ko" value="수강승인" />
+	    <message locale="en" value="Approve" />
+	</resource>
+	<resource key="lec.complete" type="text">
+        <message locale="ko" value="수강완료" />
+	    <message locale="en" value="Completed" />
+	</resource>
+	<resource key="lec.request" type="text">
+        <message locale="ko" value="수강신청" />
+	    <message locale="en" value="Course Registration" />
+	</resource>
+	<resource key="lec.req.cancelled" type="text">
+        <message locale="ko" value="수강취소완료" />
+	    <message locale="en" value="Course cancelled" />
+	</resource>
+	<resource key="lec_chp.add.multi" type="text">
+        <message locale="ko" value="강의안 일괄등록" />
+	    <message locale="en" value="Register all course overviews" />
+	</resource>
+	<resource key="lec_chp.sequence" type="text">
+        <message locale="ko" value="강의안 순서변경" />
+	    <message locale="en" value="Change course overview sequence" />
+	</resource>
+	<resource key="lec_chp.cnt.sel" type="text">
+        <message locale="ko" value="컨텐츠 선택" />
+	    <message locale="en" value="Select contents" />
+	</resource>
+	<resource key="lec_chp.cnt.delete" type="text">
+        <message locale="ko" value="컨텐츠 삭제" />
+	    <message locale="en" value="Delete contents" />
+	</resource>
+	<resource key="preview" type="text">
+        <message locale="ko" value="미리보기" />
+	    <message locale="en" value="Preview" />
+	</resource>
+	<resource key="inx_lst.select" type="text">
+        <message locale="ko" value="컨텐츠선택" />
+	    <message locale="en" value="Select contents" />
+	</resource>
+	<resource key="report.marking" type="text">
+        <message locale="ko" value="과제채점" />
+	    <message locale="en" value="Grade homework" />
+	</resource>
+	<resource key="final.score.marking" type="text">
+        <message locale="ko" value="최종성적계산" />
+	    <message locale="en" value="Calculate final grade (score)" />
+	</resource>
+	<resource key="sendmail" type="text">
+        <message locale="ko" value="메일보내기" />
+	    <message locale="en" value="Send mail" />
+	</resource>
+    <resource key="file.down" type="text">
+        <message locale="ko" value="다운로드" />
+        <message locale="en" value="Download" />
+    </resource>
+    <resource key="pager.add" type="text">
+        <message locale="ko" value="메세지작성" />
+    </resource>
+    <resource key="pager.delete" type="text">
+        <message locale="ko" value="메세지삭제" />
+    </resource>
+    <resource key="pager.send" type="text">
+        <message locale="ko" value="메세지전송" />
+    </resource>
+    <resource key="pager.reply" type="text">
+        <message locale="ko" value="답장작성" />
+    </resource>
+    <resource key="id.use" type="text">
+        <message locale="ko" value="아이디사용" />
+    </resource>
+    <resource key="translate" type="text">
+        <message locale="ko" value="번역" />
+    </resource>
+    <resource key="attend" type="text">
+        <message locale="ko" value="출석" />
+    </resource>
+
+    <resource key="etest.create" desc="시험등록" type="text" icon="icon_add">
+        <message locale="ko" value="시험등록" />
+    </resource>
+    <resource key="etest.start" desc="시험시작" type="text" icon="icon_add">
+        <message locale="en" value="start" />
+        <message locale="ko" value="시험응시" />
+    </resource>
+    <resource key="etest.insert_apply"  type="text" icon="icon_add">
+        <message locale="en" value="Register Applicant" />
+        <message locale="ko" value="응시자등록" />
+    </resource>
+    <resource key="etest.translate" type="text">
+        <message locale="en" value="Translate" />
+        <message locale="ko" value="번역" />
+    </resource>
+    <resource key="etest.upload.result" type="text">
+        <message locale="en" value="Upload Result" />
+        <message locale="ko" value="시험결과 등록" />
+    </resource>
+    <resource key="etest.view.yes" type="text">
+        <message locale="en" value="Apply" />
+        <message locale="ko" value="응시" />
+    </resource>
+    <resource key="etest.viewResult" desc="결과보기" type="text">
+        <message locale="en" value="Result" />
+        <message locale="ko" value="결과보기" />
+    </resource>
+    <resource key="etest.goPrint" type="text">
+        <message locale="en" value="Print Exam Paper" />
+        <message locale="ko" value="시험지 출력" />
+    </resource>
+    <resource key="etest.makeLank" type="text">
+        <message locale="ko" value="순위매기기" />
+    </resource>
+    <resource key="etest.makeCrtVar" type="text">
+        <message locale="ko" value="분포도만들기" />
+    </resource>
+    <resource key="etest.makeRst" type="text">
+        <message locale="ko" value="조정점수부여하기" />
+    </resource>
+
+    <resource key="etest.getque" type="text">
+        <message locale="ko" value="문제받기" />
+        <message locale="en" value="Download exam" />
+    </resource>
+    <resource key="etest.end" type="text">
+        <message locale="ko" value="답안지제출" />
+        <message locale="en" value="Download exam" />
+    </resource>
+    <resource key="etest.retry" type="text">
+        <message locale="ko" value="재응시" />
+        <message locale="en" value="Reapply" />
+    </resource>
+    <resource key="etest.continue" type="text">
+        <message locale="ko" value="이어보기" />
+        <message locale="en" value="Continue" />
+    </resource>
+    <resource key="etest.admin.add" type="text">
+        <message locale="ko" value="문제추가" />
+    </resource>
+    <resource key="etest.prev" type="text">
+        <message locale="ko" value="이전페이지" />
+    </resource>
+    <resource key="etest.next" type="text">
+        <message locale="ko" value="다음페이지" />
+    </resource>
+
+    <resource key="auction.insert" type="text">
+        <message locale="ko" value="경매참여" />
+    </resource>
+    <resource key="auction.bid.buy.select" type="text">
+        <message locale="ko" value="직접구매가 신청" />
+    </resource>
+    <resource key="auction.info" type="text">
+        <message locale="ko" value="경매소개" />
+    </resource>
+    <resource key="auction.myauction" type="text">
+        <message locale="ko" value="내경매현황" />
+    </resource>
+    <resource key="auction.notice" type="text">
+        <message locale="ko" value="경매공지" />
+    </resource>
+</bundle>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-resource PUBLIC "-//UBQ//DTD maf-command config XML V1.0//EN" "resourceBundle.dtd">
+
+<bundle defaultLocale="ko">
+  <resource key="no" type="text">
+    <message locale="en" value="No." />
+    <message locale="ko" value="순번" />
+  </resource>
+  <resource key="type" type="text">
+    <message locale="en" value="Type" />
+    <message locale="ko" value="구분" />
+  </resource>
+  <resource key="bylec" type="text">
+    <message locale="en" value="By course" />
+    <message locale="ko" value="강의별" />
+  </resource>
+  <resource key="byuser" type="text">
+    <message locale="ko" value="담당자별" />
+  </resource>
+  <resource key="user" type="text">
+    <message locale="en" value="Number of persons" />
+    <message locale="ko" value="인원" />
+  </resource>
+  <resource key="date" type="text">
+    <message locale="en" value="Period" />
+    <message locale="ko" value="기간" />
+  </resource>
+  <resource key="ea" type="text">
+    <message locale="en" value="Number of persons" />
+    <message locale="ko" value="명" />
+  </resource>
+  <resource key="count" type="text">
+    <message locale="en" value="ea" />
+    <message locale="ko" value="건" />
+  </resource>
+  <resource key="search.date" type="text">
+    <message locale="en" value="Search period" />
+    <message locale="ko" value="검색기간" />
+  </resource>
+  <resource key="search.index" type="text">
+    <message locale="en" value="Category search" />
+    <message locale="ko" value="분류검색" />
+  </resource>
+  <resource key="year" type="text">
+    <message locale="en" value="By year" />
+    <message locale="ko" value="년도별" />
+  </resource>
+  <resource key="month" type="text">
+    <message locale="en" value="By Month" />
+    <message locale="ko" value="월별" />
+  </resource>
+  <resource key="week" type="text">
+    <message locale="en" value="By week" />
+    <message locale="ko" value="주별" />
+  </resource>
+  <resource key="day" type="text">
+    <message locale="en" value="By date" />
+    <message locale="ko" value="일별" />
+  </resource>
+  <resource key="time" type="text">
+    <message locale="en" value="By time" />
+    <message locale="ko" value="시간대별" />
+  </resource>
+  <resource key="time.year" type="text">
+    <message locale="en" value="Year" />
+    <message locale="ko" value="년" />
+  </resource>
+  <resource key="time.month" type="text">
+    <message locale="en" value="Month" />
+    <message locale="ko" value="월" />
+  </resource>
+  <resource key="time.week" type="text">
+    <message locale="en" value="Week" />
+    <message locale="ko" value="주" />
+  </resource>
+  <resource key="time.day" type="text">
+    <message locale="en" value="Days" />
+    <message locale="ko" value="일" />
+  </resource>
+  <resource key="time.hour" type="text">
+    <message locale="en" value="Hour" />
+    <message locale="ko" value="시" />
+  </resource>
+  <resource key="time.min" type="text">
+    <message locale="en" value="Minutes" />
+    <message locale="ko" value="분" />
+  </resource>
+  <resource key="table.hour" type="text">
+    <message locale="en" value="Hour" />
+    <message locale="ko" value="시간" />
+  </resource>
+  <resource key="total" type="text">
+    <message locale="en" value="Sum" />
+    <message locale="ko" value="계" />
+  </resource>
+  <resource key="total.accumulate" type="text">
+    <message locale="en" value="Total" />
+    <message locale="ko" value="총누적계" />
+  </resource>
+</bundle>

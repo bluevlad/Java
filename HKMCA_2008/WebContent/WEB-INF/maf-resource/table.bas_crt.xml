@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE maf-command PUBLIC
+         "-//UBQ//DTD maf-command config XML V1.0//EN"
+         "resourceBundle.dtd">
+<bundle defaultLocale="ko">
+    <resource key="crt_id" >
+        <message locale="ko" value="인증서id" />
+    </resource>
+    <resource key="crt_nm" >
+        <message locale="ko" value="인증서명" />
+    </resource>
+    <resource key="description" >
+        <message locale="ko" value="설명" />
+    </resource>
+    <resource key="jasper_id" >
+        <message locale="ko" value="양식 파일명" />
+    </resource>
+    <resource key="crt_lvl" >
+        <message locale="ko" value="인증등급" />
+    </resource>
+    <resource key="crt_no" >
+        <message locale="ko" value="인증서발급번호" />
+    </resource>
+    <resource key="crt_dt" >
+        <message locale="ko" value="인증서 발급일자" />
+    </resource>
+</bundle>

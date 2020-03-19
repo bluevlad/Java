@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-resource PUBLIC "-//UBQ//DTD maf-command config XML V1.0//EN" "resourceBundle.dtd">
+
+<bundle defaultLocale="ko">
+	<resource key="final_score" type="text">
+	    <message locale="ko" value="최종점수" />
+	    <message locale="en" value="Final score (grade)" />
+	</resource>
+	<resource key="tot_score" type="text">
+	    <message locale="ko" value="총점" />
+	    <message locale="en" value="Total score" />
+	</resource>
+	<resource key="grad" type="text">
+	    <message locale="ko" value="학점" />
+	    <message locale="en" value="Grade" />
+	</resource>
+	<resource key="score1" type="text">
+	    <message locale="ko" value="시간진도점수" />
+	    <message locale="en" value="Time progress score" />
+	</resource>
+	<resource key="score2" type="text">
+	    <message locale="ko" value="페이지진도점수" />
+	    <message locale="en" value="Page progress score" />
+	</resource>
+	<resource key="score3" type="text">
+	    <message locale="ko" value="시험점수" />
+	    <message locale="en" value="Exam score" />
+	</resource>
+	<resource key="score4" type="text">
+	    <message locale="ko" value="과제점수" />
+	    <message locale="en" value="Homework score" />
+	</resource>
+	<resource key="score5" type="text">
+	    <message locale="ko" value="팀프로젝트점수" />
+	    <message locale="en" value="Team project score" />
+	</resource>
+	<resource key="score6" type="text">
+	    <message locale="ko" value="토론실점수" />
+	    <message locale="en" value="Discussion score" />
+	</resource>
+	<resource key="score7" type="text">
+	    <message locale="ko" value="학습참여점수" />
+	    <message locale="en" value="Training participation score" />
+	</resource>
+	<resource key="score8" type="text">
+	    <message locale="ko" value="오프라인점수" />
+	    <message locale="en" value="Off line score" />
+	</resource>
+	<resource key="score9" type="text">
+	    <message locale="ko" value="기타점수" />
+	    <message locale="en" value="Other scores" />
+	</resource>
+	<resource key="score10" type="text">
+	    <message locale="ko" value="추가점수" />
+	    <message locale="en" value="Additional score" />
+	</resource>
+    <resource key="appscore" type="text">
+        <message locale="ko" value="추가점수" />
+        <message locale="en" value="Additional score" />
+    </resource>
+    <resource key="att_score" type="text">
+        <message locale="ko" value="출석 점수" />
+        <message locale="en" value="Attend score" />
+    </resource>
+    <resource key="att_cnt" type="text">
+        <message locale="ko" value="출석 일수" />
+        <message locale="en" value="Attend Count" />
+    </resource>
+	<resource key="tot_cnt" type="text">
+		<message locale="en" value="Number of gradings" />
+		<message locale="ko" value="채점횟수" />
+	</resource>
+	<resource key="prfid" type="text">
+		<message locale="en" value="Grader" />
+		<message locale="ko" value="채점자" />
+	</resource>
+</bundle>

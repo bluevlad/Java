@@ -1,0 +1,131 @@
+/*
+ * ThemeGray Style Sheet
+ * by Ian Reyes and Heng Yuan
+ */
+
+.ThemeGrayMenu
+{
+	font-weight: bold;
+	color: #FFFFFF;
+	background-color: transparent;
+	cursor:		hand !important;
+	height:35px;
+}
+
+.ThemeGraySubMenu
+{
+	visibility:	hidden;
+    text-align:left;
+    padding:    5px 0px 0px 0px;
+    border:		1px outset #C4C4BE;
+	background-color: #FFFFFF;
+}
+
+.ThemeGraySubMenuTable
+{
+    color: #4d4d4d;
+    height:32px;
+    width: 130px;
+}
+
+.ThemeGrayMenuItem,.ThemeGrayMenuItemHover,.ThemeGrayMenuItemActive
+{
+	cursor:hand !important;
+    height:25px;
+	white-space:nowrap;
+}
+
+.ThemeGrayMainItem /* 상단 메뉴 제목 주변 공간*/
+{
+    width:    130px;
+    text-align : center;
+    padding:	4px 0px 4px 0px;
+	border:		0px solid #ffffff;
+	/* background-color:	#F6F7EE; */
+}
+
+.ThemeGrayMainItemHover,
+.ThemeGrayMainItemActive
+{
+    width:    130px;
+    text-align : center;
+	padding:	4px 0px 4px 0px;
+	color:#ffffff;
+	border:		0px solid #C4C4BE;
+	background-color:	#2b4991;
+}
+
+.ThemeGrayMenuItemHover,
+.ThemeGrayMenuItemActive
+{
+	padding:	5px;
+	border:		1px solid #ffffff;
+	color:#ffffff;
+	background-color:	#d3d5e4;
+}
+
+/* horizontal main menu sub components */
+/* panel doesn't really support horizontal menus */
+/* there are simpler approaches, but the setting here allows me to
+   set a background image for the menu without lines all over it */
+
+.ThemeGrayMainFolderLeft,
+.ThemeGrayMainItemLeft,
+.ThemeGrayMainFolderText,
+.ThemeGrayMainItemText,
+.ThemeGrayMainItemRight,
+.ThemeGrayMainFolderRight
+{
+	border: 0;
+	padding:0;
+	background-color: inherit;
+	white-space: nowrap;
+}
+
+/* sub menus sub components */
+
+.ThemeGrayMenuFolderLeft,
+.ThemeGrayMenuItemLeft
+{
+	padding:	3px 10px 3px 3px;
+	border:		0;
+	white-space:	nowrap;
+	background-color:	inherit;
+}
+
+.ThemeGrayMenuFolderText,
+.ThemeGrayMenuItemText
+{
+	padding:	3px 3px 3px 5px;
+	border:		0;
+	white-space:	nowrap;
+	background-color:	inherit;
+}
+
+.ThemeGrayMenuItemRight,
+.ThemeGrayMenuFolderRight
+{
+	padding:	3px 11px 3px 0px;
+
+	border:		0;
+	white-space:	nowrap;
+	background-color:	inherit;
+}
+
+.ThemeGrayMenuItem img.seq1
+{
+	display:	inline;
+}
+
+.ThemeGrayMenuItemHover seq2,
+.ThemeGrayMenuItemActive seq2
+{
+	display:	inline;
+}
+
+.ThemeGrayMenuItem .seq2,
+.ThemeGrayMenuItemHover .seq1,
+.ThemeGrayMenuItemActive .seq1
+{
+	display:	none;
+}

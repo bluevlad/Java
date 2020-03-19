@@ -1,0 +1,27 @@
+<%@page pageEncoding="UTF-8"%>
+<%@page import="maf.context.support.*"%>
+<%@page import="java.util.Locale"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="mf" uri="http://maf.jstl.com/jsp/tld/maf-form.tld"%>
+<%@ taglib prefix="mh" uri="http://maf.jstl.com/jsp/tld/maf-html.tld"%>
+<%@ taglib prefix="mhu" uri="http://maf.jstl.com/jsp/tld/maf-html-util.tld"%>
+<%@ taglib prefix="mfmt" uri="http://maf.jstl.com/jsp/tld/maf-fmt.tld" %>
+<%@ taglib prefix="msql" uri="http://maf.jstl.com/jsp/tld/maf-sql.tld" %>
+
+<%
+    Locale locale = LocaleUtil.getLocale(request);
+    request.setAttribute("locale", locale);
+%>
+
+<c:url var="nextUrl" value="${controlaction}">
+	<c:forEach var="aKey" items="${paramValues}">
+			<c:if test="${aKey.key !='lang'}">
+			<c:forEach var="val" items="${aKey.value}">
+					<c:param name='${aKey.key}' value='${val}'/>
+			</c:forEach>
+			</c:if>
+	</c:forEach>
+</c:url>

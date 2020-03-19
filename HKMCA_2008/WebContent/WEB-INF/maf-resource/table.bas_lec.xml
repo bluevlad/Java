@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE maf-command PUBLIC
+         "-//UBQ//DTD maf-command config XML V1.0//EN"
+         "resourceBundle.dtd">
+<bundle defaultLocale="ko">
+    <resource key="lec_cd" >
+        <message locale="ko" value="개설과목코드" />
+    </resource>
+    <resource key="lec_num" >
+        <message locale="ko" value="수강차수" />
+    </resource>
+    <resource key="sjt_cd" >
+        <message locale="ko" value="과목코드" />
+    </resource>
+    <resource key="lec_nm" >
+        <message locale="ko" value="개설과목명" />
+    </resource>
+    <resource key="lec_year" >
+        <message locale="ko" value="과정 개설년도" />
+    </resource>
+    <resource key="lec_date" >
+        <message locale="ko" value="강의기간" />
+    </resource>
+    <resource key="lec_stat" >
+        <message locale="ko" value="강의개설상태 " />
+    </resource>
+    <resource key="ltype" >
+        <message locale="ko" value="강의유형" />
+    </resource>
+    <resource key="otype" >
+        <message locale="ko" value="온/오프구분" />
+    </resource>
+    <resource key="lec_type" >
+        <message locale="ko" value="강의개설 유형 " />
+    </resource>
+    <resource key="lec_price" >
+        <message locale="ko" value="원수강료" />
+    </resource>
+    <resource key="learn_day_cnt" >
+        <message locale="ko" value="수강총일수" />
+    </resource>
+    <resource key="learn_time" >
+        <message locale="ko" value="총교육시간" />
+    </resource>
+    <resource key="relearn_day_cnt" >
+        <message locale="ko" value="재학습일수" />
+    </resource>
+    <resource key="lec_capacity" >
+        <message locale="ko" value="수강정원" />
+    </resource>
+    <resource key="lec_min_capacity" >
+        <message locale="ko" value="최소교육생수" />
+    </resource>
+    <resource key="finished_score" >
+        <message locale="ko" value="수료점수" />
+    </resource>
+    <resource key="limit_study_time" >
+        <message locale="ko" value="최소학습시간" />
+    </resource>
+    <resource key="cnt_type" >
+        <message locale="ko" value="강의컨텐츠유형 " />
+    </resource>
+    <resource key="sample_url" >
+        <message locale="ko" value="샘플강좌정보" />
+    </resource>
+    <resource key="sample_cnt_width" >
+        <message locale="ko" value="샘플강좌창넓이" />
+    </resource>
+    <resource key="sample_cnt_height" >
+        <message locale="ko" value="샘플강좌창높이" />
+    </resource>
+    <resource key="lec_target" >
+        <message locale="ko" value="강의대상 " />
+    </resource>
+    <resource key="is_approval" >
+        <message locale="ko" value="자동수강승인여부 " />
+    </resource>
+    <resource key="prg_type" >
+        <message locale="ko" value="진도체크 타입" />
+    </resource>
+    <resource key="lec_weck" >
+        <message locale="ko" value="주차기간 검사 여부" />
+    </resource>
+    <resource key="lec_datm" >
+        <message locale="ko" value="일일최대학습시간" />
+    </resource>
+    <resource key="lec_wetm" >
+        <message locale="ko" value="주간최대학습시간" />
+    </resource>
+    <resource key="place" >
+        <message locale="ko" value="강의장소" />
+    </resource>
+    <resource key="test_type" >
+        <message locale="ko" value="e-test 유형" />
+    </resource>
+    <resource key="exm_condition" >
+        <message locale="ko" value="최소진도율" />
+    </resource>
+    <resource key="exmid" >
+        <message locale="ko" value="e-test id" />
+    </resource>
+    <resource key="adminid" >
+        <message locale="ko" value="학사담당운영자" />
+    </resource>
+    <resource key="lec_obj" >
+        <message locale="ko" value="교육목표" />
+    </resource>
+    <resource key="lec_usn" >
+        <message locale="ko" value="교육대상" />
+    </resource>
+    <resource key="lec_summary" >
+        <message locale="ko" value="교육개요" />
+    </resource>
+    <resource key="lec_inf" >
+        <message locale="ko" value="교육내용" />
+    </resource>
+    <resource key="lec_book" >
+        <message locale="ko" value="강의교재및참고자료" />
+    </resource>
+    <resource key="lec_etc" >
+        <message locale="ko" value="기타정보" />
+    </resource>
+    <resource key="traning_nm" >
+        <message locale="ko" value="교육기관" />
+    </resource>
+    <resource key="traning_place" >
+        <message locale="ko" value="교육장소" />
+    </resource>
+    <resource key="call_inf" >
+        <message locale="ko" value="문의정보" />
+    </resource>
+    <resource key="init_subject" >
+        <message locale="ko" value="선수과목" />
+    </resource>
+    <resource key="sch_type" >
+        <message locale="ko" value="수강기간" />
+    </resource>
+    <resource key="sch_type_a" >
+        <message locale="ko" value="수강신청기간" />
+    </resource>
+    <resource key="sch_type_b" >
+        <message locale="ko" value="수강취소기간" />
+    </resource>
+    <resource key="sch_type_c" >
+        <message locale="ko" value="강의기간" />
+    </resource>
+    <resource key="sch_type_d" >
+        <message locale="ko" value="성적공고기간" />
+    </resource>
+    <resource key="sch_type_e" >
+        <message locale="ko" value="성적이의신청기간" />
+    </resource>
+    <resource key="sch_type_f" >
+        <message locale="ko" value="재학습[복습]기간" />
+    </resource>
+</bundle>

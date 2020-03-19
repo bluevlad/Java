@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-command PUBLIC
+         "-//UBQ//DTD maf-command config XML V1.0//EN"
+         "resourceBundle.dtd">
+
+<bundle defaultLocale="en">
+	<resource key="sjt_cd"> 
+		<message locale="ko" value="과목코드"/>
+		<message locale="en" value="Subject Code"/>
+	</resource>
+	<resource key="sjt_nm">
+		<message locale="en" value="Subject Name"/>
+		<message locale="ko" value="과목명"/>
+	</resource>
+	<resource key="name_eng">
+		<message locale="ko" value="영문과목명"/>
+		<message locale="en" value="Name_eng"/>
+	</resource>
+	<resource key="otype">
+		<message locale="ko" value="온/오프구분"/>
+		<message locale="en" value="On/Off"/>
+	</resource>
+	<resource key="price">
+		<message locale="ko" value="교육비"/>
+		<message locale="en" value="Price"/>
+	</resource>
+	<resource key="term">
+		<message locale="ko" value="기간"/>
+		<message locale="en" value="Term"/>
+	</resource>
+	<resource key="outline">
+		<message locale="ko" value="과목개요"/>
+		<message locale="en" value="Outline"/>
+	</resource>
+	<resource key="target">
+		<message locale="ko" value="수강대상"/>
+		<message locale="en" value="Target"/>
+	</resource>
+	<resource key="precondition">
+		<message locale="ko" value="선수조건"/>
+		<message locale="en" value="Precondition"/>
+	</resource>
+	<resource key="contents">
+		<message locale="ko" value="교육내용"/>
+		<message locale="en" value="Contents"/>
+	</resource>
+</bundle>

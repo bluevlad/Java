@@ -1,0 +1,564 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-resource PUBLIC "-//UBQ//DTD maf-command config XML V1.0//EN" "resourceBundle.dtd">
+
+<bundle defaultLocale="ko" desc="온라인 시험용 공통 메시지 ">
+	<resource key="message.make.lank.ok" type="text">
+		<message locale="ko" value="순위가 정상적으로 부여되었습니다." />
+	</resource>
+    <resource key="message.make.lank.fail" type="text">
+        <message locale="ko" value="순위부여중 에러가 발생 되었습니다." />
+    </resource>
+    <resource key="message.make.crt.ok" type="text">
+        <message locale="ko" value="분포도가 정상적으로 생성 되었습니다." />
+    </resource>
+    <resource key="message.make.crt.fail" type="text">
+        <message locale="ko" value="분포도 생성중 에러가 발생 되었습니다." />
+    </resource>
+    <resource key="message.make.rst.ok" type="text">
+        <message locale="ko" value="조정점수가 정상적으로 부여되었습니다." />
+    </resource>
+    <resource key="message.make.rst.fail" type="text">
+        <message locale="ko" value="조정점수 부여중 에러가 발생 되었습니다." />
+    </resource>
+
+    <resource key="exm.view.time" type="text">
+        <message locale="en" value="Application date" />
+        <message locale="ko" value="응시일" />
+    </resource>
+    <resource key="exm.view.yes.end" type="text">
+        <message locale="en" value="Apply completed" />
+        <message locale="ko" value="응시완료" />
+    </resource>
+    <resource key="exm.view.yes.error" type="text">
+        <message locale="en" value="Need confirmation" />
+        <message locale="ko" value="확인필요" />
+    </resource>
+    <resource key="exm.view.yes.ing" type="text">
+        <message locale="en" value="Exam in progress" />
+        <message locale="ko" value="응시중" />
+    </resource>
+    <resource key="exm.score" type="text">
+        <message locale="en" value="Score weight" />
+        <message locale="ko" value="배점" />
+    </resource>
+    <resource key="exm.score.get" type="text">
+        <message locale="en" value="Score obtained" />
+        <message locale="ko" value="획득점수" />
+    </resource>
+    <resource key="exm.sound" type="text">
+        <message locale="en" value="Sound" />
+        <message locale="ko" value="오디오" />
+    </resource>
+    <resource key="exm.start.time" type="text">
+        <message locale="en" value="Application date" />
+        <message locale="ko" value="응시일" />
+    </resource>
+    <resource key="exm.term" type="text">
+        <message locale="en" value="Application duration" />
+        <message locale="ko" value="응시기간" />
+    </resource>
+    <resource key="exm.time" type="text">
+        <message locale="en" value="Exam time" />
+        <message locale="ko" value="시험시간" />
+    </resource>
+    <resource key="exm.time.level" type="text">
+        <message locale="en" value="Min." />
+        <message locale="ko" value="분" />
+    </resource>
+    <resource key="exm.title" type="text">
+        <message locale="en" value="Exam question" />
+        <message locale="ko" value="시험문제" />
+    </resource>
+    <resource key="exm.type" type="text">
+        <message locale="en" value="Question type" />
+        <message locale="ko" value="문제유형" />
+    </resource>
+    <resource key="exm.type.desc" type="text">
+        <message locale="en" value="Essay type" />
+        <message locale="ko" value="논술형" />
+    </resource>
+    <resource key="exm.type.multi.select" type="text">
+        <message locale="en" value="Mulitple choice type" />
+        <message locale="ko" value="다지선택형" />
+    </resource>
+    <resource key="exm.type.off" type="text">
+        <message locale="en" value="Off line exam" />
+        <message locale="ko" value="오프라인시험" />
+    </resource>
+    <resource key="exm.type.on" type="text">
+        <message locale="en" value="On line exam" />
+        <message locale="ko" value="온라인시험" />
+    </resource>
+    <resource key="exm.type.single.select" type="text">
+        <message locale="en" value="Mulitple choice type" />
+        <message locale="ko" value="단일선택형" />
+    </resource>
+    <resource key="exm.type.word" type="text">
+        <message locale="en" value="Word" />
+        <message locale="ko" value="단답형" />
+    </resource>
+    <resource key="exm.view" type="text">
+        <message locale="en" value="View" />
+        <message locale="ko" value="보기" />
+    </resource>
+    <resource key="exm.view.cnt" type="text">
+        <message locale="en" value="Number of examples" />
+        <message locale="ko" value="보기수" />
+    </resource>
+    <resource key="exm.view.cnt.cnt" type="text">
+        <message locale="en" value="Count" />
+        <message locale="ko" value="개" />
+    </resource>
+    <resource key="exm.view.no" type="text">
+        <message locale="en" value="Not applied" />
+        <message locale="ko" value="미응시" />
+    </resource>
+    <resource key="exm.view.text" type="text">
+        <message locale="en" value="Text" />
+        <message locale="ko" value="텍스트" />
+    </resource>
+    <resource key="exm.master.title" type="text">
+        <message locale="en" value="Exam name" />
+        <message locale="ko" value="시험제목" />
+    </resource>
+    <resource key="exm.mt.score" type="text">
+        <message locale="en" value="Essay score" />
+        <message locale="ko" value="논술점수" />
+    </resource>
+    <resource key="exm.off.score" type="text">
+        <message locale="en" value="Additional score" />
+        <message locale="ko" value="추가점수" />
+    </resource>
+    <resource key="exm.off.term" type="text">
+        <message locale="en" value="Meeting time" />
+        <message locale="ko" value="모임시각" />
+    </resource>
+    <resource key="exm.onoff" type="text">
+        <message locale="en" value="Exam type" />
+        <message locale="ko" value="시험유형" />
+    </resource>
+    <resource key="exm.open" type="text">
+        <message locale="en" value="Exam result" />
+        <message locale="ko" value="응시결과" />
+    </resource>
+    <resource key="exm.pageperque" type="text">
+        <message locale="en" value="Number of questions per page" />
+        <message locale="ko" value="페이지당문제수" />
+    </resource>
+    <resource key="exm.per.score" type="text">
+        <message locale="en" value="Average Score" />
+        <message locale="ko" value="백분율" />
+    </resource>
+    <resource key="exm.protected" type="text">
+        <message locale="en" value="Anti-cheating function" />
+        <message locale="ko" value="부정방지기능" />
+    </resource>
+    <resource key="exm.protected.off" type="text">
+        <message locale="en" value="Not used" />
+        <message locale="ko" value="사용안함" />
+    </resource>
+    <resource key="table.exm.protected.on" type="text">
+        <message locale="en" value="Use" />
+        <message locale="ko" value="사용" />
+    </resource>
+    <resource key="table.exm.que.count" type="text">
+        <message locale="en" value="Number of questions drafted" />
+        <message locale="ko" value="출제된문제수" />
+    </resource>
+    <resource key="etc" type="text">
+        <message locale="en" value="Etc" />
+        <message locale="ko" value="비고" />
+    </resource>
+    <resource key="exam" type="text">
+        <message locale="en" value="Exam" />
+        <message locale="ko" value="시험" />
+    </resource>
+    <resource key="exm" type="text">
+        <message locale="en" value="Question" />
+        <message locale="ko" value="문제" />
+    </resource>
+    <resource key="exm.answer" type="text">
+        <message locale="en" value="Correct answer" />
+        <message locale="ko" value="정답" />
+    </resource>
+    <resource key="exm.answer.write" type="text">
+        <message locale="en" value="Write answer" />
+        <message locale="ko" value="답안작성" />
+    </resource>
+    <resource key="exm.answer.writeed" type="text">
+        <message locale="en" value="Completed answer sheet" />
+        <message locale="ko" value="작성답안" />
+    </resource>
+    <resource key="exm.at.score" type="text">
+        <message locale="en" value="Automotic grading" />
+        <message locale="ko" value="자동채점" />
+    </resource>
+    <resource key="exm.chpcode" type="text">
+        <message locale="en" value="Lesson" />
+        <message locale="ko" value="차시" />
+    </resource>
+    <resource key="exm.create" type="text">
+        <message locale="en" value="Create" />
+        <message locale="ko" value="출제" />
+    </resource>
+    <resource key="exm.desc" type="text">
+        <message locale="en" value="Description" />
+        <message locale="ko" value="해설" />
+    </resource>
+    <resource key="exm.discription" type="text">
+        <message locale="en" value="Description" />
+        <message locale="ko" value="지문" />
+    </resource>
+    <resource key="exm.extra.time" type="text">
+        <message locale="en" value="Time remaining" />
+        <message locale="ko" value="남은시간" />
+    </resource>
+    <resource key="exm.image" type="text">
+        <message locale="en" value="Image" />
+        <message locale="ko" value="이미지" />
+    </resource>
+    <resource key="exm.level" type="text">
+        <message locale="en" value="Difficulty" />
+        <message locale="ko" value="난이도" />
+    </resource>
+    <resource key="exm.level.1" type="text">
+        <message locale="en" value="Very easy" />
+        <message locale="ko" value="많이쉬운" />
+    </resource>
+    <resource key="exm.level.2" type="text">
+        <message locale="en" value="Easy" />
+        <message locale="ko" value="쉬운" />
+    </resource>
+    <resource key="exm.level.3" type="text">
+        <message locale="en" value="Normal" />
+        <message locale="ko" value="보통" />
+    </resource>
+    <resource key="exm.level.4" type="text">
+        <message locale="en" value="Difficult" />
+        <message locale="ko" value="어려운" />
+    </resource>
+    <resource key="exm.level.5" type="text">
+        <message locale="en" value="Very difficult" />
+        <message locale="ko" value="많이어려운" />
+    </resource>
+    <resource key="exm.marking" type="text">
+        <message locale="en" value="Apply" />
+        <message locale="ko" value="응시" />
+    </resource>
+    <resource key="exm.master.desc" type="text">
+        <message locale="en" value="Exam content" />
+        <message locale="ko" value="시험내용" />
+    </resource>
+
+  <resource key="msg.req_condition" desc="시험응시조건" type="text">
+    <message locale="en" value="minimum eligibility" />
+    <message locale="ko" value="최소진도율" />
+  </resource>
+  <resource key="msg.req_condition.time" desc="시간진도" type="text">
+    <message locale="en" value="time progress points * rate" />
+    <message locale="ko" value="시간진도 점수 * 비율" />
+  </resource>
+  <resource key="msg.req_condition.page" desc="시간진도" type="text">
+    <message locale="en" value="page progress points * rate" />
+    <message locale="ko" value="페이지진도 점수 * 비율" />
+  </resource>
+  <resource key="msg.req_condition.progress" desc="진도점수" type="text">
+    <message locale="en" value="progress points" />
+    <message locale="ko" value="진도점수" />
+  </resource>
+  <resource key="msg.time" desc="응시시간" type="text">
+    <message locale="en" value="test time" />
+    <message locale="ko" value="응시시간" />
+  </resource>
+	<resource key="msg.exm_set" type="text">
+        <message locale="ko" value="시험세트" />
+	    <message locale="en" value="Exam Set" />
+	</resource>
+
+  <resource key="result.qcnt" desc="문제수" type="text">
+    <message locale="en" value="Number of questions" />
+    <message locale="ko" value="문제수" />
+  </resource>
+  <resource key="result.reqcnt" desc="문제수" type="text">
+    <message locale="en" value="Number of applying" />
+    <message locale="ko" value="응시횟수" />
+  </resource>
+  <resource key="result.qsum" desc="배점" type="text">
+    <message locale="en" value="Weighting" />
+    <message locale="ko" value="배점" />
+  </resource>
+  <resource key="result.rstavg" desc="전체평균" type="text">
+    <message locale="en" value="Overall average" />
+    <message locale="ko" value="전체평균" />
+  </resource>
+  <resource key="result.rstavg10" desc="상위 10% 평균 " type="text">
+    <message locale="en" value="Top 10% average" />
+    <message locale="ko" value="상위 10% 평균 " />
+  </resource>
+  <resource key="result.passavg" desc="합격자 평균 " type="text">
+    <message locale="en" value="Pass average" />
+    <message locale="ko" value="합격자 평균 " />
+  </resource>
+  
+   <resource key="result.passcnt" desc="합격자 수 " type="text">
+    <message locale="en" value="Pass count" />
+    <message locale="ko" value="합격자 수 " />
+  </resource>
+  <resource key="result.passrate" desc="합격율 " type="text">
+    <message locale="en" value="Ratio of successful" />
+    <message locale="ko" value="합격율" />
+  </resource>
+  <resource key="result.countofprogress" desc="응시중인원 " type="text">
+    <message locale="en" value="In process" />
+    <message locale="ko" value="응시중인원 " />
+  </resource>
+  <resource key="result.countoffinish" desc="제출인원 " type="text">
+    <message locale="en" value="Finished" />
+    <message locale="ko" value="제출인원 " />
+  </resource>
+  <resource key="result.countoftarget" desc="대상인원 " type="text">
+    <message locale="en" value="No of Target" />
+    <message locale="ko" value="대상인원 " />
+  </resource>
+  <resource key="result.rstcnt" desc="총응시자수" type="text">
+    <message locale="en" value="Total number of exam applicants" />
+    <message locale="ko" value="총응시자수" />
+  </resource>
+  
+  <resource key="result.rstrank" desc="석차" type="text">
+    <message locale="en" value="Rank" />
+    <message locale="ko" value="석차" />
+  </resource>
+  <resource key="result.rstrank100" desc="백분위석차(%)" type="text">
+    <message locale="en" value="Percentage rank" />
+    <message locale="ko" value="백분위석차(%)" />
+  </resource>
+  <resource key="result.rstscore" desc="본인득점" type="text">
+    <message locale="en" value="Individual score" />
+    <message locale="ko" value="본인득점" />
+  </resource>
+  <resource key="result.rst_fullscore" type="text">
+    <message locale="ko" value="총점" />
+  </resource>
+  <resource key="result.rstscore100" desc="100점 환산점수" type="text">
+    <message locale="en" value="100 point scale score" />
+    <message locale="ko" value="100점 환산점수" />
+  </resource>
+  <resource key="result.rstscoremax" desc="최고득점" type="text">
+    <message locale="en" value="Highest score" />
+    <message locale="ko" value="최고득점" />
+  </resource>
+  <resource key="result.rstscoremin" desc="최저득점" type="text">
+    <message locale="en" value="Lowest score" />
+    <message locale="ko" value="최저득점" />
+  </resource>
+  <resource key="script.exm.answer.insert" type="text">
+    <message locale="en" value="Please input the correct answer." />
+    <message locale="ko" value="정답을 입력하세요." />
+  </resource>
+  <resource key="script.exm.cat.insert" type="text">
+    <message locale="en" value="Please input the category." />
+    <message locale="ko" value="카테고리를 입력하세요." />
+  </resource>
+  <resource key="script.exm.answer.select" type="text">
+    <message locale="en" value="Please select the correct answer." />
+    <message locale="ko" value="정답을 선택하세요." />
+  </resource>
+  <resource key="script.exm.chpcode" type="text">
+    <message locale="en" value="Please input lesson number." />
+    <message locale="ko" value="차시를 입력하세요." />
+  </resource>
+  <resource key="script.exm.end.term1" type="text">
+    <message locale="en" value="Please select the completion time of the 1st exam." />
+    <message locale="ko" value="1차 응시종료 시각을 선택하세요." />
+  </resource>
+  <resource key="script.exm.level.select" type="text">
+    <message locale="en" value="Please designate the number of questions for each difficulty." />
+    <message locale="ko" value="출제할 문제의 난이도별 문제수를 선택하세요." />
+  </resource>
+  <resource key="script.exm.notselect" type="text">
+    <message locale="en" value="Please select the questions from the pool." />
+    <message locale="ko" value="출제할 문제를 선택하세요." />
+  </resource>
+  <resource key="script.exm.que.select" type="text">
+    <message locale="en" value="Please select the questions to assign." />
+    <message locale="ko" value="출제할 문제를 선택하세요." />
+  </resource>
+  <resource key="script.exm.que.select.over0" type="text">
+    <message locale="en" value="The total number of questions should be over 0." />
+    <message locale="ko" value="난이도별 문제수의 합이 0이상이 되어야 합니다." />
+  </resource>
+  <resource key="script.exm.que.select.voer.bnk" type="text">
+    <message locale="en" value="The number of selected questions exceeds the assigned number of questions. The assigned number is being automatically modified." />
+    <message locale="ko" value="선택한 문제보다 출제한 문제수가 더 많습니다. 출제할 문제수를 자동으로 수정합니다." />
+  </resource>
+  <resource key="script.exm.retry" type="text">
+    <message locale="en" value="Do you wish to process the selected trainee for re-application?" />
+    <message locale="ko" value="선택한 학습자를 재응시처리 하겠습니까?" />
+  </resource>
+  <resource key="script.exm.score" type="text">
+    <message locale="en" value="Please input the weighting." />
+    <message locale="ko" value="배점을 입력하세요." />
+  </resource>
+  <resource key="script.exm.start" type="text">
+    <message locale="en" value="The exam can be taken only once. Do you wish to apply for the exam?" />
+    <message locale="ko" value="시험기회는 1회로 제한됩니다. 시험에 응시하시겠습니까?" />
+  </resource>
+  <resource key="script.exm.time" type="text">
+    <message locale="en" value="Please input the exam time." />
+    <message locale="ko" value="시험시간을 입력하세요." />
+  </resource>
+   <resource key="script.exm.notapply" type="text">
+    <message locale="en" value="시험이  등록 되지 않았습니다." />
+    <message locale="ko" value="시험이  등록 되지 않았습니다." />
+  </resource>
+  <resource key="script.exm.title" type="text">
+    <message locale="en" value="Please input the exam questions." />
+    <message locale="ko" value="시험문제를 입력하세요." />
+  </resource>
+   <resource key="script.exm.view" type="text">
+    <message locale="en" value="Please input or select an example." />
+    <message locale="ko" value="보기를 입력 또는 선택하세요." />
+  </resource>
+  <resource key="warning" type="text">
+    <message locale="en" value="※ Caution " />
+    <message locale="ko" value="※ 주의사항" />
+  </resource> 
+  <resource key="warning.01" type="text">
+    <message locale="en" value="Once the exam is started, it cannot be restarted." />
+    <message locale="ko" value="시험은 시작하면 다시 응시 할 수 없습니다." />
+  </resource> 
+  <resource key="warning.02" type="text">
+    <message locale="en" value="If you select the language, the exam will automatically start. " />
+    <message locale="ko" value="응시할 언어를 Click하시면 시험이 시작 됩니다." />
+  </resource>
+  <resource key="warning.03" type="text">
+    <message locale="en" value="시험이 정상적으로 종료되지 않았습니다. 관리자에게 문의하시기 바랍니다." />
+    <message locale="ko" value="시험이 정상적으로 종료되지 않았습니다. 관리자에게 문의하시기 바랍니다." />
+  </resource> 
+  <resource key="warning.04" type="text">
+    <message locale="en" value="답안이 제출되었습니다. 아직 채점 전입니다." />
+    <message locale="ko" value="답안이 제출되었습니다. 아직 채점 전입니다." />
+  </resource> 
+  <resource key="warning.05" type="text">
+    <message locale="en" value="답안 채점중입니다." />
+    <message locale="ko" value="답안 채점중입니다." />
+  </resource> 
+  <resource key="warning.06" type="text">
+    <message locale="en" value="시험 응시시간이 종료되었습니다." />
+    <message locale="ko" value="시험 응시시간이 종료되었습니다." />
+  </resource> 
+
+  <resource key="message.exm.end" type="text">
+    <message locale="en" value="Answers have been successfully submitted." />
+    <message locale="ko" value="답안지를 제출하시겠습니까?" />
+  </resource>
+  <resource key="message.examination_fail" type="text">
+    <message locale="en" value="An error has occurred during answer submission. Please consult with the operator (adminstrator)." />
+    <message locale="ko" value="답안이 제출 중 오류가 발생했습니다. 운영자에게 문의하시기 바랍니다." />
+  </resource>
+  <resource key="message.examination_ok" type="text">
+    <message locale="en" value="Answers have been successfully submitted." />
+    <message locale="ko" value="답안이 정상적으로 제출되었습니다." />
+  </resource>
+  <resource key="message.exm.count.fail" type="text">
+    <message locale="en" value="An error has occurred while inputing the number of exam questions." />
+    <message locale="ko" value="시험문제수 입력 중 오류가 발생하였습니다." />
+  </resource>
+  <resource key="message.exm.count.ok" type="text">
+    <message locale="en" value="Number of exam questions has been registered." />
+    <message locale="ko" value="시험문제수를 등록하였습니다." />
+  </resource>
+  <resource key="message.exm.deselect.fail" type="text">
+    <message locale="en" value="An error has occurred during cancellation of the exam question registration." />
+    <message locale="ko" value="시험문제 출제 취소 중 오류가 발생하였습니다." />
+  </resource>
+  <resource key="message.exm.deselect.ok" type="text">
+    <message locale="en" value="Exam questions registration has been cancelled." />
+    <message locale="ko" value="시험문제 출제를 취소하였습니다." />
+  </resource>
+  <resource key="message.exm.getexm_fail" type="text">
+    <message locale="en" value="An error has occurred during question download. Please consult with the operator." />
+    <message locale="ko" value="문제받기 중 오류가 발생했습니다. 운영자에게 문의하시기 바랍니다." />
+  </resource>
+  <resource key="message.exm.getexm_ok" type="text">
+    <message locale="en" value="Question has been successfully received." />
+    <message locale="ko" value="문제를 정상적으로 받았습니다." />
+  </resource>
+  <resource key="message.exm.preview" type="text">
+    <message locale="en" value="You have already applied for this exam." />
+    <message locale="ko" value="시험에 이미 응시하였습니다." />
+  </resource>
+  <resource key="message.exm.retry.fail" type="text">
+    <message locale="en" value="Reapplication has failed to be completed." />
+    <message locale="ko" value="재응시처리에 실패하였습니다." />
+  </resource>
+  <resource key="message.exm.retry.ok" type="text">
+    <message locale="en" value="Reapplication has been successfully completed." />
+    <message locale="ko" value="재응시처리 하였습니다." />
+  </resource>
+  <resource key="message.exm.continue.fail" type="text">
+    <message locale="en" value="Reapplication has failed to be completed." />
+    <message locale="ko" value="이어보기 처리에 실패하였습니다." />
+  </resource>
+  <resource key="message.exm.continue.ok" type="text">
+    <message locale="en" value="Reapplication has been successfully completed." />
+    <message locale="ko" value="이어보기 처리가 되었습니다." />
+  </resource>
+  <resource key="message.exm.score.fail" type="text">
+    <message locale="en" value="An error has occurred during exam grading." />
+    <message locale="ko" value="시험 채점 중 오류가 발생하였습니다." />
+  </resource>
+  <resource key="message.exm.score.ok" type="text">
+    <message locale="en" value="Exam has been graded." />
+    <message locale="ko" value="시험을 채점하였습니다." />
+  </resource>
+  <resource key="message.exm.select.fail" type="text">
+    <message locale="en" value="An error has occurred during registration of exam questions." />
+    <message locale="ko" value="시험문제 출제 중 오류가 발생하였습니다." />
+  </resource>
+  <resource key="message.exm.select.ok" type="text">
+    <message locale="en" value="Exam questions have been registered." />
+    <message locale="ko" value="시험문제를 출제하였습니다." />
+  </resource>
+  <resource key="message.exm.view.ok" type="text">
+    <message locale="en" value="Exam has been successfully completed." />
+    <message locale="ko" value="시험이 정상적으로 종료하였습니다." />
+  </resource>
+  <resource key="table.warning.exm.1" type="text">
+    <message locale="en" value="Exam can be only taken once." />
+    <message locale="ko" value="시험응시기회는 1회 입니다." />
+  </resource>
+  <resource key="table.warning.exm.2" type="text">
+    <message locale="en" value="No other programs should be accessed during an exam. (The anti-theft function will force the exam window to close if another program is accessed.)" />
+    <message locale="ko" value="시험 응시 중 다른 작업을 하시면 절대 안됩니다.(부정방지 기능이 구현되어 있어 시험창이 닫힙니다.)" />
+  </resource>
+  <resource key="table.warning.exm.3" type="text">
+    <message locale="en" value="Please download file for more detailed instructions and warnings on the exam." />
+    <message locale="ko" value="시험응시 하는 자세한 방법과 주의사항은 아래 파일을 다운로드 받아 읽어보시기 바랍니다." />
+  </resource>
+  <resource key="table.warning.exm.4" type="text">
+    <message locale="en" value="This information can also be checked in the &quot;customer center - announcement&quot; section." />
+    <message locale="ko" value="이 파일 내용은 [고객센터-공지사항]에서도 확인가능합니다." />
+  </resource>
+  <resource key="table.warning.exm.5" type="text">
+    <message locale="en" value="File Download" />
+    <message locale="ko" value="&lt;b&gt;파일 다운로드&lt;/b&gt; : (&lt;a href=&quot;/ehrd/etc/file_down.jsp?propertyname=sys_bbs_upload&amp;filename=SunWLC_Exam.pdf&quot;&gt;&lt;b&gt;[SunWLC] 시험응시 방법 및 주의사항.pdf&lt;/b&gt;&lt;/a&gt;)" />
+  </resource>
+  <resource key="table.warning.exm.6" type="text">
+    <message locale="en" value="Exam question has to be downloaded before applying for the exam. Please clock on &quot;download questions&quot;." />
+    <message locale="ko" value="시험에 응시하기 전에 문제받기를 클릭하여 출제된 문제를 받아야 합니다." />
+  </resource>
+  <resource key="table.warning.exm.7" type="text">
+    <message locale="en" value="If an ActiveX message appears, click on install to continue with the exam." />
+    <message locale="ko" value="시험을 시작할 때 ActiveX 다운로드 메시지가 나타날 경우 반드시 설치 후 시험에 응시하셔야 합니다." />
+  </resource>
+  <resource key="table.warning.exm.8" type="text">
+    <message locale="en" value="The exam will automatically close when the exam time is expired." />
+    <message locale="ko" value="시험시간이 경과한 후에는 자동으로 시험이 종료됩니다." />
+  </resource>
+  <resource key="table.warning.exm.9" type="text">
+    <message locale="en" value="Exam results will only be announced after the grading is completed and when it has been designated to be disclosed." />
+    <message locale="ko" value="시험결과는 교수님께서 채점이 끝난 후 응시결과가 공개일 경우만 공개됩니다." />
+  </resource>
+</bundle>

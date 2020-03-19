@@ -1,0 +1,35 @@
+    td.menu_l3 {
+    	height: 15px;
+        font-size: 12px bold;
+        font-family: tahoma, Gulim;
+        cursor: pointer;
+        padding-top: 5px;
+        padding-left: 15px;
+        padding-bottom: 7px;
+        color:#666;
+        background: url(/maf_images/snb/bu_snb.gif) left no-repeat;
+    }
+
+	td.menu_l4 {
+		height: 15px;
+		font-size: 11px;
+		font-family: tahoma, Gulim;
+		color: #666;
+		cursor: pointer;
+        padding-top: 2px;
+		padding-left: 10px;
+		text-align: left;
+		background: url(/maf_images/menu/_bullet_l4.gif) left no-repeat;
+	}
+
+	td.menu_l5 {
+		height: 20px;
+		font-size: 11px;
+		font-family: tahoma, Gulim;
+		color: #5C728B;
+		cursor: pointer;
+		padding-left: 17px;
+		padding-right: 10px;
+		text-align: left;
+		background-color: #F2F5F8;
+	}

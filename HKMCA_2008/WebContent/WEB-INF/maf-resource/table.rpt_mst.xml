@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//UBQ//DTD maf-command config XML V1.0//EN"
+         "resourceBundle.dtd">
+<bundle defaultLocale="ko">
+    <resource key="quecode" >
+        <message locale="ko" value="문제코드" />
+    </resource>
+    <resource key="quetitle" >
+        <message locale="ko" value="과제제목" />
+    </resource>
+    <resource key="quefile" >
+        <message locale="ko" value="파일명" />
+    </resource>
+    <resource key="quedesc" >
+        <message locale="ko" value="문제설명" />
+    </resource>
+    <resource key="rptcode" >
+        <message locale="ko" value="과제코드" />
+    </resource>
+    <resource key="rpttitle" >
+        <message locale="ko" value="과제제목" />
+    </resource>
+    <resource key="rptdesc" >
+        <message locale="ko" value="제출설명" />
+    </resource>
+    <resource key="rpt_sdat" >
+        <message locale="ko" value="제출시작일" />
+    </resource>
+    <resource key="rpt_edat" >
+        <message locale="ko" value="제출종료일" />
+    </resource>
+    <resource key="rptrate" >
+        <message locale="ko" value="평가비율" />
+    </resource>
+    <resource key="rptopen" >
+        <message locale="ko" value="채점결과공개여부" />
+    </resource>
+    <resource key="givtitle" >
+        <message locale="ko" value="제출제목" />
+    </resource>
+    <resource key="givdesc" >
+        <message locale="ko" value="제출내용" />
+    </resource>
+    <resource key="givfile" >
+        <message locale="ko" value="제출파일명" />
+    </resource>
+    <resource key="givdat" >
+        <message locale="ko" value="제출일" />
+    </resource>
+    <resource key="fedtitle" >
+        <message locale="ko" value="피드백제목" />
+    </resource>
+    <resource key="feddesc" >
+        <message locale="ko" value="피드백내용" />
+    </resource>
+    <resource key="fedfile" >
+        <message locale="ko" value="파일명" />
+    </resource>
+    <resource key="feduser" >
+        <message locale="ko" value="피드백등록자id" />
+    </resource>
+    <resource key="feddat" >
+        <message locale="ko" value="피드백등록일" />
+    </resource>
+    <resource key="usrscore" >
+        <message locale="ko" value="과제점수" />
+    </resource>
+</bundle>   

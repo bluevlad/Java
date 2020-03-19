@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//UBQ//DTD maf-command config XML V1.0//EN"
+         "resourceBundle.dtd">
+<bundle defaultLocale="ko">
+	<resource key="itm_id" >
+		<message locale="en" value="Item ID" />
+		<message locale="ko" value="item식별자" />
+	</resource>
+	<resource key="lesson_location" >
+		<message locale="en" value="Final study - date" />
+		<message locale="ko" value="지난학습종료지점" />
+	</resource>
+	<resource key="lesson_status" >
+		<message locale="en" value="Status" />
+		<message locale="ko" value="학습이수상태" />
+	</resource>
+	<resource key="core_entry" >
+		<message locale="ko" value="접속여부" />
+		<message locale="en" value="Connect Y/N" />
+	</resource>
+	<resource key="score_raw" >
+		<message locale="ko" value="받은점수" />
+		<message locale="en" value="Score in raw" />
+	</resource>
+	<resource key="total_time" >
+		<message locale="en" value="Total time of study" />
+		<message locale="ko" value="누적학습시간" />
+	</resource>
+	<resource key="lesson_mode" >
+		<message locale="ko" value="학습유형" />
+		<message locale="en" value="Lesson Type" />
+	</resource>
+	<resource key="core_exit" >
+		<message locale="ko" value="학습종료유형" />
+		<message locale="en" value="Finish Type" />
+	</resource>
+	<resource key="comments" >
+		<message locale="ko" value="코멘트" />
+		<message locale="en" value="comments" />
+	</resource>
+	<resource key="caption" >
+		<message locale="ko" value="캡션" />
+		<message locale="en" value="Caption" />
+	</resource>
+	<resource key="prgsdat" >
+		<message locale="en" value="First study" />
+		<message locale="ko" value="최초학습일자" />
+	</resource>
+	<resource key="prgedat" >
+		<message locale="en" value="Last study" />
+		<message locale="ko" value="최종학습일자" />
+	</resource>
+	<resource key="prgcont" >
+		<message locale="ko" value="접속횟수" />
+		<message locale="en" value="Connect Count" />
+	</resource>
+	<resource key="prgfdat" >
+		<message locale="ko" value="완료일" />
+		<message locale="en" value="Finish Date" />
+	</resource>
+	<resource key="title.total_time" >
+		<message locale="ko" value="누적학습시간"/>
+		<message locale="en" value="Accumulation Time"/>
+	</resource>
+	<resource key="title.limit_study_time" >
+		<message locale="ko" value="수료기준학습시간"/>
+		<message locale="en" value="Mininum Study Time"/>
+	</resource>
+</bundle>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//UBQ//DTD maf-command config XML V1.0//EN"
+         "resourceBundle.dtd">
+<bundle defaultLocale="ko">
+    <resource key="setid" >
+        <message locale="ko" value="세트번호" />
+    </resource>
+    <resource key="settitle" >
+        <message locale="ko" value="세트제목" />
+    </resource>
+    <resource key="setdesc" >
+        <message locale="ko" value="세트설명" />
+    </resource>
+    <resource key="exmcnt1" >
+        <message locale="ko" value="아주쉬움문제수" />
+    </resource>
+    <resource key="exmcnt2" >
+        <message locale="ko" value="쉬움문제수" />
+    </resource>
+    <resource key="exmcnt3" >
+        <message locale="ko" value="쉬움문제수" />
+    </resource>
+    <resource key="exmcnt4" >
+        <message locale="ko" value="어려움문제수" />
+    </resource>
+    <resource key="exmcnt5" >
+        <message locale="ko" value="많이어려움문제수" />
+    </resource>
+    <resource key="exmtime" >
+        <message locale="ko" value="시험시간(분)" />
+    </resource>
+    <resource key="exmtype" >
+        <message locale="ko" value="시험유형" />
+    </resource>
+    <resource key="reg_id" >
+        <message locale="ko" value="등록자" />
+    </resource>
+    <resource key="reg_dt" >
+        <message locale="ko" value="등록일" />
+    </resource>
+    <resource key="upt_dt" >
+        <message locale="ko" value="수정일" />
+    </resource>
+    <resource key="upt_id" >
+        <message locale="ko" value="수정자" />
+    </resource>
+    <resource key="active_yn" >
+        <message locale="ko" value="사용여부" />
+    </resource>
+    <resource key="viewrand" >
+        <message locale="ko" value="보기문항석기" />
+    </resource>
+    <resource key="queowner" >
+        <message locale="ko" value="소유자" />
+    </resource>
+    <resource key="sjt_cd" >
+        <message locale="ko" value="과목코드" />
+    </resource>
+    <resource key="passing_score" >
+        <message locale="ko" value="합격점수" />
+    </resource>
+    <resource key="lang" >
+        <message locale="ko" value="기본언어" />
+    </resource>
+    <resource key="qseq" >
+        <message locale="ko" value="순서" />
+    </resource>
+</bundle>       

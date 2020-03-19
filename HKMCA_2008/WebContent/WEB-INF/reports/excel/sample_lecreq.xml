@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "excel-viewer.dtd">
+<viewer filename="Sample_LecReq.xls" title="">
+    <field id="usn" title="User Code"/>
+    <field id="lec_cd" title="Lecture Code" align="center"/>
+    <field id="lec_num" title="Lecture Number" align="center"/>
+    <field id="req_stat" title="Request State" align="center"/>
+    <field id="update_id" title="Update User" align="center"/>
+</viewer>

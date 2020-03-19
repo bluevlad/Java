@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "resourceBundle.dtd">
+<bundle defaultLocale="ko">
+	<resource key="usn" >
+		<message locale="ko" value="회원코드" />
+		<message locale="en" value="Userid" />
+	</resource>
+	<resource key="userid" >
+		<message locale="ko" value="사용자 id" />
+		<message locale="en" value="User ID" />
+	</resource>
+	<resource key="passwd" >
+		<message locale="ko" value="사용자 암호" />
+		<message locale="en" value="Password" />
+	</resource>
+	<resource key="nm" >
+		<message locale="ko" value="이름" />
+		<message locale="en" value="Name" />
+	</resource>
+	<resource key="nick_nm" >
+		<message locale="ko" value="별명" />
+		<message locale="en" value="Nick name" />
+	</resource>
+	<resource key="nm_eng" >
+		<message locale="ko" value="영문이름" />
+		<message locale="en" value="English Name" />
+	</resource>
+	<resource key="pin" >
+		<message locale="en" value="PIN" />
+		<message locale="ko" value="주민번호" />
+	</resource>
+    <resource key="pos_nm" >
+        <message locale="en" value="Position" />
+        <message locale="ko" value="부서" />
+    </resource>
+	<resource key="hp" >
+		<message locale="ko" value="핸드폰" />
+		<message locale="en" value="Mobile" />
+	</resource>
+	<resource key="tel" >
+		<message locale="ko" value="전화번호" />
+		<message locale="en" value="Tel." />
+	</resource>
+	<resource key="fax" >
+		<message locale="ko" value="팩스" />
+		<message locale="en" value="Fax" />
+	</resource>
+	<resource key="email" >
+		<message locale="ko" value="이메일" />
+		<message locale="en" value="Email" />
+	</resource>
+	<resource key="addr1" >
+		<message locale="en" value="Address " />
+		<message locale="ko" value="주소앞부분" />
+	</resource>
+	<resource key="remarks" >
+		<message locale="en" value="Etc" />
+		<message locale="ko" value="비고" />
+	</resource>
+	<resource key="addr2" >
+		<message locale="en" value="Address " />
+		<message locale="ko" value="주소상세(나머지)" />
+	</resource>
+	<resource key="zip" >
+		<message locale="en" value="Post No" />
+		<message locale="ko" value="우편번호" />
+	</resource>
+	<resource key="pos_cd" >
+		<message locale="en" value="Post No" />
+	</resource>
+	<resource key="org_cd" >
+		<message locale="en" value="Org ID" />
+		<message locale="ko" value="조직코드" />
+	</resource>
+	<resource key="add" >
+		<message locale="ko" value="주소" />
+		<message locale="en" value="Address" />
+	</resource>
+    <resource key="role_id" >
+        <message locale="ko" value="사용자코드" />
+        <message locale="en" value="Role_id" />
+    </resource>
+    <resource key="role_name" >
+        <message locale="ko" value="권한명" />
+        <message locale="en" value="Role_Name" />
+    </resource>
+    <resource key="is_super" >
+        <message locale="ko" value="슈퍼바이저권한" />
+        <message locale="en" value="Supervisor" />
+    </resource>
+    <resource key="is_nologin" >
+        <message locale="ko" value="게스트권한" />
+        <message locale="en" value="Guest" />
+    </resource>
+    <resource key="bbs_level" >
+        <message locale="ko" value="게시판권한" />
+        <message locale="en" value="Board Auth" />
+    </resource>
+    <resource key="fixed" >
+        <message locale="ko" value="시스템고정" />
+        <message locale="en" value="Fixed" />
+    </resource>
+    <resource key="site" >
+        <message locale="ko" value="사이트" />
+        <message locale="en" value="SITE" />
+    </resource>
+</bundle>	

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//UBQ//DTD maf-command config XML V1.0//EN"
+         "mvc-configuration.dtd">
+<configuration>
+
+    <action uri="act.do" type="modules.wlc.mboard.actions.BoardAct" />
+    <action uri="write.do"  type="modules.wlc.mboard.actions.BoardWrite" />
+    <action uri="view.do" type="modules.wlc.mboard.actions.BoardView" />
+    <action uri="list.do" type="modules.wlc.mboard.actions.BoardList" />
+    <action uri="viewimage.do" type="modules.wlc.mboard.actions.ImageView" />
+
+    <global-view>
+        <view-info name="boardList" uri="/mboard_wlc/c_list.jsp" useTemplate="wlc_tutor" />
+        <view-info name="boardView" uri="/mboard_wlc/c_view.jsp" useTemplate="wlc_tutor" />
+        <view-info name="boardWrite" uri="/mboard_wlc/c_write.jsp" useTemplate="wlc_tutor" />
+        <view-info name="ImageView" uri="/mboard_wlc/popup/slide_popup.jsp" />
+    </global-view>
+
+	<action uri="board.do" type="modules.wlc.mboard.BoardAction" desc="게시판" title="자게시판"
+	    jsppath="/mboard_wlc/" default="list">
+	    <action-view>
+	        <view-info name="list" uri="c_list.jsp" useTemplate="wlc_tutor" />
+	        <view-info name="view" uri="c_view.jsp" useTemplate="wlc_tutor" />
+	        <view-info name="write" uri="c_write.jsp" useTemplate="wlc_tutor" />
+	    </action-view>
+	    <cmds>
+	        <cmd name="list" method="cmdList" />
+	        <cmd name="view" method="cmdView" />
+	        <cmd name="write" method="cmdWrite" />
+	    </cmds>
+	</action>
+
+	<action uri="mailsend.do" type="modules.wlc.common.mail.WsemailsendAction" desc="메일발송"  title="메일발송" default="add">
+		<action-view>
+			<view-info name="add" uri="/WEB-INF/jsp/wlc/common/mail/wsemailsend/add.jsp" useTemplate="popup" />
+			<view-info name="change" uri="/WEB-INF/jsp/wlc/common/mail/wsemailsend/changetmplt.jsp" useTemplate="" />
+		</action-view>	
+		<cmds>
+			<cmd name="add" method="cmdAdd" formname="frm1" authtype="C" />
+			<cmd name="send" method="cmdSend" formname="frm1" authtype="C" />
+			<cmd name="change" method="cmdChange" formname="frm1" authtype="C" />
+			<cmd name="sendmail" method="cmdSendMail" formname="frm1" authtype="C" />
+		</cmds>
+		<forms>
+			<form name="frm1" bundle="table.mail_send">				
+					<input name="mail_title" message="mail_title" type="text" />				
+					<input name="send_id" message="send_id" type="text" required="true"/>				
+					<input name="mail_text" message="mail_text" type="text" />				
+					<input name="mail_bcc" message="mail_bcc" type="text" />				
+					<input name="mail_cc" message="mail_cc" type="text" />				
+					<input name="send_dt" message="send_dt" type="text" />				
+					<input name="userid" message="userid" type="text" />
+			</form>		
+		</forms>
+	</action>
+</configuration>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miraenet//DTD maf-command config XML V1.0//EN"
+         "mvc-configuration.dtd">
+<configuration>
+    <template-list>
+        <template-info name="admin_inner" uri="/web_src/intranet/_inner.jsp" />
+        <template-info name="adminData" uri="/board/adminData/_adminLayout.jsp" />
+        <template-info name="club_inner" uri="/club/layout/inner.jsp" />
+    </template-list>
+
+    <global-view>
+        <view-info name="boardList" uri="/mboard/list.jsp" useTemplate="www" />
+        <view-info name="boardView" uri="/mboard/view.jsp" useTemplate="www" />
+        <view-info name="boardWrite" uri="/mboard/write.jsp" useTemplate="www" />
+        <view-info name="ImageView" uri="/mboard/popup/slide_popup.jsp" />
+    </global-view>
+
+    <action uri="act.do" type="modules.community.mboard.actions.BoardAct"/>
+    <action uri="write.do"  type="modules.community.mboard.actions.BoardWrite"/>
+    <action uri="view.do" type="modules.community.mboard.actions.BoardView" />
+    <action uri="list.do" type="modules.community.mboard.actions.BoardList"/>
+    <action uri="viewimage.do" type="modules.community.mboard.actions.ImageView" />
+
+    <action uri="boardGrp.do" type="modules.community.mboard.admin.GrpMngAction" title="게시판그룹관리" desc="게시판그룹관리"
+     jsppath="/mboard/grp/" default="default">
+        <action-view>
+            <view-info name="default" uri="default.jsp" useTemplate="www" />
+        </action-view>
+        <cmds>
+            <cmd name="default" method="cmdDefault" />
+            <cmd name="update" method="cmdUpdate" />
+            <cmd name="insert" method="cmdInsert" />
+        </cmds>
+    </action>
+
+    <action uri="boardMeta.do" type="modules.community.mboard.admin.MetaMngAction" title="게시판관리" desc="게시판관리"
+     jsppath="/mboard/meta/" default="list" >
+        <action-view>
+            <view-info name="list" uri="list.jsp" useTemplate="www" />
+            <view-info name="add" uri="edit.jsp" useTemplate="www" />
+            <view-info name="edit" uri="edit.jsp" useTemplate="www" />
+        </action-view>
+        <cmds>
+            <cmd name="list" method="cmdList" />
+            <cmd name="add" method="cmdAdd" />
+            <cmd name="edit" method="cmdEdit" />
+            <cmd name="update" method="cmdUpdate" />
+            <cmd name="insert" method="cmdInsert" />
+            <cmd name="delete" method="cmdDelete" />
+        </cmds>
+    </action>
+
+    <action uri="boardAdmin.do" type="modules.community.mboard.admin.AdminData" title="게시판관리" desc="게시판관리"
+     default="list" jsppath="/mboard/adminData/">
+        <action-view>
+            <view-info name="default" uri="default.jsp" useTemplate="www" />
+            <view-info name="head" uri="head.jsp" useTemplate="www" />
+            <view-info name="blank" uri="blank.jsp" useTemplate="www" />
+            <view-info name="tree" uri="tree.jsp" useTemplate="www" />
+        </action-view>
+    </action>
+</configuration>

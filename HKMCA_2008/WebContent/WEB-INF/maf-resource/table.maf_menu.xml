@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//UBQ//DTD maf-command config XML V1.0//EN"
+         "resourceBundle.dtd">
+<bundle defaultLocale="ko">
+    <resource key="pgid" >
+        <message locale="ko" value="메뉴코드" />
+        <message locale="en" value="Menu Code" />
+    </resource>
+    <resource key="title" >
+        <message locale="ko" value="메뉴명" />
+        <message locale="en" value="Menu Title" />
+    </resource>
+    <resource key="page" >
+        <message locale="ko" value="메뉴주소" />
+        <message locale="en" value="URL" />
+    </resource>
+    <resource key="seq" >
+        <message locale="ko" value="순번" />
+        <message locale="en" value="Seq." />
+    </resource>
+    <resource key="pnodeid" >
+        <message locale="ko" value="상위메뉴" />
+        <message locale="en" value="Upper menu" />
+    </resource>
+    <resource key="isuse" >
+        <message locale="ko" value="사용여부" />
+        <message locale="en" value="Use" />
+    </resource>
+    <resource key="target" >
+        <message locale="ko" value="프레임타겟" />
+        <message locale="en" value="Target" />
+    </resource>
+    <resource key="dir" >
+        <message locale="ko" value="폴더명" />
+        <message locale="en" value="Folder" />
+    </resource>
+    <resource key="islink" >
+        <message locale="ko" value="링크여부" />
+        <message locale="en" value="Link" />
+    </resource>
+    <resource key="usn" >
+        <message locale="ko" value="사용자" />
+        <message locale="en" value="USN" />
+    </resource>
+    <resource key="upt_dt" >
+        <message locale="ko" value="등록일" />
+        <message locale="en" value="Update Date" />
+    </resource>
+    <resource key="layout" >
+        <message locale="ko" value="템플릿" />
+        <message locale="en" value="Layout" />
+    </resource>
+    <resource key="is_lmenu" >
+        <message locale="ko" value="좌측메뉴여부" />
+        <message locale="en" value="Left Menu" />
+    </resource>
+    <resource key="is_tmenu" >
+        <message locale="ko" value="상위메뉴여부" />
+        <message locale="en" value="Top Menu" />
+    </resource>
+    <resource key="short_desc" >
+        <message locale="ko" value="간략설명" />
+        <message locale="en" value="DESC" />
+    </resource>
+    <resource key="session_chk" >
+        <message locale="ko" value="세션체크여부" />
+        <message locale="en" value="SEssion Check" />
+    </resource>
+    <resource key="title_en" >
+        <message locale="ko" value="영문메뉴명" />
+        <message locale="en" value="English Title" />
+    </resource>
+    <resource key="style" >
+        <message locale="ko" value="디자인" />
+        <message locale="en" value="Style" />
+    </resource>
+    <resource key="isservlet" >
+        <message locale="ko" value="서브릿여부" />
+        <message locale="en" value="Servlet" />
+    </resource>
+    <resource key="is_sitemap" >
+        <message locale="ko" value="사이트맵등록여부" />
+        <message locale="en" value="Sitemap" />
+    </resource>
+    <resource key="admin_usn" >
+        <message locale="ko" value="메뉴관리자" />
+        <message locale="en" value="Administrator" />
+    </resource>
+    <resource key="contact_email" >
+        <message locale="ko" value="담당자이메일" />
+        <message locale="en" value="email" />
+    </resource>
+    <resource key="contact" >
+        <message locale="ko" value="담당자" />
+        <message locale="en" value="Contact" />
+    </resource>
+    <resource key="help_file" >
+        <message locale="ko" value="헬프파일명" />
+        <message locale="en" value="Help File" />
+    </resource>
+    <resource key="menu_desc" >
+        <message locale="ko" value="메뉴설명" />
+        <message locale="en" value="Menu Desc." />
+    </resource>
+    <resource key="p_cnt" >
+        <message locale="ko" value="" />
+    </resource>
+    <resource key="p_cnt_ok" >
+        <message locale="ko" value="" />
+    </resource>
+    <resource key="upt_id" >
+        <message locale="ko" value="등록자" />
+    </resource>
+    <resource key="p_start_dt" >
+        <message locale="ko" value="등록일" />
+    </resource>
+    <resource key="p_end_dt" >
+        <message locale="ko" value="사용기한" />
+    </resource>
+    <resource key="messagekey" >
+        <message locale="ko" value="메세지코드" />
+        <message locale="en" value="Message Key" />
+    </resource>
+</bundle>        

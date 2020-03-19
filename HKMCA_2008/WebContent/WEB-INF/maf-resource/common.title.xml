@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-resource PUBLIC "-//UBQ//DTD maf-command config XML V1.0//EN" "resourceBundle.dtd">
+
+<bundle defaultLocale="ko">
+    <resource key="home" type="text">
+        <message locale="ko" value="홈으로" />
+        <message locale="en" value="Home" />
+    </resource>
+    <resource key="login" type="text">
+        <message locale="ko" value="로그인" />
+        <message locale="en" value="Login" />
+    </resource>
+    <resource key="logout" type="text">
+        <message locale="ko" value="로그아웃" />
+        <message locale="en" value="Logout" />
+    </resource>
+    <resource key="mypage" type="text">
+        <message locale="ko" value="내정보" />
+        <message locale="en" value="MyPage" />
+    </resource>
+    <resource key="join" type="text">
+        <message locale="ko" value="회원가입" />
+        <message locale="en" value="Join" />
+    </resource>
+    <resource key="sitemap" type="text">
+        <message locale="ko" value="사이트맵" />
+        <message locale="en" value="Sitemap" />
+    </resource>
+
+
+	<resource key="classroom" type="text">
+        <message locale="ko" value="▣ 온라인교육센터에 오신걸 환영합니다.▣" />
+		<message locale="en" value="▣ Welcome to Cyber Learning Center ClassRoom ▣" />
+	</resource>
+	<resource key="report.labor" type="text">
+        <message locale="ko" value="노동부보고서" />
+		<message locale="en" value="Department of labor's report" />
+	</resource>
+	<resource key="report.lecreq_cnt" type="text">
+        <message locale="ko" value="수강현황" />
+		<message locale="en" value="No of Training" />
+	</resource>
+	<resource key="board.freebbs" type="text">
+        <message locale="ko" value="자유게시판" />
+		<message locale="en" value="Free Board" />
+	</resource>
+	<resource key="board.noticebbs" type="text">
+        <message locale="ko" value="공지사항" />
+		<message locale="en" value="Notification" />
+	</resource>
+	<resource key="board.news" type="text">
+        <message locale="ko" value="뉴스" />
+		<message locale="en" value="News" />
+	</resource>
+	<resource key="board.noticelecture" type="text">
+        <message locale="ko" value="강의공지사항" />
+		<message locale="en" value="Course notification" />
+	</resource>
+	<resource key="board.pdsbbs" type="text">
+        <message locale="ko" value="자료실" />
+		<message locale="en" value="Reference" />
+	</resource>
+	<resource key="board.qna" type="text">
+        <message locale="ko" value="묻고답하기" />
+		<message locale="en" value="Q/A" />
+	</resource>
+    <resource key="zipcode" type="text">
+        <message locale="ko" value="주소찾기" />
+        <message locale="en" value="Search Address" />
+    </resource>
+	<resource key="prflec" type="text">
+        <message locale="ko" value="::: 강의중인과목  :::" />
+		<message locale="en" value="Course in Session" />
+	</resource>
+	<resource key="stdlec" type="text">
+        <message locale="ko" value="::: 수강중인강좌  :::" />
+		<message locale="en" value="::: Course(s) Registered :::" />
+	</resource>
+	<resource key="stdlec2" type="text">
+        <message locale="ko" value="::: 수강가능강좌  :::" />
+		<message locale="en" value="::: Course(s) Available :::" />
+	</resource>
+    <resource key="message.notice.myetest" type="text">
+        <message locale="en" value="::: My e-Test :::" />
+        <message locale="ko" value="::: My e-Test :::" />
+    </resource>
+    <resource key="message.notice.mysurvey" type="text">
+        <message locale="en" value="::: My Survey :::" />
+        <message locale="ko" value="::: My Survey :::" />
+    </resource>
+</bundle>

@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//UBQ//DTD maf-command config XML V1.0//EN"
+         "mvc-configuration.dtd">
+<configuration>
+
+    <action uri="list.do" type="modules.wlc.mboard.actions.BoardList" />
+    <action uri="act.do" type="modules.wlc.mboard.actions.BoardAct" />
+    <action uri="write.do"  type="modules.wlc.mboard.actions.BoardWrite" />
+    <action uri="view.do" type="modules.wlc.mboard.actions.BoardView" />
+    <action uri="viewimage.do" type="modules.wlc.mboard.actions.ImageView" />
+
+    <global-view>
+        <view-info name="boardList" uri="/mboard_wlc/c_list.jsp" useTemplate="wlc_tutor" />
+        <view-info name="boardView" uri="/mboard_wlc/c_view.jsp" useTemplate="wlc_tutor" />
+        <view-info name="boardWrite" uri="/mboard_wlc/c_write.jsp" useTemplate="wlc_tutor" />
+        <view-info name="ImageView" uri="/mboard_wlc/popup/slide_popup.jsp" />
+    </global-view>
+
+<action uri="main.do" type="modules.wlc.learner.MainAction" desc="메인" title="메인"
+   jsppath="/WEB-INF/jsp/wlc/learner/main/" default="list">
+	<action-view>
+		<view-info name="list" uri="list.jsp" useTemplate="www" />
+        <view-info name="view" uri="view.jsp" useTemplate="www" />
+	</action-view>
+	<cmds>
+		<cmd name="list" method="cmdList" formname="frm1" />
+        <cmd name="view" method="cmdView" formname="frm1" />
+        <cmd name="insert" method="cmdInsert" formname="frm1" />
+	</cmds>
+	<forms>
+		<form name="frm1" bundle="table.bas_lec">
+			<input name="lec_cd" message="lec_cd" type="text"></input>
+			<input name="sjt_cd" message="sjt_cd" type="text"></input>
+			<input name="lec_year" message="lec_year" type="text"></input>
+			<input name="lec_num" message="lec_num" type="text"></input>
+			<input name="lec_nm" message="lec_nm" type="text"></input>
+			<input name="lec_stat" message="lec_stat" type="text"></input>
+			<input name="ltype" message="ltype" type="text"></input>
+			<input name="otype" message="otype" type="text"></input>
+			<input name="lec_type" message="lec_type" type="text"></input>
+			<input name="field" message="field" type="text"></input>
+			<input name="lec_date" message="lec_date" type="text"></input>
+			<input name="lec_price" message="lec_price" type="text"></input>
+			<input name="learn_day_cnt" message="learn_day_cnt" type="text"></input>
+			<input name="learn_time" message="learn_time" type="text"></input>
+			<input name="relearn_day_cnt" message="relearn_day_cnt" type="text"></input>
+			<input name="lec_capacity" message="lec_capacity" type="text"></input>
+			<input name="lec_min_capacity" message="lec_min_capacity" type="text"></input>
+			<input name="finished_score" message="finished_score" type="text"></input>
+			<input name="limit_study_time" message="limit_study_time" type="text"></input>
+			<input name="cnt_type" message="cnt_type" type="text"></input>
+			<input name="sample_url" message="sample_url" type="text"></input>
+			<input name="sample_cnt_width" message="sample_cnt_width" type="text"></input>
+			<input name="sample_cnt_height" message="sample_cnt_height" type="text"></input>
+			<input name="lec_target" message="lec_target" type="text"></input>
+			<input name="is_approval" message="is_approval" type="text"></input>
+			<input name="lec_reg_edate" message="lec_reg_edate" type="text"></input>
+			<input name="adminid" message="adminid" type="text"></input>
+			<input name="prg_type" message="prg_type" type="text"></input>
+			<input name="lec_weck" message="lec_weck" type="text"></input>
+			<input name="lec_datm" message="lec_datm" type="text"></input>
+			<input name="lec_wetm" message="lec_wetm" type="text"></input>
+			<input name="reg_dt" message="reg_dt" type="text"></input>
+			<input name="upt_dt" message="upt_dt" type="text"></input>
+			<input name="upt_id" message="upt_id" type="text"></input>
+			<input name="test_type" message="test_type" type="text"></input>
+			<input name="precondition" message="precondition" type="text"></input>
+			<input name="exm_condition" message="exm_condition" type="text"></input>
+            <input name="req_stat" message="req_stat" type="text" bundle="table.wlc_lec_req"></input>
+		</form>
+	</forms>
+</action>
+
+<action uri="attend.do" type="modules.wlc.classroom.learner.AttendAction" desc="출석"  title="출석"
+    jsppath="/WEB-INF/jsp/wlc/classroom/learner/attend/" default="list">
+    <action-view>
+        <view-info name="list" uri="list.jsp" useTemplate="wlc_learner" />
+    </action-view>
+    <cmds>
+        <cmd name="list" method="cmdList" formname="frm1" authtype="R" />
+        <cmd name="update" method="cmdUpdate" formname="frm1" authtype="U" />
+    </cmds>
+    <forms>
+        <form name="frm1" bundle="table.wlc_fnl_grd">               
+            <input name="lec_cd" message="lec_cd" type="text" required="true"/>             
+            <input name="userid" message="userid" bundle="table.jmf_user" type="text" />        
+            <input name="usn" message="usn" bundle="table.jmf_user" type="text" />        
+            <input name="nm" message="nm" bundle="table.jmf_user" type="text" />                
+            <input name="att_score" message="att_score" type="text" />
+            <input name="tot_cnt" message="tot_cnt" type="text" />    
+        </form>     
+    </forms>
+</action>
+
+<action uri="chapters.do" type="modules.wlc.classroom.learner.ChaptersAction" desc="강의" title="강의"
+	jsppath="/WEB-INF/jsp/wlc/classroom/learner/chapters/" default="list">
+	<action-view>
+		<view-info name="list" uri="list.jsp" useTemplate="wlc_learner" />
+	</action-view>
+	<cmds>
+		<cmd name="list" method="cmdList" formname="frm1" />
+	</cmds>
+	<forms>
+		<form name="frm1" bundle="table.wlc_lec_chp">
+			<input name="itm_id" message="itm_id" type="text" required="true" />
+			<input name="launch_data" message="launch_data" type="text" />
+			<input name="score_max" message="score_max" type="text" />
+			<input name="score_min" message="score_min" type="text" />
+			<input name="comments_from_lms" message="comments_from_lms" type="text" />
+			<input name="itm_isvisible" message="itm_isvisible" type="text" />
+			<input name="itm_title" message="itm_title" type="text" />
+			<input name="itm_parameterstring" message="itm_parameterstring" type="text" />
+			<input name="itm_prerequisites" message="itm_prerequisites" type="text" />
+			<input name="itm_type" message="itm_type" type="text" />
+			<input name="itm_maxtimeallowed" message="itm_maxtimeallowed" type="text" />
+			<input name="itm_timelimitaction" message="itm_timelimitaction" type="text" />
+			<input name="itm_masteryscore" message="itm_masteryscore" type="text" />
+			<input name="itm_location" message="itm_location" type="text" />
+			<input name="itm_sequence" message="itm_sequence" type="text" />
+			<input name="itm_lvl" message="itm_lvl" type="text" />
+			<input name="itm_pid" message="itm_pid" type="text" />
+			<input name="place_type" message="place_type" type="text" />
+			<input name="week" message="week" type="text" />
+			<input name="htmcode" message="htmcode" type="text" />
+			<input name="totpage" message="totpage" type="text" />
+			<input name="cnt_width" message="cnt_width" type="text" />
+			<input name="cnt_height" message="cnt_height" type="text" />
+			<input name="chp_sdat" message="chp_sdat" type="text" />
+			<input name="chp_edat" message="chp_edat" type="text" />
+		</form>
+	</forms>
+</action>
+
+<action uri="progress.do" type="modules.wlc.classroom.learner.ProgressAction" desc="학습" title="학습"
+    jsppath="/WEB-INF/jsp/wlc/classroom/learner/progress/" default="study">
+    <action-view>
+        <view-info name="classroom_start" uri="classroom_start.jsp" useTemplate="wlc_popup" />
+        <view-info name="classroom" uri="classroom_start.jsp"/>
+        <view-info name="view_mov" uri="view_mov.jsp" useTemplate="wlc_popup" />
+        <view-info name="url" uri="url.jsp" useTemplate="wlc_popup" />
+        <view-info name="saved" uri="saved.jsp" />
+        <view-info name="not_saved" uri="not_saved.jsp" />
+        <view-info name="cp_frame" uri="cp_frame.jsp" useTemplate="null" />
+        <view-info name="cont_close" uri="cont_close.htm" />
+        <view-info name="file_down" uri="file_down.jsp" useTemplate="wlc_popup" />
+    </action-view>
+    <cmds>
+        <cmd name="study" method="cmdStudy" />
+		<cmd name="danwon" method="cmdDanwon" />
+		<cmd name="studyCp" method="cmdStudyCp" />
+        <cmd name="save_score" method="cmdSaveScore" />
+        <cmd name="save_time" method="cmdSaveTime" />
+        <cmd name="save_page" method="cmdSavePage" />
+    </cmds>
+</action>
+
+<action uri="score.do" type="modules.wlc.classroom.learner.ScoreAction" desc="최종성적조회" title="최종성적조회"
+   jsppath="/WEB-INF/jsp/wlc/classroom/learner/score/" default="view">
+	<action-view>
+		<view-info name="view" uri="view.jsp" useTemplate="wlc_learner" />
+	</action-view>
+	<cmds>
+		<cmd name="view" method="cmdView" authtype="R" />
+	</cmds>
+</action>
+<action uri="progress_info.do" type="modules.wlc.classroom.learner.ProgressAction" desc="학습진도조회" title="학습진도조회"
+	jsppath="/WEB-INF/jsp/wlc/classroom/learner/" default="list">
+	<action-view>
+		<view-info name="list" uri="progress/list.jsp" useTemplate="wlc_learner" />
+		<view-info name="view" uri="score/view.jsp" useTemplate="wlc_learner" />
+		<view-info name="jindo_view" uri="score/view_jindo.jsp" useTemplate="wlc_learner" />
+		<view-info name="exm_view" uri="score/view_exam.jsp" useTemplate="wlc_learner" />
+		<view-info name="off_view" uri="score/view_off.jsp" useTemplate="wlc_learner" />
+	</action-view>
+	<cmds>
+		<cmd name="list" method="cmdList" formname="frm1" />
+		<cmd name="view" method="cmdView" formname="frm1" />
+		<cmd name="jindo_view" method="cmdJindoView" formname="frm1" authtype="R" />
+		<cmd name="exm_view" method="cmdExamView" formname="frm1" authtype="R" />
+		<cmd name="off_view" method="cmdOffView" formname="frm1" authtype="R" />
+	</cmds>
+	<forms>
+		<form name="frm1" bundle="table.wlc_chp_prg">
+			<input name="itm_id" message="itm_id" type="text" required="true" />
+			<input name="lecnumb" message="lecnumb" type="text" required="true" />
+			<input name="userid" message="userid" type="text" required="true" />
+			<input name="lesson_location" message="lesson_location" type="text" />
+			<input name="lesson_status" message="lesson_status" type="text" />
+			<input name="core_entry" message="core_entry" type="text" />
+			<input name="score_raw" message="score_raw" type="text" />
+			<input name="total_time" message="total_time" type="text" />
+			<input name="lesson_mode" message="lesson_mode" type="text" />
+			<input name="core_exit" message="core_exit" type="text" />
+			<input name="suspend_data" message="suspend_data" type="text" />
+			<input name="comments" message="comments" type="text" />
+			<input name="audio" message="audio" type="text" />
+			<input name="language" message="language" type="text" />
+			<input name="speed" message="speed" type="text" />
+			<input name="caption" message="caption" type="text" />
+			<input name="prgsdat" message="prgsdat" type="text" />
+			<input name="prgedat" message="prgedat" type="text" />
+			<input name="prgcont" message="prgcont" type="text" />
+			<input name="prgfdat" message="prgfdat" type="text" />
+			<input name="leccode" message="leccode" type="text" required="true" />
+		</form>
+		<form name="frm2" bundle="table.wlc_page_prg">
+			<input name="page_nm" message="page_nm" type="text" required="true" />
+			<input name="page_cnt" message="page_cnt" type="text" />
+			<input name="page_no" message="page_no" type="text" />
+			<input name="page_open_dt" message="page_open_dt" type="text" />
+			<input name="page_time" message="page_time" type="text" />
+			<input name="page_flag" message="page_flag" type="text" />
+			<input name="upt_dt" message="upt_dt" type="text" />
+			<input name="upt_id" message="upt_id" type="text" />
+			<input name="lec_cd" message="lec_cd" type="text" required="true" />
+			<input name="itm_id" message="itm_id" type="text" required="true" />
+			<input name="lec_num" message="lec_num" type="text" required="true" />
+			<input name="userid" message="userid" type="text" required="true" />
+		</form>
+	</forms>
+</action>
+
+<action uri="syllabus.do" type="modules.wlc.classroom.learner.BasClassInfoAction" desc="강의계획서" title="강의계획서"
+	jsppath="/WEB-INF/jsp/wlc/classroom/learner/basclassinfo/" default="view">
+	<action-view>
+		<view-info name="view" uri="view.jsp" useTemplate="wlc_learner" />
+	</action-view>
+	<cmds>
+		<cmd name="view" method="cmdView" formname="frm1" />
+	</cmds>
+	<forms>
+	<form name="frm1" bundle="table.bas_lec">
+        <input name="lec_cd" message="lec_cd" type="text" />
+        <input name="lec_nm" message="lec_nm" type="text" />
+		<input name="lec_obj" message="lec_obj" type="text" ></input>
+		<input name="lec_usn" message="lec_usn" type="text"></input>
+		<input name="lec_summary" message="lec_summary" type="text"></input>
+		<input name="lec_inf" message="lec_inf" type="text"></input>
+		<input name="lec_book" message="lec_book" type="text"></input>
+        <input name="lec_etc" message="lec_etc" type="text" />
+	</form>
+	</forms>
+</action>
+
+<action uri="examlist.do" type="modules.wlc.classroom.learner.WlcExamListAction" desc="시험목록" title="시험목록"
+    jsppath="/WEB-INF/jsp/wlc/classroom/learner/examlist/" default="list">
+    <action-view>
+        <view-info name="list" uri="list.jsp" useTemplate="wlc_learner" />
+        <view-info name="view" uri="view.jsp" useTemplate="wlc_learner" />
+        <view-info name="result" uri="result.jsp" useTemplate="wlc_learner" />
+        <view-info name="resultXml" uri="resultXml.jsp" />
+    </action-view>
+    <cmds>
+        <cmd name="tree" method="getTree" authtype="R" />
+        <cmd name="treeSel" method="getTreeSel" authtype="R" />
+        <cmd name="list" method="cmdList" formname="frm1" authtype="R" />
+        <cmd name="view" method="cmdView" formname="frm1" authtype="R" />
+        <cmd name="edit" method="cmdEdit" formname="frm1" authtype="U" />
+        <cmd name="update" method="cmdUpdate" formname="frm1" from="edit" authtype="U" />
+        <cmd name="insert" method="cmdInsert" formname="frm1" from="update" authtype="C" />
+        <cmd name="add" method="cmdAdd" formname="frm1" from="update" authtype="C" />
+        <cmd name="delete" method="cmdDelete" formname="frm1" from="delete" authtype="D" />
+        <cmd name="result" method="cmdResult" authtype="R" />
+        <cmd name="userHistgram" method="resultXml"  authtype="R" cmdtype="jsp"/>
+    </cmds>
+    <forms>
+        <form name="frm1" bundle="table.exm_mst">
+            <input name="exmid" message="exmid" type="text" required="true" />
+            <input name="exmtitle" message="exmtitle" type="text" required="true" />
+            <input name="exm_sdat" message="exm_sdat" type="text" required="true" />
+            <input name="exm_edat" message="exm_edat" type="text" required="true" />
+            <input name="rst_status" message="rst_status" type="text" required="true" />
+            <input name="active_yn" message="active_yn" type="text" />
+            <input name="reg_id" bundle="common" message="field.reg_id" type="text" />
+            <input name="reg_dt" bundle="common" message="field.reg_dt" type="text" />
+            <input name="upt_dt" bundle="common" message="field.upt_dt" type="text" />
+            <input name="upt_id" bundle="common" message="field.upt_id" type="text" />
+            <input name="active_yn" bundle="common" message="select.use" type="text" />
+            <input name="org_name" bundle="table.bas_org" message="org_name" type="text" />
+            <input name="user_nm" bundle="table.maf_user" message="nm" type="text" />
+            <input name="questions" message="questions" bundle="table.exm_mst" type="text" />
+            <input name="lang" message="lang" bundle="common" type="text" />
+            <input name="exmtime" message="exmtime" bundle="table.exm_set" type="text" />
+        </form>
+    </forms>
+</action>
+
+<action uri="doTest.do" type="modules.wlc.classroom.learner.WlcDoTestAction" desc="시험 응시" title="시험 응시"
+    jsppath="/WEB-INF/jsp/wlc/classroom/learner/dotest/" default="confirm">
+    <action-view>
+        <view-info name="confirm" uri="confirm.jsp" useTemplate="etest" />
+        <view-info name="test" uri="test.jsp" useTemplate="etest" />
+    </action-view>
+    <cmds>
+        <cmd name="confirm" method="cmdConfirm"  />
+        <cmd name="test" method="cmdTest"  />
+        <cmd name="updateAnswer" method="cmdUpdateAnswer"  />
+        <cmd name="updateMark" method="cmdUpdateMark"  />
+        <cmd name="finish" method="cmdFinish"  />
+    </cmds>
+</action>
+
+<action uri="Report.do" type="modules.wlc.classroom.learner.ReportAction" desc="과제제출" title="과제제출"
+    jsppath="/WEB-INF/jsp/wlc/classroom/learner/report/" default="list" >
+    <action-view>
+        <view-info name="list" uri="list.jsp" useTemplate="wlc_learner" />
+        <view-info name="view" uri="view.jsp" useTemplate="wlc_learner" />
+    </action-view>
+    <cmds>
+        <cmd name="list" method="cmdList" formname="frm1" authtype="R" />
+        <cmd name="view" method="cmdView" formname="frm1" authtype="U" />
+        <cmd name="insert" method="cmdInsert" formname="frm1" from="update" authtype="C" />
+        <cmd name="update" method="cmdUpdate" formname="frm1" from="update" authtype="C" />
+    </cmds>
+    <forms>
+        <form name="frm1" bundle="table.rpt_mst">
+            <input name="rptcode" message="rptcode" type="text" />
+            <input name="rpttitle" message="rpttitle" type="text" />
+            <input name="rptdesc" message="rptdesc" type="text" />
+            <input name="rpt_sdat" message="rpt_sdat" type="text" />
+            <input name="rpt_edat" message="rpt_edat" type="text" />
+            <input name="rptrate" message="rptrate" type="text" />
+            <input name="rptopen" message="rptopen" type="text" />
+            <input name="quecode" message="quecode" type="text" />
+            <input name="quetitle" message="quetitle" type="text" />
+            <input name="quefile" message="quefile" type="text" />
+            <input name="quedesc" message="quedesc" type="text" />
+            <input name="givtitle" message="givtitle" type="text" />
+            <input name="givdesc" message="givdesc" type="text" />
+            <input name="givfile" message="givfile" type="text" />
+            <input name="givdat" message="givdat" type="text" />
+            <input name="fedtitle" message="fedtitle" type="text" />
+            <input name="feddesc" message="feddesc" type="text" />
+            <input name="fedfile" message="fedfile" type="text" />
+            <input name="feduser" message="feduser" type="text" />
+            <input name="feddat" message="feddat" type="text" />
+            <input name="usrscore" message="usrscore" type="text" />
+            <input name="userid" message="userid" type="text" bundle="table.maf_user"/>
+            <input name="nm" message="nm" type="text" bundle="table.maf_user"/>
+        </form>
+    </forms>
+</action>
+
+<action uri="survey.do" type="modules.wlc.classroom.learner.SurveyAction" desc="설문참여"
+    jsppath="/WEB-INF/jsp/wlc/classroom/learner/survey/" default="list">
+    <action-view>
+        <view-info name="list" uri="list.jsp" useTemplate="wlc_learner" />
+        <view-info name="view" uri="view.jsp" useTemplate="wlc_learner" />
+    </action-view>
+    <cmds>
+        <cmd name="list" method="cmdList" formname="frm1" authtype="R" />
+        <cmd name="view" method="cmdView" formname="frm1" authtype="R" />
+        <cmd name="survey" method="cmdSurvey" formname="frm1" from="update" authtype="U" />
+    </cmds>
+    <forms>
+        <form name="frm1" bundle="survey">
+            <input name="surveyid" message="surveyid" type="text" required="true" />
+            <input name="surveytitle" message="surveytitle" type="text" />
+            <input name="surveydesc" message="surveydesc" type="text" />
+            <input name="survey_sdat" message="survey_sdat" type="text" />
+            <input name="survey_edat" message="survey_edat" type="text" />
+            <input name="active_yn" bundle="common" message="select.use" type="text" required="true" />
+        </form>
+    </forms>
+</action>
+
+</configuration>

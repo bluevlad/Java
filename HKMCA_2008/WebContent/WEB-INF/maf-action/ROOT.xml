@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miraenet//DTD maf-command config XML V1.0//EN"
+         "mvc-configuration.dtd">
+<configuration>
+	<template-list>
+		<template-info name="excel" uri="/WEB-INF/layout/excel.jsp" />
+		<template-info name="excel_xml" uri="/WEB-INF/layout/excel_xml.jsp" />
+		<template-info name="xml" uri="/WEB-INF/layout/xml.jsp" />
+		<template-info name="popup" uri="/WEB-INF/layout/popup.jsp" />	
+		<template-info name="popup_notitle" uri="/WEB-INF/layout/popup_notitle.jsp" />	
+		<template-info name="www" uri="/WEB-INF/layout/layout.jsp" desc="일반 서브페이지"/>			
+		<template-info name="wlc_tutor" uri="/WEB-INF/layout/wlc_tutor.jsp" desc="강의실-강사용"/>	
+		<template-info name="wlc_learner" uri="/WEB-INF/layout/wlc_learner.jsp" desc="강의실-학습자용"/>	
+        <template-info name="wlc_popup" uri="/WEB-INF/layout/wlc_popup.jsp" desc="강의실-학습창" />  
+		<template-info name="inner_frame" uri="/WEB-INF/layout/_inner_frame.jsp" />
+		<template-info name="etc" uri="/WEB-INF/layout/layout_etc.jsp" />
+        <template-info name="main" uri="/WEB-INF/layout/layout_main.jsp" />
+        <template-info name="etest" uri="/WEB-INF/layout/etest.jsp" desc="시험용 페이지"/>
+        <template-info name="pager" uri="/WEB-INF/layout/pager.jsp" desc="쪽지함" />
+        <template-info name="mobile" uri="/WEB-INF/layout/mobile.jsp" desc="스마트폰화면" />
+	</template-list>
+
+	<global-view>
+		<view-info name="message" uri="/WEB-INF/layout/message.jsp" />
+		<view-info name="error" uri="/WEB-INF/layout/message_error.jsp" />
+		<view-info name="errorwin" uri="/WEB-INF/layout/message_error_win.jsp" />
+		<view-info name="redirect" uri="/WEB-INF/layout/redirect.jsp" />
+		<view-info name="blank" uri="/etc/blank.html"/>
+		<view-info name="dummy" type="dummy"/>
+		<view-info name="xml" type="xml"/>
+		<view-info name="json" type="json"/>
+		<view-info name="excel_import_error" uri="/WEB-INF/jsp/error/excel_import_error.jsp" />
+	</global-view>
+	
+	<action uri="/common.do" type="modules.common.actions.CommonAction" title="common" desc="common">
+		<action-view>
+			<view-info name="langList" uri="/WEB-INF/jsp/common/objSelect/langlistJson.jsp" />
+            <view-info name="authList" uri="/WEB-INF/jsp/common/objSelect/authlistJson.jsp" />
+            <view-info name="getLec" uri="/WEB-INF/jsp/common/objSelect/getLec.jsp" />
+		</action-view>
+		<cmds>
+			<cmd name="langList" method="langList"  cmdtype="jsp" desc="다국어 목록 가져오기(json)"/>
+            <cmd name="authList" method="authList"  cmdtype="jsp" desc="권한 목록 가져오기(json)"/>
+            <cmd name="getLec" method="getLec" cmdtype="jsp" desc="강의 목록 가져오기"/>
+		</cmds>
+	</action>
+	
+	<action uri="/default.do" type="modules.common.actions.Default" title="메인페이지" desc="default 페이지">
+		<action-view>
+            <view-info name="default" uri="/main.jsp" useTemplate="main"/>
+		</action-view>
+	</action>
+	
+	<action uri="/login.do" type="modules.common.login.LoginAction" title="LOGIN" desc="login form"
+	   jsppath="/WEB-INF/jsp/member/" default="loginForm">
+		<action-view>
+			<view-info name="loginok" uri="login_ok.jsp"  />
+			<view-info name="removesess" uri="removeSession.jsp" useTemplate="etc" />
+			<view-info name="loginForm" uri="login_form.jsp" useTemplate="etc"/>
+		</action-view>
+		<cmds>
+			<cmd name="loginForm" method="cmdForm" />
+			<cmd name="login" method="cmdLogin" />
+			<cmd name="removesess" method="cmdRemoveSession" desc="기존세션제거"/>
+		</cmds>
+	</action>
+	<action uri="/rlogin.do" type="modules.common.login.RLoginAction" title="LOGIN" desc="login form"
+	   jsppath="/WEB-INF/jsp/member/" default="login">
+		<action-view>
+			<view-info name="loginok" uri="login_ok.jsp"  />
+			<view-info name="removesess" uri="removeSession.jsp" useTemplate="etc" />
+			<view-info name="loginForm" uri="login_form.jsp" useTemplate="etc"/>
+		</action-view>
+		<cmds>
+			<cmd name="login" method="cmdLogin" />
+		</cmds>
+	</action>
+	<action uri="/logout.do" type="modules.common.login.LogoutAction"  title="LOGOUT Act" desc="login act" >
+		<action-view>
+			<view-info name="logoutok" uri="/WEB-INF/jsp/member/logout_ok.jsp"  />
+		</action-view>
+	</action>
+	
+	<action uri="/status.do" type="maf.web.mvc.Status"  title="Status" desc="시스템 상태보기">
+		<action-view>
+			<view-info name="status" uri="/WEB-INF/jsp/status/status.jsp" useTemplate="www" />
+		</action-view>
+	</action>
+
+    <action uri="/Zipcode.do" title="우편번호 검색" type="modules.common.zipcode.Zipcode">
+        <action-view>
+            <view-info name="default" uri="/WEB-INF/jsp/mafapp/zipcode/zipcode.jsp"/>
+        </action-view>
+    </action>
+
+    <action uri="/Userid.do" title="아이디검색" type="modules.member.Userid" 
+        jsppath="/WEB-INF/jsp/mafapp/user/">
+        <action-view>
+            <view-info name="iduniq" uri="iduniq.jsp" useTemplate="popup" />
+            <view-info name="iduse" uri="iduse.jsp" useTemplate="popup" />
+            <view-info name="findid" uri="findid.jsp" useTemplate="popup" />
+            <view-info name="resultid" uri="resultid.jsp" useTemplate="popup" />
+            <view-info name="findpwd" uri="findpwd.jsp" useTemplate="popup" />
+        </action-view>
+        <cmds>
+            <cmd name="iduniq" method="cmdIdUniq" />
+            <cmd name="iduse" method="cmdIdUse" />
+            <cmd name="idchk" method="cmdIdChk" />
+            <cmd name="resultid" method="cmdRstId" />
+            <cmd name="findid" method="cmdFindId" />
+            <cmd name="findpwd" method="cmdFindPwd"/>
+        </cmds>
+    </action>
+
+	<action uri="/poll.do" type="modules.community.poll.PollAction" default="poll">
+	    <action-view>
+	        <view-info name="result" uri="/WEB-INF/jsp/poll/result.jsp" useTemplate="popup"/>
+	    </action-view>
+	    <cmds>
+	        <cmd name="poll" method="cmdPoll"/>
+	        <cmd name="result" method="cmdViewResult"/>
+	    </cmds>     
+	</action>
+
+    <action uri="/SiteMap.do" title="SiteMap" type="modules.common.actions.SiteMap" 
+        jsppath="/WEB-INF/jsp/common/" default="default">
+        <action-view>
+            <view-info name="default" uri="sitemap.jsp" useTemplate="etc"/>
+        </action-view>
+        <cmds>
+            <cmd name="default" method="cmdDefault" />
+        </cmds>
+    </action>
+
+</configuration>

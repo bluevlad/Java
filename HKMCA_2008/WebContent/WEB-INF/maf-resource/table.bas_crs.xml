@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE maf-command PUBLIC
+         "-//UBQ//DTD maf-command config XML V1.0//EN"
+         "resourceBundle.dtd">
+<bundle defaultLocale="ko">
+    <resource key="crs_cd" >
+        <message locale="ko" value="과정코드" />
+    </resource>
+    <resource key="crs_nm" >
+        <message locale="ko" value="과정명" />
+    </resource>
+    <resource key="crs_srt_nm" >
+        <message locale="ko" value="과정명약칭" />
+    </resource>
+    <resource key="field" >
+        <message locale="ko" value="과정구분" />
+    </resource>
+    <resource key="otype" >
+        <message locale="ko" value="온오프구분" />
+    </resource>
+    <resource key="is_autocerti" >
+        <message locale="ko" value="자동인증여부" />
+    </resource>
+    <resource key="precondition" >
+        <message locale="ko" value="선수조건" />
+    </resource>
+    <resource key="passcondition" >
+        <message locale="ko" value="수료조건" />
+    </resource>
+    <resource key="crt_lvl" >
+        <message locale="ko" value="인증레벨" />
+    </resource>
+    <resource key="grade" >
+        <message locale="ko" value="인증등급" />
+    </resource>
+    <resource key="crt_id" >
+        <message locale="ko" value="발행인증서" />
+    </resource>
+</bundle>

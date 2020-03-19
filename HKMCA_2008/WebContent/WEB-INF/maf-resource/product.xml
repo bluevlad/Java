@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-resource PUBLIC "-//UBQ//DTD maf-command config XML V1.0//EN" "resourceBundle.dtd">
+
+<bundle defaultLocale="ko">
+    <resource key="cat_cd" >
+        <message locale="ko" value="분류코드" />
+    </resource>
+    <resource key="cat_nm" >
+        <message locale="ko" value="분류명" />
+    </resource>
+    <resource key="prd_cd" >
+        <message locale="ko" value="제품코드" />
+    </resource>
+    <resource key="prd_nm" >
+        <message locale="ko" value="제품명" />
+    </resource>
+    <resource key="company" >
+        <message locale="ko" value="제조사" />
+    </resource>
+    <resource key="prd_price" >
+        <message locale="ko" value="제품가격" />
+    </resource>
+    <resource key="org_price" >
+        <message locale="ko" value="제품가격" />
+    </resource>
+    <resource key="reg_price" >
+        <message locale="ko" value="입고가격" />
+    </resource>
+    <resource key="prd_desc" >
+        <message locale="ko" value="제품설명" />
+    </resource>
+    <resource key="prd_type" >
+        <message locale="ko" value="제품구분" />
+    </resource>
+    <resource key="reg_dt" >
+        <message locale="ko" value="제조일자" />
+    </resource>
+    <resource key="coupon_no" >
+        <message locale="ko" value="쿠폰번호" />
+    </resource>
+    <resource key="dis_rate" >
+        <message locale="ko" value="할인율" />
+    </resource>
+    <resource key="coupon_dt" >
+        <message locale="ko" value="쿠폰발급일" />
+    </resource>
+    <resource key="start_dt" >
+        <message locale="ko" value="쿠폰시작일" />
+    </resource>
+    <resource key="end_dt" >
+        <message locale="ko" value="쿠폰종료일" />
+    </resource>
+    <resource key="exp_dt" >
+        <message locale="ko" value="쿠폰유효기간" />
+    </resource>
+    <resource key="use_dt" >
+        <message locale="ko" value="쿠폰사용기간" />
+    </resource>
+    <resource key="isuse" >
+        <message locale="ko" value="발급여부" />
+    </resource>
+    <resource key="coupon_type" >
+        <message locale="ko" value="쿠폰사용방법" />
+    </resource>
+    <resource key="dt_type" >
+        <message locale="ko" value="사용기간구분" />
+    </resource>
+    <resource key="sell_cd" >
+        <message locale="ko" value="판매자코드" />
+    </resource>
+    <resource key="sell_nm" >
+        <message locale="ko" value="판매자명" />
+    </resource>
+    <resource key="sell_phone" >
+        <message locale="ko" value="판매자전화" />
+    </resource>
+    <resource key="sell_fax" >
+        <message locale="ko" value="판매자팩스" />
+    </resource>
+    <resource key="psell_cd" >
+        <message locale="ko" value="상품등록코드" />
+    </resource>
+    <resource key="psell_price" >
+        <message locale="ko" value="판매상품가격" />
+    </resource>
+    <resource key="psell_desc" >
+        <message locale="ko" value="판매상품설명" />
+    </resource>
+</bundle>
