@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="euc-kr"?>
+
+<holidays>
+    <day name="신정" date="0101" lunar="F" dayoff="T"/>
+    <day name="설날" date="0101" lunar="T" dayoff="T" prev="1" next="1" />
+    <day name="삼일절" date="0301" lunar="F" dayoff="T"/>
+    <day name="식목일" date="0405" lunar="F" dayoff="T"/>
+    <day name="어린이날" date="0505" lunar="F" dayoff="T"/>
+    <day name="석가탄신일" date="0408" lunar="T" dayoff="T"/>
+    <day name="스승의날" date="0515" lunar="F" dayoff="F"/>
+    <day name="현충일" date="0606" lunar="F" dayoff="T"/>
+    <day name="6.25사변일" date="0625" lunar="F" dayoff="F"/>
+    <day name="제헌절" date="0717" lunar="F" dayoff="T"/>
+    <day name="광복절" date="0815" lunar="F" dayoff="T"/>
+    <day name="추석" date="0815" lunar="T" dayoff="T" prev="1" next="1" />
+    <day name="개천절" date="1003" lunar="F" dayoff="T"/>
+    <day name="한글날" date="1009" lunar="F" dayoff="T" />
+    <day name="성탄절" date="1225" lunar="F" dayoff="T" />
+</holidays>

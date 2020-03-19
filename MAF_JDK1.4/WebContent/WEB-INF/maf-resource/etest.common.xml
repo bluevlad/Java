@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-resource PUBLIC "-//Miranet//DTD maf-command config XML V1.0//EN" "resourceBundle.dtd">
+
+<bundle defaultLocale="en" desc="온라인 시험용 공통 메시지 ">
+  <resource key="msg.req_condition" desc="시험응시조건" type="text">
+    <message locale="en" value="minimum eligibility" />
+    <message locale="ko" value="시험응시조건" />
+  </resource>
+  <resource key="msg.req_condition.time" desc="시간진도" type="text">
+    <message locale="en" value="time progress points * rate" />
+    <message locale="ko" value="시간진도 점수 * 비율" />
+  </resource>
+  <resource key="msg.req_condition.page" desc="시간진도" type="text">
+    <message locale="en" value="page progress points * rate" />
+    <message locale="ko" value="페이지진도 점수 * 비율" />
+  </resource>
+  <resource key="msg.req_condition.progress" desc="진도점수" type="text">
+    <message locale="en" value="progress points" />
+    <message locale="ko" value="진도점수" />
+  </resource>
+
+  <resource key="result.qcnt" desc="문제수" type="text">
+    <message locale="en" value="Number of questions" />
+    <message locale="ko" value="문제수" />
+  </resource>
+  <resource key="result.reqcnt" desc="문제수" type="text">
+    <message locale="en" value="Number of applying" />
+    <message locale="ko" value="응시횟수" />
+  </resource>
+  <resource key="result.qsum" desc="배점" type="text">
+    <message locale="en" value="Weighting" />
+    <message locale="ko" value="배점" />
+  </resource>
+  <resource key="result.rstavg" desc="전체평균" type="text">
+    <message locale="en" value="Overall average" />
+    <message locale="ko" value="전체평균" />
+  </resource>
+  <resource key="result.rstavg10" desc="상위 10% 평균 " type="text">
+    <message locale="en" value="Top 10% average" />
+    <message locale="ko" value="상위 10% 평균 " />
+  </resource>
+  <resource key="result.passavg" desc="합격자 평균 " type="text">
+    <message locale="en" value="Pass average" />
+    <message locale="ko" value="합격자 평균 " />
+  </resource>
+  
+   <resource key="result.passcnt" desc="합격자 수 " type="text">
+    <message locale="en" value="Pass count" />
+    <message locale="ko" value="합격자 수 " />
+  </resource>
+  <resource key="result.passrate" desc="합격율 " type="text">
+    <message locale="en" value="Ratio of successful" />
+    <message locale="ko" value="합격율" />
+  </resource>
+  <resource key="result.countofprogress" desc="응시중인원 " type="text">
+    <message locale="en" value="In process" />
+    <message locale="ko" value="응시중인원 " />
+  </resource>
+  <resource key="result.countoffinish" desc="제출인원 " type="text">
+    <message locale="en" value="Finished" />
+    <message locale="ko" value="제출인원 " />
+  </resource>
+  <resource key="result.countoftarget" desc="대상인원 " type="text">
+    <message locale="en" value="No of Target" />
+    <message locale="ko" value="대상인원 " />
+  </resource>
+  <resource key="result.rstcnt" desc="총응시자수" type="text">
+    <message locale="en" value="Total number of exam applicants" />
+    <message locale="ko" value="총응시자수" />
+  </resource>
+  
+  <resource key="result.rstrank" desc="석차" type="text">
+    <message locale="en" value="Rank" />
+    <message locale="ko" value="석차" />
+  </resource>
+  <resource key="result.rstrank100" desc="백분위석차(%)" type="text">
+    <message locale="en" value="Percentage rank" />
+    <message locale="ko" value="백분위석차(%)" />
+  </resource>
+  <resource key="result.rstscore" desc="본인득점" type="text">
+    <message locale="en" value="Individual score" />
+    <message locale="ko" value="본인득점" />
+  </resource>
+  <resource key="result.rstscore100" desc="100점 환산점수" type="text">
+    <message locale="en" value="100 point scale score" />
+    <message locale="ko" value="100점 환산점수" />
+  </resource>
+  <resource key="result.rstscoremax" desc="최고득점" type="text">
+    <message locale="en" value="Highest score" />
+    <message locale="ko" value="최고득점" />
+  </resource>
+  <resource key="result.rstscoremin" desc="최저득점" type="text">
+    <message locale="en" value="Lowest score" />
+    <message locale="ko" value="최저득점" />
+  </resource>
+  
+
+  <resource key="script.exm.answer.insert" type="text">
+    <message locale="en" value="Please input the correct answer." />
+    <message locale="ko" value="정답을 입력하세요." />
+  </resource>
+  <resource key="script.exm.cat.insert" type="text">
+    <message locale="en" value="Please input the category." />
+    <message locale="ko" value="카테고리를 입력하세요." />
+  </resource>
+  <resource key="script.exm.answer.select" type="text">
+    <message locale="en" value="Please select the correct answer." />
+    <message locale="ko" value="정답을 선택하세요." />
+  </resource>
+  <resource key="script.exm.chpcode" type="text">
+    <message locale="en" value="Please input lesson number." />
+    <message locale="ko" value="차시를 입력하세요." />
+  </resource>
+  <resource key="script.exm.end.term1" type="text">
+    <message locale="en" value="Please select the completion time of the 1st exam." />
+    <message locale="ko" value="1차 응시종료 시각을 선택하세요." />
+  </resource>
+
+  <resource key="script.exm.level.select" type="text">
+    <message locale="en" value="Please designate the number of questions for each difficulty." />
+    <message locale="ko" value="출제할 문제의 난이도별 문제수를 선택하세요." />
+  </resource>
+
+  <resource key="script.exm.notselect" type="text">
+    <message locale="en" value="Please select the questions from the pool." />
+    <message locale="ko" value="출제할 문제를 선택하세요." />
+  </resource>
+
+  <resource key="script.exm.que.select" type="text">
+    <message locale="en" value="Please select the questions to assign." />
+    <message locale="ko" value="출제할 문제를 선택하세요." />
+  </resource>
+  <resource key="script.exm.que.select.over0" type="text">
+    <message locale="en" value="The total number of questions should be over 0." />
+    <message locale="ko" value="난이도별 문제수의 합이 0이상이 되어야 합니다." />
+  </resource>
+  <resource key="script.exm.que.select.voer.bnk" type="text">
+    <message locale="en" value="The number of selected questions exceeds the assigned number of questions. The assigned number is being automatically modified." />
+    <message locale="ko" value="선택한 문제보다 출제한 문제수가 더 많습니다. 출제할 문제수를 자동으로 수정합니다." />
+  </resource>
+  <resource key="script.exm.retry" type="text">
+    <message locale="en" value="Do you wish to process the selected trainee for re-application?" />
+    <message locale="ko" value="선택한 학습자를 재응시처리 하겠습니까?" />
+  </resource>
+  <resource key="script.exm.score" type="text">
+    <message locale="en" value="Please input the weighting." />
+    <message locale="ko" value="배점을 입력하세요." />
+  </resource>
+  <resource key="script.exm.start" type="text">
+    <message locale="en" value="The exam can be taken only once. Do you wish to apply for the exam?" />
+    <message locale="ko" value="시험기회는 1회로 제한됩니다. 시험에 응시하시겠습니까?" />
+  </resource>
+
+  <resource key="script.exm.time" type="text">
+    <message locale="en" value="Please input the exam time." />
+    <message locale="ko" value="시험시간을 입력하세요." />
+  </resource>
+   <resource key="script.exm.notapply" type="text">
+    <message locale="en" value="시험에 등록 하지 안았습니다." />
+    <message locale="ko" value="시험에 등록 하지 안았습니다." />
+  </resource>
+  <resource key="script.exm.title" type="text">
+    <message locale="en" value="Please input the exam questions." />
+    <message locale="ko" value="시험문제를 입력하세요." />
+  </resource>
+   <resource key="script.exm.view" type="text">
+    <message locale="en" value="Please input or select an example." />
+    <message locale="ko" value="보기를 입력 또는 선택하세요." />
+  </resource>
+  <resource key="warning" type="text">
+    <message locale="en" value="※ Caution " />
+    <message locale="ko" value="※ 주의사항" />
+  </resource> 
+  <resource key="warning.01" type="text">
+    <message locale="en" value="Once the exam is started, it cannot be restarted." />
+    <message locale="ko" value="시험은 시작하면 다시 응시 할 수 없습니다." />
+  </resource> 
+  <resource key="warning.02" type="text">
+    <message locale="en" value="If you select the language, the exam will automatically start. " />
+    <message locale="ko" value="응시할 언어를 Click하시면 시험이 시작 됩니다." />
+  </resource>
+</bundle>
+

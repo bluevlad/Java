@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "resourceBundle.dtd">
+<bundle defaultLocale="en">
+	<resource key="code"  >
+		<message locale="ko" value="코드"/>
+		<message locale="en" value="Code"/>
+	</resource>
+	<resource key="code2"  >
+		<message locale="ko" value="코드2"/>
+		<message locale="en" value="Code2"/>
+	</resource>
+	<resource key="allnames"  >
+		<message locale="ko" value="모든이름 "/>
+		<message locale="en" value="Allnames"/>
+	</resource>
+	<resource key="active_yn"  >
+		<message locale="ko" value="사용여부"/>
+		<message locale="en" value="Active(Y/N)"/>
+	</resource>
+	<resource key="local_name"  >
+		<message locale="ko" value="지역명"/>
+		<message locale="en" value="Local_name"/>
+	</resource>
+
+</bundle>

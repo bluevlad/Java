@@ -1,0 +1,60 @@
+<!--
+	.bbs_table {
+		font-family:"verdana", "±¼¸²","Arial", "µ¸¿ò";
+		border-top: 2px solid #379CA4;
+		background-color: #ffffff;
+	}
+	.bbs_th { 		
+		height:25px;
+		background-color:#E1F0F1;
+		border-bottom: 1px solid #CCCCCC;}
+	.bbs_td {		
+		height:25px;
+		border-bottom: 1px solid #CCCCCC;}
+	.bbs_td_id {
+		border-bottom: 1px solid #C5C5C5;
+		font-size: 10px;
+		font-family: "verdana";
+		line-height: 25px;
+		color:#9a9a9a;
+	}
+	.bbs_td_cmt {border-bottom: 1px solid #cccccc; padding-top: 2px;padding-left: 2; font-size:11px; color:#9a9a9a;}
+	.bbs_td_cur {border-bottom: 1px solid #cccccc; padding-top: 2px;padding-left: 2; font-size:11px; background-color: #F7F7F5}
+	
+	.bbs_view_top_th {
+		text-align: center;
+		height:25px;
+		background-color:#eef0f4;
+		border-bottom: 1px solid #CCCCCC;}
+	.bbs_view_top_td {
+		border-bottom: 1px solid #CCCCCC;
+	}
+	.bbs_view_th { 
+		height:25px;
+		text-align: center;
+		background-color:#eef0f4;
+		border-bottom: 1px solid #CCCCCC;
+	}
+	.bbs_view_td {
+		border-bottom: 1px solid #CCCCCC;
+	}
+	.bbs_view_top_text {color:#666666;font-size:12px; font-weight:normal;}
+	.bbs_view_content {
+		padding-top: 5px; 
+		padding-bottom: 5px; 
+		padding-left:15px; 
+		padding-right:15px;
+		border-bottom: 1px solid #8E96AB; 
+		color:#333333;
+		font-size:12px;  
+	}
+
+	.bbs_th_text {color:#666666;font-size:12px; font-weight:normal;}
+	.bbs_text_area{
+		width:560px;
+		
+		padding-top: 10px;
+		font-family:±¼¸²;
+		font-size: 12px;
+	}
+-->

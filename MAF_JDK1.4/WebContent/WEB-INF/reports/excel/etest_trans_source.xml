@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "excel-viewer.dtd">
+<viewer filename="etest.xls" title="">
+	<field id="queid" title="queid" type="string" />
+	<field id="lang" title="lang" type="string"/>
+	<field id="active_yn" title="active_yn" type="string"/>
+	<field id="quetitle" title="quetitle" type="string"/>
+	<field id="quetext" title="quetext" type="string"/>
+	<field id="queansw" title="queansw" type="string"/>
+	<field id="queviw1" title="queviw1" type="string"/>
+	<field id="queviw2" title="queviw2" type="string"/>
+	<field id="queviw3" title="queviw3" type="string"/>
+	<field id="queviw4" title="queviw4" type="string"/>
+	<field id="queviw5" title="queviw5" type="string"/>
+	<field id="queviw6" title="queviw6" type="string"/>
+	<field id="queviw7" title="queviw7" type="string"/>
+	<field id="queviw8" title="queviw8" type="string"/>
+	<field id="queviw9" title="queviw9" type="string"/>
+	<field id="queviw10" title="queviw10" type="string"/>
+	<field id="quedesc" title="quedesc" type="string"/>
+</viewer>

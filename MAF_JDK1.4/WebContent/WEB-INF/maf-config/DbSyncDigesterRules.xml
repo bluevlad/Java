@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE digester-rules PUBLIC
+         "-//Jakarta Apache //DTD digester-rules XML V1.0//EN"
+         "digester-rules.dtd">
+
+<digester-rules>
+	<object-create-rule pattern="dbsync" classname="miraenet.app.dbsync.beans.DbSyncConfig" />
+
+	<pattern value="dbsync/table">
+		<object-create-rule classname="miraenet.app.dbsync.beans.DbSyncTable" />
+		<set-properties-rule>
+			<alias attr-name="source" prop-name="source_table" />
+			<alias attr-name="target" prop-name="target_table" />
+		</set-properties-rule>
+		
+		<pattern value="column">
+			<object-create-rule classname="miraenet.app.dbsync.beans.DbSyncColumn" />
+			<set-properties-rule>
+				<alias attr-name="s_nm" prop-name="s_nm" />
+				<alias attr-name="s_value" prop-name="s_value" />
+				<alias attr-name="t_nm" prop-name="t_nm" />
+				<alias attr-name="t_value" prop-name="t_value" />
+				<alias attr-name="pk" prop-name="pk" />
+			</set-properties-rule>
+			<set-next-rule methodname="addColumn" />
+		</pattern>
+		
+		<set-next-rule methodname="addTable" />
+	</pattern>
+</digester-rules>

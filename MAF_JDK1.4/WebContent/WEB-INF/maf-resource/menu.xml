@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-resource PUBLIC "-//Miranet//DTD maf-command config XML V1.0//EN" "resourceBundle.dtd">
+
+<bundle defaultLocale="en">
+  <resource key="M10" type="text" desc="Introduction">
+    <message locale="en" value="Introduction" />
+    <message locale="ko" value="인사말" />
+    <message locale="zh" value="大全" />    
+  </resource>
+  <resource key="M1001" type="text" desc="Introduction">
+    <message locale="en" value="Introduction" />
+    <message locale="ko" value="인사말" />
+    <message locale="zh" value="导航" /> 
+  </resource>
+  <resource key="M1002" type="text" desc="User Guide">
+    <message locale="en" value="User Guide" />
+    <message locale="ko" value="사용자 가이드" />
+  </resource>
+   <resource key="M1003" type="text" desc="Training Network">
+    <message locale="en" value="Training Network" />
+    <message locale="ko" value="OTC/RTC" />
+  </resource>
+   <resource key="M1004" type="text" desc="General Info">
+    <message locale="en" value="General Info" />
+    <message locale="ko" value="조직 정보" />
+  </resource>
+
+ <resource key="M20" type="text" desc="My Desk">
+    <message locale="en" value="My Desk" />
+    <message locale="ko" value="마이데스크" />
+    <message locale="zh" value="我的帐户 " />
+  </resource>
+  <resource key="M2001" type="text" desc="My Desk">
+    <message locale="en" value="My Desk" />
+    <message locale="ko" value="마이데스크" />
+    <message locale="zh" value="我的帐户 " />
+  </resource>
+  <resource key="M200101" type="text" desc="Classroom(Select)">
+    <message locale="en" value="Classroom(Select)" />
+    <message locale="ko" value="수강중인 강의목록" />
+  </resource>
+  <resource key="M200102" type="text" desc="Class List">
+    <message locale="en" value="Class List" />
+    <message locale="ko" value="강의목록" />
+  </resource>
+  <resource key="M200105" type="text" desc="Test List">
+    <message locale="en" value="Test List" />
+    <message locale="ko" value="시험목록" />
+  </resource> 
+  <resource key="M2002" type="text" desc="My Training Status">
+    <message locale="en" value="My Training Status" />
+    <message locale="ko" value="학습정보" />
+  </resource>  
+  <resource key="M2003" type="text" desc="My Info.">
+    <message locale="en" value="My Info." />
+    <message locale="ko" value="내정보" />
+  </resource>  
+
+  <resource key="M30" type="text" desc="MyOffice">
+    <message locale="en" value="MyOffice" />
+    <message locale="ko" value="MyOffice" />
+  </resource>  
+  <resource key="M3001" type="text" desc="Course Admin">
+    <message locale="en" value="Course Admin" />
+    <message locale="ko" value="Course Admin" />
+  </resource>  
+  <resource key="M300101" type="text" desc="Course">
+    <message locale="en" value="Course" />
+    <message locale="ko" value="Course" />
+  </resource>  
+  <resource key="M300102" type="text" desc="Subject">
+    <message locale="en" value="Subject" />
+    <message locale="ko" value="Subject" />
+  </resource>  
+  <resource key="M300103" type="text" desc="Lecture">
+    <message locale="en" value="Lecture" />
+    <message locale="ko" value="Lecture" />
+  </resource>  
+  <resource key="M3002" type="text" desc="목표관리">
+    <message locale="en" value="Target Management" />
+    <message locale="ko" value="목표관리" />
+  </resource>  
+  <resource key="M300201" type="text" desc="교육 목표/실적 관리">
+    <message locale="en" value="Target Management" />
+    <message locale="ko" value="교육 목표/실적 관리" />
+  </resource>  
+  <resource key="M300202" type="text" desc="자격인증 목표/실적관리">
+    <message locale="en" value="Target Management" />
+    <message locale="ko" value="자격인증 목표/실적관리" />
+  </resource>  
+  <resource key="M300203" type="text" desc="자격인증 목표관리">
+    <message locale="en" value="Target Management Control" />
+    <message locale="ko" value="자격인증 목표관리" />
+  </resource>  
+  <resource key="M300204" type="text" desc="자격인증 실적관리">
+    <message locale="en" value="Certificate Management Control" />
+    <message locale="ko" value="자격인증 실적관리" />
+  </resource>  
+  <resource key="M300205" type="text" desc="교육과정 수강현황">
+    <message locale="en" value="Lecture Results" />
+    <message locale="ko" value="교육과정 수강현황" />
+  </resource>  
+  <resource key="M3003" type="text" desc="컨텐츠관리">
+    <message locale="en" value="Contents Management" />
+    <message locale="ko" value="컨텐츠관리" />
+  </resource>  
+  <resource key="M3004" type="text" desc="수강신청관리">
+    <message locale="en" value="Course Registration" />
+    <message locale="ko" value="수강신청관리" />
+  </resource>  
+  <resource key="M3005" type="text" desc="교육결과관리">
+    <message locale="en" value="Training Results" />
+    <message locale="ko" value="Training Results" />
+  </resource>  
+  <resource key="M300501" type="text" desc="강의결과관리">
+    <message locale="en" value="Training History" />
+    <message locale="ko" value="강의결과관리" />
+  </resource>  
+  <resource key="M300502" type="text" desc="교육이력등록">
+    <message locale="en" value="Registration" />
+    <message locale="ko" value="교육이력등록" />
+  </resource>  
+  <resource key="M3006" type="text" desc="이력관리">
+    <message locale="en" value="Certificate" />
+    <message locale="ko" value="이력관리" />
+  </resource>  
+  <resource key="M300601" type="text" desc="인증서정보관리">
+    <message locale="en" value="Certificate Information" />
+    <message locale="ko" value="인증서정보관리" />
+  </resource>  
+  <resource key="M300602" type="text" desc="개인이력관리">
+    <message locale="en" value="Certificate Issue" />
+    <message locale="ko" value="개인이력관리" />
+  </resource>  
+  <resource key="M3007" type="text" desc="Analysis">
+    <message locale="en" value="Analysis" />
+    <message locale="ko" value="통계" />
+  </resource>  
+  <resource key="M300701" type="text" desc="성적현황">
+    <message locale="en" value="Score" />
+    <message locale="ko" value="성적현황" />
+  </resource>  
+  <resource key="M300702" type="text" desc="교육진도율현황">
+    <message locale="en" value="Progress" />
+    <message locale="ko" value="교육진도율현황" />
+  </resource>  
+  <resource key="M300703" type="text" desc="교육수료현황">
+    <message locale="en" value="Traning Status" />
+    <message locale="ko" value="교육수료현황" />
+  </resource>  
+  <resource key="M300704" type="text" desc="과정운영현황(Online)">
+    <message locale="en" value="Course Usage(Online)" />
+    <message locale="ko" value="과정실적관리(Online)" />
+  </resource>  
+  <resource key="M300705" type="text" desc="과정운영현황(Offline)">
+    <message locale="en" value="Course Usage(Offline)" />
+    <message locale="ko" value="과정실적관리(Offline)" />
+  </resource>  
+  <resource key="M300707" type="text" desc="인증발급현황">
+    <message locale="en" value="Certificate Issue" />
+    <message locale="ko" value="인증발급현황" />
+  </resource>  
+  <resource key="M300708" type="text" desc="자격인증현황">
+    <message locale="en" value="Certificate Issue(Regional)" />
+    <message locale="ko" value="자격인증현황" />
+  </resource>  
+  <resource key="M300709" type="text" desc="자격증취득현황(지역별)">
+    <message locale="en" value="Certificate Issue(Regional)" />
+    <message locale="ko" value="인증서취득현황(지역별)" />
+  </resource>  
+  <resource key="M300710" type="text" desc="년도별대비인증분석">
+    <message locale="en" value="Certificate Comparison" />
+    <message locale="ko" value="년도별대비인증분석" />
+  </resource>  
+  <resource key="M3008" type="text" desc="Classroom Management">
+    <message locale="en" value="Classroom Management" />
+    <message locale="ko" value="Classroom Management" />
+  </resource>  
+  <resource key="M3080" type="text" desc="e-Test">
+    <message locale="en" value="e-Test" />
+    <message locale="ko" value="e-Test" />
+  </resource>  
+  <resource key="M308010" type="text" desc="분야관리">
+    <message locale="en" value="Exam Category Mng." />
+    <message locale="ko" value="분야관리" />
+  </resource>  
+  <resource key="M308011" type="text" desc="문제은행관리">
+    <message locale="en" value="Exam Pool Mng." />
+    <message locale="ko" value="문제은행관리" />
+  </resource>  
+  <resource key="M308020" type="text" desc="문제 Template 관리">
+    <message locale="en" value="Exam Template Mng." />
+    <message locale="ko" value="문제 Template 관리" />
+  </resource>  
+  <resource key="M308030" type="text" desc="시험관리">
+    <message locale="en" value="e-Test Mng." />
+    <message locale="ko" value="시험관리" />
+  </resource>  
+  <resource key="M308035" type="text" desc="응시자관리">
+    <message locale="en" value="응시자관리" />
+    <message locale="ko" value="응시자관리" />
+  </resource>  
+
+  <resource key="M40" type="text" desc="Administrator">
+    <message locale="en" value="Administrator" />
+    <message locale="ko" value="관리자" />
+  </resource>  
+  <resource key="M4001" type="text" desc="Organization Mng">
+    <message locale="en" value="Organization Mng" />
+    <message locale="ko" value="Organization Mng" />
+  </resource>  
+  <resource key="M4020" type="text" desc="Log">
+    <message locale="en" value="Log" />
+    <message locale="ko" value="Log" />
+  </resource>  
+  <resource key="M402001" type="text" desc="Login">
+    <message locale="en" value="Login" />
+    <message locale="ko" value="Login" />
+  </resource>  
+  <resource key="M4060" type="text" desc="권한관리">
+    <message locale="en" value="Menu-Auth Mng." />
+    <message locale="ko" value="메뉴권한관리" />
+  </resource>  
+  <resource key="M4062" type="text" desc="사용자권한관리">
+    <message locale="en" value="Role Mng." />
+    <message locale="ko" value="사용자권한관리" />
+  </resource>  
+  <resource key="M4070" type="text" desc="사용언어관리">
+    <message locale="en" value="Language Mng." />
+    <message locale="ko" value="사용언어관리" />
+  </resource>  
+  <resource key="M4071" type="text" desc="메시지 관리">
+    <message locale="en" value="Message Mng." />
+    <message locale="ko" value="메시지 관리" />
+  </resource>  
+  <resource key="M4080" type="text" desc="게시판관리">
+    <message locale="en" value="Board Mng." />
+    <message locale="ko" value="게시판관리" />
+  </resource>  
+  <resource key="M4090" type="text" desc="코드관리">
+    <message locale="en" value="Code Mng." />
+    <message locale="ko" value="코드관리" />
+  </resource>  
+  <resource key="M4091" type="text" desc="코드그룹관리">
+    <message locale="en" value="Code Group Mng." />
+    <message locale="ko" value="코드그룹관리" />
+  </resource>  
+  <resource key="M4092" type="text" desc="메뉴관리">
+    <message locale="en" value="Menu Mng." />
+    <message locale="ko" value="메뉴관리" />
+  </resource>  
+  <resource key="M4099" type="text" desc="LangTest">
+    <message locale="en" value="LangTest" />
+    <message locale="ko" value="LangTest" />
+  </resource>  
+
+  <resource key="M50" type="text" desc="Classroom(Tutor)">
+    <message locale="en" value="Classroom(Tutor)" />
+    <message locale="ko" value="Classroom(Tutor)" />
+  </resource>  
+  <resource key="M300802" type="text" desc="Contents">
+    <message locale="en" value="Contents" />
+    <message locale="ko" value="Contents" />
+  </resource>  
+  <resource key="M300804" type="text" desc="Offline">
+    <message locale="en" value="Offline" />
+    <message locale="ko" value="Offline" />
+  </resource>  
+  <resource key="M300803" type="text" desc="Basis">
+    <message locale="en" value="Basis" />
+    <message locale="ko" value="Basis" />
+  </resource>  
+  <resource key="M300806" type="text" desc="Rate of progress">
+    <message locale="en" value="Rate of progress" />
+    <message locale="ko" value="Rate of progress" />
+  </resource>  
+  <resource key="M300807" type="text" desc="Score">
+    <message locale="en" value="Score" />
+    <message locale="ko" value="Score" />
+  </resource>  
+
+  <resource key="M60" type="text" desc="Classroom">
+    <message locale="en" value="Classroom" />
+    <message locale="ko" value="Classroom" />
+  </resource>  
+  <resource key="M6010" type="text" desc="Subject Info">
+    <message locale="en" value="Subject Info" />
+    <message locale="ko" value="Subject Info" />
+  </resource>  
+  <resource key="M6020" type="text" desc="Study">
+    <message locale="en" value="Study" />
+    <message locale="ko" value="Study" />
+  </resource>  
+  <resource key="M6030" type="text" desc="Rate of progress">
+    <message locale="en" value="Rate of progress" />
+    <message locale="ko" value="Rate of progress" />
+  </resource>  
+  <resource key="M6040" type="text" desc="Score">
+    <message locale="en" value="Score" />
+    <message locale="ko" value="Score" />
+  </resource>  
+
+  <resource key="M80" type="text" desc="My Store">
+    <message locale="en" value="My Store" />
+    <message locale="ko" value="My Store" />
+  </resource>  
+  <resource key="M800101" type="text" desc="News">
+    <message locale="en" value="News" />
+    <message locale="ko" value="News" />
+  </resource>  
+  <resource key="M800102" type="text" desc="QnA">
+    <message locale="en" value="QnA" />
+    <message locale="ko" value="QnA" />
+  </resource>  
+  <resource key="M800103" type="text" desc="FAQ">
+    <message locale="en" value="FAQ" />
+    <message locale="ko" value="FAQ" />
+  </resource>  
+  <resource key="M8002" type="text" desc="Data Download">
+    <message locale="en" value="Data Download" />
+    <message locale="ko" value="Data Download" />
+  </resource>  
+</bundle> 

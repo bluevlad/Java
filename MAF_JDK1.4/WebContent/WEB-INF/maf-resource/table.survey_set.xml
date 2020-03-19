@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "resourceBundle.dtd">
+<bundle defaultLocale="en">
+	<resource key="setid">
+		<message locale="ko" value="Set id" />
+		<message locale="en" value="Set id" />
+	</resource>
+	<resource key="setowner">
+		<message locale="ko" value="소유자" />
+		<message locale="en" value="Owner" />
+	</resource>
+	<resource key="settitle">
+		<message locale="ko" value="제목" />
+		<message locale="en" value="Title" />
+	</resource>
+	<resource key="setdesc">
+		<message locale="ko" value="설명" />
+		<message locale="en" value="Description" />
+	</resource>
+</bundle>

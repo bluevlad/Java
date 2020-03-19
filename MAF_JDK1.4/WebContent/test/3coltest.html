@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title> stu nicholls | CSS PLaY | three column layout | simple version</title>
+<meta name="Generator" content="EditPlus" />
+<meta name="Author" content="Stu Nicholls" />
+<meta name="Keywords" content="Cascading, Style, Sheets, CSS1, CSS2, CSS" />
+<meta name="Description" content="CSS ~ Cascading Style Sheets" />
+<style type="text/css">
+
+html, body {margin:0px; padding:0px; background:#eee; font-family:verdana; font-size:12px;}
+
+/* This bit does all the work */
+#container {position:relative; display:block; background:#DCECC4; 
+    border-left:75px solid #EDCF82; border-right:114px solid #a8a;}
+#inner {display:block; margin-left:-75px; margin-right:-114px; padding:0px;}
+#left {float:left; position:relative; width:75px; left:0px; background:#EDCF82}
+#right {float:right; position:relative; width:114px; right:0px;  background: #FFFFFF url(/hkmca/images/etest/navi_top.gif) no-repeat 0  0;}
+#center {margin-left:75px; margin-right:114px; position:relative; display:block; }
+#left, #right, #center{
+    height:61px; border:0px solid #ff0000;
+}
+.clear {clear:both;}
+
+
+</style>
+</head>
+
+<body>
+
+<div id="container">
+    <div id="inner">
+        <div id="left">left</div>
+        <div id="right"></div>
+        <div id="center">center</div>
+        <div class="clear"></div>
+    </div>
+</div>
+
+
+
+</body>
+</html>

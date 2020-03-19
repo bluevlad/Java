@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "resourceBundle.dtd">
+<bundle defaultLocale="en">
+	<resource key="id">
+		<message locale="en" value="ID" />
+	</resource>
+	<resource key="title">
+		<message locale="en" value="Title" />
+		<message locale="ko" value="제목" />
+	</resource>
+	<resource key="contetnts">
+		<message locale="en" value="Contents" />
+		<message locale="ko" value="내용" />
+	</resource>
+	<resource key="category">
+		<message locale="en" value="Category" />
+		<message locale="ko" value="분류" />
+	</resource>
+	<resource key="owner">
+		<message locale="en" value="Owner" />
+		<message locale="ko" value="소유조직" />
+	</resource>
+	<resource key="update_dt">
+		<message locale="en" value="Post" />
+		<message locale="ko" value="등록/수정일" />
+	</resource>
+	<resource key="update_id">
+		<message locale="en" value="Writer" />
+		<message locale="ko" value="등록/수정자" />
+	</resource>
+	<resource key="view_cnt">
+		<message locale="en" value="Views" />
+		<message locale="ko" value="조회수" />
+	</resource>
+	<resource key="view_all">
+		<message locale="en" value="Show All" />
+		<message locale="ko" value="Show All" />
+	</resource>
+
+	<resource key="view_de">
+		<message locale="en" value="Dealer" />
+		<message locale="ko" value="dealer볼수 있나" />
+	</resource>
+	<resource key="always_top">
+		<message locale="en" value="Notice" />
+		<message locale="ko" value="항상 상단에 표시" />
+	</resource>
+	<resource key="popup_yn">
+		<message locale="en" value="Popup" />
+		<message locale="ko" value="Popup" />
+	</resource>
+</bundle>

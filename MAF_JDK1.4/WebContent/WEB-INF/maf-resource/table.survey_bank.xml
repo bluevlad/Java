@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-resource PUBLIC "-//Miranet//DTD maf-command config XML V1.0//EN" "resourceBundle.dtd">
+
+<bundle defaultLocale="ko">
+  <resource key="label.quecount" type="text">
+    <message locale="en" value="{0} question" />
+    <message locale="ko" value="{0} 문항" />
+  </resource>
+  <resource key="quedesc" type="text">
+    <message locale="en" value="Explanation" />
+    <message locale="ko" value="해설" />
+  </resource>
+  <resource key="queid" type="text">
+    <message locale="en" value="Question Number" />
+    <message locale="ko" value="설문 번호" />
+  </resource>
+  <resource key="quecount" type="text">
+    <message locale="en" value="Number of choices" />
+    <message locale="ko" value="보기수" />
+  </resource>
+  <resource key="quetitle" type="text">
+    <message locale="en" value="Question" />
+    <message locale="ko" value="질문" />
+  </resource>
+  <resource key="quetype" type="text">
+    <message locale="en" value="Type" />
+    <message locale="ko" value="유형" />
+  </resource>
+  <resource key="queviw" type="text">
+    <message locale="en" value="Answer" />
+    <message locale="ko" value="Answer" />
+  </resource>
+  <resource key="qweowner" type="text">
+    <message locale="en" value="Question Possessor" />
+    <message locale="ko" value="문제소유자" />
+  </resource>
+  <resource key="title" type="text">
+    <message locale="en" value="Questionare" />
+    <message locale="ko" value="설문제목" />
+  </resource>
+</bundle>

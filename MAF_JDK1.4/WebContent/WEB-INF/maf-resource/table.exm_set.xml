@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "resourceBundle.dtd">
+<bundle defaultLocale="en">
+	<resource key="setid">
+		<message locale="ko" value="시힘문제 set id" />
+		<message locale="en" value=" Set id" />
+	</resource>
+	<resource key="setowner">
+		<message locale="ko" value="소유자" />
+		<message locale="en" value="Owner" />
+	</resource>
+	<resource key="settitle">
+		<message locale="ko" value="set 제목" />
+		<message locale="en" value="Title" />
+	</resource>
+	<resource key="setdesc">
+		<message locale="ko" value="set 설명" />
+		<message locale="en" value="Description" />
+	</resource>
+	<resource key="exmtime">
+		<message locale="ko" value="시험시간(분)" />
+		<message locale="en" value="Time(minute)" />
+	</resource>
+	<resource key="passing_score">
+		<message locale="ko" value="합격점수(100기준)" />
+		<message locale="en" value="Passing rate" />
+	</resource>
+	<resource key="qseq">
+		<message locale="ko" value="문항순서" />
+		<message locale="en" value="SEQ." />
+	</resource>
+</bundle>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-resource PUBLIC "-//Miranet//DTD maf-command config XML V1.0//EN" "resourceBundle.dtd">
+
+<bundle defaultLocale="en">
+  <resource key="active_yn" type="text">
+    <message locale="ko" value="활성화 여부" />
+    <message locale="en" value="Active Y/N" />
+  </resource>
+  <resource key="cat_description" type="text">
+    <message locale="en" value="Description" />
+    <message locale="ko" value="분류설명" />
+  </resource>
+  <resource key="cat_id" type="text">
+    <message locale="ko" value="분류 id" />
+     <message locale="en" value="Category id" />
+  </resource>
+  <resource key="cat_name" type="text">
+    <message locale="en" value="Category" />
+    <message locale="ko" value="분류명" />
+  </resource>
+  <resource key="p_cat_id" type="text">
+    <message locale="ko" value="상위 분류 id" />
+    <message locale="en" value="Parent Cat. ID" />
+  </resource>
+  <resource key="reg_dt" type="text">
+    <message locale="ko" value="등록일" />
+    <message locale="en" value="Reg." />
+  </resource>
+  <resource key="update_dt" type="text">
+    <message locale="ko" value="최종수정일" />
+    <message locale="en" value="Modified." />
+  </resource>
+</bundle>
+

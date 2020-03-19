@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	column 에서 source와 target이 같으면 source name만 명시해도 됩니다.
+	<table source="원본 table 명 " target="목적지 table 명">
+		<column source="소스 컬럼명" target="목적지 컬럼명(없으면 소스커럼명 사용" pk="T" />
+		<column target="소스테이블에는 없고 target에만 있는 럼" def_value="'기본값(문자열의 경우 싱글 쿼테이션 사용)'" />
+	</table>
+-->
+<dbsync>
+	<table source="t_userinfo" target="MST_USER">
+		<column s_nm="user_id" t_nm="userid" pk="T" />
+		<column s_nm="password" t_nm="passwd" />
+		<column s_nm="user_hname" t_nm="nm" />
+		<column s_nm="jumin" s_value="jumin1+'-'+jumin2" t_nm="pin" />
+		<column s_nm="jumin1" t_nm="pin_1" />
+		<column s_nm="jumin2" t_nm="pin_2" />
+		<column s_nm="email"/>
+		<column s_nm="zipno" s_value="zipno1+'-'+zipno2" t_nm="zip" />
+		<column s_nm="juso1" t_nm="ADDRESS_1" />
+		<column s_nm="juso2" t_nm="ADDRESS_2" />
+		<column s_nm="mobile" s_value="mobile1+'-'+mobile2+'-'+mobile3" t_nm="mobile" />
+	<!--	<column t_nm="utype" t_value="'S'"/> -->
+		<column t_nm="SRC" t_value="'K'"/>
+		<column t_nm="USN" t_value="seq_usn.nextval"/>
+	</table>
+</dbsync>

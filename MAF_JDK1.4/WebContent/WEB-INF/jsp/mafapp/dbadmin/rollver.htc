@@ -1,0 +1,32 @@
+<PUBLIC:COMPONENT>
+<PUBLIC:METHOD NAME="event_oncontentready" />
+<PUBLIC:ATTACH EVENT="oncontentready" ONEVENT="event_oncontentready()" />
+
+<SCRIPT language="JScript">
+
+var MOUSEOVER_COLOR	= '#cdcdcd'
+var global = window.document
+
+function event_oncontentready()
+{
+		this.attachEvent("onmouseover", item_onmouseover)
+		this.attachEvent("onmouseout", item_onmouseout)
+		this.defaultBackground = this.style.backgroundColor
+}
+
+
+function item_onmouseover()
+{
+	this.style.backgroundColor = MOUSEOVER_COLOR
+
+}
+
+function item_onmouseout()
+{
+	this.style.backgroundColor = this.defaultBackground
+}
+
+
+</SCRIPT>
+
+</PUBLIC:COMPONENT>

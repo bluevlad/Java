@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "excel-viewer.dtd">
+<viewer filename="Lecture.xls" title="">
+	<field id="sjt_cd" title="Subject Code" />
+	<field id="lec_year" title="lec_year" />
+	<field id="subject_nm" title="Lecture Name" />
+	<field id="lec_sdate" title="lec_sdate" />
+	<field id="lec_edate" title="lec_edate" />
+</viewer>

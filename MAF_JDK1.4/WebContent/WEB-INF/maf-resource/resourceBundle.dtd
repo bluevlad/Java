@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- 
+	 mvc conrol Configuration
+	 Version : 1.0	(2005.03.30)
+	 Author : Kim Sang Joon
+-->
+<!-- 
+	configuration is the root element. 
+	template-list : 테프릿 이름과 Block(Template-Info)들 정의 
+-->
+<!ELEMENT bundle (desctiption | resource)*>
+<!ATTLIST bundle
+	defaultLocale CDATA #REQUIRED 
+	imagePath CDATA #IMPLIED 
+	desc 	CDATA #IMPLIED 
+>
+<!ELEMENT desctiption (#PCDATA)>
+<!--
+   filename이 정의 되었을경우 imagePath / filename 으로 img 버튼을 만듬 
+-->
+<!ELEMENT resource (message)*>
+<!ATTLIST resource
+	key 	ID  #REQUIRED 
+	value 	CDATA #IMPLIED 
+	type	(text|gif|jpeg) #IMPLIED
+	desc 	CDATA #IMPLIED 
+	filename CDATA #IMPLIED
+	icon CDATA #IMPLIED
+>
+
+<!ELEMENT message (#PCDATA)>
+<!ATTLIST message
+	locale	CDATA  #REQUIRED
+	value 	CDATA  #IMPLIED 
+	desc 	CDATA #IMPLIED 
+	filename CDATA #IMPLIED	
+	icon CDATA #IMPLIED
+>

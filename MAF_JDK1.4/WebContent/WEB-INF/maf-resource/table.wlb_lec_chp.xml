@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-resource PUBLIC "-//Miranet//DTD maf-command config XML V1.0//EN" "resourceBundle.dtd">
+
+<bundle defaultLocale="en">
+  <resource key="button" type="text">
+    <message locale="en" value="Modify course overview sequence" />
+    <message locale="ko" value="강의안 순서변경" />
+  </resource>
+  <resource key="chp_edat" type="text">
+    <message locale="en" value="Course completion date" />
+    <message locale="ko" value="강의종료일" />
+  </resource>
+  <resource key="chp_sdat" type="text">
+    <message locale="en" value="Course start date" />
+    <message locale="ko" value="강의시작일" />
+  </resource>
+  <resource key="chpnumb" type="text">
+    <message locale="en" value="No" />
+    <message locale="ko" value="번호" />
+  </resource>
+  <resource key="cnt_height" type="text">
+    <message locale="en" value="Height" />
+    <message locale="ko" value="팝업윈도우 창높이" />
+  </resource>
+  <resource key="cnt_height1" type="text">
+    <message locale="en" value="Height" />
+    <message locale="ko" value="높이" />
+  </resource>
+  <resource key="cnt_width" type="text">
+    <message locale="en" value="Width" />
+    <message locale="ko" value="팝업윈도우 창넓이" />
+  </resource>
+  <resource key="cnt_width1" type="text">
+    <message locale="en" value="Width" />
+    <message locale="ko" value="넓이" />
+  </resource>
+  <resource key="comments_from_lms" type="text">
+    <message locale="en" value="-" />
+    <message locale="ko" value="lms 코멘트" />
+  </resource>
+  <resource key="crs_id" type="text">
+    <message locale="en" value="Course Identifier" />
+    <message locale="ko" value="course 식별자" />
+  </resource>
+  <resource key="htmcode" type="text">
+    <message locale="en" value="Contents Number" />
+    <message locale="ko" value="컨텐츠번호" />
+  </resource>
+  <resource key="itm_id" type="text">
+    <message locale="en" value="-" />
+    <message locale="ko" value="item 식별자" />
+  </resource>
+  <resource key="itm_isvisible" type="text">
+    <message locale="en" value="Indication" />
+    <message locale="ko" value="표시여부" />
+  </resource>
+  <resource key="itm_location" type="text">
+    <message locale="en" value="Location of meta data" />
+    <message locale="ko" value="메타데이타의 위치" />
+  </resource>
+  <resource key="itm_lvl" type="text">
+    <message locale="en" value="-" />
+    <message locale="ko" value="계층" />
+  </resource>
+  <resource key="itm_masteryscore" type="text">
+    <message locale="en" value="Passing score" />
+    <message locale="ko" value="합격기준점수" />
+  </resource>
+  <resource key="itm_maxtimeallowed_not_used" type="text">
+    <message locale="en" value="Maximum training time possible (maximum allowed study time)" />
+    <message locale="ko" value="최대학습허용시간" />
+  </resource>  
+  <resource key="itm_maxtimeallowed" type="text">
+<message locale="en" value="Standard training time (standard study time)" />
+    <message locale="ko" value="기준학습시간" />
+  </resource>
+  <resource key="itm_parameterstring" type="text">
+    <message locale="en" value="Parameter value" />
+    <message locale="ko" value="파라미터 값" />
+  </resource>
+  <resource key="itm_pid" type="text">
+    <message locale="en" value="High rank item identifier" />
+    <message locale="ko" value="item 상위 식별자" />
+  </resource>
+  <resource key="itm_prerequisites" type="text">
+    <message locale="en" value="-" />
+    <message locale="ko" value="선수 item들" />
+  </resource>
+  <resource key="itm_sequence" type="text">
+    <message locale="en" value="Chapter" />
+    <message locale="ko" value="차시" />
+  </resource>
+  <resource key="itm_timelimitaction" type="text">
+    <message locale="en" value="Events after allowed study time lapse" />
+    <message locale="ko" value="학습시간 초과후  발생 이벤트" />
+  </resource>
+  <resource key="itm_title" type="text">
+    <message locale="en" value="Title" />
+    <message locale="ko" value="제목" />
+  </resource>
+  <resource key="itm_type" type="text">
+    <message locale="en" value="Type" />
+    <message locale="ko" value="유형" />
+  </resource>
+  <resource key="launch_data" type="text">
+    <message locale="en" value="Linked data" />
+    <message locale="ko" value="연동데이타" />
+  </resource>
+  <resource key="leccode" type="text">
+    <message locale="en" value="Course code" />
+    <message locale="ko" value="강의코드" />
+  </resource>
+  <resource key="msg1" type="text">
+    <message locale="en" value="Please select the contents to register" />
+    <message locale="ko" value="☞ 등록할 컨텐츠를 선택해주십시요." />
+  </resource>
+  <resource key="msg2" type="text">
+    <message locale="en" value="무엇이?" />
+    <message locale="ko" value="※ 컨텐츠 실제 URL을 입력하지 않으면 목차로만 이용합니다." />
+  </resource>
+  <resource key="netg_cid" type="text">
+    <message locale="en" value="External course ID" />
+    <message locale="ko" value="외부과정코스id" />
+  </resource>
+  <resource key="netg_sub_cid" type="text">
+    <message locale="en" value="External course sub ID" />
+    <message locale="ko" value="외부과정코스서브id" />
+  </resource>
+  <resource key="off_date_info" type="text">
+    <message locale="en" value="Off line course schedule" />
+    <message locale="ko" value="오프라인강의일정" />
+  </resource>
+  <resource key="off_place" type="text">
+    <message locale="en" value="Off line course location" />
+    <message locale="ko" value="오프라인강의장소" />
+  </resource>
+  <resource key="org_id" type="text">
+    <message locale="en" value="Organization identifier" />
+    <message locale="ko" value="Organization 식별자" />
+  </resource>
+  <resource key="page_prg" type="text">
+    <message locale="en" value="Page progress" />
+    <message locale="ko" value="페이지진도" />
+  </resource>
+  <resource key="place_type" type="text">
+    <message locale="en" value="On/Off" />
+    <message locale="ko" value="온오프구분" />
+  </resource>
+  <resource key="popup_size" type="text">
+    <message locale="en" value="Study window size" />
+    <message locale="ko" value="학습창크기" />
+  </resource>
+  <resource key="preview" type="text">
+    <message locale="en" value="Preview" />
+    <message locale="ko" value="미리보기" />
+  </resource>
+  <resource key="res_id" type="text">
+    <message locale="en" value="-" />
+    <message locale="ko" value="resource 식별자" />
+  </resource>
+  <resource key="score_max" type="text">
+    <message locale="en" value="Highest score accomplished" />
+    <message locale="ko" value="성취최대점수" />
+  </resource>
+  <resource key="score_min" type="text">
+    <message locale="en" value="Lowest score accomplished" />
+    <message locale="ko" value="성취최소점수" />
+  </resource>
+  <resource key="title1" type="text">
+    <message locale="en" value="Select course" />
+    <message locale="ko" value="코스 선택" />
+  </resource>
+  <resource key="title10" type="text">
+    <message locale="en" value="Select contents" />
+    <message locale="ko" value="컨텐츠 선택" />
+  </resource>
+  <resource key="title11" type="text">
+    <message locale="en" value="Delete contents" />
+    <message locale="ko" value="컨텐츠 삭제" />
+  </resource>
+  <resource key="title12" type="text">
+    <message locale="en" value="Select contents" />
+    <message locale="ko" value="컨텐츠 선택" />
+  </resource>
+  <resource key="title2" type="text">
+    <message locale="en" value="Contents URL" />
+    <message locale="ko" value="컨텐츠URL" />
+  </resource>
+  <resource key="title3" type="text">
+    <message locale="en" value="-" />
+    <message locale="ko" value="점" />
+  </resource>
+  <resource key="title4" type="text">
+    <message locale="en" value="Course overview level number" />
+    <message locale="ko" value="강의안계층번호" />
+  </resource>
+  <resource key="title5" type="text">
+    <message locale="en" value="-" />
+    <message locale="ko" value="NETg CourseID 1 / CourseID" />
+  </resource>
+  <resource key="title6" type="text">
+    <message locale="en" value="-" />
+    <message locale="ko" value="NETg CourseID 2 / 기관코드" />
+  </resource>
+  <resource key="title7" type="text">
+    <message locale="en" value="Minute" />
+    <message locale="ko" value="분" />
+  </resource>
+  <resource key="title8" type="text">
+    <message locale="en" value="Phase" />
+    <message locale="ko" value="단계" />
+  </resource>
+  <resource key="title9" type="text">
+    <message locale="en" value="None" />
+    <message locale="ko" value="없음" />
+  </resource>
+  <resource key="totpage" type="text">
+    <message locale="en" value="Total number of pages" />
+    <message locale="ko" value="총페이지수" />
+  </resource>
+  <resource key="update_dt" type="text">
+    <message locale="en" value="Final update - date" />
+    <message locale="ko" value="최종 수정일" />
+  </resource>
+  <resource key="update_id" type="text">
+    <message locale="en" value="Final update - ID" />
+    <message locale="ko" value="최종수정id" />
+  </resource>
+  <resource key="version" type="text">
+    <message locale="en" value="Contents version" />
+    <message locale="ko" value="컨텐츠버전" />
+  </resource>
+  <resource key="week" type="text">
+    <message locale="en" value="Week" />
+    <message locale="ko" value="주" />
+  </resource>
+</bundle>

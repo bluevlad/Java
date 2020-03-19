@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "resourceBundle.dtd">
+<bundle defaultLocale="en">
+	<desctiption>일반 table의 공통 필드</desctiption>
+	<resource key="field.seq" >
+		<message locale="ko" value="순서"/>
+		<message locale="en" value="Order"/>
+	</resource>
+	<resource key="field.active_yn" >
+		<message locale="ko" value="활성화"/>
+		<message locale="en" value="Active"/>
+	</resource>
+	<resource key="field.update_dt" >
+		<message locale="ko" value="최종수정일"/>
+		<message locale="en" value="Updated"/>
+	</resource>
+	<resource key="field.update_usn" >
+		<message locale="ko" value="최종수정자"/>
+		<message locale="en" value="Updated by "/>
+	</resource>
+	<resource key="field.reg_dt" >
+		<message locale="ko" value="등록일"/>
+		<message locale="en" value="Created"/>
+	</resource>
+	<resource key="field.reg_usn" >
+		<message locale="ko" value="등록자"/>
+		<message locale="en" value="Create by "/>
+	</resource>
+</bundle>

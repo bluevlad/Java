@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-command PUBLIC "-//Miranet//DTD maf-command config XML V1.0//EN" "resourceBundle.dtd">
+<bundle defaultLocale="en">
+	<resource key="sch_type" >
+		<message locale="en" value="Sehedule" />
+		<message locale="ko" value="강의일정" />
+	</resource>
+	<resource key="sch_sdt" >
+		<message locale="en" value="Start Date" />
+		<message locale="ko" value="시작일" />
+	</resource>
+	<resource key="sch_edt" >
+		<message locale="en" value="Completion Date" />
+		<message locale="ko" value="종료일" />
+	</resource>
+	<resource key="update_dt" >
+		<message locale="en" value="Update Date" />
+		<message locale="ko" value="최종수정일" />
+	</resource>
+	<resource key="update_id" >
+		<message locale="en" value="Update id" />
+		<message locale="ko" value="최종수정id" />
+	</resource>
+	<resource key="leccode" >
+		<message locale="en" value="Lecture Code" />
+		<message locale="ko" value="강의코드" />
+	</resource>
+	<resource key="sch_type_a" >
+		<message locale="en" value="Lecture Registration Period"/>
+		<message locale="ko" value="수강신청기간"/>
+	</resource>	
+	<resource key="sch_sdt_a" >
+		<message locale="en" value="Lecture Registration – Start Date"/>
+		<message locale="ko" value="수강신청시작일"/>
+	</resource>	
+	<resource key="sch_edt_a" >
+		<message locale="en" value="Lecture Registration – End Date"/>
+		<message locale="ko" value="수강신청종료일"/>
+	</resource>	
+	<resource key="sch_type_c" >
+		<message locale="en" value="Lecture period"/>
+		<message locale="ko" value="강의기간"/>
+	</resource>	
+	<resource key="sch_sdt_c" >
+		<message locale="en" value="Lecture start date"/>
+		<message locale="ko" value="강의시작일"/>
+	</resource>	
+	<resource key="sch_edt_c" >
+		<message locale="en" value="Lecture completion date"/>
+		<message locale="ko" value="강의종료일"/>
+	</resource>	
+	<resource key="sch_type_f" >
+		<message locale="en" value="Re-study (Refreshment) Period"/>
+		<message locale="ko" value="재학습[복습]기간"/>
+	</resource>	
+	<resource key="sch_sdt_f" >
+		<message locale="en" value="Re-study (Refreshment) – Start Date"/>
+		<message locale="ko" value="재학습[복습]시작일"/>
+	</resource>	
+	<resource key="sch_edt_f" >
+		<message locale="en" value="Re-study (Refreshment) – End Date"/>
+		<message locale="ko" value="재학습[복습]종료일"/>
+	</resource>	
+</bundle>

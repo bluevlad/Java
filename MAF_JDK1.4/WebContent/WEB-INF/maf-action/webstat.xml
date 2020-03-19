@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "mvc-configuration.dtd">
+<configuration>
+	<template-list>
+		<template-info name="webstat" uri="/WEB-INF/jsp/mafapp/webstat/_default.jsp"/>
+	</template-list>
+	<action title="접속통계" uri="webstat.do" type="miraenet.app.webstat.WebStat" default="default"
+	jsppath="/WEB-INF/jsp/mafapp/webstat/">
+		<action-view>
+			<view-info name="default" title="기본" uri="default.jsp" useTemplate="www" />
+			<view-info name="fusionxml" title="기본" uri="fusionXmlData.jsp" type="xml" />
+			<view-info name="user_log_day" uri="user_log_day.jsp" />
+			<view-info name="byOrgType" uri="byOrgType.jsp" useTemplate="www" />
+		</action-view>
+		<cmds>
+			<cmd name="default" method="cmdDefault"  />
+			<cmd name="login" method="cmdDefault"  />
+			<cmd name="firsthit" method="cmdDefault"  />
+			<cmd name="data" method="cmdData"  />
+			<cmd name="user_log_day" method="user_log_day" cmdtype="jsp" />
+			<cmd name="byOrgType" method="cmdByOrgType"  />
+		</cmds>
+	</action>
+
+</configuration>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "mvc-configuration.dtd">
+<configuration>
+
+	<global-view>
+	</global-view>
+
+	<action uri="mailsend.do" 	type="modules.wlc.common.mail.WsemailsendAction" 
+		desc="메일발송"  title="메일발송" default="add">
+		<action-view>
+			<view-info name="add" uri="/WEB-INF/jsp/wlc/common/mail/wsemailsend/add.jsp" useTemplate="inner_frame" />
+			<view-info name="change" uri="/WEB-INF/jsp/wlc/common/mail/wsemailsend/changetmplt.jsp" useTemplate="" />
+		</action-view>	
+		<cmds>
+			<cmd name="add" method="cmdAdd" formname="frm1" authtype="C" />
+			<cmd name="send" method="cmdSend" formname="frm1" authtype="C" />
+			<cmd name="change" method="cmdChange" formname="frm1" authtype="C" />
+			<cmd name="sendmail" method="cmdSendMail" formname="frm1" authtype="C" />
+		</cmds>
+		<forms>
+			<form name="frm1" bundle="table.wse_mail_send">				
+					<input name="mail_title" message="mail_title" type="text" />				
+					<input name="send_id" message="send_id" type="text" required="true"/>				
+					<input name="mail_text" message="mail_text" type="text" />				
+					<input name="mail_bcc" message="mail_bcc" type="text" />				
+					<input name="mail_cc" message="mail_cc" type="text" />				
+					<input name="send_dt" message="send_dt" type="text" />				
+					<input name="userid" message="userid" type="text" />
+			</form>		
+		</forms>
+	</action>
+
+</configuration>

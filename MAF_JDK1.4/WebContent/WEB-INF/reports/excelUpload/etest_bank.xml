@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="UTF-8"  ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "excel-upload.dtd">
+<upload desc="eTest 문제은행 등록" startrow="1">
+	<sqls>
+		<sql seq="0">
+		 INSERT INTO exm_bnk (queid,
+             qweowner, quetitle, quetext, queviw1, queviw2, queviw3,
+             queviw4, queviw5, queviw6, queviw7, queviw8, queviw9, queviw10, 
+             queviw11, queviw12, queviw13, queviw14, queviw15, queviw16, queviw17, 
+             queviw18, queviw19, queviw20, quecount,
+             quedesc, queansw, quescore, quetype, quelevel,  cat_id,
+             reg_usn, update_usn,ACTIVE_YN
+            )
+     VALUES (to_char(sysdate,'DD') || lpad( seq_exm_bnk_id.NEXTVAL,10,0), 
+     		 :qweowner, :quetitle, :quetext, :queviw1, :queviw2, :queviw3,
+             :queviw4, :queviw5, :queviw6, :queviw7, :queviw8, :queviw9, :queviw10, 
+             :queviw11, :queviw12, :queviw13, :queviw14, :queviw15, :queviw16, :queviw17, 
+             :queviw18, :queviw19, :queviw20, :quecount,
+             :quedesc, :queansw, :quescore, :quetype, :quelevel,  :cat_id,
+             :reg_usn, :reg_usn,'Y'
+            )
+		</sql>
+	</sqls>
+	<fields>
+		<field col="0" fieldname="cat_id" title="cat_id" type="string" check="true" sample="101" desc="Category ID" />
+		<field col="1" fieldname="quetitle" title="quetitle" type="string" check="true" sample="What happens to the voltage output of the map sensor during acceleration?" desc="Queue Title" />
+		<field col="2" fieldname="quetext" title="quetext" type="string" check="true" sample="" desc="View" />
+		
+		<field col="3" fieldname="quecount" title="quecount" type="string" check="true" sample="4" desc="Queue COunt" />
+		<field col="4" fieldname="queansw" title="queansw" type="string" check="true" sample="2#3" desc="Answer" />
+		<field col="5" fieldname="quescore" title="quescore" type="string" check="true" sample="1" desc="Score" />
+		<field col="6" fieldname="quetype" title="quetype" type="string" check="true" sample="s" desc="Type[s:Single choice, m:Mulitple choice, t:Short answer, s:Essay type]" />
+		<field col="7" fieldname="quelevel" title="quelevel" type="string" check="true" sample="3" desc="Difficult[5:Very Difficult 4:Difficult 3:Normal 2:Easy 1 : Very Easy]" />
+		
+		<field col="8" fieldname="queviw1" title="queviw1" type="string" sample="Decreased" desc="View 1" />
+		<field col="9" fieldname="queviw2" title="queviw2" type="string" sample="Increased" desc="View 2" />
+		<field col="10" fieldname="queviw3" title="queviw3" type="string" sample="No change" desc="View 3" />
+		<field col="11" fieldname="queviw4" title="queviw4" type="string" sample="Close to 0V" desc="View 4" />
+		<field col="12" fieldname="queviw5" title="queviw5" type="string" sample="" desc="View 5" />
+		<field col="13" fieldname="queviw6" title="queviw6" type="string" sample="" desc="View 6" />
+		<field col="14" fieldname="queviw7" title="queviw7" type="string" sample="" desc="View 7" />
+		<field col="15" fieldname="queviw8" title="queviw8" type="string" sample="" desc="View 8" />
+		<field col="16" fieldname="queviw9" title="queviw9" type="string" sample="" desc="View 9" />
+		<field col="17" fieldname="queviw10" title="queviw10" type="string" sample="" desc="View 10" />
+		<field col="18" fieldname="queviw11" title="queviw11" type="string" sample="" desc="View 11" />
+		<field col="19" fieldname="queviw12" title="queviw12" type="string" sample="" desc="View 12" />
+		<field col="20" fieldname="queviw13" title="queviw13" type="string" sample="" desc="View 13" />
+		<field col="21" fieldname="queviw14" title="queviw14" type="string" sample="" desc="View 14" />
+		<field col="22" fieldname="queviw15" title="queviw15" type="string" sample="" desc="View 15" />
+		<field col="23" fieldname="queviw16" title="queviw16" type="string" sample="" desc="View 16" />
+		<field col="24" fieldname="queviw17" title="queviw17" type="string" sample="" desc="View 17" />
+		<field col="25" fieldname="queviw18" title="queviw18" type="string" sample="" desc="View 18" />
+		<field col="26" fieldname="queviw19" title="queviw19" type="string" sample="" desc="View 19" />
+		<field col="27" fieldname="queviw20" title="queviw20" type="string" sample="" desc="View 20" />
+
+		<field col="28" fieldname="quedesc" title="quedesc" type="string"  check="true" sample="" desc="Description" />
+	</fields>
+</upload>

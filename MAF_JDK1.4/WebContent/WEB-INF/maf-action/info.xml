@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="euc-kr"?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "mvc-configuration.dtd">
+<configuration>
+	<template-list></template-list>
+	<global-view></global-view>
+	<action uri="OrgInfo.do" type="modules.info.OrgInfoAction" desc="module.info.OrgInfoAction" title="module.info.orgInfoAction"
+		default="list" >
+		<action-view>
+			<view-info name="list" uri="/WEB-INF/jsp/info/orgInfo/list.jsp" useTemplate="www" />
+			<view-info name="view" uri="/WEB-INF/jsp/info/orgInfo/view.jsp" useTemplate="www" />
+			<view-info name="photo" uri="/WEB-INF/jsp/info/orgInfo/photo.jsp" useTemplate="www" />
+			<view-info name="faci" uri="/WEB-INF/jsp/info/orgInfo/faci.jsp" useTemplate="www" />
+			<view-info name="tech" uri="/WEB-INF/jsp/info/orgInfo/tech.jsp" useTemplate="www" />
+			<view-info name="user" uri="/WEB-INF/jsp/info/orgInfo/user.jsp" useTemplate="www" />
+			<view-info name="orgn" uri="/WEB-INF/jsp/info/orgInfo/orgn.jsp" useTemplate="www" />
+			<view-info name="tree" type="json" />
+		</action-view>
+		<cmds>
+			<cmd name="list" method="cmdList" formname="frm1" authtype="R" />
+			<cmd name="tree" method="cmdTree"  authtype="R" />
+			<cmd name="view" method="cmdPhoto" formname="frm1" authtype="R" />
+			<cmd name="photo" method="cmdPhoto" formname="frm1" authtype="R" />
+			<cmd name="faci" method="cmdFaci" formname="frm1" authtype="R" />
+			<cmd name="tech" method="cmdTech" formname="frm1" authtype="R" />
+			<cmd name="user" method="cmdUser" formname="frm1" authtype="R" />
+			<cmd name="orgn" method="cmdOrgn" formname="frm1" authtype="R" />
+
+		</cmds>
+		<forms>
+			<form name="frm1" bundle="table.bas_org">
+				<input name="org_cd" message="org_cd" type="text">
+					<constraint validatorName="required" />
+				</input>
+				<input name="p_org_cd" message="p_org_cd" type="text"></input>
+				<input name="org_type" message="org_type" type="text">
+					<constraint validatorName="required" />
+				</input>
+				<input name="region" message="region" type="text"></input>
+				<input name="org_name" message="org_name" type="text"></input>
+				<input name="nation" message="nation" type="text"></input>
+				<input name="active_flag" message="active_flag" type="text"></input>
+				<input name="dist_no" message="dist_no" type="text"></input>
+				<input name="deal_no" message="deal_no" type="text"></input>
+				<input name="deal_region" message="deal_region" type="text"></input>
+				<input name="update_usn" message="field.update_usn" bundle="table._common" type="text"></input>
+				<input name="update_dt" message="field.update_dt" bundle="table._common" type="text"></input>
+				<input name="photo_comment" bundle="table.bas_org_photo" message="photo_comment" type="text"/>
+				<input name="file_name" message="file_name" type="text" bundle="table.bas_org_photo" />
+				<input name="faci_name" message="faci_name" type="text" bundle="table.bas_org_facility" />
+				<input name="faci_purpose" message="faci_purpose" type="text" bundle="table.bas_org_facility" />
+				<input name="faci_area" message="faci_area" type="text" bundle="table.bas_org_facility" />
+			</form>
+			
+		</forms>
+	</action>
+	<action uri="MyInfo.do" type="modules.info.MyInfoAction" desc="개인정보보기" 
+		default="view" >
+		<cmds>
+			<cmd name="view" method="cmdView" formname="frm1" authtype="R" />
+		</cmds>
+		<action-view>
+			
+			<view-info name="view" uri="/WEB-INF/jsp/info/myInfo/view.jsp" useTemplate="www" />
+			<view-info name="photo" uri="/WEB-INF/jsp/info/myInfo/photo.jsp" useTemplate="inner_frame" />
+			<view-info name="edit" uri="/WEB-INF/jsp/info/myInfo/edit.jsp" useTemplate="www" />
+			<view-info name="add" uri="/WEB-INF/jsp/info/myInfo/add.jsp" useTemplate="www" />
+			<view-info name="tree" type="json" />
+		</action-view>
+		<forms>
+		<form name="frm1" bundle="table.maf_user">
+			<input name="userid" message="userid" type="text"/>
+			<input name="nm" message="nm" type="text"/>
+			<input name="org_name" message="org_name" type="text"/>
+			<input name="section" bundle="table.maf_user" message="section" type="text"/>
+			<input name="tel" message="tel" type="text" bundle="table.maf_user" />
+			<input name="email" message="email" type="text" bundle="table.maf_user" />
+			<input name="add" message="add" type="text" bundle="table.maf_user" />
+		</form>
+		</forms>
+	</action>
+	<action uri="MyStat.do" type="modules.info.MyStatAction" desc="교육이력보기" 
+		default="view" debug="true">
+		<cmds>
+			<cmd name="printCerti" method="printCerti" formname="frm1" authtype="R" />
+			<cmd name="view" method="cmdView" formname="frm1" authtype="R" />
+		</cmds>
+		<action-view>
+			
+			<view-info name="view" uri="/WEB-INF/jsp/info/myStat/view.jsp" useTemplate="www" />
+			<view-info name="tree" type="json" />
+			<view-info name="jpdf" uri="/WEB-INF/reports/certi/kmc_certi.jasper" type="jpdf" />
+		</action-view>
+		<forms>
+		<form name="frm1" bundle="table.maf_user">
+			<input name="userid" message="userid" type="text"/>
+			<input name="nm" message="nm" type="text"/>
+			<input name="org_name" message="org_name" type="text"/>
+			<input name="section" bundle="table.maf_user" message="section" type="text"/>
+		</form>
+		</forms>
+	</action>
+</configuration>

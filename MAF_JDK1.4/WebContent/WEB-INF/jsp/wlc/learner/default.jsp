@@ -1,0 +1,7 @@
+<%@ page contentType="text/html; charset=utf-8"%>
+<%@ include file="/WEB-INF/jspf/prelude_jsp12.jspf" %>
+
+<SCRIPT LANGUAGE="JavaScript">
+  document.location.href = "<mh:out value="${to}" td="true"/>";
+</SCRIPT>
+

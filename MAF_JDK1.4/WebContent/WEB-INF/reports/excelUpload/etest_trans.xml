@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "excel-upload.dtd">
+<upload desc="eTest 문제은행 등록" startrow="1">
+	<sqls>
+		<sql seq="0">
+		MERGE INTO exm_bnk_lang dst
+     USING (SELECT :queid queid, :lang lang, :quetitle quetitle, :quetext quetext, :queviw1 queviw1,
+                   :queviw2 queviw2, :queviw3 queviw3, :queviw4 queviw4, :queviw5 queviw5,
+                   :queviw6 queviw6, :queviw7 queviw7, :queviw8 queviw8, :queviw9 queviw9,
+                   :queviw10 queviw10, :queviw11 queviw11, :queviw12 queviw12, :queviw13 queviw13,
+                   :queviw14 queviw14, :queviw15 queviw15, :queviw16 queviw16, :queviw17 queviw17,
+                   :queviw18 queviw18, :queviw19 queviw19, :queviw20 queviw20,
+                   :quedesc quedesc, :queansw queansw, :active_yn active_yn,
+                   :update_usn update_usn
+              FROM DUAL) src
+        ON (    dst.queid = src.queid
+            AND dst.lang = src.lang)
+   WHEN MATCHED THEN
+      UPDATE
+         SET quetitle = src.quetitle, quetext = src.quetext, 
+             queviw1 = src.queviw1, queviw2 = src.queviw2, queviw3 = src.queviw3,
+             queviw4 = src.queviw4, queviw5 = src.queviw5, queviw6 = src.queviw6,
+             queviw7 = src.queviw7, queviw8 = src.queviw8, queviw9 = src.queviw9,
+             queviw10 = src.queviw10, queviw11 = src.queviw11, queviw12 = src.queviw12, 
+             queviw13 = src.queviw13, queviw14 = src.queviw14, queviw15 = src.queviw15, 
+             queviw16 = src.queviw16, queviw17 = src.queviw17, queviw18 = src.queviw18, 
+             queviw19 = src.queviw19, queviw20 = src.queviw20, 
+             quedesc = src.quedesc, queansw = src.queansw,
+             active_yn = src.active_yn, update_dt = SYSDATE, update_usn = src.update_usn
+   WHEN NOT MATCHED THEN
+      INSERT (queid, lang, quetitle, quetext, queviw1, queviw2, queviw3, queviw4, queviw5, queviw6,
+              queviw7, queviw8, queviw9, queviw10, queviw11, queviw12, queviw13, queviw14, queviw15,
+              queviw16, queviw17, queviw18, queviw19, queviw20, quedesc, queansw, active_yn, reg_usn, reg_dt,
+              update_dt, update_usn)
+      VALUES (src.queid, src.lang, src.quetitle, src.quetext, src.queviw1, src.queviw2, src.queviw3,
+              src.queviw4, src.queviw5, src.queviw6, src.queviw7, src.queviw8, src.queviw9,
+              src.queviw10, src.queviw11, src.queviw12, src.queviw13, src.queviw14, src.queviw15, 
+              src.queviw16, src.queviw17, src.queviw18, src.queviw19, src.queviw20, 
+              src.quedesc, src.queansw, src.active_yn, src.update_usn, SYSDATE,
+              SYSDATE, src.update_usn)
+		</sql>
+	</sqls>
+	<fields>
+		<field col="0" fieldname="queid" title="queid" type="string" />
+		<field col="1" fieldname="lang" title="lang" type="string" />
+		<field col="2" fieldname="active_yn" title="active_yn" type="string" />
+		<field col="3" fieldname="quetitle" title="quetitle" type="string" />
+		<field col="4" fieldname="quetext" title="quetext" type="string" />
+		<field col="5" fieldname="queansw" title="queansw" type="string" />
+		<field col="6" fieldname="queviw1" title="queviw1" type="string" />
+		<field col="7" fieldname="queviw2" title="queviw2" type="string" />
+		<field col="8" fieldname="queviw3" title="queviw3" type="string" />
+		<field col="9" fieldname="queviw4" title="queviw4" type="string" />
+		<field col="10" fieldname="queviw5" title="queviw5" type="string" />
+		<field col="11" fieldname="queviw6" title="queviw6" type="string" />
+		<field col="12" fieldname="queviw7" title="queviw7" type="string" />
+		<field col="13" fieldname="queviw8" title="queviw8" type="string" />
+		<field col="14" fieldname="queviw9" title="queviw9" type="string" />
+		<field col="15" fieldname="queviw10" title="queviw10" type="string" />
+		<field col="16" fieldname="queviw11" title="queviw11" type="string" />
+		<field col="17" fieldname="queviw12" title="queviw12" type="string" />
+		<field col="18" fieldname="queviw13" title="queviw13" type="string" />
+		<field col="19" fieldname="queviw14" title="queviw14" type="string" />
+		<field col="20" fieldname="queviw15" title="queviw15" type="string" />
+		<field col="21" fieldname="queviw16" title="queviw16" type="string" />
+		<field col="22" fieldname="queviw17" title="queviw17" type="string" />
+		<field col="23" fieldname="queviw18" title="queviw18" type="string" />
+		<field col="24" fieldname="queviw19" title="queviw19" type="string" />
+		<field col="25" fieldname="queviw20" title="queviw20" type="string" />
+		<field col="26" fieldname="quedesc" title="quedesc" type="string" />
+	</fields>
+</upload>

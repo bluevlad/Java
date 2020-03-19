@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "resourceBundle.dtd">
+<bundle defaultLocale="en">
+	<resource key="insert.ok" >
+		<message locale="ko" value="{0}개의 레코드가 정상적으로 등록 되었습니다."/>
+		<message locale="en" value="{0} record(s) inserted."/>
+	</resource>
+	<resource key="insert.fail" >
+		<message locale="ko" value="Insert에 실패했습니다."/>
+		<message locale="en" value="Insert failed."/>
+	</resource>
+	<resource key="update.ok" >
+		<message locale="ko" value="{0}개의 레코드가 정상적으로 Update 되었습니다."/>
+		<message locale="en" value="{0} record(s) updated."/>
+	</resource>
+	<resource key="update.fail" >
+		<message locale="ko" value="Update에 실패했습니다."/>
+		<message locale="en" value="Update failed."/>
+	</resource>
+	<resource key="delete.ok" >
+		<message locale="ko" value="{0}개의 레코드가 정상적으로 삭제 되었습니다."/>
+		<message locale="en" value="{0} records deleted."/>
+	</resource>
+	<resource key="delete.fail" >
+		<message locale="ko" value="삭제에 실패했습니다."/>
+		<message locale="en" value="Delete failed."/>
+	</resource>			
+
+	<resource key="upload.ok" >
+		<message locale="ko" value="정상적으로 업로드 되었습니다."/>
+		<message locale="en" value="Upload success."/>
+	</resource>			
+	<resource key="upload.fail" >
+		<message locale="ko" value="업로드에 실패했습니다."/>
+		<message locale="en" value="Upload failed."/>
+	</resource>			
+
+	<resource key="etc.nothing" >
+		<message locale="ko" value="없음"/>
+		<message locale="en" value="Nothing"/>
+	</resource>
+	
+	<resource key="delete.fail.existChild" >
+		<message locale="ko" value="하위코드가 존재하여 삭제할 수 없습니다."/>
+		<message locale="en" value="Can not delete because exist subcode."/>
+	</resource>
+		
+	<resource key="alert.missingparameter" >
+		<message locale="ko" value="{0} 파라미터가 전송되지 않았습니다."/>
+		<message locale="en" value="{0} request parameter not sumitted"/>
+	</resource>	
+	<resource key="alert.checked" >
+		<message locale="ko" value="대상을 선택하세요."/>
+		<message locale="en" value="Choose one or more."/>
+	</resource>	
+	
+	<resource key="alert.existOrder" >
+		<message locale="ko" value="order정보가 존재하여 삭제할 수 없습니다."/>
+		<message locale="en" value="Can not delete because exist order."/>
+	</resource>		
+	
+	<resource key="confirm.delete" >
+		<message locale="ko" value="삭제하시겠습니까?"/>
+		<message locale="en" value="Do you want to delete?"/>
+	</resource>		
+	<resource key="navigator.totalcount" >
+		<message locale="ko" value="총 {0} 건"/>
+		<message locale="en" value="Total {0} ea"/>
+	</resource>		
+	<resource key="navigator.noDataFound" >
+		<message locale="ko" value="조건에 맞는 자료가 없습니다."/>
+		<message locale="en" value="There is no data."/>
+	</resource>		
+
+	<resource key="message.fileupload.limited1" >
+		<message locale="ko" value="파일의 크기는"/>
+		<message locale="en" value="Max File Size"/>
+	</resource>		
+	<resource key="message.fileupload.limited2" >
+		<message locale="ko" value="Mbyte이하로 등록하세요."/>
+		<message locale="en" value="Mbyte Limited"/>
+	</resource>		
+	<resource key="message.exm.fileupload.limited1" >
+		<message locale="ko" value="Total File Size is"/>
+		<message locale="en" value="첨부파일 총합의 크기는"/>
+	</resource>		
+	<resource key="message.filetype.check" >
+		<message locale="ko" value="형식에 맞는 파일을 첨부하십시오."/>
+		<message locale="en" value="Invalid File Type."/>
+	</resource>		
+	<resource key="message.batch.check" >
+		<message locale="ko" value="파일의 내용을 등록하시겠습니까?"/>
+		<message locale="en" value="Are You Write?"/>
+	</resource>		
+</bundle>
