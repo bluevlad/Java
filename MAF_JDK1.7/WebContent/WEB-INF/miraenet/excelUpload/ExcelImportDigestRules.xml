@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE digester-rules PUBLIC
+         "-//Jakarta Apache //DTD digester-rules XML V1.0//EN"
+         "digester-rules.dtd">
+<digester-rules>
+	<object-create-rule pattern="upload"
+		classname="maf.lib.excel.importer.ExcelImportInfo" />
+	<set-properties-rule pattern="upload">
+		<alias attr-name="desc" prop-name="desc" />
+		<alias attr-name="startrow" prop-name="startrow" />
+	</set-properties-rule>
+
+	<pattern value="upload/sqls/sql">
+		 <!-- <object-create-rule
+			classname="maf.lib.excel.importer.ExcelImpotyQueries" /> -->
+		<call-method-rule methodname="addSql" paramcount="2"
+			paramtypes="java.lang.String, java.lang.String" />
+		<call-param-rule paramnumber="0" />
+		<call-param-rule attrname="seq" paramnumber="1"/>
+
+		<!--<set-properties-rule>
+			<alias attr-name="seq" prop-name="seq" />
+		</set-properties-rule>
+
+		<set-next-rule methodname="addSql" /> -->
+	</pattern>
+
+	<pattern value="upload/fields/field">
+		<object-create-rule
+			classname="maf.lib.excel.importer.ExcelImportField" />
+		<set-properties-rule>
+			<alias attr-name="col" prop-name="col" />
+			<alias attr-name="fieldname" prop-name="fieldname" />
+			<alias attr-name="title" prop-name="title" />
+			<alias attr-name="type" prop-name="type" />
+
+			<alias attr-name="sample" prop-name="sample" />
+			<alias attr-name="desc" prop-name="desc" />
+
+		</set-properties-rule>
+		<set-next-rule methodname="addField" />
+	</pattern>
+	
+	<pattern value="upload/samplesql">
+		<call-method-rule methodname="setSampleSql" paramcount="1"
+			paramtypes="java.lang.String" />
+		<call-param-rule paramnumber="0" />
+	</pattern>
+</digester-rules>

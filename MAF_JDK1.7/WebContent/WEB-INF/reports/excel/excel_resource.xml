@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "excel-viewer.dtd">
+<viewer filename="resource.xls" title="resource">
+	<field id="bundle" title="resource category"/>
+	<field id="key" title="message key"/>
+	<field id="default" title="defaultt message"/>
+	<field id="locale" title="Locale"/>
+	<field id="message" title="message"/>
+</viewer>

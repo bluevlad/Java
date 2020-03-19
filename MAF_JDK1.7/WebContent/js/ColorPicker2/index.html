@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>플래시 칼라피커</title>
+<script language="javascript" src="flashpicker2.js"></script>
+<script>
+// settings
+ColorPicker2.path = 'ColorPicker2.swf';
+ColorPicker2.align = 'middle'; // ( left, right, middle, top, bottom)
+ColorPicker2.handler = userFunc; // default handler
+
+// user custom handler
+function userFunc(str)
+{
+	document.getElementById("color").value = str;
+	window.status = "선택한 색상은 '" + str + "' 입니다.";
+}
+</script>
+<style>
+BODY {
+	font-size:9pt;
+	font-family:Verdana,굴림;
+}
+H3 {
+	margin-bottom:5px;
+}
+CODE {
+	display:block;
+	font-family:FixedSys;
+	margin-top:3px;
+	margin-bottom:10px;
+	padding:5px 10px 5px 20px;
+	background-color:#DEDEDE;
+}
+</style>
+</head>
+<body>
+<h2>Flash ColorPicker2</h2>
+
+<p>
+<h3>1. 개요 (Overview)</h3>
+색상을 선택하는 칼라 피커를 플래시와 연동해서 구현한 플래시 칼라피커의 두번째 버전입니다. 이번에 만든 것은 조금 더 세세한 설정이 가능하도록 한 버전으로 kokomo님의 부탁으로 만들어졌습니다.
+</p><br />
+
+<p>
+<h3>2. 사용법 (Usage)</h3>
+제일 먼저 할 일은 당연히 스크립트를 문서에 포함시키는 것이다. 칼라피커의 특성상
+다중 실행을 하는 일은 별로 없으므로, 포함한 후에 바로 사용할 수 있다.
+스크립트를 포함한 후에는, 몇가지 설정을 해줘야 할 것이 있는데 다음과 같다.<br />
+※ 파일이름이 <span style="color:red">ColorPicker2.swf</span> 로 바뀌었습니다.
+<code>
+	ColorPicker2.path = 'ColorPicker2.swf'; // 칼라피커 플래시 파일의 경로<br />
+	ColorPicker2.align = 'middle'; // 칼라피커가 나타날 위치<br />
+	ColorPicker2.handler = userFunc; // 기본 핸들러
+</code>
+<ul>
+	<li><b>align</b>에는 <em>left, right, top, middle, bottom</em> 의 값이 가능하다. 각각 어떤 모양을 나타내는지는 직접 실행해보고 알도록 한다.</li>
+	<li>핸들러는 함수를 먼저 지정한 후 대입한다. 위의 예에서는 미리 userFunc 함수가 지정되어있다고 가정한다.</li>
+</ul>
+핸들러 함수는 첫번째 전달값을 반드시 가지고 있어야 한다. 첫번째 전달자에 전달되는 값은 '#'를 포함한 16진수 RGB 색상코드이다.<br />
+이제 필요한 곳에 버튼 등을 만들어서 onclick 등의 이벤트에 함수를 할당해서 칼라피커를 보여주도록 한다.
+<code>
+	&lt;input type="text" id="color" size="8" onclick="ColorPicker2.show(this, userFunc)" /&gt;
+</code>
+ColorPicker 객체와 show 메소드의 대소문자 사용을 주의하자. show 메소드의 첫번째 전달값은 반드시 this 가 되도록 하고, 두번째 전달값은 핸들러를 지정한다. 만일 핸들러를 지정하지 않고 사용하면 위에서 설정한 기본 핸들러가 지정되고, 기본 핸들러도 설정되어있지 않다면 빈 함수를 지정한다.
+<code>
+	&lt;input type="text" id="color" size="8" onclick="ColorPicker2.show(this)" /&gt;<br />
+	이렇게 하면 기본 핸들러가 사용된다.
+</code>
+</p><br />
+
+<p>
+<h3>3. 사용예제 (Example)</h3>
+<code>
+	&lt;script language="javascript" src="flashpicker2.js"&gt;&lt;/script&gt;<br />
+	&lt;script language="javascript"&gt;<br />
+	// settings<br />
+	ColorPicker2.path = 'ColorPicker.swf';<br />
+	ColorPicker2.align = 'middle'; // ( left, right, middle, top, bottom)<br />
+	ColorPicker2.handler = userFunc; // default handler<br /><br />
+
+	// user custom handler<br />
+	function userFunc(str)<br />
+	{<br />
+	&nbsp;&nbsp;document.getElementById("color").value = str;<br />
+	&nbsp;&nbsp;window.status = "선택한 색상은 '" + str + "' 입니다.";<br />
+	}<br />
+	&lt;/script&gt;
+
+	
+</code>
+ &nbsp;- 색상 선택 : <input type="text" id="color" size="8" />
+<input type="button" value="..." onclick="ColorPicker2.show(this, userFunc);" />
+</p><br />
+<p>
+<h3>4. 저작권 (License)</h3>
+따로 라이센스라고 할만한 것은 없지만, 자바스크립트 소스내에 있는 저작자에 관한 짧은 주석을 삭제하지 않았으면 한다. 홈페이지에 오면 직접 만든 스크립트를 몇가지 더 볼 수 있다.
+<ul>
+	<li>만든 사람 : 행복한고니</li>
+	<li>홈페이지 : <a href="http://www.mygony.com" target="_blank">http://www.mygony.com</a></li>
+	<li>최종수정일 : 2005년 3월 16일</li>
+</ul>
+</p>
+</body>
+</html>

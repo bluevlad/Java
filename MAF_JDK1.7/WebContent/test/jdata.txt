@@ -1,0 +1,9 @@
+{ 'list':[
+	{"org_cd":"a001",
+		"org_name":"seoul"},
+	{"org_cd":"a002",
+		"org_name":"tae"},
+	{"org_cd":"a003",
+		"org_name":"taegu"}
+	]
+}

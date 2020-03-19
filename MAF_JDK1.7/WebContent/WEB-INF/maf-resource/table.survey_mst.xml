@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "resourceBundle.dtd">
+<bundle defaultLocale="en">
+	<resource key="surveyid">
+		<message locale="ko" value="설문차수코드" />
+		<message locale="en" value="Survey ID" />
+	</resource>
+	<resource key="surveyowner">
+		<message locale="ko" value="설문소유자" />
+		<message locale="en" value="Owner" />
+	</resource>
+	<resource key="surveytitle">
+		<message locale="ko" value="설문명[제목]" />
+		<message locale="en" value="Subject" />
+	</resource>
+	<resource key="surveydesc">
+		<message locale="ko" value="설문내용" />
+		<message locale="en" value="Desc." />
+	</resource>
+	<resource key="survey_sdat_t1">
+		<message locale="ko" value="설문시작일자" />
+		<message locale="en" value="Start date" />
+	</resource>
+	<resource key="survey_edat_t1">
+		<message locale="ko" value="설문종료일자" />
+		<message locale="en" value="End date" />
+	</resource>
+	<resource key="questions">
+		<message locale="ko" value="설문문항수" />
+		<message locale="en" value="Questions" />
+	</resource>
+	<resource key="surveytype">
+		<message locale="ko" value="설문유형" />
+		<message locale="en" value="Type" />
+	</resource>
+	<resource key="setid">
+		<message locale="en" value="Set id" />
+	</resource>
+</bundle>

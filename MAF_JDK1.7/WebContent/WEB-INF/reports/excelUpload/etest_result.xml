@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "excel-upload.dtd">
+<upload desc="upload group certification" startrow="1">
+	<sqls>
+		<sql seq="0">
+			 {call etest.upload_etest_result(:exmid,:usn,:rstscore100,:update_id)}
+		</sql>
+	</sqls>
+	<fields>
+		<field col="0" fieldname="usn" title="usn" check="true" sample="2049988" desc="USER ID" />
+		<field col="1" fieldname="rstscore100" title="rstscore100" check="true" sample="80" desc="Score" />
+	</fields>
+	<samplesql></samplesql>
+	
+</upload>

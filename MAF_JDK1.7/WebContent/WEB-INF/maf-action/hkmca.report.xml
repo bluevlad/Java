@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE maf-resource PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "mvc-configuration.dtd">
+<configuration>
+
+	<global-view>
+	</global-view>
+	
+	<action uri="ClassScore.do" type="modules.hkmca.report.ClassScoreAction" desc="교육성적/학점현황" title="교육성적/학점현황" default="list">
+		<action-view>
+			<view-info name="list" uri="/WEB-INF/jsp/hkmca/report/class_score/list.jsp" useTemplate="www" />
+			<view-info name="excel" uri="/WEB-INF/jsp/hkmca/report/class_score/excel.jsp" />
+		</action-view>
+		<cmds>
+			<cmd name="list" method="cmdList" formname="frm1" authtype="R"/>
+			<cmd name="excel" method="cmdExcel" formname="frm1" authtype="R"/>
+		</cmds>
+		<forms>
+			<form name="frm1" bundle="table.bas_class">
+				<input name="leccode" message="leccode" type="text" required="true"/>
+				<input name="lec_year" message="lec_year" type="text" ></input>
+				<input name="lecnumb" message="lecnumb" type="text" ></input>
+				<input name="lecname" message="lecname" type="text" ></input>
+				<input name="lecstat" message="lecstat" type="text" ></input>
+				<input name="section" message="section" type="text" ></input>
+				<input name="grade" message="grade" type="text" ></input>
+				<input name="field" message="field" type="text" ></input>
+				<input name="lec_date" message="lec_date" type="text" ></input>
+				<input name="orgn_cd" message="orgn_cd" type="text" ></input>
+				<input name="req_stat" message="req_stat" type="text" bundle="table.wcc_lec_req" ></input>
+				<input name="tot_score" message="tot_score" type="text" bundle="table.wce_fnl_grd" ></input>
+				<input name="userid" message="userid" type="text" bundle="table.bas_certi" ></input>
+				<input name="nm" message="usernm" type="text" bundle="table.bas_certi" ></input>
+			</form>
+		</forms>
+	</action>
+
+	<action uri="LectureProgress.do" type="modules.hkmca.report.LectureProgressAction" desc="교육진도율현황" title="교육진도율현황" default="list">
+		<action-view>
+			<view-info name="list" uri="/WEB-INF/jsp/hkmca/report/lecture/list.jsp" useTemplate="www" />
+			<view-info name="excel" uri="/WEB-INF/jsp/hkmca/report/lecture/excel.jsp" />
+		</action-view>
+		<cmds>
+			<cmd name="list" method="cmdList" formname="frm1" authtype="R"/>
+			<cmd name="excel" method="cmdExcel" formname="frm1" authtype="R"/>
+		</cmds>
+		<forms>
+			<form name="frm1" bundle="table.bas_class">
+				<input name="leccode" message="leccode" type="text" required="true"/>
+				<input name="lec_year" message="lec_year" type="text" ></input>
+				<input name="lecnumb" message="lecnumb" type="text" ></input>
+				<input name="lecname" message="lecname" type="text" ></input>
+				<input name="lecstat" message="lecstat" type="text" ></input>
+				<input name="section" message="section" type="text" ></input>
+				<input name="grade" message="grade" type="text" ></input>
+				<input name="field" message="field" type="text" ></input>
+				<input name="lec_date" message="lec_date" type="text" ></input>
+				<input name="orgn_cd" message="orgn_cd" type="text" ></input>
+				<input name="req_stat" message="req_stat" type="text" bundle="table.wcc_lec_req" ></input>
+				<input name="tot_score" message="tot_score" type="text" bundle="table.wce_fnl_grd" ></input>
+				<input name="userid" message="userid" type="text" bundle="table.bas_certi" ></input>
+				<input name="nm" message="usernm" type="text" bundle="table.bas_certi" ></input>
+				<input name="total_time" message="total_time" type="text" bundle="table.wlb_chp_prg" ></input>
+				<input name="is_grad" message="is_grad" type="text" bundle="table.wcc_lec_req" ></input>
+				<input name="email" message="email" type="text" bundle="table.maf_user" ></input>
+			</form>
+		</forms>
+	</action>
+
+	<action uri="ClassComplete.do" type="modules.hkmca.report.ClassCompleteAction" desc="교육수료현황" title="교육수료현황" default="list">
+		<action-view>
+			<view-info name="list" uri="/WEB-INF/jsp/hkmca/report/class_complete/list.jsp" useTemplate="www" />
+			<view-info name="excel" uri="/WEB-INF/jsp/hkmca/report/class_complete/excel.jsp" />
+		</action-view>
+		<cmds>
+			<cmd name="list" method="cmdList" formname="frm1" authtype="R"/>
+			<cmd name="excel" method="cmdExcel" formname="frm1" authtype="R"/>
+		</cmds>
+		<forms>
+			<form name="frm1" bundle="table.bas_class">
+				<input name="leccode" message="leccode" type="text" required="true"/>
+				<input name="lec_year" message="lec_year" type="text" ></input>
+				<input name="lecnumb" message="lecnumb" type="text" ></input>
+				<input name="lecname" message="lecname" type="text" ></input>
+				<input name="lecstat" message="lecstat" type="text" ></input>
+				<input name="section" message="section" type="text" ></input>
+				<input name="grade" message="grade" type="text" ></input>
+				<input name="field" message="field" type="text" ></input>
+				<input name="lec_date" message="lec_date" type="text" ></input>
+				<input name="orgn_cd" message="orgn_cd" type="text" ></input>
+				<input name="is_grad" message="is_grad" type="text" bundle="table.wcc_lec_req" ></input>
+				<input name="userid" message="userid" type="text" bundle="table.bas_certi" ></input>
+				<input name="nm" message="usernm" type="text" bundle="table.bas_certi" ></input>
+			</form>
+		</forms>
+	</action>
+
+	<action uri="LecYearOn.do" type="modules.hkmca.report.LecYearAction" desc="교육진행현황" title="교육진행현황" default="online">
+		<action-view>
+			<view-info name="online" uri="/WEB-INF/jsp/hkmca/report/lecyear/online.jsp" useTemplate="www" />
+			<view-info name="onexcel" uri="/WEB-INF/jsp/hkmca/report/lecyear/onexcel.jsp" />
+			<view-info name="pop" uri="/WEB-INF/jsp/hkmca/report/lecyear/pop_userlist.jsp" useTemplate="popup" />
+		</action-view>
+		<cmds>
+			<cmd name="online" method="cmdOnline" formname="frm1" authtype="R"/>
+			<cmd name="onexcel" method="cmdOnExcel" formname="frm1" authtype="R"/>
+			<cmd name="pop" method="cmdOnPop" formname="frm1" authtype="R"/>
+		</cmds>
+		<forms>
+			<form name="frm1" bundle="table.bas_class">
+				<input name="lecname" message="lecname" type="text" ></input>
+				<input name="lec_year" message="lec_year" type="text" ></input>
+				<input name="lec_date" message="lec_date" type="text" ></input>
+				<input name="no_less" message="no_less" type="text" ></input>
+				<input name="no_day" message="no_day" type="text" ></input>
+				<input name="com_less" message="com_less" type="text" ></input>
+				<input name="cert_lvl" message="cert_lvl" type="text"></input>
+				<input name="target" message="lec_target" type="text"></input>
+				<input name="trainees" message="lecture.trainees" type="text" bundle="common.target"></input>
+				<input name="req" message="lecture.req" type="text" bundle="common.target"></input>
+				<input name="total" message="certi.tot" type="text" bundle="common.target"></input>
+				<input name="tpr" message="certi.tpr" type="text" bundle="common.target"></input>
+				<input name="userid" message="userid" type="text" bundle="table.maf_user"></input>
+				<input name="nm" message="nm" type="text" bundle="table.maf_user"></input>
+				<input name="email" message="email" type="text" bundle="table.maf_user"></input>
+				<input name="org_cd" message="org_cd" type="text" bundle="table.maf_user"></input>
+				<input name="org_name" message="org_name" type="text" bundle="table.maf_user"></input>
+				<input name="section" message="section" type="text" bundle="table.maf_user"></input>
+				<input name="sub_section" message="sub_section" type="text" bundle="table.maf_user"></input>
+			</form>
+		</forms>
+	</action>
+
+	<action uri="LecYearOff.do" type="modules.hkmca.report.LecYearAction" desc="교육진행현황" title="교육진행현황" default="offline">
+		<action-view>
+			<view-info name="offline" uri="/WEB-INF/jsp/hkmca/report/lecyear/offline.jsp" useTemplate="www" />
+			<view-info name="offexcel" uri="/WEB-INF/jsp/hkmca/report/lecyear/offexcel.jsp" />
+		</action-view>
+		<cmds>
+			<cmd name="offline" method="cmdOffline" formname="frm1" authtype="R"/>
+			<cmd name="offexcel" method="cmdOffExcel" formname="frm1" authtype="R"/>
+		</cmds>
+		<forms>
+			<form name="frm1" bundle="table.bas_class">
+				<input name="lecname" message="lecname" type="text" ></input>
+				<input name="lec_year" message="lec_year" type="text" ></input>
+				<input name="lec_date" message="lec_date" type="text" ></input>
+				<input name="no_less" message="no_less" type="text" ></input>
+				<input name="no_day" message="no_day" type="text" ></input>
+				<input name="to_day" message="to_day" type="text" ></input>
+				<input name="com_less" message="com_less" type="text" ></input>
+				<input name="cert_lvl" message="cert_lvl" type="text"></input>
+				<input name="target" message="lec_target" type="text"></input>
+				<input name="trainees" message="lecture.trainees" type="text" bundle="common.target"></input>
+				<input name="req" message="lecture.req" type="text" bundle="common.target"></input>
+				<input name="total" message="certi.tot" type="text" bundle="common.target"></input>
+				<input name="tpr" message="certi.tpr" type="text" bundle="common.target"></input>
+				<input name="section" message="section" type="text" bundle="table.maf_user"></input>
+			</form>
+		</forms>
+	</action>
+
+	<action uri="Certi.do" type="modules.hkmca.report.CertiAction" desc="인증발급현황" title="자격증취득현황" default="list">
+		<action-view>
+			<view-info name="list" uri="/WEB-INF/jsp/hkmca/report/certi/list.jsp" useTemplate="www" />
+			<view-info name="excel" uri="/WEB-INF/jsp/hkmca/report/certi/excel.jsp" />
+			<view-info name="jpdf" uri="/WEB-INF/reports/certi/certi_service_advisor_en.jasper" type="jpdf" />
+		</action-view>
+		<cmds>
+			<cmd name="list" method="cmdList" formname="frm1" authtype="R"/>
+			<cmd name="excel" method="cmdExcel" formname="frm1" authtype="R"/>
+			<cmd name="printCerti" method="printCerti" formname="frm1" authtype="R" />
+		</cmds>
+		<forms>
+			<form name="frm1" bundle="table.bas_certi">
+				<input name="region" message="region" type="text" bundle="table.bas_org" ></input>
+				<input name="dist_no" message="dist" type="text" bundle="table.bas_org" ></input>
+				<input name="deal_no" message="deal" type="text" bundle="table.bas_org"></input>
+				<input name="mst_section" message="mst_section" type="text"></input>
+				<input name="userid" message="userid" type="text" bundle="table.maf_user"></input>
+				<input name="nm" message="nm" type="text" bundle="table.maf_user"></input>
+				<input name="certi_no" message="crtno" type="text"></input>
+				<input name="grade" message="grade" type="text"></input>
+				<input name="certi" message="certi" type="text"></input>
+				<input name="certi_date" message="certi_date" type="text"></input>
+			</form>		
+		</forms>
+	</action>
+
+	<action uri="CertiYear.do" type="modules.hkmca.report.CertiYearAction" desc="년도별대비인증분석" title="년도별대비인증분석" default="view">
+		<action-view>
+			<view-info name="view" uri="/WEB-INF/jsp/hkmca/report/certiyear/view.jsp" useTemplate="www" />
+			<view-info name="excel" uri="/WEB-INF/jsp/hkmca/report/certiyear/excel.jsp" />
+		</action-view>
+		<cmds>
+			<cmd name="view" method="cmdView" formname="frm1" authtype="R"/>
+			<cmd name="excel" method="cmdExcel" formname="frm1" authtype="R"/>
+		</cmds>
+		<forms>
+			<form name="frm1" bundle="table.bas_certi">
+				<input name="certi_year" message="certi_year" type="text" ></input>
+				<input name="orgn_cd" message="orgn_cd" type="text" bundle="table.bas_target" ></input>
+				<input name="tot" message="certi.tot" type="text" bundle="common.target"></input>
+				<input name="non" message="certi.non" type="text" bundle="common.target"></input>
+				<input name="icn" message="certi.icn" type="text" bundle="common.target"></input>
+				<input name="rate" message="certi.rate" type="text" bundle="common.target"></input>
+				<input name="cnt" message="certi.cnt" type="text" bundle="common.target"></input>
+				<input name="dif" message="certi.dif" type="text" bundle="common.target"></input>
+				<input name="mst_section" message="mst_section" type="text"></input>
+			</form>		
+		</forms>
+	</action>
+
+	<action uri="CertiOrg.do" type="modules.hkmca.report.CertiOrgAction" desc="자격증취득현황(지역별)" title="자격증취득현황(지역별)" default="list">
+		<action-view>
+			<view-info name="list" uri="/WEB-INF/jsp/hkmca/report/certiorg/list.jsp" useTemplate="www" />
+			<view-info name="excel" uri="/WEB-INF/jsp/hkmca/report/certiorg/excel.jsp" />
+			<view-info name="resultXml" uri="/WEB-INF/jsp/hkmca/report/certiorg/resultXml.jsp" />
+		</action-view>
+		<cmds>
+			<cmd name="list" method="cmdList" formname="frm1" authtype="R" />
+			<cmd name="excel" method="cmdExcel" formname="frm1" authtype="R" />
+			<cmd name="userHistgram" method="resultXml"  authtype="R" cmdtype="jsp"/>
+		</cmds>
+		<forms>
+			<form name="frm1" bundle="table.bas_certi">
+				<input name="certi_date" message="certi_date" type="text" ></input>
+				<input name="mst_section" message="mst_section" type="text"></input>
+				<input name="grade" message="grade" type="text"></input>
+				<input name="region" message="region" type="text" bundle="table.bas_org" ></input>
+				<input name="dist_no" message="dist" type="text" bundle="table.bas_org" ></input>
+				<input name="deal_no" message="deal" type="text" bundle="table.bas_org"></input>
+				<input name="userid" message="userid" type="text" bundle="table.maf_user"></input>
+				<input name="tot" message="certi.tot" type="text" bundle="common.target"></input>
+			</form>		
+		</forms>
+	</action>
+
+	<action uri="CertiStat.do" type="modules.hkmca.report.CertiStatAction" desc="자격인증현황" title="자격인증현황" default="list">
+		<action-view>
+			<view-info name="list" uri="/WEB-INF/jsp/hkmca/report/certistat/list.jsp" useTemplate="www" />
+			<view-info name="excel" uri="/WEB-INF/jsp/hkmca/report/certistat/excel.jsp" />
+		</action-view>
+		<cmds>
+			<cmd name="list" method="cmdList" formname="frm1" authtype="R" />
+			<cmd name="excel" method="cmdExcel" formname="frm1" authtype="R" />
+		</cmds>
+		<forms>
+			<form name="frm1" bundle="table.bas_certi">
+				<input name="usn" message="table.id" type="text" bundle="common"></input>
+				<input name="certi_no" message="certi_no" type="text" ><constraint validatorName="required"/></input>
+				<input name="certi_date" message="certi_date" type="text" ></input>
+				<input name="certi_st" message="certi_st" type="text" ></input>
+				<input name="appl_id" message="appl_id" type="text" ></input>
+				<input name="appl_dt" message="appl_dt" type="text" ></input>
+				<input name="appr_id" message="appr_id" type="text" ></input>
+				<input name="appr_dt" message="appr_dt" type="text" ></input>
+				<input name="insert_dt" message="insert_dt" type="text" ></input>
+				<input name="insert_id" message="insert_id" type="text" ></input>
+				<input name="update_dt" message="update_dt" type="text" ></input>
+				<input name="update_id" message="update_id" type="text" ></input>
+				<input name="user_nm" message="table.name" type="text" bundle="common"></input>
+				<input name="job" message="job" type="text" ></input>
+				<input name="jobposition" message="jobposition" type="text" ></input>
+				<input name="mst_section" message="mst_section" type="text"></input>
+				<input name="grade" message="grade" type="text"></input>
+				<input name="field" message="field" type="text" bundle="table.bas_class"></input>
+				<input name="cert_lvl" message="cert_lvl" type="text" bundle="table.bas_class"></input>
+				<input name="deal" message="certi.deal" type="text" bundle="common.target"></input>
+				<input name="certi" message="certi.certi" type="text" bundle="common.target"></input>
+				<input name="pre" message="certi.pre" type="text" bundle="common.target"></input>
+				<input name="an" message="certi.an" type="text" bundle="common.target"></input>
+				<input name="pp" message="certi.pp" type="text" bundle="common.target"></input>
+				<input name="pr" message="certi.pr" type="text" bundle="common.target"></input>
+				<input name="pcn" message="certi.pcn" type="text" bundle="common.target"></input>
+				<input name="icn" message="certi.icn" type="text" bundle="common.target"></input>
+				<input name="ir" message="certi.ir" type="text" bundle="common.target"></input>
+				<input name="pos" message="certi.pos" type="text" bundle="common.target"></input>
+				<input name="tot" message="certi.tot" type="text" bundle="common.target"></input>
+				<input name="non" message="certi.non" type="text" bundle="common.target"></input>
+			</form>		
+		</forms>
+	</action>
+
+	<action uri="material.do" type="modules.hkmca.report.DistMaterialAction" desc="대리점교육장현황" default="list">
+		<action-view>
+			<view-info name="list" uri="/WEB-INF/jsp/hkmca/report/material/list.jsp" useTemplate="www" />
+			<view-info name="excel" uri="/WEB-INF/jsp/hkmca/report/material/excel.jsp" />
+		</action-view>
+		<cmds>
+			<cmd name="list" method="cmdList" formname="frm1" authtype="R" />
+			<cmd name="excel" method="cmdExcel" formname="frm1" authtype="R" />
+		</cmds>
+		<forms>
+			<form name="frm1" bundle="common">
+				<input name="usn" message="table.id" type="text"></input>
+				<input name="user_nm" message="table.name" type="text"></input>
+			</form>		
+		</forms>
+	</action>
+
+</configuration>
+	

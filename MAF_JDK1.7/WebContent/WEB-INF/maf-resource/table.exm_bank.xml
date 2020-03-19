@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-resource PUBLIC "-//Miranet//DTD maf-command config XML V1.0//EN" "resourceBundle.dtd">
+
+<bundle defaultLocale="ko">
+  <resource key="chpcode" type="text">
+    <message locale="en" value="Chapter" />
+    <message locale="ko" value="차시" />
+  </resource>
+  <resource key="label.quecount" type="text">
+    <message locale="en" value="{0} question" />
+    <message locale="ko" value="{0} 문항" />
+  </resource>
+  <resource key="label.score" type="text">
+    <message locale="en" value="Point" />
+    <message locale="ko" value="점" />
+  </resource>
+  <resource key="queansw" type="text">
+    <message locale="en" value="Correct Answer" />
+    <message locale="ko" value="정답" />
+  </resource>
+  <resource key="quecount" type="text">
+    <message locale="en" value="Number of choices" />
+    <message locale="ko" value="보기수(논술형일경우 0)" />
+  </resource>
+  <resource key="quedesc" type="text">
+    <message locale="en" value="Explanation" />
+    <message locale="ko" value="해설" />
+  </resource>
+  <resource key="quedescimg" type="text">
+    <message locale="en" value="File Name" />
+    <message locale="ko" value="파일명" />
+  </resource>
+  <resource key="queid" type="text">
+    <message locale="en" value="Question Number" />
+    <message locale="ko" value="문제 번호" />
+  </resource>
+  <resource key="queimag" type="text">
+    <message locale="en" value="Question Image" />
+    <message locale="ko" value="문제이미지" />
+  </resource>
+  <resource key="quelevel" type="text">
+    <message locale="en" value="Degree of Difficulty" />
+    <message locale="ko" value="난이도" />
+  </resource>
+  <resource key="quescore" type="text">
+    <message locale="en" value="Weighting" />
+    <message locale="ko" value="배점" />
+  </resource>
+  <resource key="quetext" type="text">
+    <message locale="en" value="Question Passage" />
+    <message locale="ko" value="문제지문" />
+  </resource>
+  <resource key="quetitle" type="text">
+    <message locale="en" value="Question" />
+    <message locale="ko" value="질문" />
+  </resource>
+  <resource key="quetype" type="text">
+    <message locale="en" value="Type" />
+    <message locale="ko" value="유형" />
+  </resource>
+  <resource key="queviw" type="text">
+    <message locale="en" value="Answer" />
+    <message locale="ko" value="Answer" />
+  </resource>
+  <resource key="qweowner" type="text">
+    <message locale="en" value="Question Possessor" />
+    <message locale="ko" value="문제소유자" />
+  </resource>
+  <resource key="section1" type="text">
+    <message locale="en" value="Field/Division" />
+    <message locale="ko" value="분야/구분" />
+  </resource>
+  <resource key="section2" type="text">
+    <message locale="en" value="Division2" />
+    <message locale="ko" value="구분2" />
+  </resource>
+  <resource key="title" type="text">
+    <message locale="en" value="Questionare" />
+    <message locale="ko" value="시험문제" />
+  </resource>
+
+  <resource key="wlc_exm_bnk.queansw.seusul.tip" type="text">
+    <message locale="ko" value="☞ 복수 정답의 경우는 ..&lt;br&gt; &lt;br&gt;&#xA;&#x9;&#x9;&#x9;예 : 한국#대한민국#korea#KOREA#Korea" />
+  </resource>
+</bundle>
+

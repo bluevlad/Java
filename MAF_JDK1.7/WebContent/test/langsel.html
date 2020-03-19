@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<META HTTP-EQUIV="Content-type" CONTENT="text/html;charset=utf-8" />
+<META HTTP-EQUIV="imagetoolbar" CONTENT="no">
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="-1">
+<script type="text/javascript" src='../js/sub.common.js'></script>
+<script type="text/javascript" src='../js/prototype.js'></script>
+<script>
+
+    var LangSelector = {
+        clickCount:0, 
+		over_sel:false,
+        loaded:false,
+        hideLangList: function(event) {
+			if(!LangSelector.over_sel) {
+				$('divLangList').setStyle({'visibility':'hidden'});
+			}
+        },
+		showLangList: function(event) {
+            if(!LangSelector.loaded) {
+                LangSelector.getList();
+             }
+			$('divLangList').setStyle({'visibility':'visible'});
+			
+		},
+        overLangSel:function() {
+            LangSelector.over_sel = true;
+        },
+        outLangSel:function() {
+            LangSelector.over_sel = false;
+        },
+        getList:function() {
+            var URL = '/hkmca/common.do?cmd=langList';
+            new Ajax.Request(URL, {
+                        onSuccess: function(transport) {
+                            var json = transport.responseText.evalJSON();
+                            var html = "";
+                            for(var i=0; i < json.length; i++ ) {
+                                var d = json[i];
+                                html += "<span onClick=''>" + d.name + "</span><br>";
+                            }
+                            var offesetLeftTop = Position.page($('divLangSelector'));
+                            var left=offesetLeftTop[0];
+                            var top=offesetLeftTop[1] + $('divLangSelector').offsetHeight;
+                            $('divLangList').setStyle({'top':top + 'px','left':left + 'px'});
+                            $('divLangList').innerHTML = html;
+                             LangSelector.loaded=true;
+                        },
+                        onFailure: function() {
+                            alert("fail to load language list!!!");
+                        }
+                    })
+        }
+    }
+	Event.observe(window, 'load', function() {
+	    Event.observe('divLangSelector', 'focus', LangSelector.showLangList  );
+        Event.observe('divLangSelector', 'blur', LangSelector.hideLangList );
+        Event.observe('divLangList', 'mouseover', LangSelector.overLangSel); 
+        Event.observe('divLangList', 'mouseout', LangSelector.outLangSel); 
+	});
+</script>
+<style>
+	.text{
+		visibility:visible;;;
+	}
+</style>
+</head>
+<body>
+	<div style="Z-INDEX: 1;cursor:pointer;background:#ff0000" >
+		<form name="search">askdlkasdl aslj kl<input type="text" name="divLangSelector"  id="divLangSelector" value="English" readonly style="border:none"/></form>
+	</div>
+        <div id="divLangList" style="position:absolute; Z-INDEX: 1; visibility: hidden; OVERFLOW: auto;  width: 180px; height: 125px; border: 1px solid #e0e0e0; background-color: #ffffff;">
+            Loading...
+        </div><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+pos : <span id="pos"></span>
+</body>
+</html>

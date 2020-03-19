@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-resource PUBLIC "-//Miranet//DTD maf-command config XML V1.0//EN" "resourceBundle.dtd">
+
+<bundle defaultLocale="en">
+  <resource key="popup.fail" type="text">
+    <message locale="en" value="Popup window is restriced by your PC's setup. " />
+    <message locale="ko" value="팝업차단 기능으로 인해 팝업 페이지가 차단되었습니다.\n차단된 팝업창을 허용해 주십시오." />
+  </resource>
+</bundle>
+

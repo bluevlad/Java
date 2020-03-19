@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "mvc-configuration.dtd">
+<configuration>
+	<template-list>
+			<template-info name="admin_inner" uri="/web_src/intranet/_inner.jsp" />
+
+		<template-info name="adminData"
+			uri="/mboard/adminData/_adminLayout.jsp" />
+		<template-info name="club_inner" uri="/club/layout/inner.jsp" />
+	</template-list>
+
+	<global-view>
+		<view-info name="boardList" uri="/mboard/c_list.jsp" useTemplate="www" />
+		<view-info name="boardView" uri="/mboard/c_view.jsp" useTemplate="www" />
+		<view-info name="boardWrite" uri="/mboard/c_write.jsp" useTemplate="www" />
+		<view-info name="ImageView" uri="/mboard/popup/slide_popup.jsp" />
+	</global-view>
+
+	<action uri="act.do" type="miraenet.app.mboard.actions.BoardAct" />
+	<action uri="write.do" 	type="miraenet.app.mboard.actions.BoardWrite" />
+	<action uri="view.do" type="miraenet.app.mboard.actions.BoardView" />
+	<action uri="list.do" type="miraenet.app.mboard.actions.BoardList" />
+	<action uri="viewimage.do" type="miraenet.app.mboard.actions.ImageView" />
+
+	<action uri="boardMeta.do" 	type="miraenet.app.mboard.actions.AdminMeta" title="게시판관리" default="list" desc="게시판관리">
+		<action-view>
+			<view-info name="metaList" uri="/mboard/admin/meta_list.jsp" useTemplate="www" />
+			<view-info name="metaWrite"	uri="/mboard/admin/meta_write.jsp" useTemplate="www" />
+		</action-view>
+		<cmds>
+			<cmd name="list" method="cmdList" />
+			<cmd name="edit" method="cmdEdit" />
+			<cmd name="update" method="cmdUpdateAct" />
+			<cmd name="add" method="cmdAdd" />
+			<cmd name="insert" method="cmdInsertAct" />
+		</cmds>
+	</action>
+	<action uri="boardAdmin.do"
+		type="miraenet.app.mboard.actions.AdminData" title="게시판관리">
+		<action-view>
+			<view-info name="default"
+				uri="/mboard/adminData/default.jsp" />
+			<view-info name="head" uri="/mboard/adminData/head.jsp" />
+			<view-info name="blank" uri="/mboard/adminData/blank.jsp" />
+			<view-info name="tree" uri="/mboard/adminData/tree.jsp" />
+		</action-view>
+	</action>
+</configuration>

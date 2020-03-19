@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "mvc-configuration.dtd">
+<configuration>
+	<template-list>
+
+	</template-list>
+
+	<global-view>
+	</global-view>
+	
+	<action uri="intranet.do" type="modules.intranet.intranetAction" desc="Intranet frame구성 " title="Intranet frame" default="index">
+		<action-view>
+			<view-info name="left" uri="/web_src/intranet/leftMenu.jsp" />
+			<view-info name="top" uri="/web_src/intranet/topMenu.jsp" />
+			<view-info name="index" uri="/web_src/intranet/frame.jsp" />
+		</action-view>
+		<cmds>
+			<cmd name="left" method="cmdLeftMenu" />
+			<cmd name="top" method="cmdTopMenu" />
+			<cmd name="index" method="cmdIndex" />
+		</cmds>
+	</action>
+	
+	<action uri="codeFind.do" type="modules.app.codeFind.CodeFind" desc="codeFind" title="codeFind" default="list">
+		<action-view>
+			<view-info name="list" uri="/WEB-INF/jsp/codeFind/codeFind.jsp" useTemplate="popup" />
+		</action-view>
+		<cmds>
+			<cmd name="list" method="cmdList" />
+		</cmds>
+	</action>	
+</configuration>

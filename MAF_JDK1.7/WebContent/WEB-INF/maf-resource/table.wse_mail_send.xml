@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-resource PUBLIC "-//Miranet//DTD maf-command config XML V1.0//EN" "resourceBundle.dtd">
+
+<bundle defaultLocale="en">
+  <resource key="mail_bcc" type="text">
+    <message locale="en" value="BCC" />
+    <message locale="ko" value="숨은참조" />
+  </resource>
+  <resource key="mail_cc" type="text">
+    <message locale="en" value="CC" />
+    <message locale="ko" value="참조" />
+  </resource>
+  <resource key="mail_format" type="text">
+    <message locale="en" value="Format" />
+    <message locale="ko" value="메일형태" />
+  </resource>
+  <resource key="mail_text" type="text">
+    <message locale="en" value="Content" />
+    <message locale="ko" value="메일내용" />
+  </resource>
+  <resource key="mail_title" type="text">
+    <message locale="en" value="Title" />
+    <message locale="ko" value="메일제목" />
+  </resource>
+  <resource key="mail_type" type="text">
+    <message locale="en" value="Type" />
+    <message locale="ko" value="메일성격" />
+  </resource>
+  <resource key="mgp" type="text">
+    <message locale="en" value="Group Name" />
+    <message locale="ko" value="메일그룹명" />
+  </resource>
+  <resource key="receive" type="text">
+    <message locale="en" value="To" />
+    <message locale="ko" value="받는사람" />
+  </resource>
+  <resource key="send" type="text">
+    <message locale="en" value="Send" />
+    <message locale="ko" value="보내는사람" />
+  </resource>
+  <resource key="send_dt" type="text">
+    <message locale="en" value="Date" />
+    <message locale="ko" value="발송일" />
+  </resource>
+  <resource key="send_id" type="text">
+    <message locale="en" value="Send ID" />
+    <message locale="ko" value="발송id" />
+  </resource>
+  <resource key="tmplt" type="text">
+    <message locale="en" value="Template" />
+    <message locale="ko" value="메일템플릿" />
+  </resource>
+  <resource key="userid" type="text">
+    <message locale="en" value="[From] User ID" />
+    <message locale="ko" value="발송자id" />
+  </resource>
+</bundle>
+

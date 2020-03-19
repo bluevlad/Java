@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "excel-upload.dtd">
+<upload desc="upload 수강신청 등록" startrow="1">
+	<sqls>
+		<sql seq="0">
+			{call SP_WCC_LEC_REQ_BATCH_INSERT(:userid, :leccode, :lecnumb, :reqstat, :is_pay, :update_id)}
+		</sql>
+	</sqls>
+	<fields>
+		<field col="0" fieldname="userid" title="User ID" sample="dipin2002" desc="User ID" />
+		<field col="1" fieldname="leccode" title="Lecture Code" sample="WOO-226-R-200706" desc="Lecture Code" />
+		<field col="2" fieldname="lecnumb" title="Lecture Num" sample="1" desc="Lecture Num" />
+		<field col="3" fieldname="reqstat" title="Status" sample="LR" desc="Status" />
+		<field col="4" fieldname="req_dt" title="Request Date" sample="" desc="Request Date" />
+		<field col="5" fieldname="lecname" title="Lecture Name" sample="" desc="Lecture Name" />
+		<field col="6" fieldname="alias_cd" title="Local Code" sample="" desc="Local Code" />
+		<field col="7" fieldname="nm" title="User Name" sample="" desc="User Name" />
+	</fields>
+</upload>

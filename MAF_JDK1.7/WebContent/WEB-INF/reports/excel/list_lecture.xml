@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"  ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "excel-viewer.dtd">
+<viewer filename="수강현황.xls" title="수강현황">
+	<field id="rownum" title="No"   />
+	<field id="prtcode" title="과정코드"   />
+	<field id="leccode" title="강의코드"   />
+	<field id="lecname" title="강의명"   />
+	<field id="lec_sdate" title="강의시작일" />
+	<field id="lec_edate" title="강의종료일"  />
+	<field id="insurance_report" title="신고여부"/>
+	<field id="lec_price" title="교육비"  />
+	<field id="tax_price" title="세액"/>
+	<field id="userid" title="학습자ID"/>
+	<field id="usernm" title="학습자명"  />
+	<field id="pin" title="주민등록번호"/>
+	<field id="company_nm" title="회사명"/>
+	<field id="attach_company" title="소속업체"/>
+	<field id="is_insurance" title="환급여부"/>
+	<field id="pay_type" title="결재수단"/>
+	<field id="amount" title="결제금액"/>
+	<field id="auth_date" title="결제일"/>
+	<field id="req_stat" title="수강인증여부"/>
+	<field id="email" title="Email"/>
+	<field id="tel" title="전화번호"/>
+	<field id="hp" title="핸드폰번호"/>
+	<field id="juso" title="주소"/>
+</viewer>

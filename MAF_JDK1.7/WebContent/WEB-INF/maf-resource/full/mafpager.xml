@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "resourceBundle.dtd">
+<bundle defaultLocale="ko">
+	<resource key="tab.rcvbox" >
+		<message locale="ko" value="받은쪽지함"/>
+	</resource>
+	<resource key="tab.sndbox" >
+		<message locale="ko" value="보낸쪽지함"/>
+	</resource>
+	<resource key="tab.writemsg" >
+		<message locale="ko" value="쪽지보내기"/>
+	</resource>	
+	<resource key="notice.writeaddr" >
+		<message locale="ko" value="※ 쪽지를 여러사람에게 보낼려면 회원ID뒤에 ';' 로 구분하여 입력하세요"/>
+	</resource>		
+	<resource key="tab.contacts" >
+		<message locale="ko" value="주소록"/>
+	</resource>		
+	<resource key="btn.write" >
+		<message locale="ko" value="쪽지쓰기"/>
+	</resource>		
+	<resource key="btn.reply" >
+		<message locale="ko" value="답장"/>
+	</resource>	
+	<resource key="btn.delete" >
+		<message locale="ko" value="삭제"/>
+	</resource>		
+	<!-- maf_pager  -->
+	<resource key="form.msg_no" >
+		<message locale="ko" value="일련번호"/>
+	</resource>
+
+	<resource key="form.msg_rcv_userid" >
+		<message locale="ko" value="받는사람id"/>
+	</resource>
+
+	<resource key="form.msg_rcv_nm" >
+		<message locale="ko" value="받는사람"/>
+	</resource>
+
+	<resource key="form.msg_snd_id" >
+		<message locale="ko" value="보낸사람id"/>
+	</resource>
+
+	<resource key="form.msg_snd_nm" >
+		<message locale="ko" value="보낸사람"/>
+	</resource>
+
+	<resource key="form.msg_title" >
+		<message locale="ko" value="제목"/>
+	</resource>
+
+	<resource key="form.msg_info" >
+		<message locale="ko" value="내용"/>
+	</resource>
+
+	<resource key="form.file_name" > 
+		<message locale="ko" value="첨부파일"/>
+	</resource>
+	<resource key="form.rcv_dt" >
+		<message locale="ko" value="받은일자"/>
+	</resource>
+	<resource key="form.msg_dt" >
+		<message locale="ko" value="보낸일자"/>
+	</resource>
+
+	<resource key="form.msg_read_dt" >
+		<message locale="ko" value="읽은일자"/>
+	</resource>
+
+	<resource key="form.msg_rcv_isdel" >
+		<message locale="ko" value="수신측 삭제여부[y:삭제 / n:삭제안함]"/>
+	</resource>
+
+	<resource key="form.msg_snd_isdel" >
+		<message locale="ko" value="송신측 삭제여부[y:삭제 / n:삭제안함]"/>
+	</resource>
+	<resource key="form.update_dt" >
+		<message locale="ko" value="최종수정일[수정된 현재일이 등록됨]"/>
+	</resource>
+
+	<resource key="form.update_id" >
+		<message locale="ko" value="최종수정id"/>
+	</resource>
+	<!--  쪽지 그룹  -->
+	<resource key="form.msg_grp_id" >
+		<message locale="ko" value="쪽지그룹id"/>
+	</resource>
+
+	<resource key="form.msg_grp_nm" >
+		<message locale="ko" value="그룹"/>
+	</resource>
+
+	<resource key="form.owner_usn" >
+		<message locale="ko" value="소유자 usn"/>
+	</resource>
+</bundle>	
+
+		

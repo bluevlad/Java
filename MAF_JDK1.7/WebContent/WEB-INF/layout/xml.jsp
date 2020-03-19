@@ -1,0 +1,1 @@
+<jsp:include page="${MAF_INFO.file}" flush="true"/>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "resourceBundle.dtd">
+<bundle defaultLocale="en">
+	<resource key="org_cd">
+		<message locale="ko" value="조직 코드" />
+		<message locale="en" value="Org Code" />
+	</resource>
+	<resource key="photo_id">
+		<message locale="ko" value="조직내 순번" />
+		<message locale="en" value="Photo ID" />
+	</resource>
+	<resource key="photo_comment">
+		<message locale="ko" value="Comment" />
+		<message locale="en" value="Comment" />
+	</resource>
+	<resource key="file_name">
+		<message locale="ko" value="저장된 파일명" />
+		<message locale="en" value="Saved Filename" />
+	</resource>
+	<resource key="reg_usn">
+		<message locale="ko" value="등록자 usn" />
+		<message locale="en" value="Writer" />
+	</resource>
+	<resource key="reg_dt">
+		<message locale="ko" value="등록일" />
+		<message locale="en" value="Reg. Date" />
+	</resource>
+	<resource key="org_filename">
+		<message locale="ko" value="원본파일명" />
+		<message locale="en" value="Original Filename" />
+	</resource>
+	<resource key="update_usn">
+		<message locale="ko" value="최종 수정자" />
+		<message locale="en" value="Update User ID" />
+	</resource>
+	<resource key="update_dt">
+		<message locale="ko" value="최종수정일" />
+		<message locale="en" value="Update Date" />
+	</resource>
+</bundle>

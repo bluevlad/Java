@@ -1,0 +1,481 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html>
+<head>
+<META HTTP-EQUIV="Content-type" CONTENT="text/html;charset=utf-8" />
+
+<META HTTP-EQUIV="imagetoolbar" CONTENT="no">
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="-1">
+<title>HKMCA</title>
+<link href='/hkmca/css/maf_common.css' rel="stylesheet" type="text/css"></link>
+<link href='/hkmca/css/kmc_common.css' rel="stylesheet" type="text/css"></link>
+<script type="text/javascript" src='/hkmca/js/sub.common.js'></script>
+<script type="text/javascript" src='/hkmca/js/maf.js'></script>
+
+<script type="text/javascript" src='/hkmca/dojo/dojo.js'></script>
+
+</head>
+<body leftmargin="0" topmargin="0" rightmargin="0" bottommargin="0"
+	marginwidth="0" marginheight="0" style="background-repeat: repeat-x;">
+<ul>
+	<li>form
+	<table border="1" cellspacing="0" cellpadding="2" width="100%">
+		<col width="100"/>
+		<col width="80"/>
+		<col width="*"/>
+		<tr>
+
+			<th>attribute name</th>
+			<th>required</th>
+			<th>description</th>
+		</tr>
+		<tr>
+
+			<td>name</td>
+			<td>true</td>
+			<td>field name</td>
+		</tr>
+		<tr>
+
+			<td>id</td>
+			<td>false</td>
+			<td>field id</td>
+		</tr>
+		<tr>
+
+			<td>action</td>
+			<td>true</td>
+			<td>field name</td>
+		</tr>
+		<tr>
+
+			<td>method</td>
+			<td>true</td>
+			<td>method {get|post}</td>
+		</tr>
+		<tr>
+
+			<td>onSubmit</td>
+			<td>false</td>
+			<td></td>
+		</tr>
+		<tr>
+
+			<td>enctype</td>
+			<td>false</td>
+			<td></td>
+		</tr>
+		<tr>
+
+			<td>예시문</td>
+			<td>&nbsp;</td>
+			<td>form name="view" action="list.jsp" method="post" </td>
+		</tr>
+	</table>
+	</li>
+    <li>input
+	<table border="1" cellspacing="0" cellpadding="2" width="100%">
+		<col width="100"/>
+		<col width="80"/>
+		<col width="*"/>
+	
+		<tr>
+
+			<th>attribute name</th>
+			<th>required</th>
+			<th>description</th>
+		</tr>
+		<tr>
+
+			<td>name</td>
+			<td>true</td>
+			<td>field name</td>
+		</tr>
+		<tr>
+
+			<td>value</td>
+			<td>true</td>
+			<td>field value</td>
+		</tr>
+	    <tr>
+
+			<td>type</td>
+			<td>true</td>
+			<td>field type (hidden|text|radio|check)</td>
+		</tr>
+		<tr>
+
+			<td>size</td>
+			<td>false</td>
+			<td>field size</td>
+		</tr>
+	    <tr>
+
+			<td>maxlength</td>
+			<td>false</td>
+			<td>maxlength</td>
+		</tr>
+		<tr>
+
+			<td>cssStyle</td>
+			<td>false</td>
+			<td>html css style</td>
+		</tr>
+		<tr>
+
+			<td>cssClass</td>
+			<td>false</td>
+			<td>html css class</td>
+		</tr>
+		<tr>
+
+			<td>readonly</td>
+			<td>false</td>
+			<td>html class(disable) [true:false]</td>
+		</tr>
+		<tr>
+
+			<td>curValue</td>
+			<td>false</td>
+			<td>현재값</td>
+		</tr>
+		<tr>
+
+			<td>required</td>
+			<td>false</td>
+			<td>필수여부[true|false]</td>
+		</tr>
+		<tr>
+
+			<td>hname</td>
+			<td>false</td>
+			<td>field name</td>
+		</tr>
+		<tr>
+
+			<td>option</td>
+			<td>false</td>
+			<td>validate option</td>
+		</tr>
+		<tr>
+
+			<td>예시문</td>
+			<td>&nbsp;</td>
+			<td>input="hidden"  name="search_cond"  value="name"</td>
+		</tr>
+	</table>
+	</li>
+	<li>textarea
+	<table border="1" cellspacing="0" cellpadding="2" width="100%">
+		<col width="100"/>
+		<col width="80"/>
+		<col width="*"/>
+		<tr>
+
+			<th>attribute name</th>
+			<th>required</th>
+			<th>description</th>
+		</tr>
+		<tr>
+
+			<td>name</td>
+			<td>true</td>
+			<td>field name</td>
+		</tr>
+		<tr>
+
+			<td>value</td>
+			<td>true</td>
+			<td>field value</td>
+		</tr>
+		<tr>
+
+			<td>size</td>
+			<td>false</td>
+			<td>field size</td>
+		</tr>
+		<tr>
+
+			<td>style</td>
+			<td>false</td>
+			<td>html style</td>
+		</tr>
+	    <tr>
+
+			<td>class</td>
+			<td>false</td>
+			<td>html class</td>
+		</tr>
+		<tr>
+
+			<td>cols</td>
+			<td>false</td>
+			<td>html cols</td>
+		</tr>
+		<tr>
+
+			<td>rows</td>
+			<td>false</td>
+			<td>html rows</td>
+		</tr>
+		<tr>
+
+			<td>예시문</td>
+			<td>&nbsp;</td>
+			<td>textarea name="content"  value=""</td>
+		</tr>
+	</table>
+	</li>
+	<li>option
+	<table border="1" cellspacing="0" cellpadding="2" width="100%">
+		<col width="100"/>
+		<col width="80"/>
+		<col width="*"/>
+		<tr>
+
+			<th>attribute name</th>
+			<th>required</th>
+			<th>description</th>
+		</tr>
+		<tr>
+
+			<td>value</td>
+			<td>true</td>
+			<td>field value</td>
+		</tr>
+		<tr>
+
+			<td>text</td>
+			<td>false</td>
+			<td>option text</td>
+		</tr>
+		<tr>
+
+			<td>curValue</td>
+			<td>false</td>
+			<td>현재값</td>
+		</tr>
+	    <tr>
+
+			<td>selected</td>
+			<td>false</td>
+			<td>select 여부 true | false</td>
+		</tr>
+		<tr>
+		    
+		    <td>예시문</td>
+		    <td>&nbsp;</td>
+		    <td>option value="0" </td>
+		
+		</tr>
+	</table>
+	</li>
+	<li>HtmlCodeOptions
+	<table border="1" cellspacing="0" cellpadding="2" width="100%">
+		<col width="100"/>
+		<col width="80"/>
+		<col width="*"/>
+		<tr>
+
+			<th>attribute name</th>
+			<th>required</th>
+			<th>description</th>
+		</tr>
+		<tr>
+
+			<td>groupCd</td>
+			<td>true</td>
+			<td></td>
+		</tr>
+		<tr>
+
+			<td>site</td>
+			<td>false</td>
+			<td></td>
+		</tr>
+		<tr>
+
+			<td>value</td>
+			<td>false</td>
+			<td></td>
+		</tr>
+	</table>
+	</li>
+		<li>submit
+	<table border="1" cellspacing="0" cellpadding="2" width="100%">
+		<col width="100"/>
+		<col width="80"/>
+		<col width="*"/>
+		<tr>
+
+			<th>attribute name</th>
+			<th>required</th>
+			<th>description</th>
+		</tr>
+		<tr>
+
+			<td>key</td>
+			<td>true</td>
+			<td>Message key to be looked up.</td>
+		</tr>
+		<tr>
+
+			<td>bundle</td>
+			<td>false</td>
+			<td>Localization context in whose resource bundle the message key is looked up.</td>
+		</tr>
+		<tr>
+
+			<td>name</td>
+			<td>false</td>
+			<td>input attribute name</td>
+		</tr>
+			<tr>
+
+			<td>value</td>
+			<td>false</td>
+			<td>input attribute value</td>
+		</tr>
+		<tr>
+
+			<td>icon</td>
+			<td>false</td>
+			<td>input attribute icon</td>
+		</tr>
+		<tr>
+
+			<td>locale</td>
+			<td>false</td>
+			<td>locale of var.(for debuging)</td>
+		</tr>
+		<tr>
+
+			<td>예시문</td>
+			<td>&nbsp;</td>
+			<td>input type="submit" value="확인"</td>
+		</tr>
+	</table>
+	</li>
+		<li>button
+	<table border="1" cellspacing="0" cellpadding="2" width="100%">
+		<col width="100"/>
+		<col width="80"/>
+		<col width="*"/>
+		<tr>
+
+			<th>attribute name</th>
+			<th>required</th>
+			<th>description</th>
+		</tr>
+		<tr>
+
+			<td>key</td>
+			<td>true</td>
+			<td>Message key to be looked up.</td>
+		</tr>
+		<tr>
+
+			<td>bundle</td>
+			<td>false</td>
+			<td>Localization context in whose resource bundle the message key is looked up.</td>
+		</tr>
+		<tr>
+
+			<td>var</td>
+			<td>false</td>
+			<td>Name of the exported scoped variable which stores the localized message.</td>
+		</tr>
+			<tr>
+
+			<td>scope</td>
+			<td>false</td>
+			<td>Scope of var.</td>
+		</tr>
+		<tr>
+
+			<td>param</td>
+			<td>false</td>
+			<td>Supplies an argument for parametric replacement to a containing &lt;message&gt; tag, Object, Object[], Colletion 가능</td>
+		</tr>
+		<tr>
+
+			<td>locale</td>
+			<td>false</td>
+			<td>locale of var.(for debuging)</td>
+		</tr>
+		<tr>
+
+			<td>icon</td>
+			<td>false</td>
+			<td>input attribute icon</td>
+		</tr>	
+		<tr>
+
+			<td>onclick</td>
+			<td>false</td>
+			<td>onclick</td>
+		</tr>
+		<tr>
+
+			<td>href</td>
+			<td>false</td>
+			<td>href url</td>
+		</tr>
+		<tr>
+
+			<td>예시문</td>
+			<td>&nbsp;</td>
+			<td>input type="button" value="버튼"</td>
+		</tr>
+	</table>
+	</li>
+	<li>label
+	<table border="1" cellspacing="0" cellpadding="2" width="100%">
+		<col width="100"/>
+		<col width="80"/>
+		<col width="*"/>
+		<tr>
+
+			<th>attribute name</th>
+			<th>required</th>
+			<th>description</th>
+		</tr>
+		<tr>
+
+			<td>name</td>
+			<td>true</td>
+			<td>field Name</td>
+		</tr>
+		<tr>
+		
+		    <td>예시문</td>
+		    <td>&nbsp;</td>
+		    <td>OPTGROUP label="대분류"</td>
+		  
+		</tr>
+	</table>
+	</li>
+	<li>header
+	<table border="1" cellspacing="0" cellpadding="2" width="100%">
+		<col width="100"/>
+		<col width="80"/>
+		<col width="*"/>
+		<tr>
+
+			<th>attribute name</th>
+			<th>required</th>
+			<th>description</th>
+		</tr>
+		<tr>
+
+			<td>name</td>
+			<td>true</td>
+			<td></td>
+		</tr>
+	</table>
+	</li>
+</ul>
+
+</body>
+</html>

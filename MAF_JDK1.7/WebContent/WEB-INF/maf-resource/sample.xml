@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-resource PUBLIC "-//Miranet//DTD maf-command config XML V1.0//EN" "resourceBundle.dtd">
+
+<bundle defaultLocale="en">
+  <resource key="form.title" type="text">
+    <message locale="en" value="Title" />
+    <message locale="ko" value="제목" />
+  </resource>
+  <resource key="message.update.ok" type="text">
+    <message locale="en" value="Succesfully {0} Items Updated" />
+    <message locale="ko" value="{0}개의 레코드가 정상적으로 Update 되었습니다." />
+  </resource>
+</bundle>
+

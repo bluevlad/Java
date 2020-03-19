@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0063)http://myhome.hanafos.com/~laintt13/validate/validate_howto.htm -->
+<HTML><HEAD><TITLE>howto lib.validate.js</TITLE>
+<SCRIPT src="howto_lib_validate_js.files/popupunder.js"></SCRIPT>
+
+<META http-equiv=Content-Type content="text/html; charset=Korean">
+<STYLE>TD {
+	FONT-SIZE: 9pt
+}
+.title {
+	PADDING-RIGHT: 3px; PADDING-LEFT: 3px; FONT-WEIGHT: bold; PADDING-BOTTOM: 3px; PADDING-TOP: 3px; BACKGROUND-COLOR: #dddddd
+}
+.element_ex {
+	COLOR: #444444; BACKGROUND-COLOR: #ffffff
+}
+</STYLE>
+
+<META content="MSHTML 6.00.2800.1400" name=GENERATOR></HEAD>
+<BODY>
+<TABLE cellSpacing=0 cellPadding=5 width=700 border=0>
+  <TBODY>
+  <TR>
+    <TD>다운로드 : <A 
+      href="http://myhome.hanafos.com/~laintt13/validate/lib.validate.js">lib.validate.js</A><BR><BR></TD></TR>
+  <TR>
+    <TD class=title>Based On <A 
+      href="http://maniacamp.com/example/validate_howto.html">lib.validate.js</A> 
+      By <A href="mailto:comfuture@maniacamp.com">거친마루</A></TD></TR>
+  <TR>
+    <TD>이 라이브러리는 거친마루님의 validate library를 기초로 보완, 재구성하였습니다.<BR><BR></TD></TR>
+  <TR>
+    <TD class=title>기본적인 사용법</TD></TR>
+  <TR>
+    <TD>
+      <P>이 라이브러리는 매번 스크립트를 변경하지 않고 쉽게 폼 검사를 하고자 만들어졌습니다.<BR>사용법은 한번 배워두면 간단한 
+      html 코딩만으로 폼 검사를 마칠 수 있습니다.</P>
+      <P><FONT color=#0000ff>&lt;script language="javascript" 
+      src="lib.validate.js"&gt;&lt;/script&gt;</FONT><BR><FONT 
+      color=#009900>&lt;!-- 폼 검사 스크립트를 메모리에 불러옵니다 --&gt;</FONT><BR><BR><FONT 
+      color=#0000ff>&lt;form name="test" action="script.php" method="post" <FONT 
+      color=#cc0000>onSubmit="return 
+      validate(this)"</FONT>&gt;</FONT><BR>................<BR>................<BR><FONT 
+      color=#0000ff>&lt;/form&gt; </FONT><BR><FONT color=#009900>&lt;!-- 검사할 폼 
+      태그의 onsubmit 이벤트에 return validate(this) 라고 기술합니다 --&gt;</FONT><BR><BR>이로써 
+      준비 과정은 끝났습니다.<BR><BR></P></TD></TR>
+  <TR>
+    <TD class=title>검사를 위한 속성 사용법</TD></TR>
+  <TR>
+    <TD>이제 저 폼에 있는 모든 엘리먼트는 submit이 일어나기 전에 검사기를 통과하게 됩니다.<BR>이때 어떤 항목을 검사할찌, 
+      어떤 방법으로 검사할찌를 html 태그의 속성값으로 정해주기만 하면 됩니다.<BR><BR><STRONG>쓰이는 
+      속성들</STRONG><BR>
+      <TABLE style="PADDING-LEFT: 5pt" cellSpacing=1 cellPadding=2 width=600 
+      bgColor=#000000 border=0>
+        <TBODY>
+        <TR align=middle>
+          <TD width=100 bgColor=#dddddd rowSpan=2>속성</TD>
+          <TD width=80 bgColor=#dddddd>속성타입</TD>
+          <TD width=420 bgColor=#dddddd>설명</TD></TR>
+        <TR align=middle>
+          <TD bgColor=#dddddd colSpan=2>작성 예</TD></TR>
+        <TR>
+          <TD bgColor=#cccccc rowSpan=2>hname</TD>
+          <TD bgColor=#eeeeee>string</TD>
+          <TD bgColor=#eeeeee>항목의 한글이름(에러메시지를 보여줄때 등)</TD></TR>
+        <TR>
+          <TD class=element_ex colSpan=2>&lt;input type="text" name="email" 
+            hname="이메일"&gt;<BR>에러체크시 email항목의 이름을 "이메일"이라고 정의합니다. </TD></TR>
+        <TR>
+          <TD bgColor=#cccccc rowSpan=2>option</TD>
+          <TD bgColor=#eeeeee>string</TD>
+          <TD bgColor=#eeeeee>특수한 검사를 수행할 옵션<BR>이때 옵션 Attribute에 기술된 문자열이 
+            FORM_FUNTION 배열에 정의되어 있지 않으면 에러 발생 </TD></TR>
+        <TR>
+          <TD class=element_ex colSpan=2>&lt;input type="text" name="email" 
+            option="email"&gt;<BR>FORM_FUNCTION의 email에 해당하는 함수로 value값을 체크합니다. 
+          </TD></TR>
+        <TR>
+          <TD bgColor=#cccccc rowSpan=2>required</TD>
+          <TD bgColor=#eeeeee>null</TD>
+          <TD bgColor=#eeeeee>필수항목인지 여부를 나타내는 속성</TD></TR>
+        <TR>
+          <TD class=element_ex colSpan=2>&lt;input type="text" name="email" 
+            required&gt;<BR>email 항목이 반드시 입력되어야 합니다. </TD></TR>
+        <TR>
+          <TD bgColor=#cccccc rowSpan=2>minbyte</TD>
+          <TD bgColor=#eeeeee>integer</TD>
+          <TD bgColor=#eeeeee>한글을 2바이트로 인식하며 필드의 최소길이를 정의합니다.</TD></TR>
+        <TR>
+          <TD class=element_ex colSpan=2>&lt;input type="text" name="email" 
+            minbyte="10"&gt;<BR>email 항목은 최소 10 byte 이상으로 입력해야 합니다. </TD></TR>
+        <TR>
+          <TD bgColor=#cccccc rowSpan=2>maxbyte</TD>
+          <TD bgColor=#eeeeee>integer</TD>
+          <TD bgColor=#eeeeee>한글을 2바이트로 인식하며 필드의 최대길이를 정의합니다.</TD></TR>
+        <TR>
+          <TD class=element_ex colSpan=2>&lt;input type="text" name="email" 
+            maxbyte="55"&gt;<BR>email 항목은 최대 55 byte 이하로 입력해야 합니다. </TD></TR>
+        <TR>
+          <TD bgColor=#cccccc rowSpan=2>trim</TD>
+          <TD bgColor=#eeeeee>string</TD>
+          <TD bgColor=#eeeeee><FONT color=blue>ltrim</FONT> - 필드값의 앞쪽 공백을 
+            제거한다.<BR><FONT color=blue>rtrim</FONT> - 필드값의 뒷쪽 공백을 제거한다.<BR><FONT 
+            color=blue>notrim</FONT> - 필드값의 공백을 제거하지 않는다.<BR>그 외의 경우에는 필드값의 양쪽 
+            공백이 모두 제거됩니다. </TD></TR>
+        <TR>
+          <TD class=element_ex colSpan=2>&lt;input type="text" name="title" 
+            trim="rtrim"&gt;<BR>email 항목의 value값 뒷쪽 공백을 제거합니다. </TD></TR>
+        <TR>
+          <TD bgColor=#cccccc rowSpan=2>span</TD>
+          <TD bgColor=#eeeeee>integer</TD>
+          <TD bgColor=#eeeeee>여러 필드로 나누어진 항목에 대한 검사를 수행합니다.<BR>span에 기술된 숫자만큼의 
+            필드 값을 합쳐서 검사가 수행됩니다.<BR>glue(string) 속성이 정의되어 있으면 필드 값이 합쳐질 때 
+            glue속성의 문자로 합쳐집니다.</TD></TR>
+        <TR>
+          <TD class=element_ex colSpan=2>&lt;input type="text" name="email1" 
+            span="2" glue="@" option="email"&gt;<BR>&lt;input type="text" 
+            name="email2"&gt;<BR>email1@email2 형식의 값으로 검사가 수행됩니다. </TD></TR>
+        <TR>
+          <TD bgColor=#cccccc rowSpan=2>match</TD>
+          <TD bgColor=#eeeeee>string</TD>
+          <TD bgColor=#eeeeee>패스워드 확인등 두개의 항목값이 같아야 하는 상황에 대한 체크 방법</TD></TR>
+        <TR>
+          <TD class=element_ex colSpan=2>&lt;input type="text" name="pass1" 
+            match="pass2"&gt;<BR>&lt;input type="text" name="pass2"&gt;<BR>pass1 
+            항목과 pass2 항목의 값이 같은지 검사합니다.<BR>pass1에 required 속성을 주므로서 양쪽모두 빈값이 
+            입력되는 경우를 피하시기 바랍니다. </TD></TR>
+        <TR>
+          <TD bgColor=#cccccc rowSpan=2>delete</TD>
+          <TD bgColor=#eeeeee>null</TD>
+          <TD bgColor=#eeeeee>규칙에 어긋나는 내용이 입력되었을 경우 해당 항목의 value를 지울 것인지를 나타내는 
+            속성</TD></TR>
+        <TR>
+          <TD class=element_ex colSpan=2>&lt;input type="text" name="title" 
+            delete&gt;<BR>title 항목의 입력값이 규칙에 어긋날 경우 기존의 입력사항이 지워짐 </TD></TR>
+        <TR>
+          <TD bgColor=#cccccc rowSpan=2>select</TD>
+          <TD bgColor=#eeeeee>null</TD>
+          <TD bgColor=#eeeeee>규칙에 어긋나는 내용이 입력되었을 경우 해당 항목의 value를 선택 것인지를 나타내는 
+            속성</TD></TR>
+        <TR>
+          <TD class=element_ex colSpan=2>&lt;input type="text" name="title" 
+            select&gt;<BR>title 항목의 입력값이 규칙에 어긋날 경우 기존의 입력사항을 선택함 </TD></TR>
+        <TR>
+          <TD bgColor=#cccccc rowSpan=2>nofocus</TD>
+          <TD bgColor=#eeeeee>null</TD>
+          <TD bgColor=#eeeeee>규칙에 어긋나는 내용이 입력되었을 경우 해당 항목에 포커스를 맞추지 않을지를 
+        속성</TD></TR>
+        <TR>
+          <TD class=element_ex colSpan=2>&lt;input type="text" name="title" 
+            nofocus&gt;<BR>title 항목의 입력값이 규칙에 어긋날 경우에 해당 항목에 포커스를 맞추지 않음. </TD></TR>
+        <TR>
+          <TD bgColor=#cccccc rowSpan=2>errmsg</TD>
+          <TD bgColor=#eeeeee>string</TD>
+          <TD bgColor=#eeeeee>규칙에 어긋나는 내용이 입력되었을 경우 errmsg에 정의된 내용이 에러메시지로 
+            출력됩니다.<BR>해당 object에 {attribute}를 사용하여 해당 attribute값으로 치환할 수 
+        있습니다.</TD></TR>
+        <TR>
+          <TD class=element_ex colSpan=2>&lt;input type="text" name="title" 
+            minbyte="5" maxbyte="10" errmsg="{minbyte} Byte 이상 {maxbyte} Byte 
+            이하로 입력해주세요."&gt; 
+</TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE></BODY></HTML>

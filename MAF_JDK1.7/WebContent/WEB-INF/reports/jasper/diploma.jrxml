@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="diploma"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="595"
+		 pageHeight="842"
+		 columnWidth="535"
+		 columnSpacing="0"
+		 leftMargin="30"
+		 rightMargin="30"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false"
+		 whenResourceMissingType="Empty">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+	<reportFont name="Gullim" isDefault="true" fontName="굴림" size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="HYGoThic-Medium" pdfEncoding="UniKS-UCS2-H" isPdfEmbedded="true"/>
+
+
+	<field name="nm" class="java.lang.String"/>
+	<field name="pin" class="java.lang.String"/>
+	<field name="lecname" class="java.lang.String"/>
+	<field name="kor_biz_nm" class="java.lang.String"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="102"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="4"
+						y="2"
+						width="121"
+						height="19"
+						key="staticText-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font reportFont="Gullim" pdfFontName="HYSMyeongJo-Medium"/>
+					</textElement>
+				<text><![CDATA[[별지 제 6호 서식]]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="157"
+						y="21"
+						width="226"
+						height="64"
+						key="staticText-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font reportFont="Gullim" pdfFontName="HYSMyeongJo-Medium" size="24" isBold="true"/>
+					</textElement>
+				<text><![CDATA[수     료    증]]></text>
+				</staticText>
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="275"  isSplitAllowed="false" >
+				<staticText>
+					<reportElement
+						x="58"
+						y="43"
+						width="108"
+						height="144"
+						key="staticText-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" lineSpacing="Double">
+						<font reportFont="Gullim" pdfFontName="HYSMyeongJo-Medium"/>
+					</textElement>
+				<text><![CDATA[성             명
+주민등록번호
+사  업   장  명 
+훈 련 과 정 명
+훈련기간(시간)]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="180"
+						y="54"
+						width="100"
+						height="18"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font reportFont="Gullim"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{nm}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="180"
+						y="80"
+						width="100"
+						height="18"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font reportFont="Gullim"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{pin}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="180"
+						y="131"
+						width="265"
+						height="39"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font reportFont="Gullim"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{lecname}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="181"
+						y="106"
+						width="261"
+						height="18"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="굴림" pdfFontName="HYGoThic-Medium" size="12" isPdfEmbedded ="true" pdfEncoding ="UniKS-UCS2-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{kor_biz_nm}]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="229"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="28"
+						y="11"
+						width="474"
+						height="117"
+						key="staticText-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" lineSpacing="1_1_2">
+						<font reportFont="Gullim" pdfFontName="HYSMyeongJo-Medium" size="14"/>
+					</textElement>
+				<text><![CDATA[    위 사람은 중소기업 직업능력개발 지원사업 운영규정에 의하여 위의 중소기업 핵심직무능력개발 향 지원사업의 우수 훈련과정을 수료 하였으므로 이 증서를 수여 합니다.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="84"
+						y="146"
+						width="369"
+						height="72"
+						key="staticText-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" lineSpacing="1_1_2">
+						<font reportFont="Gullim" pdfFontName="HYSMyeongJo-Medium" size="14" isBold="true"/>
+					</textElement>
+				<text><![CDATA[한국썬마이크로시스템즈(주)
+지식서비스본부 유 원 식]]></text>
+				</staticText>
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

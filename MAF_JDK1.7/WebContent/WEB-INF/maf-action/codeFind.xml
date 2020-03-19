@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "mvc-configuration.dtd">
+<configuration>
+	<template-list>
+		<template-info name="inner" uri="/WEB-INF/jsp/codeFind/_style1.jsp" />
+		<template-info name="popup" uri="/WEB-INF/jsp/codeFind/_style_pop.jsp" />
+	</template-list>
+
+	<global-view>
+	</global-view>
+	
+	<action uri="zipCode.do" type="modules.app.codeFind.ZipCode" desc="zipCode" title="zipCode" default="view">
+		<action-view>
+			<view-info name="view" uri="/WEB-INF/jsp/codeFind/zipCode.jsp" useTemplate="inner" />
+		</action-view>
+		<cmds>
+			<cmd name="view" method="cmdView" />
+		</cmds>
+	</action>
+	
+	<action uri="codeFind.do" type="modules.app.codeFind.CodeFind" desc="codeFind" title="codeFind" default="list">
+		<action-view>
+			<view-info name="list" uri="/WEB-INF/jsp/codeFind/codeFind.jsp" useTemplate="popup" />
+			<view-info name="tree" uri="/WEB-INF/jsp/codeFind/codeFindTree.jsp" useTemplate="popup" />
+		</action-view>
+		<cmds>
+			<cmd name="list" method="cmdList" />
+			<cmd name="tree" method="cmdTree" />
+		</cmds>
+	</action>	
+
+</configuration>

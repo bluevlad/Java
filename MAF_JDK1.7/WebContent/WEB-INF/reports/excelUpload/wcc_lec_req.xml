@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"  ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "excel-upload.dtd">
+<upload desc="register education history " startrow="1">
+	<sqls>
+		<sql seq="0">
+			INSERT INTO wcc_lec_req
+            (leccode, lecnumb, userid, req_stat, req_sdat, req_edat, is_grad, update_dt, update_id)
+		    VALUES 
+		    (:leccode, :lecnumb, :userid, 'LE', :lec_sdate, :lec_edate, 'G', SYSDATE, :update_id)
+		</sql>
+		<sql seq="1">
+			INSERT INTO wce_fnl_grd
+            (leccode, lecnumb, userid, tot_score, update_dt, update_id)
+		    VALUES 
+		    (:leccode, :lecnumb, :userid, :tot_score, SYSDATE, :update_id)
+		</sql>
+	</sqls>
+	<fields>
+		<field col="0" fieldname="leccode" sample="07-TELE-ST-10-2007-1" title="course code" />
+		<field col="1" fieldname="lecnumb" sample="1" title="Seq" />
+		<field col="2" fieldname="userid" sample="HMEW01" title="USERID" />
+		<field col="3" fieldname="lec_sdate" sample="20070101" title="Date of Training Start" />
+		<field col="4" fieldname="lec_edate" sample="20070130" title="Date of Training End" />
+		<field col="5" fieldname="tot_score" sample="90" title="Score" />
+	</fields>
+</upload>

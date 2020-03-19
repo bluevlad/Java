@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="UTF-8"  ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "excel-upload.dtd">
+<upload desc="upload onsite 수강등록" startrow="1">
+	<sqls>
+		<sql seq="0">
+			INSERT INTO MAF_USER (USN, USERID, PASSWD, NM,CUST_CD,PIN,HP,EMAIL ) 
+			VALUES (seq_usn.NEXTVAL,:userid, :passwd, :nm, :cust_cd, :pin, :hp, :email )
+		</sql>
+		<sql seq="1">
+			INSERT INTO WCC_LEC_REQ (leccode, userid, lecnumb, pay_type, req_dt, req_stat, req_kind, company_id, req_sdat,req_edat, is_grad, update_dt, update_id )
+			VALUES (:leccode, seq_usn.CURRVAL, :lecnumb, 'PO', sysdate, 'LP', 'S', :cust_cd, :lec_sdate, :lec_edate, 'N', sysdate, seq_usn.CURRVAL )		
+		</sql>
+
+	</sqls>
+	<fields>
+		<field col="0" fieldname="pin" title="pin" check="true" sample="9111111111111" desc="PIN" />
+		<field col="1" fieldname="userid" title="userid" check="true" sample="1111111" desc="교육생ID" />
+		<field col="2" fieldname="passwd" title="passwd" check="true" sample="1111111" desc="비밀번호" />
+		<field col="3" fieldname="nm" title="nm" check="true" sample="이름" desc="이름" />
+		<field col="4" fieldname="hp" title="hp" sample="010-1111-1111" desc="핸드폰" />
+		<field col="5" fieldname="email" title="email" sample="aa@aa.com" desc="이메일" />
+	</fields>
+</upload>

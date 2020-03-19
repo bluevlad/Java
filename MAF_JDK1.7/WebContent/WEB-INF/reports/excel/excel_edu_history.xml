@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "excel-viewer.dtd">
+<viewer filename="LecReq.xls" title="">
+	<field id="leccode" title="Lecture Code" align="center"/>
+	<field id="lecnumb" title="Lecnumb" align="center"/>
+	<field id="userid" title="User ID" align="center"/>
+	<field id="lec_sdate" title="Start_date"/>
+	<field id="lec_edate" title="End Date"/>
+	<field id="total_score" title="Score"/>
+	<field id="lecname" title="Lectue Name" align="center"/>
+	<field id="alias_cd" title="Local Code" align="center"/>
+</viewer>

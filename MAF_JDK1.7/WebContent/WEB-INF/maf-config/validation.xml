@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "maf-validation-configuration.dtd">
+<validation>
+	<validator name="required" type="maf.validator.RequiredValidator" desc="필수입력항목" message="validator.required" />
+	<validator name="maxlength" type="maf.validator.MaxLengthValidator" message="validator.maxlength" />
+	<validator name="minlength" type="maf.validator.MinLengthValidator" message="validator.minlength" />
+	<validator name="regexp" type="maf.validator.RegexpValidator" message="validator.regexp" />
+</validation>

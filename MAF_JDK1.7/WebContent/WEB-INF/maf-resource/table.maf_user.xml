@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "resourceBundle.dtd">
+<bundle defaultLocale="en">
+
+	<resource key="usn" >
+		<message locale="ko" value="사용자 식별번호" />
+		<message locale="en" value="Userid" />
+	</resource>
+	<resource key="userid" >
+		<message locale="ko" value="사용자 id" />
+		<message locale="en" value="User ID" />
+	</resource>
+	<resource key="passwd" >
+		<message locale="ko" value="사용자 암호" />
+		<message locale="en" value="Password" />
+	</resource>
+	<resource key="nm" >
+		<message locale="ko" value="이름" />
+		<message locale="en" value="Name" />
+	</resource>
+	<resource key="nick_nm" >
+		<message locale="ko" value="별명" />
+		<message locale="en" value="Nick name" />
+	</resource>
+	<resource key="nm_eng" >
+		<message locale="ko" value="영문이름" />
+		<message locale="en" value="English Name" />
+	</resource>
+	<resource key="active_yn" >
+		<message locale="en" value="Active" />
+		<message locale="ko" value="회원유효성_n:비정상,y:정상" />
+	</resource>
+
+	<resource key="pin" >
+		<message locale="en" value="PIN" />
+		<message locale="ko" value="주민번호" />
+	</resource>
+	<resource key="emp_no" >
+		<message locale="en" value="Employee No" />
+		<message locale="ko" value="사원번호" />
+	</resource>
+	<resource key="dept_cd" >
+		<message locale="en" value="Department ID" />
+		<message locale="ko" value="부서" />
+	</resource>
+	<resource key="dept_tm_yn" >
+		<message locale="en" value="Manager Y/N" />
+		<message locale="ko" value="부서장여부" />
+	</resource>
+	<resource key="pos_nm" >
+		<message locale="ko" value="직위" />
+		<message locale="en" value="Position" />
+		
+	</resource>
+	<resource key="hp" >
+		<message locale="ko" value="핸드폰" />
+		<message locale="en" value="Mobile" />
+		
+	</resource>
+	<resource key="tel" >
+		<message locale="ko" value="전화번호" />
+		<message locale="en" value="Tel." />
+		
+	</resource>
+	<resource key="fax" >
+		<message locale="ko" value="팩스" />
+		<message locale="en" value="Fax" />
+	</resource>
+	<resource key="email" >
+		<message locale="ko" value="이메일" />
+		<message locale="en" value="Email" />
+	</resource>
+	<resource key="addr1" >
+		<message locale="en" value="Address " />
+		<message locale="ko" value="주소앞부분" />
+	</resource>
+	<resource key="remarks" >
+		<message locale="en" value="Etc" />
+		<message locale="ko" value="비고" />
+	</resource>
+	<resource key="addr2" >
+		<message locale="en" value="Address " />
+		<message locale="ko" value="주소상세(나머지)" />
+	</resource>
+	<resource key="zip" >
+		<message locale="en" value="Post No" />
+		<message locale="ko" value="우편번호" />
+	</resource>
+	<resource key="pos_cd" >
+		<message locale="en" value="Post No" />
+	</resource>
+	<resource key="org_cd" >
+		<message locale="en" value="Org ID" />
+		<message locale="ko" value="조직코드" />
+	</resource>
+	<resource key="fran" >
+		<message locale="ko" value="Franchise" />
+		<message locale="en" value="Franchise" />
+	</resource>
+	<resource key="add" >
+		<message locale="ko" value="Address" />
+		<message locale="en" value="Address" />
+	</resource>
+	<resource key="sa_id" >
+		<message locale="en" value="S/A ID" />
+	</resource>
+	<resource key="sa_nm" >
+		<message locale="en" value="S/A Name" />
+	</resource>
+	<resource key="tech_id" >
+		<message locale="en" value="Tech. ID" />
+	</resource>
+	<resource key="tech_nm" >
+		<message locale="en" value="Tech. Name" />
+	</resource>
+	<resource key="hd" >
+		<message locale="en" value="Hyundai" />
+	</resource>
+	<resource key="level" >
+		<message locale="en" value="Level" />
+	</resource>
+	<resource key="certi" >
+		<message locale="en" value="Certi No." />
+	</resource>
+	<resource key="org_name" >
+		<message locale="ko" value="Office" />
+		<message locale="en" value="Office" />
+	</resource>
+	<resource key="sub_section" >
+		<message locale="ko" value="상세업무영역" />
+		<message locale="en" value="Sub Section" />
+	</resource>
+	<resource key="section" >
+		<message locale="ko" value="업무영역" />
+		<message locale="en" value="Section" />
+	</resource>
+	
+</bundle>	

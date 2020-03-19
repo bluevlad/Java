@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-command PUBLIC
+         "-//Miranet//DTD maf-command config XML V1.0//EN"
+         "resourceBundle.dtd">
+<bundle defaultLocale="en">
+
+	<resource key="certi.deal" >
+		<message locale="ko" value="Dealer(code)"/>
+		<message locale="en" value="Dealer(code)"/>
+	</resource>
+	<resource key="certi.certi" >
+		<message locale="ko" value="Certification"/>
+		<message locale="en" value="Certification"/>
+	</resource>
+	<resource key="certi.pre" >
+		<message locale="ko" value="Present Status"/>
+		<message locale="en" value="Present Status"/>
+	</resource>
+	<resource key="certi.tar" >
+		<message locale="ko" value="Target"/>
+		<message locale="en" value="Target"/>
+	</resource>
+	<resource key="certi.st" >
+		<message locale="ko" value="Status/Target"/>
+		<message locale="en" value="Status/Target"/>
+	</resource>
+	<resource key="certi.tpr" >
+		<message locale="ko" value="Total Possession rate"/>
+		<message locale="en" value="Total Possession rate"/>
+	</resource>
+	<resource key="certi.pos" >
+		<message locale="ko" value="Possession"/>
+		<message locale="en" value="Possession"/>
+	</resource>
+	<resource key="certi.rate" >
+		<message locale="ko" value="Rate"/>
+		<message locale="en" value="Rate"/>
+	</resource>
+	<resource key="certi.in" >
+		<message locale="ko" value="Increase"/>
+		<message locale="en" value="Increase"/>
+	</resource>
+	<resource key="certi.sta" >
+		<message locale="ko" value="Status"/>
+		<message locale="en" value="Status"/>
+	</resource>
+	<resource key="certi.tot" >
+		<message locale="ko" value="Total"/>
+		<message locale="en" value="Total"/>
+	</resource>
+	<resource key="certi.sm" >
+		<message locale="ko" value="Sales Manager"/>
+		<message locale="en" value="Sales Manager"/>
+	</resource>
+	<resource key="certi.parts" >
+		<message locale="ko" value="Parts"/>
+		<message locale="en" value="Parts"/>
+	</resource>
+	<resource key="certi.an" >
+		<message locale="ko" value="Apply No"/>
+		<message locale="en" value="Apply No"/>
+	</resource>
+	<resource key="certi.pp" >
+		<message locale="ko" value="Pass No of person"/>
+		<message locale="en" value="Pass No of person"/>
+	</resource>
+	<resource key="certi.pr" >
+		<message locale="ko" value="Pass rate"/>
+		<message locale="en" value="Pass rate"/>
+	</resource>
+	<resource key="certi.pcn" >
+		<message locale="ko" value="Present Certified No"/>
+		<message locale="en" value="Present Certified No"/>
+	</resource>
+	<resource key="certi.icn" >
+		<message locale="ko" value="Increase Certified No"/>
+		<message locale="en" value="Increase Certified No"/>
+	</resource>
+	<resource key="certi.ir" >
+		<message locale="ko" value="Increase rate"/>
+		<message locale="en" value="Increase rate"/>
+	</resource>
+	<resource key="certi.non" >
+		<message locale="ko" value="Non"/>
+		<message locale="en" value="Non"/>
+	</resource>
+	<resource key="certi.cnt" >
+		<message locale="ko" value="Count"/>
+		<message locale="en" value="Count"/>
+	</resource>
+	<resource key="certi.dif" >
+		<message locale="ko" value="Difference"/>
+		<message locale="en" value="Difference"/>
+	</resource>
+
+	<resource key="lecture.leccnt" >
+		<message locale="ko" value="개설강의수"/>
+		<message locale="en" value="No of Lecture"/>
+	</resource>
+	<resource key="lecture.capacity" >
+		<message locale="ko" value="정원"/>
+		<message locale="en" value="Capacity"/>
+	</resource>
+	<resource key="lecture.trainees" >
+		<message locale="ko" value="수강대상자"/>
+		<message locale="en" value="No of Trainees"/>
+	</resource>
+	<resource key="lecture.req" >
+		<message locale="ko" value="수강인원"/>
+		<message locale="en" value="No of Request"/>
+	</resource>
+	<resource key="lecture.rate_req" >
+		<message locale="ko" value="신청비율"/>
+		<message locale="en" value="Rate of Request"/>
+	</resource>
+	<resource key="lecture.complete" >
+		<message locale="ko" value="수료인원"/>
+		<message locale="en" value="No of Complete"/>
+	</resource>
+	<resource key="lecture.rate_com" >
+		<message locale="ko" value="수료비율"/>
+		<message locale="en" value="Rate of Complete"/>
+	</resource>
+
+</bundle>

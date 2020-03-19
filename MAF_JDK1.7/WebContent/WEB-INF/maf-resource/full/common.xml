@@ -1,0 +1,1280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE maf-resource PUBLIC "-//Miranet//DTD maf-command config XML V1.0//EN" "resourceBundle.dtd">
+
+<bundle defaultLocale="en">
+  <resource key="lang" type="text">
+    <message locale="en" value="Language" />
+    <message locale="ko" value="언어" />
+  </resource>
+  <resource key="ce_final_grade.date" type="text">
+    <message locale="en" value="Completion date" />
+    <message locale="ko" value="수료일" />
+  </resource>
+  <resource key="ce_final_grade.tot_score" type="text">
+    <message locale="en" value="Completion score" />
+    <message locale="ko" value="수료점수" />
+  </resource>
+  <resource key="certi.code" type="text">
+    <message locale="en" value="Code" />
+    <message locale="ko" value="코드" />
+  </resource>
+  <resource key="certi.input" type="text">
+    <message locale="en" value="Direct input" />
+    <message locale="ko" value="직접입력" />
+  </resource>
+  <resource key="certi.name" type="text">
+    <message locale="en" value="Name" />
+    <message locale="ko" value="명칭" />
+  </resource>
+  <resource key="certi.new" type="text">
+    <message locale="en" value="New addition" />
+    <message locale="ko" value="새로추가" />
+  </resource>
+  <resource key="classroom.encodeing" type="text">
+    <message locale="en" value="Text/Html; charset=UTF-8" />
+    <message locale="ko" value="Text/Html; charset=UTF-8" />
+  </resource>
+  <resource key="classroom.line.bar" type="text">
+    <message locale="en" value="-" />
+    <message locale="ko" value="━━━━━━━━━━━━━━━━━━━━━━━━━━━" />
+  </resource>
+  <resource key="classroom.request.end" type="text">
+    <message locale="en" value="Daily Publication" />
+    <message locale="ko" value="일간" />
+  </resource>
+  <resource key="classroom.request.start" type="text">
+    <message locale="en" value="Day count (from course registration date)" />
+    <message locale="ko" value="수강신청일로부터" />
+  </resource>
+  <resource key="classroom.title" type="text">
+    <message locale="en" value="-" />
+    <message locale="ko" value="▣ Welcome to Cyber Learning Center ClassRoom ▣" />
+  </resource>
+  <resource key="insurance.lec_req.is_grad" type="text">
+    <message locale="en" value="Completed" />
+    <message locale="ko" value="수료여부" />
+  </resource>
+  <resource key="insurance.lec_req.is_insurance" type="text">
+    <message locale="en" value="Application system" />
+    <message locale="ko" value="지원제도" />
+  </resource>
+  <resource key="insurance.return.price.total" type="text">
+    <message locale="en" value="Total refund" />
+    <message locale="ko" value="환급총액" />
+  </resource>
+  <resource key="reg_nm" type="text">
+    <message locale="en" value="Register" />
+    <message locale="ko" value="등록자" />
+  </resource>
+  <resource key="search" type="text">
+    <message locale="en" value="Search" />
+    <message locale="ko" value="검색" />
+  </resource>
+  <resource key="search.all" type="text">
+    <message locale="en" value="Search all" />
+    <message locale="ko" value="전체검색" />
+  </resource>
+  <resource key="search.bylec" type="text">
+    <message locale="en" value="By course" />
+    <message locale="ko" value="강의별" />
+  </resource>
+  <resource key="search.byuser" type="text">
+    <message locale="en" value="By user" />
+    <message locale="ko" value="사용자별" />
+  </resource>
+  <resource key="search.cancelstat" type="text">
+    <message locale="en" value="State of cancellation" />
+    <message locale="ko" value="취소상태" />
+  </resource>
+  <resource key="search.learning.time" type="text">
+    <message locale="en" value="Training time" />
+    <message locale="ko" value="학습시간" />
+  </resource>
+  <resource key="search.report.marking" type="text">
+    <message locale="en" value="State of grading" />
+    <message locale="ko" value="채점상태" />
+  </resource>
+  <resource key="search.report.submit" type="text">
+    <message locale="en" value="State of submission" />
+    <message locale="ko" value="제출상태" />
+  </resource>
+  <resource key="search.report.term" type="text">
+    <message locale="en" value="Submission period" />
+    <message locale="ko" value="제출기간" />
+  </resource>
+  <resource key="search.reqstat" type="text">
+    <message locale="en" value="State of learning" />
+    <message locale="ko" value="수강상태" />
+  </resource>
+  <resource key="search.select.all" type="text">
+    <message locale="en" value="Search all" />
+    <message locale="ko" value="전체검색" />
+  </resource>
+  <resource key="search.select.byclass" type="text">
+    <message locale="en" value="Select course" />
+    <message locale="ko" value="강의선택" />
+  </resource>
+  <resource key="search.select.bycust" type="text">
+    <message locale="en" value="Calssied by customer company" />
+    <message locale="ko" value="고객사별" />
+  </resource>
+  <resource key="search.select.bycust2" type="text">
+    <message locale="en" value="Select company" />
+    <message locale="ko" value="소속사 선택" />
+  </resource>
+  <resource key="search.select.cat_cd.name1" type="text">
+    <message locale="en" value="Field Code" />
+    <message locale="ko" value="분야코드" />
+  </resource>
+  <resource key="search.select.cat_cd.name2" type="text">
+    <message locale="en" value="Field Name" />
+    <message locale="ko" value="분야명" />
+  </resource>
+  <resource key="search.select.class" type="text">
+    <message locale="en" value="Select course" />
+    <message locale="ko" value="과정선택" />
+  </resource>
+  <resource key="search.select.condition" type="text">
+    <message locale="en" value="Select condition" />
+    <message locale="ko" value="조건선택" />
+  </resource>
+  <resource key="search.select.deliverytype" type="text">
+    <message locale="en" value="Delivery Type" />
+    <message locale="ko" value="Delivery Type" />
+  </resource>
+  <resource key="search.select.grad.stat" type="text">
+    <message locale="en" value="Score/Grade Status" />
+    <message locale="ko" value="성적/학점현황" />
+  </resource>
+  <resource key="search.select.isinsurance" type="text">
+    <message locale="en" value="Select application system" />
+    <message locale="ko" value="지원제도선택" />
+  </resource>
+  <resource key="search.select.issellbyclass" type="text">
+    <message locale="en" value="Class Type" />
+    <message locale="ko" value="Class 종류" />
+  </resource>
+  <resource key="search.select.lec_target" type="text">
+    <message locale="en" value="Select new course to open" />
+    <message locale="ko" value="과정개설대상선택" />
+  </resource>
+  <resource key="search.select.lec_type" type="text">
+    <message locale="en" value="Select application method" />
+    <message locale="ko" value="모집형태선택" />
+  </resource>
+  <resource key="search.select.lecstat" type="text">
+    <message locale="en" value="Select course state" />
+    <message locale="ko" value="강의상태선택" />
+  </resource>
+  <resource key="search.select.product" type="text">
+    <message locale="en" value="Select product" />
+    <message locale="ko" value="Product선택" />
+  </resource>
+  <resource key="search.select.ptype_nm" type="text">
+    <message locale="en" value="product Type" />
+    <message locale="ko" value="Product Type" />
+  </resource>
+  <resource key="search.select.traning_place" type="text">
+    <message locale="en" value="Select course location" />
+    <message locale="ko" value="교육장선택" />
+  </resource>
+  <resource key="search.title.name" type="text">
+    <message locale="en" value="Search" />
+    <message locale="ko" value="검색" />
+  </resource>
+  <resource key="searchtitle" type="text">
+    <message locale="en" value="Search condition" />
+    <message locale="ko" value="검색조건" />
+  </resource>
+  <resource key="sel.mail_grp.msg1" type="text">
+    <message locale="en" value="Please select mailing group" />
+    <message locale="ko" value="발송할 메일그룹을 선택하세요" />
+  </resource>
+  <resource key="sel.mail_send.html" type="text">
+    <message locale="en" value="HTML form" />
+    <message locale="ko" value="HTML형식" />
+  </resource>
+  <resource key="sel.mail_send.text" type="text">
+    <message locale="en" value="Text form" />
+    <message locale="ko" value="텍스트형식" />
+  </resource>
+  <resource key="sel.mail_tmplt.msg1" type="text">
+    <message locale="en" value="Please choose the mail templete" />
+    <message locale="ko" value="메일템플릿을 선택하세요" />
+  </resource>
+  <resource key="sel.rpt.newreport" type="text">
+    <message locale="en" value="Draft new report" />
+    <message locale="ko" value="보고서 새로작성" />
+  </resource>
+  <resource key="sel.wlb_chp_prg.lesson_status.browsed" type="text">
+    <message locale="en" value="Example" />
+    <message locale="ko" value="맛보기" />
+  </resource>
+  <resource key="sel.wlb_chp_prg.lesson_status.completed" type="text">
+    <message locale="en" value="Training completed" />
+    <message locale="ko" value="학습완료" />
+  </resource>
+  <resource key="sel.wlb_chp_prg.lesson_status.failed" type="text">
+    <message locale="en" value="Training completed / fail" />
+    <message locale="ko" value="학습완료/불합격" />
+  </resource>
+  <resource key="sel.wlb_chp_prg.lesson_status.incomplete" type="text">
+    <message locale="en" value="Training not completed" />
+    <message locale="ko" value="학습미완료" />
+  </resource>
+  <resource key="sel.wlb_chp_prg.lesson_status.not_attempted" type="text">
+    <message locale="en" value="Training not started" />
+    <message locale="ko" value="미학습" />
+  </resource>
+  <resource key="sel.wlb_chp_prg.lesson_status.pass" type="text">
+    <message locale="en" value="Training completed / pass" />
+    <message locale="ko" value="학습완료/합격" />
+  </resource>
+  <resource key="select.active" type="text">
+    <message locale="en" value="Active" />
+    <message locale="ko" value="활성" />
+  </resource>
+  <resource key="select.inactive" type="text">
+    <message locale="en" value="Non Active" />
+    <message locale="ko" value="비활성" />
+  </resource>
+  <resource key="select.lecture.approval1" type="text">
+    <message locale="en" value="Automatic course registration approval" />
+    <message locale="ko" value="자동수강승인" />
+  </resource>
+  <resource key="select.lecture.approval2" type="text">
+    <message locale="en" value="Need manager approval" />
+    <message locale="ko" value="관리자승인필요" />
+  </resource>
+  <resource key="select.lecture.book.name1" type="text">
+    <message locale="en" value="Select relative course material" />
+    <message locale="ko" value="관련학습교재선택" />
+  </resource>
+  <resource key="select.lecture.content.type1" type="text">
+    <message locale="en" value="Non Standard" />
+    <message locale="ko" value="비표준" />
+  </resource>
+  <resource key="select.lecture.content.type2" type="text">
+    <message locale="en" value="SCORM1.2" />
+    <message locale="ko" value="SCORM1.2" />
+  </resource>
+  <resource key="select.lecture.content.type3" type="text">
+    <message locale="en" value="External linked contents" />
+    <message locale="ko" value="외부연결컨텐츠" />
+  </resource>
+  <resource key="select.lecture.content.type4" type="text">
+    <message locale="en" value="NetG" />
+    <message locale="ko" value="NetG" />
+  </resource>
+  <resource key="select.lecture.content.type5" type="text">
+    <message locale="en" value="SUN Contents" />
+    <message locale="ko" value="SUN Contents" />
+  </resource>
+  <resource key="select.lecture.content.type6" type="text">
+    <message locale="en" value="Non Standard (JSP)" />
+    <message locale="ko" value="비표준[JSP]" />
+  </resource>
+  <resource key="select.lecture.insurance1" type="text">
+    <message locale="en" value="Apply" />
+    <message locale="ko" value="적용" />
+  </resource>
+  <resource key="select.lecture.insurance2" type="text">
+    <message locale="en" value="Not applied" />
+    <message locale="ko" value="미적용" />
+  </resource>
+  <resource key="select.lecture.mng.stat1" type="text">
+    <message locale="en" value="On Line" />
+    <message locale="ko" value="온라인" />
+  </resource>
+  <resource key="select.lecture.mng.stat2" type="text">
+    <message locale="en" value="Off Line" />
+    <message locale="ko" value="오프라인" />
+  </resource>
+  <resource key="select.lecture.mng.stat3" type="text">
+    <message locale="en" value="Branded" />
+    <message locale="ko" value="블랜디드" />
+  </resource>
+  <resource key="select.lecture.mng.stat4" type="text">
+    <message locale="en" value="Regular Course" />
+    <message locale="ko" value="정규과정" />
+  </resource>
+  <resource key="select.lecture.stat1" type="text">
+    <message locale="en" value="Open" />
+    <message locale="ko" value="개설" />
+  </resource>
+  <resource key="select.lecture.stat2" type="text">
+    <message locale="en" value="Conclude" />
+    <message locale="ko" value="종료" />
+  </resource>
+  <resource key="select.lecture.stat3" type="text">
+    <message locale="en" value="Close" />
+    <message locale="ko" value="폐쇄" />
+  </resource>
+  <resource key="select.lecture.stat4" type="text">
+    <message locale="en" value="Free of charge" />
+    <message locale="ko" value="무료" />
+  </resource>
+  <resource key="select.lecture.stat5" type="text">
+    <message locale="en" value="Coupon" />
+    <message locale="ko" value="쿠폰" />
+  </resource>
+  <resource key="select.lecture.target1" type="text">
+    <message locale="en" value="Total" />
+    <message locale="ko" value="전체" />
+  </resource>
+  <resource key="select.lecture.target2" type="text">
+    <message locale="en" value="General Member" />
+    <message locale="ko" value="일반회원" />
+  </resource>
+  <resource key="select.lecture.type1" type="text">
+    <message locale="en" value="Periodic enrollment process" />
+    <message locale="ko" value="정규모집과정" />
+  </resource>
+  <resource key="select.lecture.type2" type="text">
+    <message locale="en" value="Constant enrollment process" />
+    <message locale="ko" value="상시모집과정" />
+  </resource>
+  <resource key="select.nonopen" type="text">
+    <message locale="en" value="Not disclosed" />
+    <message locale="ko" value="비공개" />
+  </resource>
+  <resource key="select.notuse" type="text">
+    <message locale="en" value="Non use" />
+    <message locale="ko" value="미사용" />
+  </resource>
+  <resource key="select.open" type="text">
+    <message locale="en" value="Disclosed" />
+    <message locale="ko" value="공개" />
+  </resource>
+  <resource key="select.tutor1" type="text">
+    <message locale="en" value="Select instructor (none)" />
+    <message locale="ko" value="강사선택[없음]" />
+  </resource>
+  <resource key="select.tutor2" type="text">
+    <message locale="en" value="Select assistant (none)" />
+    <message locale="ko" value="조교선택[없음]" />
+  </resource>
+  <resource key="select.use" type="text">
+    <message locale="en" value="Use" />
+    <message locale="ko" value="사용" />
+  </resource>
+  <resource key="stat.access" type="text">
+    <message locale="en" value="Number of connections" />
+    <message locale="ko" value="접속수" />
+  </resource>
+  <resource key="stat.age" type="text">
+    <message locale="en" value="By age" />
+    <message locale="ko" value="연령별" />
+  </resource>
+  <resource key="stat.age.10" type="text">
+    <message locale="en" value="Under twenties" />
+    <message locale="ko" value="20대 미만" />
+  </resource>
+  <resource key="stat.age.20" type="text">
+    <message locale="en" value="Twenties" />
+    <message locale="ko" value="20대" />
+  </resource>
+  <resource key="stat.age.30" type="text">
+    <message locale="en" value="Thirties" />
+    <message locale="ko" value="30대" />
+  </resource>
+  <resource key="stat.age.40" type="text">
+    <message locale="en" value="Forties" />
+    <message locale="ko" value="40대" />
+  </resource>
+  <resource key="stat.age.50" type="text">
+    <message locale="en" value="Fifties" />
+    <message locale="ko" value="50대" />
+  </resource>
+  <resource key="stat.age.60" type="text">
+    <message locale="en" value="Sixties and above" />
+    <message locale="ko" value="60대 이상" />
+  </resource>
+  <resource key="stat.age.etc" type="text">
+    <message locale="en" value="Unknown" />
+    <message locale="ko" value="미상" />
+  </resource>
+  <resource key="stat.age.range" type="text">
+    <message locale="en" value="Distribution by age" />
+    <message locale="ko" value="연령별분포" />
+  </resource>
+  <resource key="stat.company" type="text"> 
+    <message locale="en" value="By member company" />
+    <message locale="ko" value="회원사별" />
+  </resource>
+  <resource key="stat.count" type="text">
+    <message locale="en" value="Number of persons" />
+    <message locale="ko" value="인원" />
+  </resource>
+  <resource key="stat.date" type="text">
+    <message locale="en" value="Period" />
+    <message locale="ko" value="기간" />
+  </resource>
+  <resource key="stat.day" type="text">
+    <message locale="en" value="By date" />
+    <message locale="ko" value="일별" />
+  </resource>
+  <resource key="stat.day2" type="text">
+    <message locale="en" value="Date" />
+    <message locale="ko" value="날짜" />
+  </resource>
+  <resource key="stat.etc" type="text">
+    <message locale="en" value="Category" />
+    <message locale="ko" value="구분" />
+  </resource>
+  <resource key="stat.finalgrade" type="text">
+    <message locale="en" value="Grade" />
+    <message locale="ko" value="학점" />
+  </resource>
+  <resource key="stat.genkine" type="text">
+    <message locale="en" value="Number of persons" />
+    <message locale="ko" value="명" />
+  </resource>
+  <resource key="stat.grad.date" type="text">
+    <message locale="en" value="Grade confirmation period" />
+    <message locale="ko" value="성적확정기간" />
+  </resource>
+  <resource key="stat.hakjum" type="text">
+    <message locale="en" value="Grade distribution" />
+    <message locale="ko" value="학점분포" />
+  </resource>
+  <resource key="stat.hakjum.range" type="text">
+    <message locale="en" value="Distribution by grade" />
+    <message locale="ko" value="학점별분포" />
+  </resource>
+  <resource key="stat.lecture" type="text">
+    <message locale="en" value="By Course" />
+    <message locale="ko" value="강의별" />
+  </resource>
+  <resource key="stat.month" type="text">
+    <message locale="en" value="By Month" />
+    <message locale="ko" value="월별" />
+  </resource>
+  <resource key="stat.register" type="text">
+    <message locale="en" value="?" />
+    <message locale="ko" value="가입" />
+  </resource>
+  <resource key="stat.search.date" type="text">
+    <message locale="en" value="Search period" />
+    <message locale="ko" value="검색기간" />
+  </resource>
+  <resource key="stat.search.index" type="text">
+    <message locale="en" value="Category search" />
+    <message locale="ko" value="분류검색" />
+  </resource>
+  <resource key="stat.sex" type="text">
+    <message locale="en" value="Gender" />
+    <message locale="ko" value="성별" />
+  </resource>
+  <resource key="stat.sex.range" type="text">
+    <message locale="en" value="Gender Distribution" />
+    <message locale="ko" value="성별분포" />
+  </resource>
+  <resource key="stat.sex.range.G" type="text">
+    <message locale="en" value="Unknown" />
+    <message locale="ko" value="미상" />
+  </resource>
+  <resource key="stat.sex.range.M" type="text">
+    <message locale="en" value="Male" />
+    <message locale="ko" value="남성" />
+  </resource>
+  <resource key="stat.sex.range.W" type="text">
+    <message locale="en" value="Female" />
+    <message locale="ko" value="여성" />
+  </resource>
+  <resource key="stat.stat" type="text">
+    <message locale="en" value="Statistics" />
+    <message locale="ko" value="통계(%)" />
+  </resource>
+  <resource key="stat.time" type="text">
+    <message locale="en" value="By time" />
+    <message locale="ko" value="시간대별" />
+  </resource>
+  <resource key="stat.time.name" type="text">
+    <message locale="en" value="Hour" />
+    <message locale="ko" value="시" />
+  </resource>
+  <resource key="stat.time.week" type="text">
+    <message locale="en" value="Week" />
+    <message locale="ko" value="주" />
+  </resource>
+  <resource key="stat.total" type="text">
+    <message locale="en" value="Sum" />
+    <message locale="ko" value="계" />
+  </resource>
+  <resource key="stat.total.accumulate" type="text">
+    <message locale="en" value="Total" />
+    <message locale="ko" value="총누적계" />
+  </resource>
+  <resource key="stat.week" type="text">
+    <message locale="en" value="By week" />
+    <message locale="ko" value="주별" />
+  </resource>
+  <resource key="stat.year" type="text">
+    <message locale="en" value="By year" />
+    <message locale="ko" value="년도별" />
+  </resource>
+  <resource key="table.bbsname" type="text">
+    <message locale="en" value="Board Name" />
+    <message locale="ko" value="게시판이름" />
+  </resource>
+  <resource key="table.char" type="text">
+    <message locale="en" value="Char" />
+    <message locale="ko" value="Char" />
+  </resource>
+  <resource key="table.cnt" type="text">
+    <message locale="en" value="ea" />
+    <message locale="ko" value="개" />
+  </resource>
+  <resource key="table.common.email" type="text">
+    <message locale="en" value="Email" />
+    <message locale="ko" value="이메일" />
+  </resource>
+  <resource key="table.common.message" type="text">
+    <message locale="en" value="Page" />
+    <message locale="ko" value="쪽" />
+  </resource>
+  <resource key="table.common.messenger" type="text">
+    <message locale="en" value="Memo" />
+    <message locale="ko" value="쪽지" />
+  </resource>
+  <resource key="table.cust_nm" type="text">
+    <message locale="en" value="Company" />
+    <message locale="ko" value="소속사" />
+  </resource>
+  <resource key="table.day" type="text">
+    <message locale="en" value="Days" />
+    <message locale="ko" value="일" />
+  </resource>
+  <resource key="table.hour" type="text">
+    <message locale="en" value="Hour" />
+    <message locale="ko" value="시간" />
+  </resource>
+  <resource key="table.min" type="text">
+    <message locale="en" value="Minutes" />
+    <message locale="ko" value="분" />
+  </resource>
+  <resource key="table.desc" type="text">
+    <message locale="en" value="Content" />
+    <message locale="ko" value="내용" />
+  </resource>
+  <resource key="table.exm.view.status" type="text">
+    <message locale="en" value="Application Status" />
+    <message locale="ko" value="응시상태" />
+  </resource>
+  <resource key="table.feedback" type="text">
+    <message locale="en" value="Corrected Instruction" />
+    <message locale="ko" value="첨삭지도" />
+  </resource>
+  <resource key="table.feedback.desc" type="text">
+    <message locale="en" value="Correction Details" />
+    <message locale="ko" value="첨삭내용" />
+  </resource>
+  <resource key="table.feedback.file" type="text">
+    <message locale="en" value="Corrected File" />
+    <message locale="ko" value="첨삭파일" />
+  </resource>
+  <resource key="table.feedback.nothing" type="text">
+    <message locale="en" value="Non register" />
+    <message locale="ko" value="미등록" />
+  </resource>
+  <resource key="table.feedback.regist" type="text">
+    <message locale="en" value="Register" />
+    <message locale="ko" value="등록" />
+  </resource>
+  <resource key="table.feedback.title" type="text">
+    <message locale="en" value="Corrected title" />
+    <message locale="ko" value="첨삭제목" />
+  </resource>
+  <resource key="table.file" type="text">
+    <message locale="en" value="File" />
+    <message locale="ko" value="파일" />
+  </resource>
+  <resource key="table.filename" type="text">
+    <message locale="en" value="File name" />
+    <message locale="ko" value="파일명" />
+  </resource>
+  <resource key="table.fileupdate" type="text">
+    <message locale="en" value="Maintain current registered file" />
+    <message locale="ko" value="현재등록된 파일 유지" />
+  </resource>
+  <resource key="table.finalscore.feedback" type="text">
+    <message locale="en" value="Feedback" />
+    <message locale="ko" value="피드백" />
+  </resource>
+  <resource key="table.finalscore.feedback.desc" type="text">
+    <message locale="en" value="Feedback content" />
+    <message locale="ko" value="피드백내용" />
+  </resource>
+  <resource key="table.finalscore.feedback.file" type="text">
+    <message locale="en" value="Feedback file" />
+    <message locale="ko" value="피드백파일" />
+  </resource>
+  <resource key="table.finalscore.feedback.title" type="text">
+    <message locale="en" value="Feedback title" />
+    <message locale="ko" value="피드백제목" />
+  </resource>
+  <resource key="table.finalscore.regist" type="text">
+    <message locale="en" value="Registering feedback" />
+    <message locale="ko" value="피드백을 등록합니다." />
+  </resource>
+  <resource key="table.finalscore.regist.not" type="text">
+    <message locale="en" value="Not registering feedback" />
+    <message locale="ko" value="피드백를 등록하지 않습니다." />
+  </resource>
+  <resource key="table.forum.agree" type="text">
+    <message locale="en" value="Agree" />
+    <message locale="ko" value="찬성" />
+  </resource>
+  <resource key="table.forum.disagree" type="text">
+    <message locale="en" value="Appose" />
+    <message locale="ko" value="반대" />
+  </resource>
+  <resource key="table.id" type="text">
+    <message locale="en" value="ID" />
+    <message locale="ko" value="아이디" />
+  </resource>
+  <resource key="table.isuse" type="text">
+    <message locale="en" value="Use" />
+    <message locale="ko" value="사용여부" />
+  </resource>
+  <resource key="table.lecreq.number" type="text">
+    <message locale="en" value="Course group" />
+    <message locale="ko" value="수강차수" />
+  </resource>
+  <resource key="table.lecterm" type="text">
+    <message locale="en" value="Course period" />
+    <message locale="ko" value="강의기간" />
+  </resource>
+  <resource key="table.lectype" type="text">
+    <message locale="en" value="Course type" />
+    <message locale="ko" value="강의유형" />
+  </resource>
+  <resource key="table.mail" type="text">
+    <message locale="en" value="Mail" />
+    <message locale="ko" value="메일" />
+  </resource>
+  <resource key="table.marking" type="text">
+    <message locale="en" value="Grading" />
+    <message locale="ko" value="채점" />
+  </resource>
+  <resource key="table.marking.date" type="text">
+    <message locale="en" value="Date of grading" />
+    <message locale="ko" value="채점일" />
+  </resource>
+  <resource key="table.message.exm.activex.notfound" type="text">
+    <message locale="en" value="ActiveX needs to be installed" />
+    <message locale="ko" value="ActiveX를 설치하셔야 합니다." />
+  </resource>
+  <resource key="table.message.exm.end" type="text">
+    <message locale="en" value="Do you wish to conclude the exam and submit the results?" />
+    <message locale="ko" value="시험을 종료하시고 제출하시겠습니까?" />
+  </resource>
+  <resource key="table.message.exm.timeout" type="text">
+    <message locale="en" value="Exam has been closed due to time being expired. Please click on the check icon." />
+    <message locale="ko" value="시험시간이 종료되어 자동으로 종료합니다. 확인을 클릭하세요." />
+  </resource>
+  <resource key="table.message.exm.word" type="text">
+    <message locale="en" value="?" />
+    <message locale="ko" value="- 정답의 경우의수를 #으로 구분하여 공백없이 입력하세요.&lt;br&gt;- 학습자가 입력한 답안과 문제의 정답이 정확히 일치하지 않으면 오답처리 됩니다." />
+  </resource>
+  <resource key="table.message.exm.word.ex" type="text">
+    <message locale="en" value="?" />
+    <message locale="ko" value="예 : 한국#대한민국#korea#KOREA#Korea" />
+  </resource>
+  <resource key="table.message.function.key" type="text">
+    <message locale="en" value="Special characters cannot be used." />
+    <message locale="ko" value="특수키는 사용할 수 없습니다." />
+  </resource>
+  <resource key="table.message.research.retry" type="text">
+    <message locale="en" value="재응시 대상이 무엇인지요? 시험 or 과정 전체?" />
+    <message locale="ko" value="재응시처리 하더라도 설문에 응시한 정보는 삭제되지 않고 학습자가 1번더 응시할 수 있게 처리됩니다." />
+  </resource>
+  <resource key="table.message.right.key" type="text">
+    <message locale="en" value="The right key cannot be used." />
+    <message locale="ko" value="오른쪽키는 사용할 수 없습니다." />
+  </resource>
+  <resource key="table.month" type="text">
+    <message locale="en" value="Month" />
+    <message locale="ko" value="월" />
+  </resource>
+  <resource key="table.name" type="text">
+    <message locale="en" value="Name" />
+    <message locale="ko" value="이름" />
+  </resource>
+  <resource key="table.no" type="text">
+    <message locale="en" value="No" />
+    <message locale="ko" value="아니오" />
+  </resource>
+  <resource key="table.notscoreing" type="text">
+    <message locale="en" value="Not graded" />
+    <message locale="ko" value="미채점" />
+  </resource>
+  <resource key="table.notsubmit" type="text">
+    <message locale="en" value="Not submitted" />
+    <message locale="ko" value="미제출" />
+  </resource>
+  <resource key="table.num" type="text">
+    <message locale="en" value="Number" />
+    <message locale="ko" value="No" />
+  </resource>
+  <resource key="table.number" type="text">
+    <message locale="en" value="Course group" />
+    <message locale="ko" value="차수" />
+  </resource>
+  <resource key="table.open" type="text">
+    <message locale="en" value="Grading results" />
+    <message locale="ko" value="채점결과" />
+  </resource>
+  <resource key="table.poll.view.no" type="text">
+    <message locale="en" value="Non participated" />
+    <message locale="ko" value="미참여" />
+  </resource>
+  <resource key="table.poll.view.yes" type="text">
+    <message locale="en" value="Participated" />
+    <message locale="ko" value="참여" />
+  </resource>
+  <resource key="table.reference" type="text">
+    <message locale="en" value="Reference" />
+    <message locale="ko" value="참고사항" />
+  </resource>
+  <resource key="table.reference_file" type="text">
+    <message locale="en" value="Reference file" />
+    <message locale="ko" value="참고파일" />
+  </resource>
+  <resource key="table.reference_filename" type="text">
+    <message locale="en" value="Reference file name" />
+    <message locale="ko" value="참고파일이름" />
+  </resource>
+  <resource key="table.reg_dt" type="text">
+    <message locale="en" value="Registration date" />
+    <message locale="ko" value="등록일" />
+  </resource>
+  <resource key="table.regist" type="text">
+    <message locale="en" value="Corrected instruction will be registered" />
+    <message locale="ko" value="첨삭지도를 등록합니다." />
+  </resource>
+  <resource key="table.regist.not" type="text">
+    <message locale="en" value="Coreected instruction will not be registered" />
+    <message locale="ko" value="첨삭지도를 등록하지 않습니다." />
+  </resource>
+  <resource key="table.reply_dt" type="text">
+    <message locale="en" value="Reply date" />
+    <message locale="ko" value="답변일" />
+  </resource>
+  <resource key="table.reqfull" type="text">
+    <message locale="en" value="Number of persons" />
+    <message locale="ko" value="정원" />
+  </resource>
+  <resource key="table.reqnumber" type="text">
+    <message locale="en" value="Attending course" />
+    <message locale="ko" value="수강" />
+  </resource>
+  <resource key="table.require" type="text">
+    <message locale="en" value="Manadotory fill out" />
+    <message locale="ko" value="필수작성" />
+  </resource>
+  <resource key="table.require.no" type="text">
+    <message locale="en" value="Select" />
+    <message locale="ko" value="선택" />
+  </resource>
+  <resource key="table.require.yes" type="text">
+    <message locale="en" value="Manadotory" />
+    <message locale="ko" value="필수" />
+  </resource>
+  <resource key="table.research.answer.write" type="text">
+    <message locale="en" value="Draft content" />
+    <message locale="ko" value="내용작성" />
+  </resource>
+  <resource key="table.research.answer.writeed" type="text">
+    <message locale="en" value="Drafted content" />
+    <message locale="ko" value="작성내용" />
+  </resource>
+  <resource key="table.research.master.title" type="text">
+    <message locale="en" value="Questionnaire title" />
+    <message locale="ko" value="설문제목" />
+  </resource>
+  <resource key="table.research.notrequire" type="text">
+    <message locale="en" value="Select" />
+    <message locale="ko" value="선택" />
+  </resource>
+  <resource key="table.research.require" type="text">
+    <message locale="en" value="Manadotory" />
+    <message locale="ko" value="필수" />
+  </resource>
+  <resource key="table.research.required" type="text">
+    <message locale="en" value="Manadotory flag" />
+    <message locale="ko" value="필수여부" />
+  </resource>
+  <resource key="table.research.title" type="text">
+    <message locale="en" value="Question" />
+    <message locale="ko" value="질문" />
+  </resource>
+  <resource key="table.score" type="text">
+    <message locale="en" value="Score" />
+    <message locale="ko" value="점수" />
+  </resource>
+  <resource key="table.score.title" type="text">
+    <message locale="en" value="Point(s)" />
+    <message locale="ko" value="점" />
+  </resource>
+  <resource key="table.scoreing" type="text">
+    <message locale="en" value="Grade" />
+    <message locale="ko" value="채점" />
+  </resource>
+  <resource key="table.select.cnt" type="text">
+    <message locale="en" value="th" />
+    <message locale="ko" value="회" />
+  </resource>
+  <resource key="table.select.count" type="text">
+    <message locale="en" value="Number of exam paper preparation" />
+    <message locale="ko" value="출제회수" />
+  </resource>
+  <resource key="table.sort" type="text">
+    <message locale="en" value="Sequence" />
+    <message locale="ko" value="순서" />
+  </resource>
+  <resource key="table.status" type="text">
+    <message locale="en" value="State" />
+    <message locale="ko" value="상태" />
+  </resource>
+  <resource key="table.subjectname" type="text">
+    <message locale="en" value="Subject name" />
+    <message locale="ko" value="과목명" />
+  </resource>
+  <resource key="table.submit" type="text">
+    <message locale="en" value="Submit" />
+    <message locale="ko" value="제출" />
+  </resource>
+  <resource key="table.submit.day" type="text">
+    <message locale="en" value="Submission date" />
+    <message locale="ko" value="제출일" />
+  </resource>
+  <resource key="table.sum" type="text">
+    <message locale="en" value="Sum" />
+    <message locale="ko" value="합계" />
+  </resource>
+  <resource key="table.the.close" type="text">
+    <message locale="en" value="Not disclosed" />
+    <message locale="ko" value="비공개" />
+  </resource>
+  <resource key="table.the.open" type="text">
+    <message locale="en" value="Disclosed" />
+    <message locale="ko" value="공개" />
+  </resource>
+  <resource key="table.time.hour" type="text">
+    <message locale="en" value="Hour" />
+    <message locale="ko" value="시" />
+  </resource>
+  <resource key="table.time.min" type="text">
+    <message locale="en" value="Minute" />
+    <message locale="ko" value="분" />
+  </resource>
+  <resource key="table.time.sec" type="text">
+    <message locale="en" value="Second" />
+    <message locale="ko" value="초" />
+  </resource>
+  <resource key="table.title" type="text">
+    <message locale="en" value="Title" />
+    <message locale="ko" value="제목" />
+  </resource>
+  <resource key="table.top" type="text">
+    <message locale="en" value="Always on top" />
+    <message locale="ko" value="항상위" />
+  </resource>
+  <resource key="table.total.count" type="text">
+    <message locale="en" value="ea" />
+    <message locale="ko" value="개" />
+  </resource>
+  <resource key="table.total.count1" type="text">
+    <message locale="en" value="ea" />
+    <message locale="ko" value="건" />
+  </resource>
+  <resource key="table.total.count2" type="text">
+    <message locale="en" value="every" />
+    <message locale="ko" value="매" />
+  </resource>
+  <resource key="table.total.list" type="text">
+    <message locale="en" value="total" />
+    <message locale="ko" value="총" />
+  </resource>
+  <resource key="table.type" type="text">
+    <message locale="en" value="Type" />
+    <message locale="ko" value="유형" />
+  </resource>
+  <resource key="table.update_dt" type="text">
+    <message locale="en" value="Update date" />
+    <message locale="ko" value="수정일" />
+  </resource>
+  <resource key="table.update_id" type="text">
+    <message locale="en" value="Register" />
+    <message locale="ko" value="등록자" />
+  </resource>
+  <resource key="table.view.count" type="text">
+    <message locale="en" value="Search" />
+    <message locale="ko" value="조회" />
+  </resource>
+  <resource key="table.viewcount" type="text">
+    <message locale="en" value="Number of searches" />
+    <message locale="ko" value="조회수" />
+  </resource>
+  <resource key="table.wirite.count" type="text">
+    <message locale="en" value="Registration" />
+    <message locale="ko" value="등록" />
+  </resource>
+  <resource key="table.year" type="text">
+    <message locale="en" value="Year" />
+    <message locale="ko" value="년도" />
+  </resource>
+  <resource key="table.year1" type="text">
+    <message locale="en" value="Year" />
+    <message locale="ko" value="년" />
+  </resource>
+  <resource key="table.yes" type="text">
+    <message locale="en" value="Example" />
+    <message locale="ko" value="예" />
+  </resource>
+  <resource key="titie.item.allskill" type="text">
+    <message locale="en" value="All Skills" />
+    <message locale="ko" value="모든 스킬" />
+  </resource>
+  <resource key="titie.item.from" type="text">
+    <message locale="en" value=" ~" />
+    <message locale="ko" value="에서" />
+  </resource>
+  <resource key="titie.item.gap" type="text">
+    <message locale="en" value="Gap" />
+    <message locale="ko" value="갭" />
+  </resource>
+  <resource key="titie.item.selskill" type="text">
+    <message locale="en" value="Designated skill" />
+    <message locale="ko" value="지정된 스킬" />
+  </resource>
+  <resource key="title.admit.yesno" type="text">
+    <message locale="en" value="Aproved" />
+    <message locale="ko" value="승인여부" />
+  </resource>
+  <resource key="title.class.lec_stat" type="text">
+    <message locale="en" value="Course open state" />
+    <message locale="ko" value="개설상태" />
+  </resource>
+  <resource key="title.class.user_stat" type="text">
+    <message locale="en" value="Course study state" />
+    <message locale="ko" value="학습상태" />
+  </resource>
+  <resource key="title.class.user_stat.cancel" type="text">
+    <message locale="en" value="Cancellation request" />
+    <message locale="ko" value="취소신청" />
+  </resource>
+  <resource key="title.class.user_stat.cancel.completed" type="text">
+    <message locale="en" value="Cancellation completed" />
+    <message locale="ko" value="취소완료" />
+  </resource>
+  <resource key="title.class.user_stat.completed" type="text">
+    <message locale="en" value="Course study completed" />
+    <message locale="ko" value="학습완료" />
+  </resource>
+  <resource key="title.class.user_stat.ing" type="text">
+    <message locale="en" value="Course in progress" />
+    <message locale="ko" value="학습중" />
+  </resource>
+  <resource key="title.grad" type="text">
+    <message locale="en" value="Graduate" />
+    <message locale="ko" value="수료자" />
+  </resource>
+  <resource key="title.is_grad" type="text">
+    <message locale="en" value="Y/N" />
+    <message locale="ko" value="수료여부" />
+  </resource>
+  <resource key="title.is_grad.G" type="text">
+    <message locale="en" value="Completed" />
+    <message locale="ko" value="수료" />
+  </resource>
+  <resource key="title.is_grad.N" type="text">
+    <message locale="en" value="Not completed" />
+    <message locale="ko" value="미수료" />
+  </resource>
+  <resource key="title.item.chulsuk" type="text">
+    <message locale="en" value="Attendance" />
+    <message locale="ko" value="출석" />
+  </resource>
+  <resource key="title.item.homework" type="text">
+    <message locale="en" value="Homework / Assignment" />
+    <message locale="ko" value="과제" />
+  </resource>
+  <resource key="title.item.leccode" type="text">
+    <message locale="en" value="Course code" />
+    <message locale="ko" value="강의코드" />
+  </resource>
+  <resource key="title.item.lecname" type="text">
+    <message locale="en" value="Course name" />
+    <message locale="ko" value="강의명" />
+  </resource>
+  <resource key="title.item.numb" type="text">
+    <message locale="en" value="Course group" />
+    <message locale="ko" value="차수" />
+  </resource>
+  <resource key="title.item.poll" type="text">
+    <message locale="en" value="Questionnaire" />
+    <message locale="ko" value="설문" />
+  </resource>
+  <resource key="title.item.prfid" type="text">
+    <message locale="en" value="Instructor ID" />
+    <message locale="ko" value="강사ID" />
+  </resource>
+  <resource key="title.item.prfnm" type="text">
+    <message locale="en" value="Instructor name" />
+    <message locale="ko" value="강사명" />
+  </resource>
+  <resource key="title.item.print" type="text">
+    <message locale="en" value="Print" />
+    <message locale="ko" value="출력" />
+  </resource>
+  <resource key="title.item.project" type="text">
+    <message locale="en" value="Team Project" />
+    <message locale="ko" value="팀프로젝트" />
+  </resource>
+  <resource key="title.item.score" type="text">
+    <message locale="en" value="Score" />
+    <message locale="ko" value="수료점수" />
+  </resource>
+  <resource key="title.item.stat" type="text">
+    <message locale="en" value="State" />
+    <message locale="ko" value="수료상태" />
+  </resource>
+  <resource key="title.item.test" type="text">
+    <message locale="en" value="Exam" />
+    <message locale="ko" value="시험" />
+  </resource>
+  <resource key="title.item.toron" type="text">
+    <message locale="en" value="Discussion" />
+    <message locale="ko" value="토론" />
+  </resource>
+  <resource key="title.item.usrid" type="text">
+    <message locale="en" value="Member ID" />
+    <message locale="ko" value="회원ID" />
+  </resource>
+  <resource key="title.item.usrnm" type="text">
+    <message locale="en" value="Member Name" />
+    <message locale="ko" value="회원명" />
+  </resource>
+  <resource key="title.item.year" type="text">
+    <message locale="en" value="Year" />
+    <message locale="ko" value="년도" />
+  </resource>
+  <resource key="title.item.yn" type="text">
+    <message locale="en" value="Y/N" />
+    <message locale="ko" value="여부" />
+  </resource>
+  <resource key="title.jindo" type="text">
+    <message locale="en" value="Progress" />
+    <message locale="ko" value="진도" />
+  </resource>
+  <resource key="title.jindo.rate" type="text">
+    <message locale="en" value="Progress rate" />
+    <message locale="ko" value="진도율" />
+  </resource>
+  <resource key="title.lec_req" type="text">
+    <message locale="en" value="Course registration" />
+    <message locale="ko" value="수강신청" />
+  </resource>
+  <resource key="title.non_grad" type="text">
+    <message locale="en" value="Non Graduate" />
+    <message locale="ko" value="미수료자" />
+  </resource>
+  <resource key="title.pay.admin" type="text">
+    <message locale="en" value="Operator payment" />
+    <message locale="ko" value="운영자결제" />
+  </resource>
+  <resource key="title.pay.card" type="text">
+    <message locale="en" value="Card payment" />
+    <message locale="ko" value="카드결제" />
+  </resource>
+  <resource key="title.pay.confirm" type="text">
+    <message locale="en" value="Confirm receipt of payment" />
+    <message locale="ko" value="입금확인" />
+  </resource>
+  <resource key="title.pay.date" type="text">
+    <message locale="en" value="Payment date" />
+    <message locale="ko" value="결제일" />
+  </resource>
+  <resource key="title.pay.detail.info" type="text">
+    <message locale="en" value="Detailed payment information" />
+    <message locale="ko" value="결제상세정보" />
+  </resource>
+  <resource key="title.pay.mehtod" type="text">
+    <message locale="en" value="Payment method" />
+    <message locale="ko" value="결제방법" />
+  </resource>
+  <resource key="title.pay.not" type="text">
+    <message locale="en" value="Outstanding payment" />
+    <message locale="ko" value="미납" />
+  </resource>
+  <resource key="title.payment.form" type="text">
+    <message locale="en" value="Payment form" />
+    <message locale="ko" value="결제양식" />
+  </resource>
+  <resource key="title.payment.term" type="text">
+    <message locale="en" value="Payment period" />
+    <message locale="ko" value="결재기간" />
+  </resource>
+  <resource key="title.payment.total" type="text">
+    <message locale="en" value="Total amount" />
+    <message locale="ko" value="총액" />
+  </resource>
+  <resource key="title.payment.way" type="text">
+    <message locale="en" value="Payment method" />
+    <message locale="ko" value="결재수단" />
+  </resource>
+  <resource key="title.payresult.change" type="text">
+    <message locale="en" value="Payment status change" />
+    <message locale="ko" value="결제상태변경" />
+  </resource>
+  <resource key="title.payresult.no" type="text">
+    <message locale="en" value="Payment number" />
+    <message locale="ko" value="결제번호" />
+  </resource>
+  <resource key="title.payresult.ok" type="text">
+    <message locale="en" value="Payment completed" />
+    <message locale="ko" value="결제완료" />
+  </resource>
+  <resource key="title.payresult.period" type="text">
+    <message locale="en" value="Payment period" />
+    <message locale="ko" value="결제기간" />
+  </resource>
+  <resource key="title.repay.yesno" type="text">
+    <message locale="en" value="Refund" />
+    <message locale="ko" value="환급여부" />
+  </resource>
+  <resource key="title.report" type="text">
+    <message locale="en" value="Report" />
+    <message locale="ko" value="노동부" />
+  </resource>
+  <resource key="title.report.decide" type="text">
+    <message locale="en" value="Payment information" />
+    <message locale="ko" value="결재정보" />
+  </resource>
+  <resource key="title.report.jindo" type="text">
+    <message locale="en" value="Course progress status" />
+    <message locale="ko" value="학습진도현황" />
+  </resource>
+  <resource key="title.report.labor" type="text">
+    <message locale="en" value="Department of labor's report" />
+    <message locale="ko" value="노동부보고서" />
+  </resource>
+  <resource key="title.report.lecreq_cnt" type="text">
+    <message locale="en" value="No of Training" />
+    <message locale="ko" value="수강현황" />
+  </resource>
+  <resource key="title.table.freebbs" type="text">
+    <message locale="en" value="Free Board" />
+    <message locale="ko" value="자유게시판" />
+  </resource>
+  <resource key="title.table.noticebbs" type="text">
+    <message locale="en" value="Notification" />
+    <message locale="ko" value="공지사항" />
+  </resource>
+  <resource key="title.table.noticelecture" type="text">
+    <message locale="en" value="Course notification" />
+    <message locale="ko" value="강의공지사항" />
+  </resource>
+  <resource key="title.table.notused" type="text">
+    <message locale="en" value="Not used" />
+    <message locale="ko" value="미사용" />
+  </resource>
+  <resource key="title.table.order" type="text">
+    <message locale="en" value="th" />
+    <message locale="ko" value="번째" />
+  </resource>
+  <resource key="title.table.pdsbbs" type="text">
+    <message locale="en" value="Reference" />
+    <message locale="ko" value="자료실" />
+  </resource>
+  <resource key="title.table.qna" type="text">
+    <message locale="en" value="Q/A" />
+    <message locale="ko" value="Q/A" />
+  </resource>
+  <resource key="title.table.used" type="text">
+    <message locale="en" value="Use" />
+    <message locale="ko" value="사용" />
+  </resource>
+  <resource key="title.traning.term" type="text">
+    <message locale="en" value="Training period" />
+    <message locale="ko" value="훈련기간" />
+  </resource>
+  <resource key="title.wlb_chp_prg.limit_study_time" type="text">
+    <message locale="en" value="Minimum study time for course completion" />
+    <message locale="ko" value="수료기준학습시간" />
+  </resource>
+  <resource key="title.wlb_chp_prg.total_time" type="text">
+    <message locale="en" value="Total course study time" />
+    <message locale="ko" value="누적학습시간" />
+  </resource>
+  <resource key="user.role.adm1" type="text">
+    <message locale="en" value="System operator" />
+    <message locale="ko" value="시스템운영자" />
+  </resource>
+  <resource key="user.role.adm2" type="text">
+    <message locale="ko" value="학사운영자" />
+  </resource>
+  <resource key="user.role.adm3" type="text">
+    <message locale="en" value="Operator" />
+    <message locale="ko" value="운영자" />
+  </resource>
+  <resource key="user.role.adm4" type="text">
+    <message locale="en" value="Operator" />
+    <message locale="ko" value="운영자" />
+  </resource>
+  <resource key="user.role.adm5" type="text">
+    <message locale="en" value="Operator" />
+    <message locale="ko" value="운영자" />
+  </resource>
+  <resource key="user.role.adm6" type="text">
+    <message locale="en" value="Operator" />
+    <message locale="ko" value="운영자" />
+  </resource>
+  <resource key="user.role.adm7" type="text">
+    <message locale="en" value="Operator" />
+    <message locale="ko" value="운영자" />
+  </resource>
+  <resource key="user.role.adm8" type="text">
+    <message locale="en" value="Operator" />
+    <message locale="ko" value="운영자" />
+  </resource>
+  <resource key="user.role.adm9" type="text">
+    <message locale="en" value="Company instructor" />
+    <message locale="ko" value="기업교육담당자" />
+  </resource>
+  <resource key="user.role.g" type="text">
+    <message locale="en" value="Guest" />
+    <message locale="ko" value="게스트" />
+  </resource>
+  <resource key="user.role.mc" type="text">
+    <message locale="en" value="Company member" />
+    <message locale="ko" value="기업회원" />
+  </resource>
+  <resource key="user.role.mg" type="text">
+    <message locale="en" value="Member" />
+    <message locale="ko" value="회원" />
+  </resource>
+  <resource key="user.role.mr" type="text">
+    <message locale="en" value="Monitoring" />
+    <message locale="ko" value="모니터링" />
+  </resource>
+  <resource key="user.role.mw" type="text">
+    <message locale="en" value="Monitoring (Writing)" />
+    <message locale="ko" value="모니터링[쓰기]" />
+  </resource>
+  <resource key="user.role.prf1" type="text">
+    <message locale="en" value="Instructor" />
+    <message locale="ko" value="강사" />
+  </resource>
+  <resource key="user.role.prf2" type="text">
+    <message locale="en" value="Assistant" />
+    <message locale="ko" value="조교" />
+  </resource>
+  <resource key="user.role.prf3" type="text">
+    <message locale="en" value="Tutor" />
+    <message locale="ko" value="튜터" />
+  </resource>
+</bundle>
