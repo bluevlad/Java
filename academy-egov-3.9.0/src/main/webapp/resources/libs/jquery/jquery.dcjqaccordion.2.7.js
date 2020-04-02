@@ -6,9 +6,9 @@
  * 	http://www.opensource.org/licenses/mit-license.php
  * 	http://www.gnu.org/licenses/gpl.html
  *
- */
-(function($){
-	$.fn.dcAccordion = function(options) {
+ */
+(function($){
+	$.fn.dcAccordion = function(options) {
 		//set default options 
 		var defaults = {
 			classParent	 : 'dcjq-parent',
@@ -23,10 +23,10 @@
 			saveState	 : true,
 			disableLink	 : true,			showCount : false,
 			cookie	: 'dcjq-accordion'
-		};
+		};
 		//call in the default otions
-		var options = $.extend(defaults, options);
-		this.each(function(options){
+		var options = $.extend(defaults, options);
+		this.each(function(options){
 			var obj = this;
 			setUpAccordion();
 			if(defaults.saveState == true){
@@ -35,15 +35,15 @@
 			if(defaults.autoExpand == true){
 				$('li.'+defaults.classExpand+' > a').addClass(defaults.classActive);
 			}
-			resetAccordion();
-			if(defaults.eventType == 'hover'){
+			resetAccordion();
+			if(defaults.eventType == 'hover'){
 				var config = {
 					sensitivity: 2, // number = sensitivity threshold (must be 1 or higher)
 					interval: defaults.hoverDelay, // number = milliseconds for onMouseOver polling interval
 					over: linkOver, // function = onMouseOver callback (REQUIRED)
 					timeout: defaults.hoverDelay, // number = milliseconds delay before onMouseOut
 					out: linkOut // function = onMouseOut callback (REQUIRED)
-				};
+				};
 				$('li a',obj).hoverIntent(config);
 				var configMenu = {
 					sensitivity: 2, // number = sensitivity threshold (must be 1 or higher)
@@ -51,31 +51,31 @@
 					over: menuOver, // function = onMouseOver callback (REQUIRED)
 					timeout: 1000, // number = milliseconds delay before onMouseOut
 					out: menuOut // function = onMouseOut callback (REQUIRED)
-				};
-				$(obj).hoverIntent(configMenu);
+				};
+				$(obj).hoverIntent(configMenu);
 				// Disable parent links
-				if(defaults.disableLink == true){
+				if(defaults.disableLink == true){
 					$('li a',obj).click(function(e){
 						if($(this).siblings('ul').length >0){
 							e.preventDefault();
 						}
 					});
-				}
+				}
 			} else {			
-				$('li a',obj).click(function(e){
+				$('li a',obj).click(function(e){
 					$activeLi = $(this).parent('li');
 					$parentsLi = $activeLi.parents('li');
-					$parentsUl = $activeLi.parents('ul');
+					$parentsUl = $activeLi.parents('ul');
 					// Prevent browsing to link if has child links
 					if(defaults.disableLink == true){
 						if($(this).siblings('ul').length >0){
 							e.preventDefault();
 						}
-					}
+					}
 					// Auto close sibling menus
 					if(defaults.autoClose == true){
 						autoCloseAccordion($parentsLi, $parentsUl);
-					}
+					}
 					if ($('> ul',$activeLi).is(':visible')){
 						$('ul',$activeLi).slideUp(defaults.speed);
 						$('a',$activeLi).removeClass(defaults.classActive);
@@ -88,9 +88,9 @@
 						createCookie(defaults.cookie, obj);
 					}
 				});
-			}
+			}
 			// Set up accordion
-			function setUpAccordion(){
+			function setUpAccordion(){
 				$arrow = '<span class="'+defaults.classArrow+'"></span>';
 				var classParentLi = defaults.classParent+'-li';
 				$('> ul',obj).show();
@@ -167,7 +167,7 @@
 			$allActiveLi = $('a.'+defaults.classActive,obj);
 			$allActiveLi.siblings('ul').show();
 		}
-		});
+		});
 		// Retrieve cookie value and set active items
 		function checkCookie(cookieId, obj){
 			var cookieVal = $.cookie(cookieId);
@@ -181,7 +181,7 @@
 					$('> a',$parentsLi).addClass(defaults.classActive);
 				});
 			}
-		}
+		}
 		// Write cookie
 		function createCookie(cookieId, obj){
 			var activeIndex = [];
