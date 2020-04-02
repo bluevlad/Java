@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<decorators >
-    <excludes>
-        <pattern>/login/loginUsr.do</pattern>
-        <pattern>/login/actionSecurityLogin.do</pattern>
-        <pattern>/login/actionMain.do</pattern>
-        <pattern>/login/*</pattern>
-    </excludes>
-</decorators>
