@@ -1,0 +1,28 @@
+@charset "utf-8";
+
+.firstheader{position:relative;height:91px;background:#fff}
+.firstheader h1{position:absolute;top:0;left:0;width:190px;height:91px;z-index:2}
+.firstheader h1 a{display:block;width:190px;height:91px;background:url(../img/h1_logo.gif) no-repeat}
+.firstheader h1 a img{display:none}
+.firstheader .util{position:absolute;top:0;right:0;height:33px;}
+.firstheader .util li{color:#333;}
+.firstheader .util li a{color:#333;padding:0 5px;}
+.firstheader .util .txt01{color:#0066cc;font-weight:bold;margin-left:10px}
+.firstheader .gnb{position:absolute;top:34px;left:0;height:50px;background:#1964be;border-top:1px solid #2d323c;padding:0;}
+.firstheader .gnb li{color:#fff;}
+.firstheader .gnb li:first-child{padding-left:200px}
+.firstheader .gnb li a{margin-top:15px;padding:0 14px;font-size:14px;font-weight:bold}
+.firstheader .gnb{float:inherit;text-align:left;width:100%}
+body, html{height:100%}
+#wrap{margin:0;padding:0;height:100%;position:absolute;top:0;left:0;background:url(../img/bg_lnb.gif) repeat-y}
+#lnb{background:#3f434f;border:0;margin-top:91px}
+#lnb dt{background:#46b300;color:#fff;font-size:16px;font-weight:bold}
+#lnb dd ul li{border-top:0;border-bottom:#000 1px solid}
+#lnb dd ul li a{padding:10px 15px;border-bottom:1px solid #656972;background:none}
+#lnb dd ul li.active a, #lnb dd ul li a:hover{background:#000 url(../img/dot_ahv.png) no-repeat 94% 50%;color:#64ff00;font-weight:bold;;text-decoration:none}
+#content{padding-left:210px;padding-top:100px}
+.paginate_complex{text-align:center;margin:24px 0 35px}
+.paginate_complex a, .paginate_complex strong{display:inline-block;text-align:center;line-height:29px;vertical-align:middle;margin:0 2px;padding:0}
+.paginate_complex a{width:27px;height:27px;border:1px solid #d4d4d4;background:#fff;color:#666}
+.paginate_complex strong{width:29px;height:29px;background:#6b6b6b;color:#fff;font-weight:bold}
+.paginate_complex .direction{width:27px;height:27px;border:1px solid #d4d4d4;background:#fff}

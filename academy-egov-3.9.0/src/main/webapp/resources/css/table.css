@@ -1,0 +1,67 @@
+/* 리스트형 Table */
+.tbl_type,.tbl_type th,.tbl_type td{border:0}
+.tbl_type a{color:#383838;text-decoration:none}
+.tbl_type{margin-top:0px; margin-bottom:0px; width:100%;border-bottom:1px solid #999;border-left:1px solid #999;border-right:1px solid #999;color:#666;font-size:12px;}
+.tbl_type caption,.tbl_type .frm label{display:none}
+.tbl_type th{padding:10px 0 4px 8px;border-top:solid 2px #999;border-bottom:solid 1px #b2b2b2;border-left:solid 1px #b2b2b2;border-right:solid 1px #b2b2b2;background-color:#f1f1f4;color:#333;font-weight:bold;line-height:18px;vertical-align: middle !important; text-align:center;}
+.tbl_type td{padding:10px 0 5px 8px;border-bottom:solid 1px #d2d2d2;border-left:solid 1px #d2d2d2;border-right:solid 1px #d2d2d2;text-align:center;}
+.tbl_type .frm{padding:0;text-align:center;}
+.tbl_type .frm input{margin:0}
+.tbl_type .num,.tbl_type .date,.tbl_type .hit,.tbl_type .name{padding:0;font-family:Tahoma;font-size:12px;line-height:normal}
+.tbl_type .title{padding-left:30px; text-align:left}
+.tbl_type .title .pic,.tbl_type .title .new{margin:0 0 2px;vertical-align:middle}
+.tbl_type tr.reply .title a{padding-left:12px;background:url../img/common/ic_reply.gif) 0 1px no-repeat}
+.tbl_type tr.reply td a.comment{padding:0;background:none;color:#f00;font-size:12px;font-weight:bold}
+/* //UI Object */
+
+
+/* 데이터 처리를 위한 Table */
+.tbl_type1,.tbl_type1 th,.tbl_type1 td{border:0}
+.tbl_type1{width:100%;border-bottom:1px solid #dddee2;font-family:'돋움',dotum;font-size:12px;table-layout:fixed; min-width:800px;}
+.tbl_type1 caption{display:none}
+.tbl_type1 th{padding:10px 0 5px 20px;border-top:2px solid #dddee2;border-left:1px solid #dddee2;border-right:1px solid #dddee2;background:#f1f1f3;color:#666;font-weight:bold;text-align:left;vertical-align:top}
+.tbl_type1 td{padding:10px 5px 5px 12px;border-top:1px solid #dddee2;border-left:1px solid #dddee2;border-right:1px solid #dddee2;line-height:16px;vertical-align:top}
+.tbl_type1 .contents {height:200px}
+/* //UI Object */
+
+
+/* 예외 처리를 위한 Table */
+.ntb td{padding:0px 0 0px 0px;vertical-align: middle}
+/* //UI Object */
+
+
+/* 2012-08-03 추가(김희겸) */
+/* 데이터 처리를 위한 Table2 */
+.tbl_type2,.tbl_type2 th,.tbl_type2 td{border:0}
+.tbl_type2{width:100%;border-bottom:1px solid #dddee2;font-family:'돋움',dotum;font-size:12px;table-layout:fixed;}
+.tbl_type2 caption{display:none}
+.tbl_type2 th{padding:8px 0 5px 20px;border-top:1px solid #dddee2;background:#f1f1f3;color:#666;font-weight:bold;text-align:left;vertical-align:top}
+.tbl_type2 td{padding:8px 5px 5px 12px;border-top:1px solid #dddee2;line-height:16px;vertical-align:top}
+.tbl_type2 .contents {height:200px}
+/* //UI Object */
+
+/* 2012-08-06 추가(김희겸) */
+/* 예외 처리를 위한 Table3 */
+.tbl_type3,.tbl_type3 th,.tbl_type3 td{border:0}
+.tbl_type3{width:100%;border-bottom:2px solid #999999;border-top:2px solid #999999;font-family:'돋움',dotum;font-size:12px;table-layout:fixed;}
+.tbl_type3 caption{display:none}
+.tbl_type3 th{padding:8px 0 5px 20px;border-top:1px solid #dddee2;background:#f1f1f3;color:#666;font-weight:bold;text-align:left;vertical-align: middle}
+.tbl_type3 td{padding:8px 5px 5px 12px;border-top:1px solid #dddee2;line-height:16px;vertical-align:middle}
+.tbl_type3 .contents {height:200px}
+/* //UI Object */
+
+/* 2012-09-17 추가(김희겸) */
+/* 리스트형 Table_기본정보 */
+.tbl_type_b,.tbl_type_b th,.tbl_type_b td{border:0}
+.tbl_type_b{margin-top:10px;width:100%;border-bottom:1px solid #d2d2d2;color:#666;font-size:12px;table-layout:fixed;}
+.tbl_type_b caption,.tbl_type_b .frm label{display:none}
+.tbl_type_b th{padding:5px 0 4px;border-top:solid 0px #d2d2d2;border-bottom:solid 1px #d2d2d2;background-color:#f1f1f4;color:#333;font-weight:bold;line-height:18px;vertical-align:top}
+.tbl_type_b td{padding:8px 0 5px;border-bottom:solid 1px #d2d2d2;text-align:center}
+.tbl_type_b .frm{padding:0;text-align:center}
+.tbl_type_b .frm input{margin:0}
+.tbl_type_b .num,.tbl_type .date,.tbl_type .hit,.tbl_type .name{padding:0;font-family:Tahoma;font-size:12px;line-height:normal}
+.tbl_type_b .title{padding-left:30px; text-align:left}
+.tbl_type_b .title .pic,.tbl_type .title .new{margin:0 0 2px;vertical-align:middle}
+.tbl_type_b tr.reply .title a{padding-left:12px;background:url../img/common/ic_reply.gif) 0 1px no-repeat}
+.tbl_type_b tr.reply td a.comment{padding:0;background:none;color:#f00;font-size:12px;font-weight:bold}
+/* //UI Object */

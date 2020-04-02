@@ -1,0 +1,83 @@
+@charset "utf-8";
+
+.firstheader{position:relative;height:91px;background:#fff}
+.firstheader h1{position:absolute;top:0;left:0;width:190px;height:91px;z-index:2}
+.firstheader h1 a{display:block;width:190px;height:91px;background:url(../img/h1_logo.gif) no-repeat}
+.firstheader h1 a img{display:none}
+.firstheader .util{position:absolute;top:0;right:0;height:33px;}
+.firstheader .util li{color:#333;}
+.firstheader .util li a{color:#333;padding:0 5px;}
+.firstheader .util .txt01{color:#0066cc;font-weight:bold;margin-left:10px}
+.firstheader .gnb{position:absolute;top:34px;left:0;height:50px;background:#1964be;border-top:1px solid #2d323c;padding:0;}
+.firstheader .gnb li{color:#fff;}
+.firstheader .gnb li:first-child{padding-left:200px}
+.firstheader .gnb li a{margin-top:15px;padding:0 14px;font-size:14px;font-weight:bold}
+.firstheader .gnb{float:inherit;text-align:left;width:100%}
+body, html{height:100%}
+#wrap{margin:0;padding:0;height:100%;position:absolute;top:0;left:0;background:url(../img/bg_lnb.gif) repeat-y}
+#lnb{background:#3f434f;border:0;margin-top:91px}
+#lnb dt{background:#46b300;color:#fff;font-size:16px;font-weight:bold}
+#lnb dd ul li{border-top:0;border-bottom:#000 1px solid}
+#lnb dd ul li a{padding:10px 15px;border-bottom:1px solid #656972;background:none}
+#lnb dd ul li.active a, #lnb dd ul li a:hover{background:#000 url(../img/dot_ahv.png) no-repeat 94% 50%;color:#64ff00;font-weight:bold;;text-decoration:none}
+#content{padding-left:210px;padding-top:100px}
+.paginate_complex{text-align:center;margin:24px 0 35px}
+.paginate_complex a, .paginate_complex strong{display:inline-block;text-align:center;line-height:29px;vertical-align:middle;margin:0 2px;padding:0}
+.paginate_complex a{width:27px;height:27px;border:1px solid #d4d4d4;background:#fff;color:#666}
+.paginate_complex strong{width:29px;height:29px;background:#6b6b6b;color:#fff;font-weight:bold}
+.paginate_complex .direction{width:27px;height:27px;border:1px solid #d4d4d4;background:#fff}
+
+/*매출통계*/
+.basicTb{width:100%;border-left:1px solid #dbdbdb;border-top:1px solid #dbdbdb}
+.basicTb th, .basicTb td{border-right:1px solid #dbdbdb;border-bottom:1px solid #dbdbdb}
+.basicTb th{padding:7px 0;text-align:center;background:#f1f1f1}
+.basicTb td{padding:7px}
+.statWrap{padding:20px}
+.statWrap .basicTb{margin-bottom:20px}
+.statWrap table{border-spacing:0;border-collapse:collapse}
+.statWrap legend{position:absolute;left:-5000px}
+.statWrap legend, .statWrap caption{visibility:hidden;width:0;height:0;font-size:0;line-height:0;overflow:hidden}
+.statWrap h3{margin-bottom:10px;font-size:14px;color:#000;}
+.statWrap .graphArea{padding:15px;border:1px solid #dae1e8}
+.dashBdWp{overflow:hidden;margin-bottom:30px}
+.dashBdWp .fL{float:left;width:48%}
+.dashBdWp .fR{float:right;width:48%}
+.dashBdWp .bx{background:#f4f4f4;border:1px solid #d0d0d0}
+.dashBdWp .dashBd .bx{padding:10px 20px 15px}
+.dashBd table{width:100%}
+.dashBd table th, .dashBd table td{padding:9px 10px 8px;border-top:1px solid #d0d0d0}
+.dashBd table tfoot th, .dashBd table tfoot td{border-top:0;background:#fff;font-weight:bold}
+.dashBd table tr:first-child th, .dashBd table tr:first-child td{border-top:0}
+.dashBd table th{text-align:left}
+.dashBd table td{text-align:right}
+.dashBd.fL table td{width:30%;color:#f60909}
+.dashBd.fR table td{width:20%;color:#0d56ae}
+.localDataTb{width:100%;border-top:2px solid #7a7a7a;border-bottom:1px solid #7a7a7a}
+.localDataTb th{width:20%;background:#f6f6f6;border-left:1px solid #cecece}
+.localDataTb td{width:30%;}
+.localDataTb tr th:first-child{border-left:0}
+.localDataTb th, .localDataTb td{padding:10px 0 10px}
+.localDataTb thead th, .localDataTb thead td{font-weight:bold;text-align:center;color:#46b300;border-bottom:1px solid #7a7a7a}
+.localDataTb tbody td{text-align:right;padding-right:20px}
+.localDataTb tbody th, .localDataTb tbody td{border-top:1px solid #cecece}
+.dashBdWp .tb{float:left;width:40%}
+.dashBdWp .chart{float:right;position:relative;width:57%;border:1px solid #cecece}
+.pieChartLegend{position:absolute;top:80px;right:10px;overflow:hidden;width:110px}
+.pieChartLegend li{float:left;width:50%;margin:5px 0;font-size:11px;letter-spacing:-1px}
+.pieChartLegend span{display:inline-block;width:6px;height:6px;margin-right:5px;background:#efefef;vertical-align:middle}
+.pieChartLegend .c1{background:#3366cc}
+.pieChartLegend .c2{background:#dc3912}
+.pieChartLegend .c3{background:#f99002}
+.pieChartLegend .c4{background:#109618}
+.pieChartLegend .c5{background:#990099}
+.pieChartLegend .c6{background:#0099c6}
+.pieChartLegend .c7{background:#0099c6}
+.pieChartLegend .c8{background:#66aa00}
+.pieChartLegend .c9{background:#b82e2e}
+.pieChartLegend .c10{background:#316395}
+.pieChartLegend .c11{background:#994499}
+.pieChartLegend .c12{background:#22aa99}
+.pieChartLegend .c13{background:#aaaa11}
+.pieChartLegend .c14{background:#6633cc}
+.pieChartLegend .c15{background:#e67300}
+.pieChartLegend .c16{background:#8b0707}

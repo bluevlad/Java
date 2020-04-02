@@ -1,0 +1,2554 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lecture">
+
+ 	<resultMap type="java.util.HashMap" id="lectureMap">
+	   <result column="SUBJECT_DESC" property="SUBJECT_DESC" javaType="java.lang.String" jdbcType="CLOB"/>
+	   <result column="SUBJECT_MEMO" property="SUBJECT_MEMO" javaType="java.lang.String" jdbcType="CLOB"/>
+	   <result column="PLAN" property="PLAN" javaType="java.lang.String" jdbcType="CLOB"/>
+	</resultMap>
+
+<!-- 단과 start -->
+
+	<select id="lectureList" parameterType="hashMap" resultType="hashMap">
+	    SELECT TBL.*
+	    FROM (SELECT A.*, ROWNUM RNUM
+	          FROM (SELECT TBL.*, 
+	                             NVL(YY.VODY, 0) VODY, NVL(YY.VODN, 0) VODN, NVL(YY.PMPY, 0) PMPY, NVL(YY.PMPN, 0) PMPN, NVL(YY.VODPMPY, 0) VODPMPY, NVL(YY.VODPMPN, 0) VODPMPN 
+	                FROM (SELECT LM.SEQ, LM.LEC_TYPE_CHOICE, LM.LECCODE, AA.BRIDGE_LECCODE, LM.SUBJECT_OPTION,
+	                               LM.CATEGORY_CD, (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = LM.CATEGORY_CD) AS CATEGORY_NM,
+	                             LM.SUBJECT_SJT_CD, (SELECT SUBJECT_NM FROM TB_SUBJECT_INFO WHERE SUBJECT_CD = LM.SUBJECT_SJT_CD) AS SUBJECT_NM,
+	                             LM.SUBJECT_TEACHER, (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = LM.SUBJECT_TEACHER) AS SUBJECT_TEACHER_NM,
+	                             LM.SUBJECT_TITLE, NVL(LM.LEC_BAESU, '00') LEC_BAESU,
+	                             LM.LEARNING_CD, (SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE CODE = LM.LEARNING_CD) AS LEARNING_NM,
+	                             LM.REG_DT, LM.SUBJECT_ISUSE,DECODE(LM.FREE_TAB, 'TAB_001', '입문특강', 'TAB_002', '테마별특강', 'TAB_003', '마무리특강', 'TAB_004', '모의고사해설', 'TAB_005', '기출해설특강', 'TAB_006', '합격설명회',   'TAB_007', '보강동영상', '입문특강') FREE_TAB
+	                      FROM TB_LEC_MST LM, (SELECT A.LECCODE, B.BRIDGE_LECCODE, RANK () OVER(PARTITION BY B.BRIDGE_LECCODE ORDER BY A.LECCODE ASC, A.SEQ ASC) RANK
+	                                           FROM TB_LEC_MST A, TB_LEC_BRIDGE B
+	                                           WHERE A.LECCODE = B.LECCODE
+	                                           <if test='SEARCHKIND != null and SEARCHKIND != ""'>
+	                                             AND A.CATEGORY_CD = #{SEARCHKIND}
+	                                           </if>
+	                                           ) AA
+	                      WHERE LM.LECCODE = AA.LECCODE       
+	                      AND AA.RANK = 1) TBL, 
+	                     (SELECT ZZ.LECCODE, 
+	                             NVL(SUM(VOD_N_CNT),0) VODY, NVL(SUM(VOD_Y_CNT),0) VODN,
+	                             NVL(SUM(PMP_N_CNT),0) PMPY, NVL(SUM(PMP_Y_CNT),0) PMPN,
+	                             NVL(SUM(MP4_N_CNT),0) VODPMPY, NVL(SUM(MP4_Y_CNT),0) VODPMPN 
+	                      FROM (SELECT CC.LECCODE, MM.BRIDGE_LECCODE, 
+	                                   CASE WHEN MM.FREE = 'Y' AND WMV_PMP = 'VOD' THEN CNT END VOD_Y_CNT,
+	                                   CASE WHEN MM.FREE = 'N' AND WMV_PMP = 'VOD' THEN CNT END VOD_N_CNT,
+	                                   CASE WHEN MM.FREE = 'Y' AND WMV_PMP = 'PMP' THEN CNT END PMP_Y_CNT,
+	                                   CASE WHEN MM.FREE = 'N' AND WMV_PMP = 'PMP' THEN CNT END PMP_N_CNT,
+	                                   CASE WHEN MM.FREE = 'Y' AND WMV_PMP = 'VOD+PMP' THEN CNT END MP4_Y_CNT,
+	                                   CASE WHEN MM.FREE = 'N' AND WMV_PMP = 'VOD+PMP' THEN CNT END MP4_N_CNT,
+	                                   MM.WMV_PMP, CNT
+	                            FROM (SELECT BB.BRIDGE_LECCODE, DECODE (OM.PRICE, 0, 'Y', 'N') FREE, WMV_PMP,
+	                                         COUNT (OM.MGNTNO) CNT
+	                                  FROM TB_LEC_MST LM, TB_ORDER_MGNT_NO OM, 
+	                                      (SELECT B.ORDERNO, B.MGNTNO, C.BRIDGE_LECCODE
+	                                       FROM TB_MYLECTURE A, TB_ORDER_MGNT_NO B, TB_LEC_BRIDGE C
+	                                       WHERE A.ORDERNO = B.ORDERNO
+	                                       AND A.PACKAGE_NO = B.MGNTNO
+	                                       AND A.LECTURE_NO = C.LECCODE
+	                                       AND B.STATUSCODE IN ('DLV105', 'DLV230')
+                                           GROUP BY B.ORDERNO, B.MGNTNO, C.BRIDGE_LECCODE
+                                           HAVING COUNT(B.MGNTNO) = 1) BB
+	                                  WHERE OM.ORDERNO = BB.ORDERNO
+	                                  AND OM.MGNTNO = BB.MGNTNO
+	                                  AND LM.LECCODE = OM.MGNTNO
+	                                  GROUP BY BB.BRIDGE_LECCODE, DECODE (OM.PRICE, 0, 'Y', 'N'), WMV_PMP) MM, TB_LEC_BRIDGE CC
+	                            WHERE MM.BRIDGE_LECCODE = CC.BRIDGE_LECCODE) ZZ
+	                       GROUP BY LECCODE) YY
+	              WHERE 1 = 1 
+	              AND TBL.LECCODE = YY.LECCODE(+)
+	              AND LEC_TYPE_CHOICE = #{LEC_TYPE_CHOICE} 
+	                      <if test='SEARCHFORM != null and SEARCHFORM != ""'>
+	                          AND TBL.LEARNING_CD = #{SEARCHFORM}
+	                      </if>
+	                      <if test='SEARCHISUSE != null and SEARCHISUSE != ""'>
+	                          AND TBL.SUBJECT_ISUES = #{SEARCHISUSE}
+	                      </if>
+	                      <if test='SEARCHYEAR!= null and SEARCHYEAR != ""'>
+	                          AND TBL.SUBJECT_OFF_OPEN_YEAR <![CDATA[ >= ]]> '2012' 
+	                      </if>
+	                      <if test='S_LEC_BAESU != null and S_LEC_BAESU != ""'>
+	                          AND TBL.LEC_BAESU = #{S_LEC_BAESU}
+	                      </if>
+	                     <if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+	                        <if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+	                            <if test='SEARCHTYPE == "1"'>
+	                                AND (INSTR(TBL.SUBJECT_SJT_CD, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+	                                    OR INSTR(TBL.SUBJECT_NM, #{SEARCHTEXT}) <![CDATA[ > ]]> 0)
+	                            </if>                    
+	                            <if test='SEARCHTYPE == "2"'>
+	                                AND INSTR(TBL.SUBJECT_TITLE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+	                            </if>
+	                            <if test='SEARCHTYPE == "3"'>
+	                                AND INSTR(TBL.SUBJECT_TEACHER_NM, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+	                            </if>
+	                            <if test='SEARCHTYPE == "4"'>
+	                                AND (INSTR(TBL.BRIDGE_LECCODE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+	                                    OR INSTR(TBL.BRIDGE_LECCODE, (SELECT BRIDGE_LECCODE FROM TB_LEC_BRIDGE WHERE LECCODE = #{SEARCHTEXT})) <![CDATA[ > ]]> 0)
+	                            </if>                            
+	                        </if>
+	                        <if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+	                            AND (INSTR(TBL.SUBJECT_SJT_CD, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+	                                OR INSTR(TBL.SUBJECT_NM, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+	                                OR INSTR(TBL.SUBJECT_TITLE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+	                                OR INSTR(TBL.SUBJECT_TEACHER_NM, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+	                                OR INSTR(TBL.BRIDGE_LECCODE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+	                                OR INSTR(TBL.BRIDGE_LECCODE, (SELECT BRIDGE_LECCODE FROM TB_LEC_BRIDGE WHERE LECCODE = #{SEARCHTEXT})) <![CDATA[ > ]]> 0)
+	                         </if>
+	                    </if>        
+	                     ORDER BY TBL.SEQ DESC
+	                ) A 
+	                   WHERE ROWNUM <![CDATA[ <= ]]> #{endNo}
+	            ) TBL 
+	        WHERE RNUM <![CDATA[ > ]]> #{startNo}
+	</select>
+
+	<select id="lectureList_201606" parameterType="hashMap" resultType="hashMap">
+	    SELECT TBL.*
+	    FROM (SELECT A.*, ROWNUM RNUM
+	          FROM (SELECT TBL.*, 
+	                             NVL(YY.VODY, 0) VODY, NVL(YY.VODN, 0) VODN, NVL(YY.PMPY, 0) PMPY, NVL(YY.PMPN, 0) PMPN, NVL(YY.VODPMPY, 0) VODPMPY, NVL(YY.VODPMPN, 0) VODPMPN 
+	                FROM (SELECT LM.SEQ, LM.LEC_TYPE_CHOICE, LM.LECCODE, AA.BRIDGE_LECCODE, LM.SUBJECT_OPTION,
+	                               LM.CATEGORY_CD, (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = LM.CATEGORY_CD) AS CATEGORY_NM,
+	                             LM.SUBJECT_SJT_CD, (SELECT SUBJECT_NM FROM TB_SUBJECT_INFO WHERE SUBJECT_CD = LM.SUBJECT_SJT_CD) AS SUBJECT_NM,
+	                             LM.SUBJECT_TEACHER, (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = LM.SUBJECT_TEACHER) AS SUBJECT_TEACHER_NM,
+	                             LM.SUBJECT_TITLE,
+	                             LM.LEARNING_CD, (SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE CODE = LM.LEARNING_CD) AS LEARNING_NM,
+	                             LM.REG_DT, LM.SUBJECT_ISUSE,DECODE(LM.FREE_TAB, 'TAB_001', '입문특강', 'TAB_002', '테마별특강', 'TAB_003', '마무리특강', 'TAB_004', '모의고사해설', 'TAB_005', '기출해설특강', 'TAB_006', '합격설명회',   'TAB_007', '보강동영상', '입문특강') FREE_TAB
+	                      FROM TB_LEC_MST LM, (SELECT A.LECCODE, B.BRIDGE_LECCODE, RANK () OVER(PARTITION BY B.BRIDGE_LECCODE ORDER BY A.LECCODE ASC, A.SEQ ASC) RANK
+	                                           FROM TB_LEC_MST A, TB_LEC_BRIDGE B
+	                                           WHERE A.LECCODE = B.LECCODE
+	                                           <if test='SEARCHKIND != null and SEARCHKIND != ""'>
+	                                             AND A.CATEGORY_CD = #{SEARCHKIND}
+	                                           </if>
+	                                           ) AA
+	                      WHERE LM.LECCODE = AA.LECCODE       
+	                      AND AA.RANK = 1) TBL, 
+	                     (SELECT ZZ.LECCODE, 
+	                             NVL(SUM(VOD_N_CNT),0) VODY, NVL(SUM(VOD_Y_CNT),0) VODN,
+	                             NVL(SUM(PMP_N_CNT),0) PMPY, NVL(SUM(PMP_Y_CNT),0) PMPN,
+	                             NVL(SUM(MP4_N_CNT),0) VODPMPY, NVL(SUM(MP4_Y_CNT),0) VODPMPN 
+	                      FROM (SELECT CC.LECCODE, MM.BRIDGE_LECCODE, 
+	                                   CASE WHEN MM.FREE = 'Y' AND WMV_PMP = 'VOD' THEN CNT END VOD_Y_CNT,
+	                                   CASE WHEN MM.FREE = 'N' AND WMV_PMP = 'VOD' THEN CNT END VOD_N_CNT,
+	                                   CASE WHEN MM.FREE = 'Y' AND WMV_PMP = 'PMP' THEN CNT END PMP_Y_CNT,
+	                                   CASE WHEN MM.FREE = 'N' AND WMV_PMP = 'PMP' THEN CNT END PMP_N_CNT,
+	                                   CASE WHEN MM.FREE = 'Y' AND WMV_PMP = 'VOD+PMP' THEN CNT END MP4_Y_CNT,
+	                                   CASE WHEN MM.FREE = 'N' AND WMV_PMP = 'VOD+PMP' THEN CNT END MP4_N_CNT,
+	                                   MM.WMV_PMP, CNT
+	                            FROM (SELECT BB.BRIDGE_LECCODE, DECODE (OM.PRICE, 0, 'Y', 'N') FREE, WMV_PMP,
+	                                         COUNT (OM.MGNTNO) CNT
+	                                  FROM TB_LEC_MST LM, TB_ORDER_MGNT_NO OM, 
+	                                      (SELECT B.ORDERNO, B.MGNTNO, C.BRIDGE_LECCODE
+	                                       FROM TB_MYLECTURE A, TB_ORDER_MGNT_NO B, TB_LEC_BRIDGE C
+	                                       WHERE A.ORDERNO = B.ORDERNO
+	                                       AND A.PACKAGE_NO = B.MGNTNO
+	                                       AND A.LECTURE_NO = C.LECCODE
+	                                       AND B.STATUSCODE = 'DLV105'
+                                           AND B.PTYPE = #{LEC_TYPE_CHOICE}
+	                                       GROUP BY B.ORDERNO, B.MGNTNO, C.BRIDGE_LECCODE) BB
+	                                  WHERE OM.ORDERNO = BB.ORDERNO
+	                                  AND OM.MGNTNO = BB.MGNTNO
+	                                  AND LM.LECCODE = OM.MGNTNO
+	                                  GROUP BY BB.BRIDGE_LECCODE, DECODE (OM.PRICE, 0, 'Y', 'N'), WMV_PMP) MM, TB_LEC_BRIDGE CC
+	                            WHERE MM.BRIDGE_LECCODE = CC.BRIDGE_LECCODE) ZZ
+	                       GROUP BY LECCODE) YY
+	              WHERE 1 = 1 
+	              AND TBL.LECCODE = YY.LECCODE(+)
+	              AND LEC_TYPE_CHOICE = #{LEC_TYPE_CHOICE} 
+	                      <if test='SEARCHFORM != null and SEARCHFORM != ""'>
+	                          AND TBL.LEARNING_CD = #{SEARCHFORM}
+	                      </if>
+	                      <if test='SEARCHISUSE != null and SEARCHISUSE != ""'>
+	                          AND TBL.SUBJECT_ISUES = #{SEARCHISUSE}
+	                      </if>
+	                      <if test='SEARCHYEAR!= null and SEARCHYEAR != ""'>
+	                          AND TBL.SUBJECT_OFF_OPEN_YEAR <![CDATA[ >= ]]> '2012' 
+	                      </if>
+	                     <if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+	                        <if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+	                            <if test='SEARCHTYPE == "1"'>
+	                                AND (INSTR(TBL.SUBJECT_SJT_CD, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+	                                    OR INSTR(TBL.SUBJECT_NM, #{SEARCHTEXT}) <![CDATA[ > ]]> 0)
+	                            </if>                    
+	                            <if test='SEARCHTYPE == "2"'>
+	                                AND INSTR(TBL.SUBJECT_TITLE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+	                            </if>
+	                            <if test='SEARCHTYPE == "3"'>
+	                                AND INSTR(TBL.SUBJECT_TEACHER_NM, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+	                            </if>
+	                            <if test='SEARCHTYPE == "4"'>
+	                                AND (INSTR(TBL.BRIDGE_LECCODE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+	                                    OR INSTR(TBL.BRIDGE_LECCODE, (SELECT BRIDGE_LECCODE FROM TB_LEC_BRIDGE WHERE LECCODE = #{SEARCHTEXT})) <![CDATA[ > ]]> 0)
+	                            </if>                            
+	                        </if>
+	                        <if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+	                            AND (INSTR(TBL.SUBJECT_SJT_CD, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+	                                OR INSTR(TBL.SUBJECT_NM, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+	                                OR INSTR(TBL.SUBJECT_TITLE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+	                                OR INSTR(TBL.SUBJECT_TEACHER_NM, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+	                                OR INSTR(TBL.BRIDGE_LECCODE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+	                                OR INSTR(TBL.BRIDGE_LECCODE, (SELECT BRIDGE_LECCODE FROM TB_LEC_BRIDGE WHERE LECCODE = #{SEARCHTEXT})) <![CDATA[ > ]]> 0)
+	                         </if>
+	                    </if>        
+	                     ORDER BY TBL.SEQ DESC
+	                ) A 
+	                   WHERE ROWNUM <![CDATA[ <= ]]> #{endNo}
+	            ) TBL 
+	        WHERE RNUM <![CDATA[ > ]]> #{startNo}
+	</select>
+	
+	<select id="lectureListCount" parameterType="hashMap" resultType="int">
+		SELECT COUNT(TBL.LECCODE) FROM (	
+	                SELECT LM.SEQ, LM.LEC_TYPE_CHOICE, LM.LECCODE, AA.BRIDGE_LECCODE, LM.SUBJECT_OPTION,
+	                               LM.CATEGORY_CD, (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = LM.CATEGORY_CD) AS CATEGORY_NM,
+	                             LM.SUBJECT_SJT_CD, (SELECT SUBJECT_NM FROM TB_SUBJECT_INFO WHERE SUBJECT_CD = LM.SUBJECT_SJT_CD) AS SUBJECT_NM,
+	                             LM.SUBJECT_TEACHER, (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = LM.SUBJECT_TEACHER) AS SUBJECT_TEACHER_NM,
+	                             LM.SUBJECT_TITLE, NVL(LM.LEC_BAESU, '00') LEC_BAESU,
+	                             LM.LEARNING_CD, (SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE CODE = LM.LEARNING_CD) AS LEARNING_NM,
+	                             LM.REG_DT, LM.SUBJECT_ISUSE
+	                      FROM TB_LEC_MST LM, (SELECT A.LECCODE, B.BRIDGE_LECCODE, RANK () OVER(PARTITION BY B.BRIDGE_LECCODE ORDER BY A.LECCODE ASC, A.SEQ ASC) RANK
+	                                           FROM TB_LEC_MST A, TB_LEC_BRIDGE B
+	                                           WHERE A.LECCODE = B.LECCODE
+	                                           <if test='SEARCHKIND != null and SEARCHKIND != ""'>
+	                                             AND A.CATEGORY_CD = #{SEARCHKIND}
+	                                           </if>
+	                                           ) AA
+	                      WHERE LM.LECCODE = AA.LECCODE       
+	                      AND AA.RANK = 1) TBL, 
+	                     (SELECT ZZ.LECCODE, 
+	                             NVL(SUM(VOD_N_CNT),0) VODY, NVL(SUM(VOD_Y_CNT),0) VODN,
+	                             NVL(SUM(PMP_N_CNT),0) PMPY, NVL(SUM(PMP_Y_CNT),0) PMPN,
+	                             NVL(SUM(MP4_N_CNT),0) VODPMPY, NVL(SUM(MP4_Y_CNT),0) VODPMPN 
+	                      FROM (SELECT CC.LECCODE, MM.BRIDGE_LECCODE, 
+	                                   CASE WHEN MM.FREE = 'Y' AND WMV_PMP = 'VOD' THEN CNT END VOD_Y_CNT,
+	                                   CASE WHEN MM.FREE = 'N' AND WMV_PMP = 'VOD' THEN CNT END VOD_N_CNT,
+	                                   CASE WHEN MM.FREE = 'Y' AND WMV_PMP = 'PMP' THEN CNT END PMP_Y_CNT,
+	                                   CASE WHEN MM.FREE = 'N' AND WMV_PMP = 'PMP' THEN CNT END PMP_N_CNT,
+	                                   CASE WHEN MM.FREE = 'Y' AND WMV_PMP = 'VOD+PMP' THEN CNT END MP4_Y_CNT,
+	                                   CASE WHEN MM.FREE = 'N' AND WMV_PMP = 'VOD+PMP' THEN CNT END MP4_N_CNT,
+	                                   MM.WMV_PMP, CNT
+	                            FROM (SELECT BB.BRIDGE_LECCODE, DECODE (OM.PRICE, 0, 'Y', 'N') FREE, WMV_PMP,
+	                                         COUNT (OM.MGNTNO) CNT
+	                                  FROM TB_LEC_MST LM, TB_ORDER_MGNT_NO OM, 
+	                                      (SELECT B.ORDERNO, B.MGNTNO, C.BRIDGE_LECCODE
+	                                       FROM TB_MYLECTURE A, TB_ORDER_MGNT_NO B, TB_LEC_BRIDGE C
+	                                       WHERE A.ORDERNO = B.ORDERNO
+	                                       AND A.PACKAGE_NO = B.MGNTNO
+	                                       AND A.LECTURE_NO = C.LECCODE
+	                                       AND B.STATUSCODE = 'DLV105'
+                                           AND B.PTYPE = #{LEC_TYPE_CHOICE}
+	                                       GROUP BY B.ORDERNO, B.MGNTNO, C.BRIDGE_LECCODE) BB
+	                                  WHERE OM.ORDERNO = BB.ORDERNO
+	                                  AND OM.MGNTNO = BB.MGNTNO
+	                                  AND LM.LECCODE = OM.MGNTNO
+	                                  GROUP BY BB.BRIDGE_LECCODE, DECODE (OM.PRICE, 0, 'Y', 'N'), WMV_PMP) MM, TB_LEC_BRIDGE CC
+	                            WHERE MM.BRIDGE_LECCODE = CC.BRIDGE_LECCODE) ZZ
+	                       GROUP BY LECCODE) YY
+	              WHERE 1 = 1 
+	              AND TBL.LECCODE = YY.LECCODE(+)
+	              AND LEC_TYPE_CHOICE = #{LEC_TYPE_CHOICE} 
+	                      <if test='SEARCHFORM != null and SEARCHFORM != ""'>
+	                          AND TBL.LEARNING_CD = #{SEARCHFORM}
+	                      </if>
+	                      <if test='SEARCHISUSE != null and SEARCHISUSE != ""'>
+	                          AND TBL.SUBJECT_ISUES = #{SEARCHISUSE}
+	                      </if>
+	                      <if test='SEARCHYEAR!= null and SEARCHYEAR != ""'>
+	                          AND TBL.SUBJECT_OFF_OPEN_YEAR <![CDATA[ >= ]]> '2012' 
+	                      </if>
+	                      <if test='S_LEC_BAESU != null and S_LEC_BAESU != ""'>
+	                          AND TBL.LEC_BAESU = #{S_LEC_BAESU}
+	                      </if>
+	                     <if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+	                        <if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+	                            <if test='SEARCHTYPE == "1"'>
+	                                AND (INSTR(TBL.SUBJECT_SJT_CD, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+	                                    OR INSTR(TBL.SUBJECT_NM, #{SEARCHTEXT}) <![CDATA[ > ]]> 0)
+	                            </if>                    
+	                            <if test='SEARCHTYPE == "2"'>
+	                                AND INSTR(TBL.SUBJECT_TITLE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+	                            </if>
+	                            <if test='SEARCHTYPE == "3"'>
+	                                AND INSTR(TBL.SUBJECT_TEACHER_NM, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+	                            </if>
+	                            <if test='SEARCHTYPE == "4"'>
+	                                AND (INSTR(TBL.BRIDGE_LECCODE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+	                                    OR INSTR(TBL.BRIDGE_LECCODE, (SELECT BRIDGE_LECCODE FROM TB_LEC_BRIDGE WHERE LECCODE = #{SEARCHTEXT})) <![CDATA[ > ]]> 0)
+	                            </if>                            
+	                        </if>
+	                        <if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+	                            AND (INSTR(TBL.SUBJECT_SJT_CD, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+	                                OR INSTR(TBL.SUBJECT_NM, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+	                                OR INSTR(TBL.SUBJECT_TITLE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+	                                OR INSTR(TBL.SUBJECT_TEACHER_NM, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+	                                OR INSTR(TBL.BRIDGE_LECCODE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+	                                OR INSTR(TBL.BRIDGE_LECCODE, (SELECT BRIDGE_LECCODE FROM TB_LEC_BRIDGE WHERE LECCODE = #{SEARCHTEXT})) <![CDATA[ > ]]> 0)
+	                         </if>
+	                    </if>        
+	</select>
+
+	<select id="bookList" parameterType="hashMap" resultType="hashMap">
+		SELECT LTBL.*
+			,(SELECT NAME FROM TB_CATEGORY_INFO WHERE ISUSE = 'Y' AND CODE = LTBL.CATEGORY_CD) CATEGORY_NM
+			,(SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE ISUSE = 'Y' AND CODE = LTBL.LEARNING_CD) LEARNING_NM
+		FROM 	(
+					SELECT TBL.*, ROWNUM rnum
+				  	FROM (
+						SELECT
+						  SEQ, RSC_ID, SUBJECT_SJT_CD, CATEGORY_CD, LEARNING_CD, BOOK_NM
+						FROM TB_CA_BOOK WHERE USE_YN = 'Y'
+						<if test='SEARCHKIND != null and SEARCHKIND != ""'>
+					 		AND CATEGORY_CD = #{SEARCHKIND}
+					 	</if>
+					 	<if test='SEARCHFORM != null and SEARCHFORM != ""'>
+					 		AND LEARNING_CD = #{SEARCHFORM}
+					 	</if>
+					 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+							AND BOOK_NM like '%'||#{SEARCHTEXT}||'%'
+						</if>
+						ORDER BY REG_DT DESC
+				) TBL
+               	WHERE rownum &lt;= #{endNo}
+			) LTBL
+		WHERE rnum &gt; #{startNo}
+	</select>
+
+	<select id="bookListCount" parameterType="hashMap" resultType="int">
+		SELECT
+		  COUNT(RSC_ID)
+		FROM TB_CA_BOOK WHERE USE_YN = 'Y'
+		<if test='SEARCHKIND != null and SEARCHKIND != ""'>
+	 		AND CATEGORY_CD = #{SEARCHKIND}
+	 	</if>
+	 	<if test='SEARCHFORM != null and SEARCHFORM != ""'>
+	 		AND LEARNING_CD = #{SEARCHFORM}
+	 	</if>
+	 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+			AND BOOK_NM like '%'||#{SEARCHTEXT}||'%'
+		</if>
+	</select>
+
+	<select id="getBridgeLeccodeSeq" parameterType="hashMap" resultType="hashMap">
+		SELECT TO_CHAR(NVL(MAX(seq),0)+1) AS SEQ FROM TB_LEC_BRIDGE
+	</select>
+
+	<select id="getJongLeccodeSeq" parameterType="hashMap" resultType="hashMap">
+		SELECT TO_CHAR(NVL(MAX(seq),0)+1) AS SEQ FROM TB_LEC_JONG
+	</select>
+
+	<select id="getLeccode" parameterType="hashMap" resultType="hashMap">
+		SELECT
+  			TO_CHAR(NVL(MAX(substr(LECCODE,6,5)),0)+1,'00000') LECCODE
+		FROM TB_LEC_MST
+		WHERE LECCODE LIKE '%'||#{PREFIX}||'%'
+	</select>
+
+	<select id="getBridgeLeccode" parameterType="hashMap" resultType="hashMap">
+		SELECT
+			TO_CHAR(NVL(MAX(substr(BRIDGE_LECCODE,6,5)),0)+1,'00000') BRIDGE_LECCODE
+		FROM TB_LEC_BRIDGE
+		WHERE BRIDGE_LECCODE LIKE '%'||#{PREFIX}||'%'
+	</select>
+
+	<insert id="lectureInsert" parameterType="hashMap" flushCache="true">
+		INSERT INTO TB_LEC_MST(SEQ, LECCODE, CATEGORY_CD, LEARNING_CD, SUBJECT_TEACHER, SUBJECT_TEACHER_PAYMENT
+									 	<if test='ORG_LECCODE != null and ORG_LECCODE != ""'>
+										, ORG_LECCODE
+										</if>
+										, SUBJECT_TITLE, SUBJECT_DESC, SUBJECT_MEMO, SUBJECT_KEYWORD, SUBJECT_PERIOD
+										, SUBJECT_OFF_OPEN_YEAR, SUBJECT_OFF_OPEN_MONTH, SUBJECT_OFF_OPEN_DAY, SUBJECT_DISCOUNT, SUBJECT_PRICE
+										, SUBJECT_POINT, SUBJECT_MOVIE, SUBJECT_PMP, SUBJECT_MOVIE_PMP, SUBJECT_MOVIE_MP4
+										, SUBJECT_MOVIE_VOD_MP4, SUBJECT_OPTION
+										, SUBJECT_ISUSE, SUBJECT_SJT_CD
+										, SUBJECT_VOD_DEFAULT_PATH, SUBJECT_WIDE_DEFAULT_PATH, SUBJECT_MP4_DEFAULT_PATH, SUBJECT_PMP_DEFAULT_PATH, SUBJECT_PASS, SUBJECT_JANG
+										, RE_COURSE, LEC_TYPE_CHOICE, LEC_GUBUN, REC_GUBUN, ICON_GUBUN, LEC_SCHEDULE, LEC_COUNT, REG_DT, REG_ID
+										, UPD_DT, UPD_ID, PLAN, GIFT_FLAG, GIFT_COUPON_CCODE, GIFT_LECCODE, COUPON_NAME, GIFT_NAME
+										, TEACHERNO, MO_COUPON_NAME, MO_COUPON_CCODE, FREE_TAB, SUBJECT_MONITORMODE,MUST_PRF_IMG,SEL_PRF_IMG
+										, LEC_BAESU)
+		VALUES ((SELECT NVL(MAX(SEQ),0)+1 FROM TB_LEC_MST), #{LECCODE}, #{CATEGORY_CD}, #{LEARNING_CD}, #{SUBJECT_TEACHER}, #{SUBJECT_TEACHER_PAYMENT}
+				 	<if test='ORG_LECCODE != null and ORG_LECCODE != ""'>
+					, #{ORG_LECCODE}
+					</if>
+					, #{SUBJECT_TITLE}, #{SUBJECT_DESC}, #{SUBJECT_MEMO}, #{SUBJECT_KEYWORD}, #{SUBJECT_PERIOD}
+					, #{SUBJECT_OFF_OPEN_YEAR}, #{SUBJECT_OFF_OPEN_MONTH}, #{SUBJECT_OFF_OPEN_DAY}, #{SUBJECT_DISCOUNT}, #{SUBJECT_PRICE}
+					, #{SUBJECT_POINT}, #{SUBJECT_MOVIE}, #{SUBJECT_PMP}, #{SUBJECT_MOVIE_PMP}, #{SUBJECT_MOVIE_MP4}
+					, #{SUBJECT_MOVIE_VOD_MP4}, #{SUBJECT_OPTION}
+					, #{SUBJECT_ISUSE}, #{SUBJECT_SJT_CD}
+					, #{SUBJECT_VOD_DEFAULT_PATH}, #{SUBJECT_WIDE_DEFAULT_PATH}, #{SUBJECT_MP4_DEFAULT_PATH}, #{SUBJECT_PMP_DEFAULT_PATH}, #{SUBJECT_PASS}, #{SUBJECT_JANG}
+					, #{RE_COURSE}, #{LEC_TYPE_CHOICE}, #{LEC_GUBUN}, #{REC_GUBUN}, #{ICON_GUBUN}, #{LEC_SCHEDULE}, #{LEC_COUNT}, SYSDATE, #{REG_ID}
+					, SYSDATE, #{UPD_ID}, #{PLAN}, #{GIFT_FLAG}, #{GIFT_COUPON_CCODE}, #{GIFT_LECCODE}, #{COUPON_NAME}, #{GIFT_NAME}
+					, #{TEACHERNO}, #{MO_COUPON_NAME}, #{MO_COUPON_CCODE}, #{FREE_TAB}, #{SUBJECT_MONITORMODE},#{MUST_PRF_IMG},#{SEL_PRF_IMG}
+					, #{LEC_BAESU})
+	</insert>
+
+	<insert id="lectureBridgeInsert" parameterType="hashMap" flushCache="true">
+		INSERT INTO TB_LEC_BRIDGE(SEQ, BRIDGE_LECCODE, LECCODE, REG_DT, REG_ID, UPD_DT, UPD_ID)
+		VALUES (#{SEQ}, #{BRIDGE_LECCODE}, #{LECCODE}, SYSDATE, #{REG_ID}, SYSDATE, #{UPD_ID})
+	</insert>
+
+	<insert id="lectureBookInsert" parameterType="hashMap" flushCache="true" statementType="CALLABLE">
+
+		CALL SP_LECTURE_BOOK_INSERT(
+		        #{LECCODE, mode=IN},
+		        #{RSC_ID, mode=IN},
+		        #{FLAG, mode=IN},
+		        #{BRIDGE_LEC, mode=IN},
+		        #{result, jdbcType=INTEGER, mode=OUT})
+	</insert>
+
+	<insert id="lectureBookInsert2" parameterType="hashMap" flushCache="true">
+		INSERT INTO TB_PLUS_CA_BOOK(IDX, LECCODE, RSC_ID, FLAG)
+		VALUES ((SELECT NVL(MAX(IDX),0)+1 FROM TB_PLUS_CA_BOOK), #{LECCODE}, #{RSC_ID}, #{FLAG})
+	</insert>
+
+	<select id="lectureViewList" parameterType="hashMap" resultType="hashMap">
+		SELECT
+	      (SELECT COUNT(C.ORDERNO) FROM TB_LEC_MST B LEFT OUTER JOIN
+	        (SELECT A.* FROM TB_ORDER_MGNT_NO A INNER JOIN
+	          (SELECT ORDERNO,MGNTNO FROM TB_ORDER_MGNT_NO GROUP BY ORDERNO, MGNTNO HAVING COUNT(*) = 1) E
+	        ON A.ORDERNO = E.ORDERNO AND A.MGNTNO = E.MGNTNO) C
+	      ON B.LECCODE = C.MGNTNO
+	      WHERE B.LECCODE = T2.LECCODE
+	      AND C.PRICE <![CDATA[ <> ]]> 0 AND C.STATUSCODE = 'DLV105' AND C.WMV_PMP = 'VOD') AS VODY
+	      ,(SELECT COUNT(C.ORDERNO) FROM TB_LEC_MST B LEFT OUTER JOIN
+	        (SELECT A.* FROM TB_ORDER_MGNT_NO A INNER JOIN
+	          (SELECT ORDERNO,MGNTNO FROM TB_ORDER_MGNT_NO GROUP BY ORDERNO, MGNTNO HAVING COUNT(*) = 1) E
+	        ON A.ORDERNO = E.ORDERNO AND A.MGNTNO = E.MGNTNO) C
+	      ON B.LECCODE = C.MGNTNO
+	      WHERE B.LECCODE = T2.LECCODE
+	      AND C.PRICE = 0 AND C.STATUSCODE = 'DLV105' AND C.WMV_PMP = 'VOD') AS VODN
+	      ,(SELECT COUNT(C.ORDERNO) FROM TB_LEC_MST B LEFT OUTER JOIN
+	        (SELECT A.* FROM TB_ORDER_MGNT_NO A INNER JOIN
+	          (SELECT ORDERNO,MGNTNO FROM TB_ORDER_MGNT_NO GROUP BY ORDERNO, MGNTNO HAVING COUNT(*) = 1) E
+	        ON A.ORDERNO = E.ORDERNO AND A.MGNTNO = E.MGNTNO) C
+	      ON B.LECCODE = C.MGNTNO
+	      WHERE B.LECCODE = T2.LECCODE
+	      AND C.PRICE <![CDATA[ <> ]]> 0 AND C.STATUSCODE = 'DLV105' AND C.WMV_PMP = 'PMP') AS PMPY
+	      ,(SELECT COUNT(C.ORDERNO) FROM TB_LEC_MST B LEFT OUTER JOIN
+	        (SELECT A.* FROM TB_ORDER_MGNT_NO A INNER JOIN
+	          (SELECT ORDERNO,MGNTNO FROM TB_ORDER_MGNT_NO GROUP BY ORDERNO, MGNTNO HAVING COUNT(*) = 1) E
+	        ON A.ORDERNO = E.ORDERNO AND A.MGNTNO = E.MGNTNO) C
+	      ON B.LECCODE = C.MGNTNO
+	     WHERE B.LECCODE = T2.LECCODE
+	      AND C.PRICE = 0 AND C.STATUSCODE = 'DLV105' AND C.WMV_PMP = 'PMP') AS PMPN
+	      ,(SELECT COUNT(C.ORDERNO) FROM TB_LEC_MST B LEFT OUTER JOIN
+	        (SELECT A.* FROM TB_ORDER_MGNT_NO A INNER JOIN
+	          (SELECT ORDERNO,MGNTNO FROM TB_ORDER_MGNT_NO GROUP BY ORDERNO, MGNTNO HAVING COUNT(*) = 1) E
+	        ON A.ORDERNO = E.ORDERNO AND A.MGNTNO = E.MGNTNO) C
+	      ON B.LECCODE = C.MGNTNO
+	      WHERE B.LECCODE = T2.LECCODE
+	      AND C.PRICE <![CDATA[ <> ]]> 0 AND C.STATUSCODE = 'DLV105' AND C.WMV_PMP = 'VOD+PMP') AS VODPMPY
+	      ,(SELECT COUNT(C.ORDERNO) FROM TB_LEC_MST B LEFT OUTER JOIN
+	        (SELECT A.* FROM TB_ORDER_MGNT_NO A INNER JOIN
+	          (SELECT ORDERNO,MGNTNO FROM TB_ORDER_MGNT_NO GROUP BY ORDERNO, MGNTNO HAVING COUNT(*) = 1) E
+	        ON A.ORDERNO = E.ORDERNO AND A.MGNTNO = E.MGNTNO) C
+	      ON B.LECCODE = C.MGNTNO
+	      WHERE B.LECCODE = T2.LECCODE
+	      AND C.PRICE = 0 AND C.STATUSCODE = 'DLV105' AND C.WMV_PMP = 'VOD+PMP') AS VODPMPN
+	      , T1.BRIDGE_LECCODE, T2.*
+		  , (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = T2.CATEGORY_CD) AS CATEGORY_NM
+		  , (SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE CODE = T2.LEARNING_CD) AS LEARNING_NM
+		  , (SELECT SUBJECT_NM FROM TB_SUBJECT_INFO WHERE SUBJECT_CD = T2.SUBJECT_SJT_CD) AS SUBJECT_NM
+		  , (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = T2.SUBJECT_TEACHER) AS SUBJECT_TEACHER_NM
+		FROM
+		(SELECT BRIDGE_LECCODE, LECCODE FROM TB_LEC_BRIDGE WHERE BRIDGE_LECCODE = #{BRIDGE_LECCODE}) T1
+		INNER JOIN TB_LEC_MST T2 ON T1.LECCODE = T2.LECCODE
+		ORDER BY T2.CATEGORY_CD
+	</select>
+
+	<select id="lectureView" parameterType="hashMap" resultMap="lectureMap">
+		SELECT
+			TBL.*, (SELECT NO FROM TB_CHOICE_JONG_NO WHERE LECCODE = TBL.LECCODE AND CATEGORY_CD = TBL.CATEGORY_CD) AS NO
+			, T2.SEQ AS BSEQ, T2.BRIDGE_LECCODE
+          , (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = TBL.CATEGORY_CD) AS CATEGORY_NM
+          , (SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE CODE = TBL.LEARNING_CD) AS LEARNING_NM
+          , (SELECT SUBJECT_NM FROM TB_SUBJECT_INFO WHERE SUBJECT_CD = TBL.SUBJECT_SJT_CD) AS SUBJECT_NM
+          , (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = TBL.SUBJECT_TEACHER) AS SUBJECT_TEACHER_NM
+		FROM TB_LEC_MST TBL INNER JOIN TB_LEC_BRIDGE T2 ON TBL.LECCODE = T2.LECCODE
+		WHERE TBL.LECCODE = #{LECCODE}
+	</select>
+
+	<select id="lectureViewBookList" parameterType="hashMap" resultType="hashMap">
+		SELECT
+		  AA.*
+		  ,(SELECT NAME FROM TB_CATEGORY_INFO WHERE ISUSE = 'Y' AND CODE = BB.CATEGORY_CD) CATEGORY_NM
+		  ,(SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE ISUSE = 'Y' AND CODE = BB.LEARNING_CD) LEARNING_NM
+		  , BB.BOOK_NM
+		FROM TB_PLUS_CA_BOOK AA INNER JOIN TB_CA_BOOK BB
+		ON AA.RSC_ID = BB.RSC_ID WHERE AA.LECCODE = #{LECCODE}
+	</select>
+
+	<update id="lectureUpdate" parameterType="hashMap">
+		UPDATE TB_LEC_MST
+			SET
+				LEARNING_CD = #{LEARNING_CD}
+			<if test='UPDATE_FLAG != "ALL" '>
+				,CATEGORY_CD = #{CATEGORY_CD}
+			</if>
+				, SUBJECT_TEACHER = #{SUBJECT_TEACHER}
+				, SUBJECT_TEACHER_PAYMENT = #{SUBJECT_TEACHER_PAYMENT}
+				, SUBJECT_TITLE = #{SUBJECT_TITLE}
+				, SUBJECT_DESC = #{SUBJECT_DESC}
+				, SUBJECT_MEMO = #{SUBJECT_MEMO}
+				, SUBJECT_KEYWORD = #{SUBJECT_KEYWORD}
+				, SUBJECT_PERIOD = #{SUBJECT_PERIOD}
+				, SUBJECT_OFF_OPEN_YEAR = #{SUBJECT_OFF_OPEN_YEAR}
+				, SUBJECT_OFF_OPEN_MONTH = #{SUBJECT_OFF_OPEN_MONTH}
+				, SUBJECT_OFF_OPEN_DAY = #{SUBJECT_OFF_OPEN_DAY}
+				, SUBJECT_DISCOUNT = #{SUBJECT_DISCOUNT}
+				, SUBJECT_PRICE = #{SUBJECT_PRICE}
+				, SUBJECT_MOVIE = #{SUBJECT_MOVIE}
+				, SUBJECT_PMP = #{SUBJECT_PMP}
+				, SUBJECT_MOVIE_PMP = #{SUBJECT_MOVIE_PMP}
+				, SUBJECT_MOVIE_MP4 = #{SUBJECT_MOVIE_MP4}
+				, SUBJECT_MOVIE_VOD_MP4 = #{SUBJECT_MOVIE_VOD_MP4}
+				, SUBJECT_OPTION = #{SUBJECT_OPTION}
+				<if test='LEC_TYPE_CHOICE == "J" or LEC_TYPE_CHOICE == "N" or LEC_TYPE_CHOICE == "P" or LEC_TYPE_CHOICE == "Y"'>
+	 			, SUBJECT_ISUSE = #{SUBJECT_ISUSE}
+	 			</if>
+				, SUBJECT_SJT_CD = #{SUBJECT_SJT_CD}
+				, SUBJECT_VOD_DEFAULT_PATH = #{SUBJECT_VOD_DEFAULT_PATH}
+				, SUBJECT_WIDE_DEFAULT_PATH = #{SUBJECT_WIDE_DEFAULT_PATH}
+				, SUBJECT_MP4_DEFAULT_PATH = #{SUBJECT_MP4_DEFAULT_PATH}
+				, SUBJECT_PMP_DEFAULT_PATH = #{SUBJECT_PMP_DEFAULT_PATH}
+				, SUBJECT_PASS = #{SUBJECT_PASS}
+				, SUBJECT_JANG = #{SUBJECT_JANG}
+				, RE_COURSE = #{RE_COURSE}
+				, LEC_TYPE_CHOICE = #{LEC_TYPE_CHOICE}
+				, LEC_SCHEDULE = #{LEC_SCHEDULE}
+				, LEC_COUNT = #{LEC_COUNT}
+				, UPD_DT = SYSDATE
+				, UPD_ID = #{UPD_ID}
+				, PLAN = #{PLAN}
+				, LEC_GUBUN = #{LEC_GUBUN}
+				, REC_GUBUN = #{REC_GUBUN}
+				, GIFT_NAME = #{GIFT_NAME}
+				, COUPON_NAME = #{COUPON_NAME}
+				, GIFT_COUPON_CCODE = #{GIFT_COUPON_CCODE}
+				, GIFT_LECCODE = #{GIFT_LECCODE}
+				, TEACHERNO = #{TEACHERNO}
+				, MO_COUPON_NAME = #{MO_COUPON_NAME}
+				, MO_COUPON_CCODE = #{MO_COUPON_CCODE}
+				, SUBJECT_MONITORMODE = #{SUBJECT_MONITORMODE}
+				, FREE_TAB = #{FREE_TAB}
+	            <if test='MUST_PRF_IMG_DEL == "Y" and MUST_PRF_IMG == ""'>, MUST_PRF_IMG = ''</if>
+            	<if test='MUST_PRF_IMG != ""'>, MUST_PRF_IMG = #{MUST_PRF_IMG}</if>
+            	<if test='SEL_PRF_IMG_DEL == "Y" and SEL_PRF_IMG == ""'>, SEL_PRF_IMG = ''</if>
+            	<if test='SEL_PRF_IMG != ""'>, SEL_PRF_IMG = #{SEL_PRF_IMG}</if>
+				<if test="MOV_ING != null and MOV_ING != ''">, MOV_ING = #{MOV_ING}</if>
+                , ICON_GUBUN = #{ICON_GUBUN}
+                , LEC_BAESU = #{LEC_BAESU}
+			<if test='UPDATE_FLAG == "ALL" '>WHERE LECCODE IN (SELECT LECCODE FROM TB_LEC_BRIDGE WHERE BRIDGE_LECCODE = #{BRIDGE_LEC} )</if>
+		    <if test='UPDATE_FLAG != "ALL" '>WHERE LECCODE = #{LECCODE}</if>
+	</update>
+
+	<delete id="lectureBookDelete" parameterType="hashMap" flushCache="true">
+		DELETE FROM TB_PLUS_CA_BOOK
+		<if test='UPDATE_FLAG == "ALL" '>WHERE LECCODE IN (SELECT LECCODE FROM TB_LEC_BRIDGE WHERE BRIDGE_LECCODE = #{BRIDGE_LEC} )</if>
+		<if test='UPDATE_FLAG != "ALL" '>WHERE LECCODE = #{LECCODE}</if>
+
+	</delete>
+
+	<delete id="lectureIsUseUpdate" parameterType="hashMap" flushCache="true">
+		UPDATE TB_LEC_MST SET SUBJECT_ISUSE = 'N' WHERE LECCODE = #{LECCODE}
+		<!-- DELETE FROM TB_LEC_MST WHERE LECCODE = #{LECCODE} -->
+	</delete>
+
+	<delete id="lectureDelete" parameterType="hashMap" flushCache="true">
+		DELETE FROM TB_LEC_MST WHERE LECCODE = #{LECCODE}
+	</delete>
+
+	<delete id="lectureBridgeDelete" parameterType="hashMap" flushCache="true">
+		DELETE FROM TB_LEC_BRIDGE WHERE BRIDGE_LECCODE = #{BRIDGE_LECCODE} AND LECCODE = #{LECCODE}
+	</delete>
+
+	<update id="lecMovUpdate" parameterType="hashMap">
+		UPDATE TB_LEC_MST
+			SET MOV_ING = #{MOV_ING}
+			WHERE LECCODE IN (SELECT LECCODE FROM TB_LEC_BRIDGE WHERE BRIDGE_LECCODE = #{BRIDGE_LECCODE})
+	</update>
+
+	<select id="lectureSeqList" parameterType="hashMap" resultType="hashMap">
+		<if test='LEC_TYPE_CHOICE == "D"'>
+			SELECT TBL.* FROM (
+				SELECT T1.BRIDGE_LECCODE, T2.*
+				  , (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = T2.CATEGORY_CD) AS CATEGORY_NM
+				  , (SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE CODE = T2.LEARNING_CD) AS LEARNING_NM
+				  , (SELECT SUBJECT_NM FROM TB_SUBJECT_INFO WHERE SUBJECT_CD = T2.SUBJECT_SJT_CD) AS SUBJECT_NM
+				  , (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = T2.SUBJECT_TEACHER) AS SUBJECT_TEACHER_NM
+				FROM
+				TB_LEC_BRIDGE T1 RIGHT JOIN TB_LEC_MST T2 ON T1.LECCODE = T2.LECCODE
+				WHERE T2.SUBJECT_PRICE <![CDATA[ <> ]]> 0
+			) TBL WHERE 1 = 1 AND LEC_TYPE_CHOICE = #{LEC_TYPE_CHOICE}
+		</if>
+		<if test='LEC_TYPE_CHOICE != "D"'>
+			SELECT
+				TBL.*
+				  , (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = TBL.CATEGORY_CD) AS CATEGORY_NM
+				  , (SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE CODE = TBL.LEARNING_CD) AS LEARNING_NM
+			FROM TB_LEC_MST TBL WHERE LEC_TYPE_CHOICE = #{LEC_TYPE_CHOICE}
+			AND TBL.SUBJECT_PRICE <![CDATA[ <> ]]> 0
+		</if>
+  		<if test='SEARCHKIND == null or SEARCHKIND == "" or SEARCHFORM == null or SEARCHFORM == "" '>
+  			AND 1 = 2
+  		</if>
+  		<if test='SEARCHFORM != null and SEARCHFORM != ""'>
+  			AND TBL.LEARNING_CD = #{SEARCHFORM}
+  		</if>
+
+  		<if test='SEARCHKIND != null and SEARCHKIND != ""'>
+  			AND TBL.CATEGORY_CD = #{SEARCHKIND}
+  		</if>
+  		<if test='SEARCHFORM != null and SEARCHFORM != ""'>
+  			AND TBL.LEARNING_CD = #{SEARCHFORM}
+  		</if>
+	 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+			<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+				<if test='SEARCHTYPE == "1"'>
+					AND (TBL.SUBJECT_SJT_CD like '%'||#{SEARCHTEXT}||'%'
+						OR TBL.SUBJECT_NM like '%'||#{SEARCHTEXT}||'%')
+				</if>
+				<if test='SEARCHTYPE == "2"'>
+					AND TBL.SUBJECT_TITLE like '%'||#{SEARCHTEXT}||'%'
+				</if>
+				<if test='SEARCHTYPE == "3"'>
+					AND TBL.SUBJECT_TEACHER_NM like '%'||#{SEARCHTEXT}||'%'
+				</if>
+				<if test='SEARCHTYPE == "4"'>
+					AND (TBL.BRIDGE_LECCODE like '%'||#{SEARCHTEXT}||'%'
+						OR TBL.LECCODE like '%'||#{SEARCHTEXT}||'%')
+				</if>
+			</if>
+			<if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+				AND (TBL.SUBJECT_SJT_CD like '%'||#{SEARCHTEXT}||'%'
+					OR TBL.SUBJECT_NM like '%'||#{SEARCHTEXT}||'%'
+					OR TBL.SUBJECT_TITLE like '%'||#{SEARCHTEXT}||'%'
+					OR TBL.SUBJECT_TEACHER_NM like '%'||#{SEARCHTEXT}||'%'
+					OR TBL.BRIDGE_LECCODE like '%'||#{SEARCHTEXT}||'%'
+					OR TBL.LECCODE like '%'||#{SEARCHTEXT}||'%')
+			</if>
+		</if>
+	 	ORDER BY TBL.SEQ DESC
+	</select>
+
+	<update id="lectureSeqUpdate" parameterType="hashMap">
+		UPDATE TB_LEC_MST SET SEQ = #{SEQ} WHERE LECCODE = #{LECCODE}
+	</update>
+
+
+<!-- 단과 end -->
+
+
+<!-- 종합반 start -->
+
+
+	<!-- <select id="lectureViewJongList" parameterType="hashMap" resultType="hashMap">
+		SELECT
+			LTBL.*
+        FROM    (
+            SELECT A.*, ROWNUM rnum
+            FROM (
+                    SELECT
+                        TBL.*
+                          , (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = TBL.CATEGORY_CD) AS CATEGORY_NM
+                          , (SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE CODE = TBL.LEARNING_CD) AS LEARNING_NM
+                          , T1.JONGSEQ
+                    FROM
+                        (
+                        SELECT JONGSEQ, LECCODE
+                        FROM (
+                            SELECT A.LECCODE, MAX(A.SEQ) JONGSEQ
+                             FROM TB_LEC_JONG A
+                             LEFT OUTER JOIN TB_LEC_MST B ON A.LECCODE = B.LECCODE
+                             WHERE A.LECCODE LIKE '${LEC_TYPE_CHOICE}%'
+                            <if test='SEARCHKIND != null and SEARCHKIND != ""'>
+                                AND B.CATEGORY_CD = #{SEARCHKIND}
+                            </if>
+                            GROUP BY A.LECCODE
+                            )
+                        ) T1
+                    INNER JOIN TB_LEC_MST TBL ON T1.LECCODE = TBL.LECCODE
+
+                    WHERE LEC_TYPE_CHOICE = #{LEC_TYPE_CHOICE}
+                    <if test='SEARCHFORM != null and SEARCHFORM != ""'>
+                        AND LEARNING_CD = #{SEARCHFORM}
+                    </if>
+                    <if test='SEARCHYEAR!= null and SEARCHYEAR != ""'>
+                        AND SUBJECT_OFF_OPEN_YEAR <![CDATA[ >= ]]> '2012'
+                    </if>
+                    <if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+                        <if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+                            <if test='SEARCHTYPE == "2"'>
+                                AND SUBJECT_TITLE like '%${SEARCHTEXT}%'
+                            </if>
+                            <if test='SEARCHTYPE == "4"'>
+                                AND TBL.LECCODE like '%${SEARCHTEXT}%'
+                            </if>
+                        </if>
+                        <if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+                            AND (
+                                SUBJECT_TITLE like '%${SEARCHTEXT}%'
+                                OR TBL.LECCODE like '%${SEARCHTEXT}%')
+                        </if>
+                    </if>
+                    ORDER BY TBL.SEQ DESC
+                ) A
+                WHERE rownum <![CDATA[ <= ]]> #{endNo}
+            ) LTBL
+        WHERE rnum <![CDATA[ > ]]> #{startNo}
+    </select> -->
+    
+    <select id="lectureViewJongList" parameterType="hashMap" resultType="hashMap">
+		SELECT
+			LTBL.*
+			,	(SELECT
+					COUNT(A.LECCODE)
+				FROM   TB_LEC_MST A
+				      ,(
+				        SELECT A.ORDERNO, A.MGNTNO, A.WMV_PMP
+				        FROM   TB_ORDER_MGNT_NO A	 ,(SELECT ORDERNO ,MGNTNO FROM   TB_ORDER_MGNT_NO GROUP BY ORDERNO, MGNTNO HAVING COUNT(*) = 1) B
+				        WHERE  A.ORDERNO            =    B.ORDERNO
+				        AND    A.MGNTNO             =    B.MGNTNO
+				        AND    A.STATUSCODE         =    'DLV105'
+				        AND    SUBSTR(A.MGNTNO,1,1) <![CDATA[ <> ]]> 'L'
+				         AND    A.WMV_PMP            =    'VOD'
+				         AND    A.PRICE      <![CDATA[ > ]]>    0
+				       ) B
+				      ,TB_MYLECTURE C WHERE  A.LECCODE = C.LECTURE_NO AND    B.ORDERNO = C.ORDERNO AND    B.MGNTNO  = C.PACKAGE_NO
+						AND    SUBSTR(C.PACKAGE_NO,1,1) NOT IN ('D','L') AND    B.WMV_PMP = #{SEARCHPAYTYPE} AND    C.PACKAGE_NO = LTBL.LECCODE) VODY
+			,	(SELECT
+					COUNT(A.LECCODE)
+				FROM   TB_LEC_MST A
+				      ,(
+				        SELECT A.ORDERNO, A.MGNTNO, A.WMV_PMP
+				        FROM   TB_ORDER_MGNT_NO A	 ,(SELECT ORDERNO ,MGNTNO FROM   TB_ORDER_MGNT_NO GROUP BY ORDERNO, MGNTNO HAVING COUNT(*) = 1) B
+				        WHERE  A.ORDERNO            =    B.ORDERNO
+				        AND    A.MGNTNO             =    B.MGNTNO
+				        AND    A.STATUSCODE         =    'DLV105'
+				        AND    SUBSTR(A.MGNTNO,1,1) <![CDATA[ <> ]]> 'L'
+				         AND    A.WMV_PMP            =    'VOD'
+				         AND    A.PRICE      =    0
+				       ) B
+				      ,TB_MYLECTURE C WHERE  A.LECCODE = C.LECTURE_NO AND    B.ORDERNO = C.ORDERNO AND    B.MGNTNO  = C.PACKAGE_NO
+						AND    SUBSTR(C.PACKAGE_NO,1,1) NOT IN ('D','L') AND    B.WMV_PMP = #{SEARCHPAYTYPE} AND    C.PACKAGE_NO = LTBL.LECCODE) VODN
+			,	(SELECT
+					COUNT(A.LECCODE)
+				FROM   TB_LEC_MST A
+				      ,(
+				        SELECT A.ORDERNO, A.MGNTNO, A.WMV_PMP
+				        FROM   TB_ORDER_MGNT_NO A	 ,(SELECT ORDERNO ,MGNTNO FROM   TB_ORDER_MGNT_NO GROUP BY ORDERNO, MGNTNO HAVING COUNT(*) = 1) B
+				        WHERE  A.ORDERNO            =    B.ORDERNO
+				        AND    A.MGNTNO             =    B.MGNTNO
+				        AND    A.STATUSCODE         =    'DLV105'
+				        AND    SUBSTR(A.MGNTNO,1,1) <![CDATA[ <> ]]> 'L'
+				         AND    A.WMV_PMP            =    'PMP'
+				         AND    A.PRICE      <![CDATA[ > ]]>    0
+				       ) B
+				      ,TB_MYLECTURE C WHERE  A.LECCODE = C.LECTURE_NO AND    B.ORDERNO = C.ORDERNO AND    B.MGNTNO  = C.PACKAGE_NO
+						AND    SUBSTR(C.PACKAGE_NO,1,1) NOT IN ('D','L') AND    B.WMV_PMP = #{SEARCHPAYTYPE} AND    C.PACKAGE_NO = LTBL.LECCODE) PMPY
+			,	(SELECT
+					COUNT(A.LECCODE)
+				FROM   TB_LEC_MST A
+				      ,(
+				        SELECT A.ORDERNO, A.MGNTNO, A.WMV_PMP
+				        FROM   TB_ORDER_MGNT_NO A	 ,(SELECT ORDERNO ,MGNTNO FROM   TB_ORDER_MGNT_NO GROUP BY ORDERNO, MGNTNO HAVING COUNT(*) = 1) B
+				        WHERE  A.ORDERNO            =    B.ORDERNO
+				        AND    A.MGNTNO             =    B.MGNTNO
+				        AND    A.STATUSCODE         =    'DLV105'
+				        AND    SUBSTR(A.MGNTNO,1,1) <![CDATA[ <> ]]> 'L'
+				         AND    A.WMV_PMP            =    'PMP'
+				         AND    A.PRICE      =    0
+				       ) B
+				      ,TB_MYLECTURE C WHERE  A.LECCODE = C.LECTURE_NO AND    B.ORDERNO = C.ORDERNO AND    B.MGNTNO  = C.PACKAGE_NO
+						AND    SUBSTR(C.PACKAGE_NO,1,1) NOT IN ('D','L') AND    B.WMV_PMP = #{SEARCHPAYTYPE} AND    C.PACKAGE_NO = LTBL.LECCODE) PMPN
+			,	(SELECT
+					COUNT(A.LECCODE)
+				FROM   TB_LEC_MST A
+				      ,(
+				        SELECT A.ORDERNO, A.MGNTNO, A.WMV_PMP
+				        FROM   TB_ORDER_MGNT_NO A	 ,(SELECT ORDERNO ,MGNTNO FROM   TB_ORDER_MGNT_NO GROUP BY ORDERNO, MGNTNO HAVING COUNT(*) = 1) B
+				        WHERE  A.ORDERNO            =    B.ORDERNO
+				        AND    A.MGNTNO             =    B.MGNTNO
+				        AND    A.STATUSCODE         =    'DLV105'
+				        AND    SUBSTR(A.MGNTNO,1,1) <![CDATA[ <> ]]> 'L'
+				         AND    A.WMV_PMP            =    'VOD+PMP'
+				         AND    A.PRICE      <![CDATA[ > ]]>    0
+				       ) B
+				      ,TB_MYLECTURE C WHERE  A.LECCODE = C.LECTURE_NO AND    B.ORDERNO = C.ORDERNO AND    B.MGNTNO  = C.PACKAGE_NO
+						AND    SUBSTR(C.PACKAGE_NO,1,1) NOT IN ('D','L') AND    B.WMV_PMP = #{SEARCHPAYTYPE} AND    C.PACKAGE_NO = LTBL.LECCODE) VODPMPY
+			,	(SELECT
+					COUNT(A.LECCODE)
+				FROM   TB_LEC_MST A
+				      ,(
+				        SELECT A.ORDERNO, A.MGNTNO, A.WMV_PMP
+				        FROM   TB_ORDER_MGNT_NO A	 ,(SELECT ORDERNO ,MGNTNO FROM   TB_ORDER_MGNT_NO GROUP BY ORDERNO, MGNTNO HAVING COUNT(*) = 1) B
+				        WHERE  A.ORDERNO            =    B.ORDERNO
+				        AND    A.MGNTNO             =    B.MGNTNO
+				        AND    A.STATUSCODE         =    'DLV105'
+				        AND    SUBSTR(A.MGNTNO,1,1) <![CDATA[ <> ]]> 'L'
+				         AND    A.WMV_PMP            =    'VOD+PMP'
+				         AND    A.PRICE      =    0
+				       ) B
+				      ,TB_MYLECTURE C WHERE  A.LECCODE = C.LECTURE_NO AND    B.ORDERNO = C.ORDERNO AND    B.MGNTNO  = C.PACKAGE_NO
+						AND    SUBSTR(C.PACKAGE_NO,1,1) NOT IN ('D','L') AND    B.WMV_PMP = #{SEARCHPAYTYPE} AND    C.PACKAGE_NO = LTBL.LECCODE) VODPMPN
+		FROM 	(
+			SELECT A.*, ROWNUM rnum
+		  	FROM (
+					SELECT
+						TBL.*
+						  , (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = TBL.CATEGORY_CD) AS CATEGORY_NM
+						  , (SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE CODE = TBL.LEARNING_CD) AS LEARNING_NM
+						  , (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = TBL.SUBJECT_TEACHER) AS SUBJECT_TEACHER_NM
+					FROM
+					(SELECT SEQ, LECCODE FROM TB_LEC_JONG GROUP BY SEQ, LECCODE HAVING LECCODE LIKE CONCAT(#{LEC_TYPE_CHOICE}, '%') AND SEQ = #{SEQ}) T1
+					INNER JOIN TB_LEC_MST TBL ON T1.LECCODE = TBL.LECCODE
+					WHERE LEC_TYPE_CHOICE = #{LEC_TYPE_CHOICE}
+				 	ORDER BY TBL.CATEGORY_CD
+				) A
+			) LTBL
+	</select>
+    
+    <select id="lectureJongList" parameterType="hashMap" resultType="hashMap">
+		SELECT
+			LTBL.*
+			,	(SELECT
+					COUNT(A.LECCODE)
+				FROM   TB_LEC_MST A
+				      ,(
+				        SELECT A.ORDERNO, A.MGNTNO, A.WMV_PMP
+				        FROM   TB_ORDER_MGNT_NO A	 ,(SELECT ORDERNO ,MGNTNO FROM   TB_ORDER_MGNT_NO GROUP BY ORDERNO, MGNTNO HAVING COUNT(*) = 1) B
+				        WHERE  A.ORDERNO            =    B.ORDERNO
+				        AND    A.MGNTNO             =    B.MGNTNO
+				        AND    A.STATUSCODE         =    'DLV105'
+				        AND    SUBSTR(A.MGNTNO,1,1) <![CDATA[ <> ]]> 'L'
+				         AND    A.WMV_PMP            =    'VOD'
+				         AND    A.PRICE      <![CDATA[ > ]]>    0
+				       ) B
+				      ,TB_MYLECTURE C WHERE  A.LECCODE = C.LECTURE_NO AND    B.ORDERNO = C.ORDERNO AND    B.MGNTNO  = C.PACKAGE_NO
+						AND    SUBSTR(C.PACKAGE_NO,1,1) NOT IN ('D','L') AND    B.WMV_PMP = 'VOD' AND    C.PACKAGE_NO = LTBL.LECCODE) VODY
+			,	(SELECT
+					COUNT(A.LECCODE)
+				FROM   TB_LEC_MST A
+				      ,(
+				        SELECT A.ORDERNO, A.MGNTNO, A.WMV_PMP
+				        FROM   TB_ORDER_MGNT_NO A	 ,(SELECT ORDERNO ,MGNTNO FROM   TB_ORDER_MGNT_NO GROUP BY ORDERNO, MGNTNO HAVING COUNT(*) = 1) B
+				        WHERE  A.ORDERNO            =    B.ORDERNO
+				        AND    A.MGNTNO             =    B.MGNTNO
+				        AND    A.STATUSCODE         =    'DLV105'
+				        AND    SUBSTR(A.MGNTNO,1,1) <![CDATA[ <> ]]> 'L'
+				         AND    A.WMV_PMP            =    'VOD'
+				         AND    A.PRICE      =    0
+				       ) B
+				      ,TB_MYLECTURE C WHERE  A.LECCODE = C.LECTURE_NO AND    B.ORDERNO = C.ORDERNO AND    B.MGNTNO  = C.PACKAGE_NO
+						AND    SUBSTR(C.PACKAGE_NO,1,1) NOT IN ('D','L') AND    B.WMV_PMP =  'VOD' AND    C.PACKAGE_NO = LTBL.LECCODE) VODN
+			,	(SELECT
+					COUNT(A.LECCODE)
+				FROM   TB_LEC_MST A
+				      ,(
+				        SELECT A.ORDERNO, A.MGNTNO, A.WMV_PMP
+				        FROM   TB_ORDER_MGNT_NO A	 ,(SELECT ORDERNO ,MGNTNO FROM   TB_ORDER_MGNT_NO GROUP BY ORDERNO, MGNTNO HAVING COUNT(*) = 1) B
+				        WHERE  A.ORDERNO            =    B.ORDERNO
+				        AND    A.MGNTNO             =    B.MGNTNO
+				        AND    A.STATUSCODE         =    'DLV105'
+				        AND    SUBSTR(A.MGNTNO,1,1) <![CDATA[ <> ]]> 'L'
+				         AND    A.WMV_PMP            =    'PMP'
+				         AND    A.PRICE      <![CDATA[ > ]]>    0
+				       ) B
+				      ,TB_MYLECTURE C WHERE  A.LECCODE = C.LECTURE_NO AND    B.ORDERNO = C.ORDERNO AND    B.MGNTNO  = C.PACKAGE_NO
+						AND    SUBSTR(C.PACKAGE_NO,1,1) NOT IN ('D','L') AND    B.WMV_PMP = 'PMP' AND    C.PACKAGE_NO = LTBL.LECCODE) PMPY
+			,	(SELECT
+					COUNT(A.LECCODE)
+				FROM   TB_LEC_MST A
+				      ,(
+				        SELECT A.ORDERNO, A.MGNTNO, A.WMV_PMP
+				        FROM   TB_ORDER_MGNT_NO A	 ,(SELECT ORDERNO ,MGNTNO FROM   TB_ORDER_MGNT_NO GROUP BY ORDERNO, MGNTNO HAVING COUNT(*) = 1) B
+				        WHERE  A.ORDERNO            =    B.ORDERNO
+				        AND    A.MGNTNO             =    B.MGNTNO
+				        AND    A.STATUSCODE         =    'DLV105'
+				        AND    SUBSTR(A.MGNTNO,1,1) <![CDATA[ <> ]]> 'L'
+				         AND    A.WMV_PMP            =    'PMP'
+				         AND    A.PRICE      =    0
+				       ) B
+				      ,TB_MYLECTURE C WHERE  A.LECCODE = C.LECTURE_NO AND    B.ORDERNO = C.ORDERNO AND    B.MGNTNO  = C.PACKAGE_NO
+						AND    SUBSTR(C.PACKAGE_NO,1,1) NOT IN ('D','L') AND    B.WMV_PMP = 'PMP' AND    C.PACKAGE_NO = LTBL.LECCODE) PMPN
+			,	(SELECT
+					COUNT(A.LECCODE)
+				FROM   TB_LEC_MST A
+				      ,(
+				        SELECT A.ORDERNO, A.MGNTNO, A.WMV_PMP
+				        FROM   TB_ORDER_MGNT_NO A	 ,(SELECT ORDERNO ,MGNTNO FROM   TB_ORDER_MGNT_NO GROUP BY ORDERNO, MGNTNO HAVING COUNT(*) = 1) B
+				        WHERE  A.ORDERNO            =    B.ORDERNO
+				        AND    A.MGNTNO             =    B.MGNTNO
+				        AND    A.STATUSCODE         =    'DLV105'
+				        AND    SUBSTR(A.MGNTNO,1,1) <![CDATA[ <> ]]> 'L'
+				         AND    A.WMV_PMP            =    'VOD+PMP'
+				         AND    A.PRICE      <![CDATA[ > ]]>    0
+				       ) B
+				      ,TB_MYLECTURE C WHERE  A.LECCODE = C.LECTURE_NO AND    B.ORDERNO = C.ORDERNO AND    B.MGNTNO  = C.PACKAGE_NO
+						AND    SUBSTR(C.PACKAGE_NO,1,1) NOT IN ('D','L') AND    B.WMV_PMP = 'VOD+PMP' AND    C.PACKAGE_NO = LTBL.LECCODE) VODPMPY
+			,	(SELECT
+					COUNT(A.LECCODE)
+				FROM   TB_LEC_MST A
+				      ,(
+				        SELECT A.ORDERNO, A.MGNTNO, A.WMV_PMP
+				        FROM   TB_ORDER_MGNT_NO A	 ,(SELECT ORDERNO ,MGNTNO FROM   TB_ORDER_MGNT_NO GROUP BY ORDERNO, MGNTNO HAVING COUNT(*) = 1) B
+				        WHERE  A.ORDERNO            =    B.ORDERNO
+				        AND    A.MGNTNO             =    B.MGNTNO
+				        AND    A.STATUSCODE         =    'DLV105'
+				        AND    SUBSTR(A.MGNTNO,1,1) <![CDATA[ <> ]]> 'L'
+				         AND    A.WMV_PMP            =    'VOD+PMP'
+				         AND    A.PRICE      =    0
+				       ) B
+				      ,TB_MYLECTURE C WHERE  A.LECCODE = C.LECTURE_NO AND    B.ORDERNO = C.ORDERNO AND    B.MGNTNO  = C.PACKAGE_NO
+						AND    SUBSTR(C.PACKAGE_NO,1,1) NOT IN ('D','L') AND    B.WMV_PMP = 'VOD+PMP' AND    C.PACKAGE_NO = LTBL.LECCODE) VODPMPN
+		FROM 	(
+			SELECT A.*, ROWNUM rnum
+		  	FROM (
+					SELECT
+						TBL.*
+						  , (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = TBL.CATEGORY_CD) AS CATEGORY_NM
+						  , (SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE CODE = TBL.LEARNING_CD) AS LEARNING_NM
+						  , T1.JONGSEQ
+					FROM
+						(
+						SELECT JONGSEQ, LECCODE
+						FROM (
+						 	SELECT A.LECCODE, MAX(A.SEQ) JONGSEQ
+						     FROM TB_LEC_JONG A
+						     LEFT OUTER JOIN TB_LEC_MST B ON A.LECCODE = B.LECCODE
+						     WHERE A.LECCODE LIKE CONCAT(#{LEC_TYPE_CHOICE}, '%')
+					  		<if test='SEARCHKIND != null and SEARCHKIND != ""'>
+					  			AND B.CATEGORY_CD = #{SEARCHKIND}
+					  		</if>
+					  		GROUP BY A.LECCODE
+							)
+						) T1
+					INNER JOIN TB_LEC_MST TBL ON T1.LECCODE = TBL.LECCODE
+
+					WHERE LEC_TYPE_CHOICE = #{LEC_TYPE_CHOICE}
+			  		<if test='SEARCHFORM != null and SEARCHFORM != ""'>
+			  			AND LEARNING_CD = #{SEARCHFORM}
+			  		</if>
+			  		<if test='SEARCHYEAR!= null and SEARCHYEAR != ""'>
+			  			AND SUBJECT_OFF_OPEN_YEAR <![CDATA[ >= ]]> '2012'
+			  		</if>
+				 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+						<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+							<if test='SEARCHTYPE == "2"'>
+								AND SUBJECT_TITLE like '%'||#{SEARCHTEXT}||'%'
+							</if>
+							<if test='SEARCHTYPE == "4"'>
+								AND TBL.LECCODE like '%'||#{SEARCHTEXT}||'%'
+							</if>
+						</if>
+						<if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+							AND (
+								SUBJECT_TITLE like '%'||#{SEARCHTEXT}||'%'
+								OR TBL.LECCODE like '%'||#{SEARCHTEXT}||'%')
+						</if>
+					</if>
+				 	ORDER BY TBL.SEQ DESC
+				) A
+               	WHERE rownum <![CDATA[ <= ]]> #{endNo}
+			) LTBL
+		WHERE rnum <![CDATA[ > ]]> #{startNo}
+	</select>
+
+    <select id="lectureJongListCount" parameterType="hashMap" resultType="int">
+        SELECT
+            COUNT(TBL.LECCODE)
+        FROM
+            (
+            SELECT JONGSEQ, LECCODE
+            FROM (
+                SELECT A.LECCODE, MAX(A.SEQ) JONGSEQ
+                 FROM TB_LEC_JONG A
+                 LEFT OUTER JOIN TB_LEC_MST B ON A.LECCODE = B.LECCODE
+                 WHERE A.LECCODE LIKE '${LEC_TYPE_CHOICE}%'
+                <if test='SEARCHKIND != null and SEARCHKIND != ""'>
+                    AND B.CATEGORY_CD = #{SEARCHKIND}
+                </if>
+                GROUP BY A.LECCODE
+                )
+            ) T1
+            INNER JOIN TB_LEC_MST TBL ON T1.LECCODE = TBL.LECCODE
+        WHERE LEC_TYPE_CHOICE = #{LEC_TYPE_CHOICE}
+        <if test='SEARCHFORM != null and SEARCHFORM != ""'>
+            AND LEARNING_CD = #{SEARCHFORM}
+        </if>
+        <if test='SEARCHYEAR!= null and SEARCHYEAR != ""'>
+            AND SUBJECT_OFF_OPEN_YEAR <![CDATA[ >= ]]> '2012'
+        </if>
+        <if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+            <if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+                <if test='SEARCHTYPE == "2"'>
+                    AND SUBJECT_TITLE like '%${SEARCHTEXT}%'
+                </if>
+                <if test='SEARCHTYPE == "4"'>
+                    AND TBL.LECCODE like '%${SEARCHTEXT}%'
+                </if>
+            </if>
+            <if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+                AND (
+                    SUBJECT_TITLE like '%${SEARCHTEXT}%'
+                    OR TBL.LECCODE like '%${SEARCHTEXT}%')
+            </if>
+        </if>
+    </select>
+    
+    <select id="lectureYearList" parameterType="hashMap" resultType="hashMap">
+		SELECT LTBL.* 
+	    FROM (
+ 		  	     SELECT LTB.*, ROWNUM rnum
+			     FROM (
+                         SELECT AA.SEQ, AA.LECCODE, 
+                                  AA.CATEGORY_CD, (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = AA.CATEGORY_CD) AS CATEGORY_NM,
+                                  AA.SUBJECT_TITLE, AA.REG_DT, AA.SUBJECT_ISUSE,
+                                  NVL(BB.VODY,0) VODY, NVL(BB.VODN,0) VODN, NVL(BB.PMPY,0) PMPY, 
+                                  NVL(BB.PMPN,0) PMPN, NVL(BB.VODPMPY,0) VODPMPY, NVL(BB.VODPMPN,0) VODPMPN
+                                  , (SELECT DISTINCT SEQ
+                          FROM TB_LEC_JONG
+                          WHERE LECCODE = AA.LECCODE) JONGSEQ
+                           FROM TB_LEC_MST AA, 
+                               (SELECT MGNTNO, 
+                                       SUM(VOD_Y_CNT) VODY, SUM(VOD_N_CNT) VODN,
+                                       SUM(PMP_Y_CNT) PMPY, SUM(PMP_N_CNT) PMPN,
+                                       SUM(MP4_Y_CNT) VODPMPY, SUM(MP4_N_CNT) VODPMPN
+                                FROM (
+                                     SELECT MM.MGNTNO, 
+                                            CASE WHEN MM.FREE = 'Y' AND WMV_PMP = 'VOD' THEN CNT END VOD_Y_CNT,
+                                            CASE WHEN MM.FREE = 'N' AND WMV_PMP = 'VOD' THEN CNT END VOD_N_CNT,
+                                            CASE WHEN MM.FREE = 'Y' AND WMV_PMP = 'PMP' THEN CNT END PMP_Y_CNT,
+                                            CASE WHEN MM.FREE = 'N' AND WMV_PMP = 'PMP' THEN CNT END PMP_N_CNT,
+                                            CASE WHEN MM.FREE = 'Y' AND WMV_PMP = 'VOD+PMP' THEN CNT END MP4_Y_CNT,
+                                            CASE WHEN MM.FREE = 'N' AND WMV_PMP = 'VOD+PMP' THEN CNT END MP4_N_CNT
+                                    FROM (
+                                         SELECT B.MGNTNO, B.WMV_PMP, DECODE(B.PRICE, 0, 'N', 'Y') FREE, COUNT(B.ORDERNO) CNT 
+                                         FROM TB_ORDER_MGNT_NO B,
+                                             (SELECT ORDERNO, MGNTNO
+                                              FROM TB_ORDER_MGNT_NO
+                                              WHERE PTYPE = 'Y'
+                                              AND STATUSCODE IN ('DLV105', 'DLV230')
+                                              GROUP BY ORDERNO, MGNTNO
+                                              HAVING COUNT(*) = 1) C
+                                         WHERE B.ORDERNO = C.ORDERNO
+                                         AND B.MGNTNO = C.MGNTNO
+                                         AND B.STATUSCODE = 'DLV105'
+                                         GROUP BY B.MGNTNO, B.WMV_PMP, DECODE (B.PRICE, 0, 'N', 'Y')
+                                        ) MM
+                                   )
+                            GROUP BY MGNTNO) BB
+                      WHERE AA.LECCODE = BB.MGNTNO(+)
+                      AND AA.LEC_TYPE_CHOICE = 'Y'
+				 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+						<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+							<if test='SEARCHTYPE == "2"'>
+								AND INSTR(AA.SUBJECT_TITLE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+							</if>
+							<if test='SEARCHTYPE == "4"'>
+								AND INSTR(AA.LECCODE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+							</if>
+						</if>
+						<if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+							AND (
+     							INSTR(AA.SUBJECT_TITLE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+     							OR INSTR(AA.LECCODE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+     							)
+						</if>
+					</if>
+                      ORDER BY AA.SEQ DESC
+				     ) LTB
+               	WHERE rownum <![CDATA[ <= ]]> #{endNo}
+			) LTBL
+		WHERE rnum <![CDATA[ > ]]> #{startNo}
+	</select>
+
+    <select id="lectureYearListCount" parameterType="hashMap" resultType="int">
+        SELECT
+            COUNT(AA.LECCODE)
+					FROM TB_LEC_MST AA
+					WHERE AA.LEC_TYPE_CHOICE = 'Y'
+				 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+						<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+							<if test='SEARCHTYPE == "2"'>
+								AND INSTR(AA.SUBJECT_TITLE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+							</if>
+							<if test='SEARCHTYPE == "4"'>
+								AND INSTR(AA.LECCODE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+							</if>
+						</if>
+						<if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+							AND (
+     							INSTR(AA.SUBJECT_TITLE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+     							OR INSTR(AA.LECCODE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+     							)
+						</if>
+					</if>
+    </select>
+
+    <select id="lectureJongList_All" parameterType="hashMap" resultType="hashMap">
+        SELECT
+            LTBL.*
+			,	(SELECT
+					COUNT(A.LECCODE)
+				FROM   TB_LEC_MST A
+				      ,(
+				        SELECT A.ORDERNO, A.MGNTNO, A.WMV_PMP
+				        FROM   TB_ORDER_MGNT_NO A	 ,(SELECT ORDERNO ,MGNTNO FROM   TB_ORDER_MGNT_NO GROUP BY ORDERNO, MGNTNO HAVING COUNT(*) = 1) B
+				        WHERE  A.ORDERNO            =    B.ORDERNO
+				        AND    A.MGNTNO             =    B.MGNTNO
+				        AND    A.STATUSCODE         =    'DLV105'
+				        AND    SUBSTR(A.MGNTNO,1,1) <![CDATA[ <> ]]> 'L'
+				         AND    A.WMV_PMP            =    'VOD'
+				         AND    A.PRICE      <![CDATA[ > ]]>    0
+				       ) B
+				      ,TB_MYLECTURE C WHERE  A.LECCODE = C.LECTURE_NO AND    B.ORDERNO = C.ORDERNO AND    B.MGNTNO  = C.PACKAGE_NO
+						AND    SUBSTR(C.PACKAGE_NO,1,1) NOT IN ('D','L') AND    B.WMV_PMP = 'VOD' AND    C.PACKAGE_NO = LTBL.LECCODE) VODY
+			,	(SELECT
+					COUNT(A.LECCODE)
+				FROM   TB_LEC_MST A
+				      ,(
+				        SELECT A.ORDERNO, A.MGNTNO, A.WMV_PMP
+				        FROM   TB_ORDER_MGNT_NO A	 ,(SELECT ORDERNO ,MGNTNO FROM   TB_ORDER_MGNT_NO GROUP BY ORDERNO, MGNTNO HAVING COUNT(*) = 1) B
+				        WHERE  A.ORDERNO            =    B.ORDERNO
+				        AND    A.MGNTNO             =    B.MGNTNO
+				        AND    A.STATUSCODE         =    'DLV105'
+				        AND    SUBSTR(A.MGNTNO,1,1) <![CDATA[ <> ]]> 'L'
+				         AND    A.WMV_PMP            =    'VOD'
+				         AND    A.PRICE      =    0
+				       ) B
+				      ,TB_MYLECTURE C WHERE  A.LECCODE = C.LECTURE_NO AND    B.ORDERNO = C.ORDERNO AND    B.MGNTNO  = C.PACKAGE_NO
+						AND    SUBSTR(C.PACKAGE_NO,1,1) NOT IN ('D','L') AND    B.WMV_PMP =  'VOD' AND    C.PACKAGE_NO = LTBL.LECCODE) VODN
+			,	(SELECT
+					COUNT(A.LECCODE)
+				FROM   TB_LEC_MST A
+				      ,(
+				        SELECT A.ORDERNO, A.MGNTNO, A.WMV_PMP
+				        FROM   TB_ORDER_MGNT_NO A	 ,(SELECT ORDERNO ,MGNTNO FROM   TB_ORDER_MGNT_NO GROUP BY ORDERNO, MGNTNO HAVING COUNT(*) = 1) B
+				        WHERE  A.ORDERNO            =    B.ORDERNO
+				        AND    A.MGNTNO             =    B.MGNTNO
+				        AND    A.STATUSCODE         =    'DLV105'
+				        AND    SUBSTR(A.MGNTNO,1,1) <![CDATA[ <> ]]> 'L'
+				         AND    A.WMV_PMP            =    'PMP'
+				         AND    A.PRICE      <![CDATA[ > ]]>    0
+				       ) B
+				      ,TB_MYLECTURE C WHERE  A.LECCODE = C.LECTURE_NO AND    B.ORDERNO = C.ORDERNO AND    B.MGNTNO  = C.PACKAGE_NO
+						AND    SUBSTR(C.PACKAGE_NO,1,1) NOT IN ('D','L') AND    B.WMV_PMP = 'PMP' AND    C.PACKAGE_NO = LTBL.LECCODE) PMPY
+			,	(SELECT
+					COUNT(A.LECCODE)
+				FROM   TB_LEC_MST A
+				      ,(
+				        SELECT A.ORDERNO, A.MGNTNO, A.WMV_PMP
+				        FROM   TB_ORDER_MGNT_NO A	 ,(SELECT ORDERNO ,MGNTNO FROM   TB_ORDER_MGNT_NO GROUP BY ORDERNO, MGNTNO HAVING COUNT(*) = 1) B
+				        WHERE  A.ORDERNO            =    B.ORDERNO
+				        AND    A.MGNTNO             =    B.MGNTNO
+				        AND    A.STATUSCODE         =    'DLV105'
+				        AND    SUBSTR(A.MGNTNO,1,1) <![CDATA[ <> ]]> 'L'
+				         AND    A.WMV_PMP            =    'PMP'
+				         AND    A.PRICE      =    0
+				       ) B
+				      ,TB_MYLECTURE C WHERE  A.LECCODE = C.LECTURE_NO AND    B.ORDERNO = C.ORDERNO AND    B.MGNTNO  = C.PACKAGE_NO
+						AND    SUBSTR(C.PACKAGE_NO,1,1) NOT IN ('D','L') AND    B.WMV_PMP = 'PMP' AND    C.PACKAGE_NO = LTBL.LECCODE) PMPN
+			,	(SELECT
+					COUNT(A.LECCODE)
+				FROM   TB_LEC_MST A
+				      ,(
+				        SELECT A.ORDERNO, A.MGNTNO, A.WMV_PMP
+				        FROM   TB_ORDER_MGNT_NO A	 ,(SELECT ORDERNO ,MGNTNO FROM   TB_ORDER_MGNT_NO GROUP BY ORDERNO, MGNTNO HAVING COUNT(*) = 1) B
+				        WHERE  A.ORDERNO            =    B.ORDERNO
+				        AND    A.MGNTNO             =    B.MGNTNO
+				        AND    A.STATUSCODE         =    'DLV105'
+				        AND    SUBSTR(A.MGNTNO,1,1) <![CDATA[ <> ]]> 'L'
+				         AND    A.WMV_PMP            =    'VOD+PMP'
+				         AND    A.PRICE      <![CDATA[ > ]]>    0
+				       ) B
+				      ,TB_MYLECTURE C WHERE  A.LECCODE = C.LECTURE_NO AND    B.ORDERNO = C.ORDERNO AND    B.MGNTNO  = C.PACKAGE_NO
+						AND    SUBSTR(C.PACKAGE_NO,1,1) NOT IN ('D','L') AND    B.WMV_PMP = 'VOD+PMP' AND    C.PACKAGE_NO = LTBL.LECCODE) VODPMPY
+			,	(SELECT
+					COUNT(A.LECCODE)
+				FROM   TB_LEC_MST A
+				      ,(
+				        SELECT A.ORDERNO, A.MGNTNO, A.WMV_PMP
+				        FROM   TB_ORDER_MGNT_NO A	 ,(SELECT ORDERNO ,MGNTNO FROM   TB_ORDER_MGNT_NO GROUP BY ORDERNO, MGNTNO HAVING COUNT(*) = 1) B
+				        WHERE  A.ORDERNO            =    B.ORDERNO
+				        AND    A.MGNTNO             =    B.MGNTNO
+				        AND    A.STATUSCODE         =    'DLV105'
+				        AND    SUBSTR(A.MGNTNO,1,1) <![CDATA[ <> ]]> 'L'
+				         AND    A.WMV_PMP            =    'VOD+PMP'
+				         AND    A.PRICE      =    0
+				       ) B
+				      ,TB_MYLECTURE C WHERE  A.LECCODE = C.LECTURE_NO AND    B.ORDERNO = C.ORDERNO AND    B.MGNTNO  = C.PACKAGE_NO
+						AND    SUBSTR(C.PACKAGE_NO,1,1) NOT IN ('D','L') AND    B.WMV_PMP = 'VOD+PMP' AND    C.PACKAGE_NO = LTBL.LECCODE) VODPMPN
+		FROM 	(
+			SELECT A.*, ROWNUM rnum
+		  	FROM (
+					SELECT
+						TBL.*
+						  , (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = TBL.CATEGORY_CD) AS CATEGORY_NM
+						  , (SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE CODE = TBL.LEARNING_CD) AS LEARNING_NM
+						  , T1.JONGSEQ
+					FROM
+						(
+						SELECT JONGSEQ, LECCODE
+						FROM (
+						 	SELECT A.LECCODE, MAX(A.SEQ) JONGSEQ
+						     FROM TB_LEC_JONG A
+						     LEFT OUTER JOIN TB_LEC_MST B ON A.LECCODE = B.LECCODE
+						     WHERE A.LECCODE LIKE CONCAT(#{LEC_TYPE_CHOICE}, '%')
+					  		<if test='SEARCHKIND != null and SEARCHKIND != ""'>
+					  			AND B.CATEGORY_CD = #{SEARCHKIND}
+					  		</if>
+					  		GROUP BY A.LECCODE
+							)
+						) T1
+					INNER JOIN TB_LEC_MST TBL ON T1.LECCODE = TBL.LECCODE
+
+					WHERE LEC_TYPE_CHOICE = #{LEC_TYPE_CHOICE}
+			  		<if test='SEARCHFORM != null and SEARCHFORM != ""'>
+			  			AND LEARNING_CD = #{SEARCHFORM}
+			  		</if>
+			  		<if test='SEARCHYEAR!= null and SEARCHYEAR != ""'>
+			  			AND SUBJECT_OFF_OPEN_YEAR <![CDATA[ >= ]]> '2012'
+			  		</if>
+				 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+						<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+							<if test='SEARCHTYPE == "2"'>
+								AND SUBJECT_TITLE like '%'||#{SEARCHTEXT}||'%'
+							</if>
+							<if test='SEARCHTYPE == "4"'>
+								AND TBL.LECCODE like '%'||#{SEARCHTEXT}||'%'
+							</if>
+						</if>
+						<if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+							AND (
+								SUBJECT_TITLE like '%'||#{SEARCHTEXT}||'%'
+								OR TBL.LECCODE like '%'||#{SEARCHTEXT}||'%')
+						</if>
+					</if>
+				 	ORDER BY TBL.SEQ DESC
+				) A
+               	WHERE rownum <![CDATA[ <= ]]> #{endNo}
+			) LTBL
+		WHERE rnum <![CDATA[ > ]]> #{startNo}
+	</select>
+
+	<select id="lectureJongView" parameterType="hashMap" resultMap="lectureMap">
+		SELECT
+			TBL.*, (SELECT NO FROM TB_CHOICE_JONG_NO WHERE LECCODE = TBL.LECCODE AND CATEGORY_CD = TBL.CATEGORY_CD) AS NO
+			  , (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = TBL.CATEGORY_CD) AS CATEGORY_NM
+		FROM TB_LEC_MST TBL
+		WHERE TBL.LECCODE = #{LECCODE}
+	</select>
+
+	<select id="lectureJongSubjectList" parameterType="hashMap" resultType="hashMap">
+		SELECT * FROM 	(
+			SELECT A.*, ROWNUM rnum
+		  	FROM (
+		  		SELECT TBL.* FROM (
+					SELECT T1.*
+						, (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = T1.CATEGORY_CD) AS CATEGORY_NM
+						, (SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE CODE = T1.LEARNING_CD) AS LEARNING_NM
+						, (SELECT SUBJECT_NM FROM TB_SUBJECT_INFO WHERE SUBJECT_CD = T1.SUBJECT_SJT_CD) AS SUBJECT_NM
+						, (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = T1.SUBJECT_TEACHER) AS SUBJECT_TEACHER_NM
+						FROM
+						TB_LEC_MST T1 INNER JOIN TB_LEC_BRIDGE T2 ON T1.LECCODE = T2.LECCODE
+					WHERE T1.LEC_TYPE_CHOICE = 'D'
+				) TBL WHERE 1 = 1
+		 		<if test='SEARCHKIND != null and SEARCHKIND != ""'>
+		 			AND TBL.CATEGORY_CD = #{SEARCHKIND}
+		 		</if>
+		 		<if test='SEARCHFORM != null and SEARCHFORM != ""'>
+		 			AND TBL.LEARNING_CD = #{SEARCHFORM}
+		 		</if>
+			 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+					<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+						<if test='SEARCHTYPE == "1"'>
+							AND TBL.SUBJECT_TITLE like '%'||#{SEARCHTEXT}||'%'
+						</if>
+						<if test='SEARCHTYPE == "2"'>
+							AND TBL.SUBJECT_TEACHER_NM like '%'||#{SEARCHTEXT}||'%'
+						</if>
+					</if>
+					<if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+						AND (
+							TBL.SUBJECT_TITLE like '%'||#{SEARCHTEXT}||'%'
+							OR TBL.SUBJECT_TEACHER_NM like '%'||#{SEARCHTEXT}||'%'
+						)
+					</if>
+				</if>
+                <if test='SEARCHSBJTCD != null and SEARCHSBJTCD != ""'>
+                    AND TBL.SUBJECT_SJT_CD = #{SEARCHSBJTCD}
+                </if>
+                <if test='SEARCHPRFID != null and SEARCHPRFID != ""'>
+                    AND TBL.SUBJECT_TEACHER = #{SEARCHPRFID}
+                </if>
+				ORDER BY TBL.SEQ DESC
+			) A
+            WHERE rownum &lt;= #{endNo}
+		)
+		WHERE rnum &gt; #{startNo}
+	</select>
+
+	<select id="lectureJongSubjectListCount" parameterType="hashMap" resultType="int">
+  		SELECT COUNT(TBL.LECCODE) FROM (
+			SELECT T1.*
+				, (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = T1.CATEGORY_CD) AS CATEGORY_NM
+				, (SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE CODE = T1.LEARNING_CD) AS LEARNING_NM
+				, (SELECT SUBJECT_NM FROM TB_SUBJECT_INFO WHERE SUBJECT_CD = T1.SUBJECT_SJT_CD) AS SUBJECT_NM
+				, (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = T1.SUBJECT_TEACHER) AS SUBJECT_TEACHER_NM
+				FROM
+				TB_LEC_MST T1 INNER JOIN TB_LEC_BRIDGE T2 ON T1.LECCODE = T2.LECCODE
+			WHERE T1.LEC_TYPE_CHOICE = 'D'
+		) TBL 	WHERE 1 = 1
+ 		<if test='SEARCHKIND != null and SEARCHKIND != ""'>
+ 			AND TBL.CATEGORY_CD = #{SEARCHKIND}
+ 		</if>
+ 		<if test='SEARCHFORM != null and SEARCHFORM != ""'>
+ 			AND TBL.LEARNING_CD = #{SEARCHFORM}
+ 		</if>
+	 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+			<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+				<if test='SEARCHTYPE == "1"'>
+					AND TBL.SUBJECT_TITLE like '%'||#{SEARCHTEXT}||'%'
+				</if>
+				<if test='SEARCHTYPE == "2"'>
+					AND TBL.SUBJECT_TEACHER_NM like '%'||#{SEARCHTEXT}||'%'
+				</if>
+			</if>
+			<if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+				AND (
+					TBL.SUBJECT_TITLE like '%'||#{SEARCHTEXT}||'%'
+					OR TBL.SUBJECT_TEACHER_NM like '%'||#{SEARCHTEXT}||'%'
+				)
+			</if>
+		</if>
+        <if test='SEARCHSBJTCD != null and SEARCHSBJTCD != ""'>
+            AND TBL.SUBJECT_SJT_CD = #{SEARCHSBJTCD}
+        </if>
+        <if test='SEARCHPRFID != null and SEARCHPRFID != ""'>
+            AND TBL.SUBJECT_TEACHER = #{SEARCHPRFID}
+        </if>
+	</select>
+
+	<insert id="lectureLecJongInsert" parameterType="hashMap" flushCache="true">
+		INSERT INTO TB_LEC_JONG(SEQ, LECCODE, MST_LECCODE, SORT, GUBUN, REG_DT, REG_ID, UPD_DT, UPD_ID)
+		VALUES (#{SEQ}, #{LECCODE}, #{MST_LECCODE}, #{SORT}, #{GUBUN}, SYSDATE, #{REG_ID}, SYSDATE, #{UPD_ID})
+	</insert>
+
+	<select id="lectureViewLeccodeList" parameterType="hashMap" resultType="hashMap">
+		SELECT
+		  T1.MST_LECCODE, T1.SORT, T1.GUBUN
+		  , TBL.*
+		  , (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = TBL.CATEGORY_CD) AS CATEGORY_NM
+		  , (SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE CODE = TBL.LEARNING_CD) AS LEARNING_NM
+		  , (SELECT SUBJECT_NM FROM TB_SUBJECT_INFO WHERE SUBJECT_CD = TBL.SUBJECT_SJT_CD) AS SUBJECT_NM
+		  , (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = TBL.SUBJECT_TEACHER) AS SUBJECT_TEACHER_NM
+		  FROM
+		  TB_LEC_JONG T1 INNER JOIN TB_LEC_MST TBL ON T1.MST_LECCODE = TBL.LECCODE
+		WHERE T1.LECCODE = #{LECCODE} AND TBL.LEC_TYPE_CHOICE = 'D'
+		ORDER BY T1.SORT ASC
+	</select>
+
+	<delete id="lectureLecJongDelete" parameterType="hashMap" flushCache="true">
+		DELETE FROM TB_LEC_JONG WHERE LECCODE = #{LECCODE}
+	</delete>
+
+	<delete id="lectureChoiceJongNoDelete" parameterType="hashMap" flushCache="true">
+		DELETE FROM TB_CHOICE_JONG_NO WHERE LECCODE = #{LECCODE}
+	</delete>
+
+<!-- 종합반 end -->
+
+
+<!-- 선택형 종합반 start -->
+
+	<insert id="lectureChoiceJongNoInsert" parameterType="hashMap" flushCache="true">
+		INSERT INTO TB_CHOICE_JONG_NO(SEQ, LECCODE, NO, CATEGORY_CD)
+		VALUES (#{SEQ}, #{LECCODE}, #{NO}, #{CATEGORY_CD})
+	</insert>
+
+<!-- 선택형 종합반 end -->
+
+
+	<select id="lectureDeleteCheck" parameterType="hashMap" resultType="int">
+		SELECT COUNT(*) FROM TB_ORDER_MGNT_NO WHERE MGNTNO = #{LECCODE} AND STATUSCODE = 'DLV105'
+	</select>
+
+
+
+
+	<select id="lecturePayList" parameterType="hashMap" resultType="hashMap">
+		SELECT C.USERID                                                              AS USERID
+		      ,(SELECT USER_NM  FROM TB_MA_MEMBER WHERE USER_ID = C.USERID)          AS USER_NM
+		      ,(SELECT PHONE_NO FROM TB_MA_MEMBER WHERE USER_ID = C.USERID)          AS PHONE_NO
+		      ,(SELECT USER_NM  FROM TB_MA_MEMBER WHERE USER_ID = A.SUBJECT_TEACHER) AS SUBJECT_USER_NM
+		      ,A.SUBJECT_TITLE                                                       AS SUBJECT_TITLE
+		      ,C.START_DATE                                                          AS START_DATE
+		      ,C.END_DATE                                                            AS END_DATE
+		      ,B.STATUSCODE
+		      ,B.ISCONFIRM
+		      ,(SELECT CODE_NM FROM TB_BA_CONFIG_CD D WHERE D.CODE_VAL = B.STATUSCODE) AS STATUSCODE_NM
+		FROM   TB_LEC_MST A
+		      ,(
+		        SELECT A.ORDERNO
+		              ,A.MGNTNO
+		              ,A.WMV_PMP
+		              ,A.STATUSCODE
+		              ,A.ISCONFIRM
+		        FROM   TB_ORDER_MGNT_NO A
+		              ,(SELECT ORDERNO
+		                      ,MGNTNO
+		                FROM   TB_ORDER_MGNT_NO
+		                GROUP BY ORDERNO, MGNTNO
+		                HAVING COUNT(*) = 1
+		               ) B
+		            WHERE  A.ORDERNO    =    B.ORDERNO
+		            AND    A.MGNTNO     =    B.MGNTNO
+		            AND    A.STATUSCODE IN    ('DLV105', 'DLV230')
+		            AND    A.WMV_PMP    =    REPLACE(#{SEARCHPAYTYPE},' ','+')
+		            <!--  유료 > 0, 무료 = 0 -->
+		            <if test='SEARCHPAYYN == "Y"'>
+		            	AND    A.PRICE      <![CDATA[ > ]]>    0
+		            </if>
+		            <if test='SEARCHPAYYN == "N"'>
+		            	AND    A.PRICE      =    0
+		            </if>
+		       ) B
+		      ,TB_MYLECTURE C
+		WHERE  A.LECCODE            = C.LECTURE_NO
+		AND    B.ORDERNO            = C.ORDERNO
+		AND    B.MGNTNO             = C.PACKAGE_NO
+		<if test='SEARCHOPENPAGE == null or SEARCHOPENPAGE == ""'>
+			AND    A.LECCODE = #{LECCODE}
+		</if>
+		<if test='SEARCHOPENPAGE != null and SEARCHOPENPAGE != ""'>
+			AND A.LECCODE IN (SELECT LECCODE FROM TB_LEC_BRIDGE WHERE BRIDGE_LECCODE = #{BRIDGE_LECCODE})
+		</if>
+		ORDER BY B.STATUSCODE
+	</select>
+	
+	<select id="lectureFreePassPayList" parameterType="hashMap" resultType="hashMap">
+		SELECT D.USER_ID, D.USER_NM, D.PHONE_NO,
+		       C.START_DATE, C.END_DATE, 
+		       (SELECT CODE_NM FROM TB_BA_CONFIG_CD WHERE CODE_VAL = B.STATUSCODE) AS STATUSCODE_NM,
+		       A.ORDERNO
+		FROM TB_ORDERS A, TB_ORDER_MGNT_NO B,
+                (SELECT DISTINCT ORDERNO, PACKAGE_NO, 
+                          TO_CHAR(START_DATE, 'YYYY-MM-DD') START_DATE, TO_CHAR(END_DATE, 'YYYY-MM-DD') END_DATE
+                 FROM TB_ORDER_YEARPACKAGE) C, 
+		       TB_MA_MEMBER D,
+		       (SELECT ORDERNO, MGNTNO
+		        FROM TB_ORDER_MGNT_NO
+		        WHERE PTYPE = 'Y'
+		        AND STATUSCODE IN ('DLV105', 'DLV230')
+		        GROUP BY ORDERNO, MGNTNO
+		        HAVING COUNT(*) = 1) E
+		WHERE A.ORDERNO = B.ORDERNO
+		AND A.USER_ID = D.USER_ID
+		AND B.ORDERNO = C.ORDERNO
+		AND B.MGNTNO = C.PACKAGE_NO
+		AND B.ORDERNO = E.ORDERNO
+		AND B.MGNTNO = E.MGNTNO	
+		AND B.WMV_PMP = #{SEARCHPAYTYPE}
+        <if test='SEARCHPAYYN == "Y"'>
+       	AND B.PRICE <![CDATA[ > ]]> 0
+        </if>
+        <if test='SEARCHPAYYN == "N"'>
+       	AND B.PRICE = 0
+        </if>
+		AND B.MGNTNO = #{LECCODE}
+		ORDER BY B.ISCONFIRM DESC
+	</select>
+	
+	<select id="lectureJongPayList" parameterType="hashMap" resultType="hashMap">
+		SELECT C.USERID                                                              AS USERID
+		      ,(SELECT USER_NM  FROM TB_MA_MEMBER WHERE USER_ID = C.USERID)          AS USER_NM
+		      ,(SELECT PHONE_NO FROM TB_MA_MEMBER WHERE USER_ID = C.USERID)          AS PHONE_NO
+		      ,(SELECT USER_NM  FROM TB_MA_MEMBER WHERE USER_ID = A.SUBJECT_TEACHER) AS SUBJECT_USER_NM
+		      ,A.SUBJECT_TITLE                                                       AS SUBJECT_TITLE
+		      ,C.START_DATE                                                          AS START_DATE
+		      ,C.END_DATE                                                            AS END_DATE
+		      ,B.STATUSCODE
+		      ,(SELECT CODE_NM FROM TB_BA_CONFIG_CD D WHERE D.CODE_VAL = B.STATUSCODE) AS STATUSCODE_NM
+		FROM   TB_LEC_MST A
+		      ,(
+		        SELECT A.ORDERNO
+		              ,A.MGNTNO
+		              ,A.WMV_PMP
+		              ,A.STATUSCODE
+		        FROM   TB_ORDER_MGNT_NO A
+		              ,(SELECT ORDERNO
+		                      ,MGNTNO
+		                FROM   TB_ORDER_MGNT_NO
+		                GROUP BY ORDERNO, MGNTNO
+		                HAVING COUNT(*) = 1
+		               ) B
+		            WHERE  A.ORDERNO            =    B.ORDERNO
+		            AND    A.MGNTNO             =    B.MGNTNO
+		            AND    A.STATUSCODE IN    ('DLV105', 'DLV230')
+		            AND    SUBSTR(A.MGNTNO,1,1) <![CDATA[ <> ]]> 'L'
+		            AND    A.WMV_PMP            =    #{SEARCHPAYTYPE}
+		            <!--  유료 > 0, 무료 = 0 -->
+		            <if test='SEARCHPAYYN == "Y"'>
+		            	AND    A.PRICE      <![CDATA[ > ]]>    0
+		            </if>
+		            <if test='SEARCHPAYYN == "N"'>
+		            	AND    A.PRICE      =    0
+		            </if>
+		       ) B
+		      ,TB_MYLECTURE C
+		WHERE  A.LECCODE = C.LECTURE_NO
+		AND    B.ORDERNO = C.ORDERNO
+		AND    B.MGNTNO  = C.PACKAGE_NO
+		AND    SUBSTR(C.PACKAGE_NO,1,1) NOT IN ('D','L')
+		AND    B.WMV_PMP = REPLACE(#{SEARCHPAYTYPE},' ','+')
+		<if test='SEARCHOPENPAGE == null or SEARCHOPENPAGE == ""'>
+			AND    C.PACKAGE_NO = #{LECCODE}
+		</if>
+		<if test='SEARCHOPENPAGE != null and SEARCHOPENPAGE != ""'>
+			AND C.PACKAGE_NO IN (SELECT MST_LECCODE FROM TB_LEC_JONG WHERE SEQ = #{JSEQ})
+		</if>
+		ORDER BY C.LECTURE_NO, B.STATUSCODE
+	</select>
+
+	<select id="lectureDataViewList" parameterType="hashMap" resultType="hashMap">
+		SELECT B.SUBJECT_OPTION
+		      ,B.BRIDGE_LECCODE
+		      ,A.MOVIE_NAME
+		      ,A.MOVIE_DESC
+		      ,A.MOVIE_URL
+		      ,A.WIDE_URL
+		      ,A.MOVIE_FILENAME1
+		      ,A.MP4_URL
+		      ,A.MOVIE_FILENAME2
+		      ,A.MOVIE_FILENAME3
+		      ,A.MOVIE_FILENAME4
+		      ,A.MOVIE_DATA_FILE_YN
+		      ,A.MOVIE_DATA_FILENAME
+		      ,A.MOVIE_TIME
+		      ,A.MOVIE_ORDER1
+		      ,A.MOVIE_ORDER2
+		      ,A.MOVIE_FREE_FLAG
+		      ,A.PMP_URL
+		      ,A.PMP_FILENAME
+		      ,A.MOVIE_NO
+		      ,B.SUBJECT_VOD_DEFAULT_PATH
+		      ,B.SUBJECT_WIDE_DEFAULT_PATH
+		      ,B.SUBJECT_PMP_DEFAULT_PATH
+		      ,B.SUBJECT_PRICE
+		      ,NVL(A.STOP,'N')               AS STOP
+		      ,TO_CHAR(SYSDATE , 'YYYY-MM-DD') SAMPLE_START_DT
+        	  ,TO_CHAR(SYSDATE + 10000, 'YYYY-MM-DD') SAMPLE_END_DT
+        	  ,B.SUBJECT_MONITORMODE
+              ,CURR_TIME, STUDY_TIME, UPD_DT, STUDY_DT
+		FROM   TB_MOVIE A, (
+		                        SELECT B.BRIDGE_LECCODE
+		                              ,A.SUBJECT_OPTION
+		                              ,A.SUBJECT_VOD_DEFAULT_PATH
+		                              ,A.SUBJECT_WIDE_DEFAULT_PATH
+		                              ,A.SUBJECT_PMP_DEFAULT_PATH
+		                              ,A.SUBJECT_PRICE
+		                              ,A.SUBJECT_MONITORMODE
+		                        FROM   TB_LEC_MST A, TB_LEC_BRIDGE B
+		                        WHERE  A.LECCODE = B.LECCODE
+		                        AND    A.LECCODE = #{LECCODE}
+		                    ) B, (SELECT MOVIE_NO, CURR_TIME, STUDY_TIME, UPD_DT, STUDY_DT
+                                 FROM TB_MYMOVIE
+                                 WHERE ORDERNO = #{ORDERNO}
+                                 AND LECTURE_NO = #{LECCODE}) C
+		WHERE  A.LECCODE = B.BRIDGE_LECCODE
+        AND A.MOVIE_NO = C.MOVIE_NO(+)
+		AND    A.LECCODE = #{BRIDGE_LECCODE}
+		ORDER BY A.MOVIE_ORDER1, A.MOVIE_ORDER2
+
+	</select>
+	<select id="lectureMobileList" parameterType="hashMap" resultType="hashMap">
+		SELECT B.SUBJECT_OPTION
+		      ,B.BRIDGE_LECCODE
+		      ,A.MOVIE_NAME
+		      ,A.MOVIE_DESC
+		      ,A.MOVIE_URL
+		      ,A.WIDE_URL
+		      ,A.MOVIE_FILENAME1
+		      ,A.MP4_URL
+		      ,A.MOVIE_FILENAME2
+		      ,A.MOVIE_FILENAME3
+		      ,A.MOVIE_FILENAME4
+		      ,A.MOVIE_DATA_FILE_YN
+		      ,A.MOVIE_DATA_FILENAME
+		      ,A.MOVIE_TIME
+		      ,A.MOVIE_ORDER1
+		      ,A.MOVIE_ORDER2
+		      ,A.MOVIE_FREE_FLAG
+		      ,A.PMP_URL
+		      ,A.PMP_FILENAME
+		      ,A.MOVIE_NO
+		      ,B.SUBJECT_VOD_DEFAULT_PATH
+		      ,B.SUBJECT_WIDE_DEFAULT_PATH
+		      ,B.SUBJECT_PMP_DEFAULT_PATH
+		      ,B.SUBJECT_PRICE
+		      ,NVL(A.STOP,'N')               AS STOP
+		      ,TO_CHAR(SYSDATE , 'YYYY-MM-DD') SAMPLE_START_DT
+        	  ,TO_CHAR(SYSDATE + 10000, 'YYYY-MM-DD') SAMPLE_END_DT
+		FROM   TB_MOVIE A, (
+		                        SELECT B.BRIDGE_LECCODE
+		                              ,A.SUBJECT_OPTION
+		                              ,A.SUBJECT_VOD_DEFAULT_PATH
+		                              ,A.SUBJECT_WIDE_DEFAULT_PATH
+		                              ,A.SUBJECT_PMP_DEFAULT_PATH
+		                              ,A.SUBJECT_PRICE
+		                        FROM   TB_LEC_MST A, TB_LEC_BRIDGE B
+		                        WHERE  A.LECCODE = B.LECCODE
+		                        AND    A.LECCODE = #{LECCODE}
+		                    ) B
+		WHERE  A.LECCODE = B.BRIDGE_LECCODE
+		AND    A.LECCODE = #{BRIDGE_LECCODE}
+	<!--	AND    A.STOP != 'Y'	-->
+		ORDER BY A.MOVIE_ORDER1, A.MOVIE_ORDER2
+
+	</select>
+
+	<select id="lectureOnDetailS" parameterType="hashMap" resultMap="lectureMap">
+        SELECT TBL.*
+        FROM (
+            SELECT A.LECCODE, A.CATEGORY_CD, A.LEARNING_CD, A.LEC_TYPE_CHOICE, A.SUBJECT_TITLE, A.SUBJECT_DESC, A.SUBJECT_MEMO,
+                 (SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE CODE = A.LEARNING_CD) LEARNING_NM, A.SUBJECT_OFF_OPEN_YEAR,  A.SUBJECT_OFF_OPEN_MONTH,
+                 TO_CHAR(TO_DATE(A.SUBJECT_OFF_OPEN_YEAR || A.SUBJECT_OFF_OPEN_MONTH || A.SUBJECT_OFF_OPEN_DAY, 'YYYYMMDD'),'YYYY-MM-DD') START_DATE,
+                 TO_CHAR(TO_DATE(A.SUBJECT_OFF_OPEN_YEAR || A.SUBJECT_OFF_OPEN_MONTH || A.SUBJECT_OFF_OPEN_DAY, 'YYYYMMDD') + A.SUBJECT_PERIOD,'YYYY-MM-DD') END_DATE,
+                 A.SUBJECT_PERIOD,
+                 A.LEC_SCHEDULE,
+                 A.LEC_COUNT,
+                 A.SUBJECT_PRICE,
+                 A.SUBJECT_DISCOUNT,
+                 A.SUBJECT_OPTION,
+                 A.SUBJECT_MOVIE,
+                 A.SUBJECT_PMP,
+                 A.SUBJECT_MOVIE_PMP,
+                 A.SUBJECT_MOVIE_MP4,
+                 A.SUBJECT_MOVIE_VOD_MP4,
+                 A.SUBJECT_PMP_DEFAULT_PATH
+           FROM  TB_LEC_MST A
+ 		) TBL WHERE TBL.LECCODE = #{LECCODE}
+	</select>
+
+	<insert id="insertPmpDownLog" parameterType="hashMap" flushCache="true">
+		INSERT INTO TB_PMP_DOWNLOG(
+			IDX,
+			USERID,
+			CONTENTID,
+			DOWNLOGINFO,
+			PMP_REGDATE
+			)
+		VALUES(
+			SEQ_TB_PMP_DOWNLOG_IDX.NEXTVAL,
+			#{REG_ID},
+			#{MOVIE_NO},
+			#{DOWNLOGINFO},
+			SYSDATE
+		)
+	</insert>
+
+	<select id="lectureDataMemoViewList" parameterType="hashMap" resultType="hashMap">
+		SELECT  NVL(BRIDGE_LECCODE,'')  AS RLECCODE
+		       ,MOVIE_ORDER1            AS MOVIE_ORDER1
+		       ,MOVIE_ORDER2            AS MOVIE_ORDER2
+		       ,NVL(POSITION,'')        AS POSITION
+		       ,NVL(MST_TEXT,'')        AS MST_TEXT
+		FROM    TB_LEC_MST_MEMO
+		WHERE   BRIDGE_LECCODE = #{BRIDGE_LECCODE}
+		ORDER BY MOVIE_ORDER1 , MOVIE_ORDER2 ASC , POSITION DESC
+	</select>
+
+	<select id="lectureDataMovieViewList" parameterType="hashMap" resultType="hashMap">
+		SELECT B.SUBJECT_OPTION
+		      ,B.BRIDGE_LECCODE
+		      ,A.MOVIE_NAME
+		      ,A.MOVIE_DESC
+		      ,A.MOVIE_URL
+		      ,A.WIDE_URL
+		      ,A.MOVIE_FILENAME1
+		      ,A.MP4_URL
+		      ,A.MOVIE_FILENAME2
+		      ,A.MOVIE_FILENAME3
+		      ,A.MOVIE_FILENAME4
+		      ,A.MOVIE_DATA_FILE_YN
+		      ,A.MOVIE_DATA_FILENAME
+		      ,A.MOVIE_TIME
+		      ,A.MOVIE_ORDER1
+		      ,A.MOVIE_ORDER2
+		      ,A.MOVIE_FREE_FLAG
+		      ,A.PMP_URL
+		      ,A.PMP_FILENAME
+		      ,B.SUBJECT_VOD_DEFAULT_PATH
+		      ,B.SUBJECT_WIDE_DEFAULT_PATH
+		      ,B.SUBJECT_PMP_DEFAULT_PATH
+		      ,B.SUBJECT_PRICE
+		      ,NVL(A.STOP,'N')               AS STOP
+		FROM   TB_MOVIE A, (
+		                        SELECT B.BRIDGE_LECCODE
+		                              ,A.SUBJECT_OPTION
+		                              ,A.SUBJECT_VOD_DEFAULT_PATH
+		                              ,A.SUBJECT_WIDE_DEFAULT_PATH
+		                              ,A.SUBJECT_PMP_DEFAULT_PATH
+		                              ,A.SUBJECT_PRICE
+		                        FROM   TB_LEC_MST A, TB_LEC_BRIDGE B
+		                        WHERE  A.LECCODE = B.LECCODE
+		                        AND    A.LECCODE = #{LECCODE}
+		                    ) B
+		WHERE  A.LECCODE = B.BRIDGE_LECCODE
+		AND    A.LECCODE = #{BRIDGE_LECCODE}
+		AND    A.STOP != 'Y'
+		ORDER BY A.MOVIE_ORDER1, A.MOVIE_ORDER2
+	</select>
+
+	<select id="lectureDataMovieList" parameterType="hashMap" resultType="hashMap">
+		SELECT B.SUBJECT_OPTION
+		      ,B.BRIDGE_LECCODE
+		      ,A.MOVIE_NO
+		      ,A.MOVIE_NAME
+		      ,A.MOVIE_DESC
+		      ,A.MOVIE_URL
+		      ,A.WIDE_URL
+		      ,A.MOVIE_FILENAME1
+		      ,A.MP4_URL
+		      ,A.MOVIE_FILENAME2
+		      ,A.MOVIE_FILENAME3
+		      ,A.MOVIE_FILENAME4
+		      ,A.MOVIE_DATA_FILE_YN
+		      ,A.MOVIE_DATA_FILENAME
+		      ,A.MOVIE_TIME
+		      ,A.MOVIE_ORDER1
+		      ,A.MOVIE_ORDER2
+		      ,A.MOVIE_FREE_FLAG
+		      ,A.PMP_URL
+		      ,A.PMP_FILENAME
+		      ,B.SUBJECT_VOD_DEFAULT_PATH
+		      ,B.SUBJECT_WIDE_DEFAULT_PATH
+		      ,B.SUBJECT_PMP_DEFAULT_PATH
+		      ,B.SUBJECT_PRICE
+		      ,NVL(A.STOP,'N')               AS STOP
+		FROM   TB_MOVIE A, (
+		                        SELECT B.BRIDGE_LECCODE
+		                              ,A.SUBJECT_OPTION
+		                              ,A.SUBJECT_VOD_DEFAULT_PATH
+		                              ,A.SUBJECT_WIDE_DEFAULT_PATH
+		                              ,A.SUBJECT_PMP_DEFAULT_PATH
+		                              ,A.SUBJECT_PRICE
+		                        FROM   TB_LEC_MST A, TB_LEC_BRIDGE B
+		                        WHERE  A.LECCODE = B.LECCODE
+		                        AND    A.LECCODE = #{LECCODE}
+		                    ) B
+		WHERE  A.LECCODE = B.BRIDGE_LECCODE
+		AND    A.LECCODE = #{BRIDGE_LECCODE}
+		ORDER BY A.MOVIE_ORDER1, A.MOVIE_ORDER2
+	</select>
+
+	<insert id="lectureMovieInsert" parameterType="hashMap" flushCache="true">
+		INSERT INTO TB_MOVIE(MOVIE_NO, LECCODE, MOVIE_NAME, MOVIE_DESC
+							, MOVIE_DATA_FILE_YN, MOVIE_DATA_FILENAME
+		                    , MOVIE_TIME, MOVIE_ORDER1, MOVIE_ORDER2, MOVIE_FREE_FLAG
+							, MOVIE_URL,WIDE_URL, MOVIE_FILENAME1, MOVIE_FILENAME4
+							, MP4_URL, MOVIE_FILENAME2  ,MOVIE_FILENAME3
+		                    , PMP_URL, PMP_FILENAME
+		                    , STOP)
+		VALUES((SELECT NVL(MAX(MOVIE_NO),0)+1 FROM TB_MOVIE), #{BRIDGE_LECCODE}, #{ADD_MOVIE_NAME}, #{ADD_MOVIE_DESC}
+				  , 'N', ''
+		          , #{ADD_MOVIE_TIME}, #{ADD_MOVIE_ORDER1}, #{ADD_MOVIE_ORDER2}, #{ADD_MOVIE_FREE_FLAG}
+				  , #{ADD_MOVIE_URL}, #{ADD_WIDE_URL}, #{ADD_MOVIE_FILENAME1}, #{ADD_MOVIE_FILENAME4}
+ 					<!-- <if test='ADD_MP4_URL == null or ADD_MP4_URL == ""'>
+ 						<if test='ADD_MOVIE_URL != null and ADD_MOVIE_URL != ""'>
+ 							, #{ADD_WIDE_URL}
+ 						</if>
+ 						 <if test='ADD_MOVIE_URL == null or ADD_MOVIE_URL == ""'>
+ 						 	, #{ADD_MP4_URL}
+ 						 </if>
+ 					</if> -->
+ 					<if test='ADD_MP4_URL == null or ADD_MP4_URL == ""'>
+ 						<if test='ADD_WIDE_URL != null and ADD_WIDE_URL != ""'>
+ 							, #{ADD_WIDE_URL}
+ 						</if>
+ 						 <if test='ADD_WIDE_URL == null or ADD_WIDE_URL == ""'>
+ 						 	, #{ADD_MP4_URL}
+ 						 </if>
+ 					</if>
+				    <if test='ADD_MP4_URL != null and ADD_MP4_URL != ""'>
+				  		, #{ADD_MP4_URL}
+				  	</if>
+ 					<if test='ADD_MOVIE_FILENAME2 == null or ADD_MOVIE_FILENAME2 == ""'>
+ 						<if test='ADD_MOVIE_FILENAME4 != null and ADD_MOVIE_FILENAME4 != ""'>
+ 							, REPLACE(#{ADD_MOVIE_FILENAME4}, 'wmv', 'mp4')
+ 						</if>
+ 						 <if test='ADD_MOVIE_FILENAME4== null or ADD_MOVIE_FILENAME4 == ""'>
+ 						 	, #{ADD_MOVIE_FILENAME2}
+ 						 </if>
+ 					</if>
+<!--  					<if test='ADD_MOVIE_FILENAME2 == null or ADD_MOVIE_FILENAME2 == ""'>
+ 						<if test='ADD_MOVIE_FILENAME1 != null and ADD_MOVIE_FILENAME1 != ""'>
+ 							, REPLACE(#{ADD_MOVIE_FILENAME1}, 'wmv', 'mp4')
+ 						</if>
+ 						 <if test='ADD_MOVIE_FILENAME1 == null or ADD_MOVIE_FILENAME1 == ""'>
+ 						 	, #{ADD_MOVIE_FILENAME2}
+ 						 </if>
+ 					</if> -->
+				    <if test='ADD_MOVIE_FILENAME2 != null and ADD_MOVIE_FILENAME2 != ""'>
+				  		, #{ADD_MOVIE_FILENAME2}
+				  	</if>
+
+ 					<if test='ADD_MOVIE_FILENAME3 == null or ADD_MOVIE_FILENAME3 == ""'>
+ 						<if test='ADD_MOVIE_FILENAME4 != null and ADD_MOVIE_FILENAME4 != ""'>
+ 							, REPLACE(#{ADD_MOVIE_FILENAME4}, 'wmv', 'mp4')
+ 						</if>
+ 						 <if test='ADD_MOVIE_FILENAME4 == null or ADD_MOVIE_FILENAME4 == ""'>
+ 						 	, #{ADD_MOVIE_FILENAME2}
+ 						 </if>
+ 					</if>
+				    <if test='ADD_MOVIE_FILENAME3 != null and ADD_MOVIE_FILENAME3 != ""'>
+				  		, #{ADD_MOVIE_FILENAME3}
+				  	</if>
+<!--  					<if test='ADD_MOVIE_FILENAME3 == null or ADD_MOVIE_FILENAME3 == ""'>
+ 						<if test='ADD_MOVIE_FILENAME1 != null and ADD_MOVIE_FILENAME1 != ""'>
+ 							, REPLACE(#{ADD_MOVIE_FILENAME1}, 'wmv', 'mp4')
+ 						</if>
+ 						 <if test='ADD_MOVIE_FILENAME1 == null or ADD_MOVIE_FILENAME1 == ""'>
+ 						 	, #{ADD_MOVIE_FILENAME2}
+ 						 </if>
+ 					</if>
+				     -->
+
+ 					<!-- <if test='ADD_PMP_URL == null or ADD_PMP_URL == ""'>
+ 						<if test='ADD_MOVIE_URL != null and ADD_MOVIE_URL != ""'>
+ 							, #{ADD_MOVIE_URL}
+ 						</if>
+ 						 <if test='ADD_MOVIE_URL == null or ADD_MOVIE_URL == ""'>
+ 						 	, #{ADD_PMP_URL}
+ 						 </if>
+ 					</if> -->
+ 					<if test='ADD_PMP_URL == null or ADD_PMP_URL == ""'>
+ 						<if test='ADD_WIDE_URL != null and ADD_WIDE_URL != ""'>
+ 							, #{ADD_WIDE_URL}
+ 						</if>
+ 						 <if test='ADD_WIDE_URL == null or ADD_WIDE_URL == ""'>
+ 						 	, #{ADD_PMP_URL}
+ 						 </if>
+ 					</if>
+				    <if test='ADD_PMP_URL != null and ADD_PMP_URL != ""'>
+				  		, #{ADD_PMP_URL}
+				  	</if>
+ 					<if test='ADD_PMP_FILENAME == null or ADD_PMP_FILENAME == ""'>
+ 						<if test='ADD_MOVIE_FILENAME4 != null and ADD_MOVIE_FILENAME4 != ""'>
+ 							, REPLACE(#{ADD_MOVIE_FILENAME4}, 'wmv', 'avi.willbes')
+ 						</if>
+ 						 <if test='ADD_MOVIE_FILENAME4 == null or ADD_MOVIE_FILENAME4 == ""'>
+ 						 	, #{ADD_PMP_FILENAME}
+ 						 </if>
+ 					</if>
+<!--  					<if test='ADD_PMP_FILENAME == null or ADD_PMP_FILENAME == ""'>
+ 						<if test='ADD_MOVIE_FILENAME1 != null and ADD_MOVIE_FILENAME1 != ""'>
+ 							, REPLACE(#{ADD_MOVIE_FILENAME1}, 'wmv', 'avi.willbes')
+ 						</if>
+ 						 <if test='ADD_MOVIE_FILENAME1 == null or ADD_MOVIE_FILENAME1 == ""'>
+ 						 	, #{ADD_PMP_FILENAME}
+ 						 </if>
+ 					</if> -->
+				    <if test='ADD_PMP_FILENAME != null and ADD_PMP_FILENAME != ""'>
+				  		, #{ADD_PMP_FILENAME}
+				  	</if>
+		          , 'Y')
+	</insert>
+
+	<delete id="lectureMovieDelete" parameterType="hashMap" flushCache="true">
+		DELETE FROM TB_MOVIE WHERE MOVIE_NO = #{MOVIE_NO}
+	</delete>
+
+	<update id="lectureMovieUpdate" parameterType="hashMap">
+		UPDATE TB_MOVIE SET
+			MOVIE_NAME = #{MOVIE_NAME}
+			, MOVIE_ORDER1 = #{MOVIE_ORDER1}
+			, MOVIE_ORDER2 = #{MOVIE_ORDER2}
+			, MOVIE_DESC = #{MOVIE_DESC}
+			, MOVIE_URL = #{MOVIE_URL}
+			, WIDE_URL = #{WIDE_URL}
+			, MOVIE_FILENAME1 = #{MOVIE_FILENAME1}
+			, MOVIE_FILENAME4 = #{MOVIE_FILENAME4}
+			<if test='MP4_URL == null or MP4_URL == ""'>
+				<if test='WIDE_URL != null and WIDE_URL != ""'>
+					, MP4_URL = #{WIDE_URL}
+				</if>
+				 <if test='WIDE_URL == null or WIDE_URL == ""'>
+				 	, MP4_URL = #{MP4_URL}
+				 </if>
+			</if>
+<!-- 			<if test='MP4_URL == null or MP4_URL == ""'>
+				<if test='MOVIE_URL != null and MOVIE_URL != ""'>
+					, MP4_URL = #{MOVIE_URL}
+				</if>
+				 <if test='MOVIE_URL == null or MOVIE_URL == ""'>
+				 	, MP4_URL = #{MP4_URL}
+				 </if>
+			</if> -->
+	    	<if test='MP4_URL != null and MP4_URL != ""'>
+	  			, MP4_URL = #{MP4_URL}
+	  		</if>
+			<if test='MOVIE_FILENAME2 == null or MOVIE_FILENAME2 == ""'>
+				<if test='MOVIE_FILENAME4 != null and MOVIE_FILENAME4 != ""'>
+					, MOVIE_FILENAME2 = REPLACE(#{MOVIE_FILENAME4}, 'wmv', 'mp4')
+				</if>
+				 <if test='MOVIE_FILENAME4 == null or MOVIE_FILENAME4 == ""'>
+				 	, MOVIE_FILENAME2 = #{MOVIE_FILENAME2}
+				 </if>
+			</if>
+<!-- 			<if test='MOVIE_FILENAME2 == null or MOVIE_FILENAME2 == ""'>
+				<if test='MOVIE_FILENAME1 != null and MOVIE_FILENAME1 != ""'>
+					, MOVIE_FILENAME2 = REPLACE(#{MOVIE_FILENAME1}, 'wmv', 'mp4')
+				</if>
+				 <if test='MOVIE_FILENAME1 == null or MOVIE_FILENAME1 == ""'>
+				 	, MOVIE_FILENAME2 = #{MOVIE_FILENAME2}
+				 </if>
+			</if> -->
+		    <if test='MOVIE_FILENAME2 != null and MOVIE_FILENAME2 != ""'>
+		  		, MOVIE_FILENAME2 = #{MOVIE_FILENAME2}
+		  	</if>
+			<if test='MOVIE_FILENAME3 == null or MOVIE_FILENAME3 == ""'>
+				<if test='MOVIE_FILENAME4 != null and MOVIE_FILENAME4 != ""'>
+					, MOVIE_FILENAME3 = REPLACE(#{MOVIE_FILENAME4}, 'wmv', 'mp4')
+				</if>
+				 <if test='MOVIE_FILENAME4 == null or MOVIE_FILENAME4 == ""'>
+				 	, MOVIE_FILENAME3 = #{MOVIE_FILENAME2}
+				 </if>
+			</if>
+<!-- 			<if test='MOVIE_FILENAME3 == null or MOVIE_FILENAME3 == ""'>
+				<if test='MOVIE_FILENAME1 != null and MOVIE_FILENAME1 != ""'>
+					, MOVIE_FILENAME3 = REPLACE(#{MOVIE_FILENAME1}, 'wmv', 'mp4')
+				</if>
+				 <if test='MOVIE_FILENAME1 == null or MOVIE_FILENAME1 == ""'>
+				 	, MOVIE_FILENAME3 = #{MOVIE_FILENAME2}
+				 </if>
+			</if> -->
+		  	<if test='MOVIE_FILENAME3 != null and MOVIE_FILENAME3 != ""'>
+		  		, MOVIE_FILENAME3 = #{MOVIE_FILENAME3}
+		  	</if>
+			<if test='PMP_URL == null or PMP_URL == ""'>
+				<if test='WIDE_URL != null and WIDE_URL != ""'>
+					, PMP_URL = #{WIDE_URL}
+				</if>
+				 <if test='WIDE_URL == null or WIDE_URL == ""'>
+				 	, PMP_URL = #{PMP_URL}
+				 </if>
+			</if>
+<!-- 			<if test='PMP_URL == null or PMP_URL == ""'>
+				<if test='MOVIE_URL != null and MOVIE_URL != ""'>
+					, PMP_URL = #{MOVIE_URL}
+				</if>
+				 <if test='MOVIE_URL == null or MOVIE_URL == ""'>
+				 	, PMP_URL = #{PMP_URL}
+				 </if>
+			</if> -->
+		    <if test='PMP_URL != null and PMP_URL != ""'>
+		  		, PMP_URL = #{PMP_URL}
+		  	</if>
+			<if test='PMP_FILENAME == null or PMP_FILENAME == ""'>
+				<if test='MOVIE_FILENAME4 != null and MOVIE_FILENAME4 != ""'>
+					<if test='MOVIE_FILENAME4_FLAG == "mp4" '>
+						, PMP_FILENAME = REPLACE(#{MOVIE_FILENAME4}, 'mp4', 'avi.willbes')
+					</if>
+					<if test='MOVIE_FILENAME4_FLAG != "mp4" '>
+						, PMP_FILENAME = REPLACE(#{MOVIE_FILENAME4}, 'wmv', 'avi.willbes')
+					</if>
+
+				</if>
+				 <if test='MOVIE_FILENAME4 == null or MOVIE_FILENAME4 == ""'>
+				 	, PMP_FILENAME = #{PMP_FILENAME}
+				 </if>
+			</if>
+<!-- 			<if test='PMP_FILENAME == null or PMP_FILENAME == ""'>
+				<if test='MOVIE_FILENAME1 != null and MOVIE_FILENAME1 != ""'>
+					<if test='MOVIE_FILENAME1_FLAG == "mp4" '>
+						, PMP_FILENAME = REPLACE(#{MOVIE_FILENAME1}, 'mp4', 'avi.willbes')
+					</if>
+					<if test='MOVIE_FILENAME1_FLAG != "mp4" '>
+						, PMP_FILENAME = REPLACE(#{MOVIE_FILENAME1}, 'wmv', 'avi.willbes')
+					</if>
+
+				</if>
+				 <if test='MOVIE_FILENAME1 == null or MOVIE_FILENAME1 == ""'>
+				 	, PMP_FILENAME = #{PMP_FILENAME}
+				 </if>
+			</if> -->
+		    <if test='PMP_FILENAME != null and PMP_FILENAME != ""'>
+		  		, PMP_FILENAME = #{PMP_FILENAME}
+		  	</if>
+			, MOVIE_TIME = #{MOVIE_TIME}
+			, MOVIE_FREE_FLAG = #{MOVIE_FREE_FLAG}
+			, STOP = #{STOP}
+			, MOVIE_DATA_FILE_YN = #{MOVIE_DATA_FILE_YN}
+			, MOVIE_DATA_FILENAME = #{MOVIE_DATA_FILENAME}
+		WHERE MOVIE_NO = #{MOVIE_NO}
+	</update>
+
+
+	<update id="lectureMovieFileDelete" parameterType="hashMap">
+		UPDATE TB_MOVIE SET
+			MOVIE_DATA_FILE_YN = 'N'
+			, MOVIE_DATA_FILENAME = ''
+		WHERE MOVIE_NO = #{FILE_DEL_NO}
+	</update>
+
+
+	<insert id="lectureMovieMemoInsert" parameterType="hashMap" flushCache="true">
+		INSERT INTO TB_LEC_MST_MEMO(BRIDGE_LECCODE, MOVIE_ORDER1, MOVIE_ORDER2, POSITION, MST_TEXT)
+		VALUES(#{BRIDGE_LECCODE}, #{MOVIE_ORDER1}, #{MOVIE_ORDER2}, #{POSITION}, #{MST_TEXT})
+	</insert>
+
+	<update id="lectureMovieMemoUpdate" parameterType="hashMap">
+		UPDATE TB_LEC_MST_MEMO SET
+			MST_TEXT = #{MST_TEXT}
+		WHERE BRIDGE_LECCODE = #{BRIDGE_LECCODE} AND MOVIE_ORDER1 = #{MOVIE_ORDERS1} AND MOVIE_ORDER2 = #{MOVIE_ORDERS2}
+	</update>
+
+	<delete id="lectureMovieMemoDelete" parameterType="hashMap" flushCache="true">
+		DELETE FROM TB_LEC_MST_MEMO WHERE BRIDGE_LECCODE = #{BRIDGE_LECCODE} AND MOVIE_ORDER1 = #{MOVIE_ORDER1} AND MOVIE_ORDER2 = #{MOVIE_ORDER2} AND POSITION = #{POSITION}
+	</delete>
+
+
+	<select id="playinfo" parameterType="hashMap" resultType="hashMap">
+		select subject_option,
+		a.leccode as rleccode, a.movie_no,a.movie_name,a.movie_desc,nvl(a.movie_url,'')as movie_url,nvl(a.wide_url,'')as wide_url,nvl(a.movie_filename1, '') as movie_filename1,nvl(a.movie_filename4, '') as movie_filename4,nvl(a.mp4_url,'')as mp4_url,nvl(a.movie_filename2, '') as movie_filename2,nvl(a.movie_filename3, '') as movie_filename3,a.movie_data_file_yn,a.movie_data_filename,a.movie_time,a.movie_order1,a.movie_order2,
+		a.movie_free_flag,nvl(a.pmp_url, '') as pmp_url,nvl(a.pmp_filename, '') as pmp_filename, nvl(b.subject_vod_default_path, '') as subject_vod_default_path, nvl(b.subject_wide_default_path, '') as subject_wide_default_path,nvl(b.subject_pmp_default_path, '') as subject_pmp_default_path, b.subject_price, nvl(a.stop,'N') as stop
+		from
+		TB_MOVIE a ,
+		(select cc.bridge_leccode,bb.subject_option,bb.subject_vod_default_path, bb.subject_wide_default_path,bb.subject_pmp_default_path,bb.subject_price from TB_LEC_MST bb
+		left outer join TB_LEC_BRIDGE cc on bb.leccode = cc.leccode and bb.leccode = #{LECCODE} and cc.BRIDGE_LECCODE = #{BRIDGE_LECCODE}) b
+		where
+		0=0
+		and a.leccode = b.bridge_leccode
+		and a.leccode = #{BRIDGE_LECCODE}
+		and a.stop <![CDATA[ <> ]]> 'Y'
+		and a.movie_no = #{MOVIE_NO}
+		order by a.movie_order1 , a.movie_order2 asc
+	</select>
+
+	<select id="getCbMovie4_free_admin" parameterType="hashMap" resultType="hashMap">
+		SELECT * FROM 	(
+			SELECT A.*, ROWNUM rnum
+		  	FROM (
+				select  b.subject_option,
+				a.leccode as rleccode, a.movie_no,a.movie_name,a.movie_desc,nvl(a.movie_url, '')as movie_url,nvl(a.movie_filename1, '') as movie_filename1,nvl(a.wide_url, '')as wide_url,nvl(a.movie_filename4, '') as movie_filename4,nvl(a.mp4_url, '') as mp4_url,nvl(a.movie_filename2, '') as movie_filename2,nvl(a.movie_filename3, '') as movie_filename3, a.movie_data_file_yn,a.movie_data_filename,a.movie_time,a.movie_order1,a.movie_order2,
+				a.movie_free_flag,nvl(a.pmp_url, '') as pmp_url,nvl(a.pmp_filename, '') as pmp_filename, nvl(b.subject_vod_default_path, '') as subject_vod_default_path, nvl(b.subject_wide_default_path, '') as subject_wide_default_path,nvl(b.subject_pmp_default_path, '') as subject_pmp_default_path, b.subject_price
+				from
+				TB_MOVIE a ,
+				(select cc.bridge_leccode,bb.subject_option,bb.subject_vod_default_path,bb.subject_wide_default_path,bb.subject_pmp_default_path,bb.subject_price from TB_LEC_MST bb
+				left outer join TB_LEC_BRIDGE cc on bb.leccode = cc.leccode and bb.leccode = #{LECCODE} and cc.BRIDGE_LECCODE = #{BRIDGE_LECCODE}) b
+				where 0=0
+				and a.leccode = b.bridge_leccode
+				and a.leccode = #{BRIDGE_LECCODE}
+				and a.stop <![CDATA[ <> ]]> 'Y'
+				order by a.movie_order1 , a.movie_order2 asc
+				) A
+               	WHERE rownum &lt;= #{endNo}
+			)
+		WHERE rnum &gt; #{startNo}
+	</select>
+
+	<select id="getCbMovie4_free_admin_count" parameterType="hashMap" resultType="int">
+		select  count(b.subject_option)
+		from
+		TB_MOVIE a ,
+		(select cc.bridge_leccode,bb.subject_option,bb.subject_vod_default_path,bb.subject_wide_default_path,bb.subject_pmp_default_path,bb.subject_price from TB_LEC_MST bb
+		left outer join TB_LEC_BRIDGE cc on bb.leccode = cc.leccode and bb.leccode = #{LECCODE} and cc.BRIDGE_LECCODE = #{BRIDGE_LECCODE}) b
+		where 0=0
+		and a.leccode = b.bridge_leccode
+		and a.leccode = #{BRIDGE_LECCODE}
+		and a.stop <![CDATA[ <> ]]> 'Y'
+		order by a.movie_order1 , a.movie_order2 asc
+	</select>
+
+	<select id="BridgeLeccode" parameterType="hashMap" resultType="hashMap">
+		SELECT LECCODE FROM TB_LEC_BRIDGE
+		WHERE BRIDGE_LECCODE = #{RCODE}
+	</select>
+
+	<update id="Modify_Lecture_On_Off" parameterType="hashMap">
+		UPDATE TB_LEC_MST SET SUBJECT_ISUSE = #{FLAG}
+		WHERE LECCODE = #{GET_CODE}
+	</update>
+
+	<select id="lectureWMV" parameterType="hashMap" resultType="hashMap">
+		SELECT WMV_PMP FROM TB_ORDER_MGNT_NO
+		WHERE ORDERNO = #{ORDERNO}
+	</select>
+
+	<select id="lectureDown_Count" parameterType="hashMap" resultType="hashMap">
+		SELECT DISTINCT A.CONTENTID FROM TB_PMP_DOWNLOG A, TB_MOVIE B
+		WHERE A.CONTENTID = B.MOVIE_NO
+		AND A.USERID = #{ORDERID}
+		AND B.LECCODE = #{BRIDGE_LECCODE}
+		AND A.DOWNLOGINFO LIKE '%'||#{ORDERNO}||'-'||#{LECCODE}||'%'
+	</select>
+	
+	<!--  기존 무료강좌를 리뉴얼 되면서 무료강좌로 넣기 위함 -->
+	<select id="oldFreeToNewFree" parameterType="hashMap" resultType="hashMap">
+	    SELECT TBL.* FROM (
+            SELECT A.LECCODE, A.CATEGORY_CD, A.LEC_TYPE_CHOICE, A.SUBJECT_PRICE,A.SUBJECT_TITLE,
+                  (SELECT SUBJECT_NM FROM TB_SUBJECT_INFO WHERE SUBJECT_CD = A.SUBJECT_SJT_CD) AS SUBJECT_NM
+            FROM  TB_LEC_MST A INNER JOIN TB_LEC_BRIDGE B
+            ON A.LECCODE = B.LECCODE AND A.SUBJECT_ISUSE = 'Y'
+            LEFT OUTER JOIN
+            (SELECT MA.MOVIE_FREE_FLAG, MA.MOVIE_NO, MA.LECCODE, MOVIE_URL, WIDE_URL, MP4_URL, MOVIE_FILENAME1, MOVIE_FILENAME2, MOVIE_FILENAME3, MOVIE_FILENAME4
+            FROM TB_MOVIE MA INNER JOIN (
+                SELECT LECCODE, MIN(MOVIE_NO) MOVIE_NO FROM TB_MOVIE
+                WHERE  MOVIE_FREE_FLAG = 'Y'
+                GROUP BY LECCODE) MB
+                ON MA.MOVIE_NO = MB.MOVIE_NO
+            ) MC
+            ON B.BRIDGE_LECCODE = MC.LECCODE
+        ) TBL WHERE 1 = 1
+        AND TBL.LEC_TYPE_CHOICE = 'D'
+       AND TBL.SUBJECT_PRICE = 0
+       AND TBL.SUBJECT_TITLE NOT LIKE '%보강%'
+       AND TBL.SUBJECT_TITLE NOT LIKE '%설명회%'
+       ORDER BY TBL.CATEGORY_CD, TBL.SUBJECT_NM asc
+	</select>
+	
+		<!--  기존 무료강좌를 리뉴얼 되면서 무료강좌로 넣기 위함 -->
+	<select id="oldBogangFreeToNewBogangFree" parameterType="hashMap" resultType="hashMap">
+	    SELECT TBL.* FROM (
+            SELECT A.LECCODE, A.CATEGORY_CD, A.LEC_TYPE_CHOICE, A.SUBJECT_PRICE,A.SUBJECT_TITLE,
+                  (SELECT SUBJECT_NM FROM TB_SUBJECT_INFO WHERE SUBJECT_CD = A.SUBJECT_SJT_CD) AS SUBJECT_NM
+            FROM  TB_LEC_MST A INNER JOIN TB_LEC_BRIDGE B
+            ON A.LECCODE = B.LECCODE AND A.SUBJECT_ISUSE = 'Y'
+            LEFT OUTER JOIN
+            (SELECT MA.MOVIE_FREE_FLAG, MA.MOVIE_NO, MA.LECCODE, MOVIE_URL, WIDE_URL, MP4_URL, MOVIE_FILENAME1, MOVIE_FILENAME2, MOVIE_FILENAME3, MOVIE_FILENAME4
+            FROM TB_MOVIE MA INNER JOIN (
+                SELECT LECCODE, MIN(MOVIE_NO) MOVIE_NO FROM TB_MOVIE
+                WHERE  MOVIE_FREE_FLAG = 'Y'
+                GROUP BY LECCODE) MB
+                ON MA.MOVIE_NO = MB.MOVIE_NO
+            ) MC
+            ON B.BRIDGE_LECCODE = MC.LECCODE
+        ) TBL WHERE 1 = 1
+        AND TBL.LEC_TYPE_CHOICE = 'D'
+       AND TBL.SUBJECT_PRICE = 0
+       AND TBL.SUBJECT_TITLE  LIKE '%보강%'
+       AND TBL.SUBJECT_TITLE NOT LIKE '%설명회%'
+       ORDER BY TBL.CATEGORY_CD, TBL.SUBJECT_NM asc
+	</select>
+	
+	<insert id="oldFreeToNewFreeInsert" parameterType="hashMap" flushCache="true">
+		INSERT INTO TB_LEC_MST ( CATEGORY_CD,
+		       COUPON_NAME,
+		       FIVE_SUBJECT,
+		       FREE_TAB,
+		       GIFT_COUPON_CCODE,
+		       GIFT_FLAG,
+		       GIFT_LECCODE,
+		       GIFT_NAME,
+		       ICON_GUBUN,
+		       LECCODE,
+		       LEC_COUNT,
+		       LEC_GUBUN,
+		       LEC_SCHEDULE,
+		       LEC_TYPE_CHOICE,
+		       MOV_ING,
+		       MO_COUPON_CCODE,
+		       MO_COUPON_NAME,
+		       MUST_PRF_IMG,
+		       PLAN,
+		       REC_GUBUN,
+		       REG_DT,
+		       REG_ID,
+		       RE_COURSE,
+		       SEL_PRF_IMG,
+		       SEQ,
+		       SUBJECT_DESC,
+		       SUBJECT_DISCOUNT,
+		       SUBJECT_EVENT_IMAGE,
+		       SUBJECT_ISUSE,
+		       SUBJECT_JANG,
+		       SUBJECT_KEYWORD,
+		       SUBJECT_MEMO,
+		       SUBJECT_MONITORMODE,
+		       SUBJECT_MOVIE,
+		       SUBJECT_MOVIE_MP4,
+		       SUBJECT_MOVIE_PMP,
+		       SUBJECT_MOVIE_VOD_MP4,
+		       SUBJECT_MP4_DEFAULT_PATH,
+		       SUBJECT_OFF_OPEN_DAY,
+		       SUBJECT_OFF_OPEN_MONTH,
+		       SUBJECT_OFF_OPEN_YEAR,
+		       SUBJECT_OPTION,
+		       SUBJECT_OUTSIDE,
+		       SUBJECT_PASS,
+		       SUBJECT_PERIOD,
+		       SUBJECT_PMP,
+		       SUBJECT_PMP_DEFAULT_PATH,
+		       SUBJECT_POINT,
+		       SUBJECT_PRICE,
+		       SUBJECT_SJT_CD,
+		       SUBJECT_SUMNAIL,
+		       SUBJECT_TEACHER,
+		       SUBJECT_TEACHER_PAYMENT,
+		       SUBJECT_TITLE,
+		       SUBJECT_VOD_DEFAULT_PATH,
+		       SUBJECT_WIDE_DEFAULT_PATH,
+		       TEACHERNO,
+		       THREE_SUBJECT,
+		       TWO_SUBJECT,
+		       UPD_DT,
+		       UPD_ID)
+			SELECT CATEGORY_CD,
+		       COUPON_NAME,
+		       FIVE_SUBJECT,
+		       'TAB_001' FREE_TAB,
+		       GIFT_COUPON_CCODE,
+		       GIFT_FLAG,
+		       GIFT_LECCODE,
+		       GIFT_NAME,
+		       ICON_GUBUN,
+		       #{LECCODE},
+		       LEC_COUNT,
+		       LEC_GUBUN,
+		       LEC_SCHEDULE,
+		       'F' LEC_TYPE_CHOICE,
+		       MOV_ING,
+		       MO_COUPON_CCODE,
+		       MO_COUPON_NAME,
+		       MUST_PRF_IMG,
+		       PLAN,
+		       REC_GUBUN,
+		       REG_DT,
+		       REG_ID,
+		       RE_COURSE,
+		       SEL_PRF_IMG,
+		       SEQ,
+		       SUBJECT_DESC,
+		       SUBJECT_DISCOUNT,
+		       SUBJECT_EVENT_IMAGE,
+		       SUBJECT_ISUSE,
+		       SUBJECT_JANG,
+		       SUBJECT_KEYWORD,
+		       SUBJECT_MEMO,
+		       SUBJECT_MONITORMODE,
+		       SUBJECT_MOVIE,
+		       SUBJECT_MOVIE_MP4,
+		       SUBJECT_MOVIE_PMP,
+		       SUBJECT_MOVIE_VOD_MP4,
+		       SUBJECT_MP4_DEFAULT_PATH,
+		       SUBJECT_OFF_OPEN_DAY,
+		       SUBJECT_OFF_OPEN_MONTH,
+		       SUBJECT_OFF_OPEN_YEAR,
+		       SUBJECT_OPTION,
+		       SUBJECT_OUTSIDE,
+		       SUBJECT_PASS,
+		       SUBJECT_PERIOD,
+		       SUBJECT_PMP,
+		       SUBJECT_PMP_DEFAULT_PATH,
+		       SUBJECT_POINT,
+		       SUBJECT_PRICE,
+		       SUBJECT_SJT_CD,
+		       SUBJECT_SUMNAIL,
+		       SUBJECT_TEACHER,
+		       SUBJECT_TEACHER_PAYMENT,
+		       SUBJECT_TITLE,
+		       SUBJECT_VOD_DEFAULT_PATH,
+		       SUBJECT_WIDE_DEFAULT_PATH,
+		       TEACHERNO,
+		       THREE_SUBJECT,
+		       TWO_SUBJECT,
+		       UPD_DT,
+		       UPD_ID
+		  FROM TB_LEC_MST WHERE LECCODE = #{SHEARH_LECCODE}
+	</insert>
+	<insert id="oldBogangFreeToNewFreeBogangInsert" parameterType="hashMap" flushCache="true">
+		INSERT INTO TB_LEC_MST ( CATEGORY_CD,
+		       COUPON_NAME,
+		       FIVE_SUBJECT,
+		       FREE_TAB,
+		       GIFT_COUPON_CCODE,
+		       GIFT_FLAG,
+		       GIFT_LECCODE,
+		       GIFT_NAME,
+		       ICON_GUBUN,
+		       LECCODE,
+		       LEC_COUNT,
+		       LEC_GUBUN,
+		       LEC_SCHEDULE,
+		       LEC_TYPE_CHOICE,
+		       MOV_ING,
+		       MO_COUPON_CCODE,
+		       MO_COUPON_NAME,
+		       MUST_PRF_IMG,
+		       PLAN,
+		       REC_GUBUN,
+		       REG_DT,
+		       REG_ID,
+		       RE_COURSE,
+		       SEL_PRF_IMG,
+		       SEQ,
+		       SUBJECT_DESC,
+		       SUBJECT_DISCOUNT,
+		       SUBJECT_EVENT_IMAGE,
+		       SUBJECT_ISUSE,
+		       SUBJECT_JANG,
+		       SUBJECT_KEYWORD,
+		       SUBJECT_MEMO,
+		       SUBJECT_MONITORMODE,
+		       SUBJECT_MOVIE,
+		       SUBJECT_MOVIE_MP4,
+		       SUBJECT_MOVIE_PMP,
+		       SUBJECT_MOVIE_VOD_MP4,
+		       SUBJECT_MP4_DEFAULT_PATH,
+		       SUBJECT_OFF_OPEN_DAY,
+		       SUBJECT_OFF_OPEN_MONTH,
+		       SUBJECT_OFF_OPEN_YEAR,
+		       SUBJECT_OPTION,
+		       SUBJECT_OUTSIDE,
+		       SUBJECT_PASS,
+		       SUBJECT_PERIOD,
+		       SUBJECT_PMP,
+		       SUBJECT_PMP_DEFAULT_PATH,
+		       SUBJECT_POINT,
+		       SUBJECT_PRICE,
+		       SUBJECT_SJT_CD,
+		       SUBJECT_SUMNAIL,
+		       SUBJECT_TEACHER,
+		       SUBJECT_TEACHER_PAYMENT,
+		       SUBJECT_TITLE,
+		       SUBJECT_VOD_DEFAULT_PATH,
+		       SUBJECT_WIDE_DEFAULT_PATH,
+		       TEACHERNO,
+		       THREE_SUBJECT,
+		       TWO_SUBJECT,
+		       UPD_DT,
+		       UPD_ID)
+			SELECT CATEGORY_CD,
+		       COUPON_NAME,
+		       FIVE_SUBJECT,
+		       'TAB_007' FREE_TAB,
+		       GIFT_COUPON_CCODE,
+		       GIFT_FLAG,
+		       GIFT_LECCODE,
+		       GIFT_NAME,
+		       ICON_GUBUN,
+		       #{LECCODE},
+		       LEC_COUNT,
+		       LEC_GUBUN,
+		       LEC_SCHEDULE,
+		       'F' LEC_TYPE_CHOICE,
+		       MOV_ING,
+		       MO_COUPON_CCODE,
+		       MO_COUPON_NAME,
+		       MUST_PRF_IMG,
+		       PLAN,
+		       REC_GUBUN,
+		       REG_DT,
+		       REG_ID,
+		       RE_COURSE,
+		       SEL_PRF_IMG,
+		       SEQ,
+		       SUBJECT_DESC,
+		       SUBJECT_DISCOUNT,
+		       SUBJECT_EVENT_IMAGE,
+		       SUBJECT_ISUSE,
+		       SUBJECT_JANG,
+		       SUBJECT_KEYWORD,
+		       SUBJECT_MEMO,
+		       SUBJECT_MONITORMODE,
+		       SUBJECT_MOVIE,
+		       SUBJECT_MOVIE_MP4,
+		       SUBJECT_MOVIE_PMP,
+		       SUBJECT_MOVIE_VOD_MP4,
+		       SUBJECT_MP4_DEFAULT_PATH,
+		       SUBJECT_OFF_OPEN_DAY,
+		       SUBJECT_OFF_OPEN_MONTH,
+		       SUBJECT_OFF_OPEN_YEAR,
+		       SUBJECT_OPTION,
+		       SUBJECT_OUTSIDE,
+		       SUBJECT_PASS,
+		       SUBJECT_PERIOD,
+		       SUBJECT_PMP,
+		       SUBJECT_PMP_DEFAULT_PATH,
+		       SUBJECT_POINT,
+		       SUBJECT_PRICE,
+		       SUBJECT_SJT_CD,
+		       SUBJECT_SUMNAIL,
+		       SUBJECT_TEACHER,
+		       SUBJECT_TEACHER_PAYMENT,
+		       SUBJECT_TITLE,
+		       SUBJECT_VOD_DEFAULT_PATH,
+		       SUBJECT_WIDE_DEFAULT_PATH,
+		       TEACHERNO,
+		       THREE_SUBJECT,
+		       TWO_SUBJECT,
+		       UPD_DT,
+		       UPD_ID
+		  FROM TB_LEC_MST WHERE LECCODE = #{SHEARH_LECCODE}
+	</insert>
+	<insert id="oldTbmovieToNewTbmovieInsert" parameterType="hashMap" flushCache="true">
+		INSERT INTO TB_MOVIE ( LECCODE,
+		       MOVIE_DATA_FILENAME,
+		       MOVIE_DATA_FILE_YN,
+		       MOVIE_DESC,
+		       MOVIE_FILENAME1,
+		       MOVIE_FILENAME2,
+		       MOVIE_FILENAME3,
+		       MOVIE_FILENAME4,
+		       MOVIE_FREE_FLAG,
+		       MOVIE_NAME,
+		       MOVIE_NO,
+		       MOVIE_ORDER1,
+		       MOVIE_ORDER2,
+		       MOVIE_TIME,
+		       MOVIE_URL,
+		       MP4_URL,
+		       PMP_FILENAME,
+		       PMP_URL,
+		       STOP,
+		       WIDE_URL)
+			SELECT #{BRIDGE_LECCODE},
+			       MOVIE_DATA_FILENAME,
+			       MOVIE_DATA_FILE_YN,
+			       MOVIE_DESC,
+			       MOVIE_FILENAME1,
+			       MOVIE_FILENAME2,
+			       MOVIE_FILENAME3,
+			       MOVIE_FILENAME4,
+			       MOVIE_FREE_FLAG,
+			       MOVIE_NAME,
+			       MOVIE_NO,
+			       MOVIE_ORDER1,
+			       MOVIE_ORDER2,
+			       MOVIE_TIME,
+			       MOVIE_URL,
+			       MP4_URL,
+			       PMP_FILENAME,
+			       PMP_URL,
+			       STOP,
+			       WIDE_URL
+		  FROM TB_MOVIE WHERE LECCODE = #{RLECCODE}
+	</insert>
+	
+	<select id="getSubject_monitormode" parameterType="hashMap" resultType="String">
+		SELECT NVL(SUBJECT_MONITORMODE, 'NOMAL')  SUBJECT_MONITORMODE
+        FROM TB_LEC_MST
+		WHERE LECCODE = #{LECCODE}
+	</select>
+	
+	<select id="getRleccode" parameterType="hashMap" resultType="String">
+		SELECT DISTINCT MAX(BRIDGE_LECCODE) BRIDGE_LECCODE  from tb_lec_bridge where leccode = #{SHEARH_LECCODE}
+	</select>
+	
+	<select id="YearIngList" parameterType="hashMap" resultType="hashMap">
+		SELECT TY.*, A1.* FROM TB_ORDER_YEARPACKAGE TY
+            INNER JOIN (
+          SELECT T1.MST_LECCODE,
+                 T1.SORT,
+                 T1.GUBUN,
+                 TBL.*,
+                  TBL.LEARNING_CD AS LEARNING_CD2,
+                 (SELECT NAME FROM TB_CATEGORY_INFO  WHERE CODE = TBL.CATEGORY_CD)  AS CATEGORY_NM,
+                 (SELECT NAME FROM TB_LEARNING_FORM_INFO  WHERE CODE = TBL.LEARNING_CD)  AS LEARNING_NM,
+                 (SELECT SUBJECT_NM  FROM TB_SUBJECT_INFO WHERE SUBJECT_CD = TBL.SUBJECT_SJT_CD) AS SUBJECT_NM,
+                 (SELECT USER_NM  FROM TB_MA_MEMBER WHERE USER_ID = TBL.SUBJECT_TEACHER) AS SUBJECT_TEACHER_NM
+            FROM TB_LEC_JONG T1
+                 INNER JOIN TB_LEC_MST TBL ON T1.MST_LECCODE = TBL.LECCODE
+           WHERE T1.LECCODE IN (SELECT DISTINCT  PACKAGE_NO FROM TB_ORDER_YEARPACKAGE WHERE ORDERNO = #{ORDERNO} AND ROWNUM =  1) AND TBL.LEC_TYPE_CHOICE = 'D'
+        ORDER BY T1.SORT ASC
+        ) A1 ON TY.SUBJECT_TEACHER = A1.SUBJECT_TEACHER 
+        WHERE  TY.ORDERNO = #{ORDERNO}	
+	</select>
+	
+	<select id="MyYearIngList" parameterType="hashMap" resultType="hashMap">
+			SELECT A.*, ROWNUM rnum
+              FROM (
+                select distinct bb.PLUS_BUY, aa.USER_ID, aa.ORDERNO, aa.WMV_PMP, bb.PARENT_ORDERNO,
+                CASE aa.WMV_PMP
+                  WHEN 'VOD' THEN SUBJECT_MOVIE
+                  WHEN 'PMP' THEN SUBJECT_PMP
+                  WHEN 'VOD+PMP' THEN SUBJECT_MOVIE_PMP
+                  WHEN 'MP4' THEN SUBJECT_MOVIE_MP4
+                  WHEN 'VOD+MP4' THEN SUBJECT_MOVIE_VOD_MP4
+               END
+                  AS PRICE
+              , aa.PRICE AS REAL_MGNT_PRICE
+                  , bb.LECTURE_NO
+                  , RANK() OVER(PARTITION BY bb.LECTURE_NO ORDER BY bb.REG_DT DESC) AS RK
+                  ,bb.REG_DT, cc.LEC_TYPE_CHOICE, CC.RE_COURSE, CC.SUBJECT_JANG ,CC.SUBJECT_SJT_CD
+                  , (SELECT SUBJECT_NM FROM TB_SUBJECT_INFO WHERE SUBJECT_CD = CC.SUBJECT_SJT_CD) AS SUBJECT_NM
+                  ,TAV.REG_DT TAB_REG_DT
+                  , (SELECT CODE_NM FROM TB_BA_CONFIG_CD WHERE SYS_CD ='PAYMENT_CODE'  AND    CODE_VAL=TAV.PAYCODE ) PAYCODENM    
+                  , cc.LECCODE, cc.CATEGORY_CD
+                  , (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = cc.CATEGORY_CD) AS CATEGORY_NM
+                  , cc.LEARNING_CD
+                  , (SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE CODE = cc.LEARNING_CD) AS LEARNING_NM
+                  , bb.STUDY_PERCENT
+                    , NVL(dd.MYLECTURE_PAUSED_COUNT, 0) as MYLECTURE_PAUSE_COUNT
+                    , NVL(dd.MYLECTURE_PAUSED_PERIOD, 0) as MYLECTURE_PAUSE_PERIOD
+                    , NVL(TO_CHAR(dd.MYLECTURE_PAUSED_DATE1,'YYYYMMDD'), '') as MYLECTURE_PAUSE_DATE1
+                    , NVL(dd.MYLECTURE_PAUSED_PERIOD1, 0) as MYLECTURE_PAUSE_PERIOD1
+                    , NVL(TO_CHAR(dd.MYLECTURE_PAUSED_DATE2,'YYYYMMDD'), '') as MYLECTURE_PAUSE_DATE2
+                    , NVL(dd.MYLECTURE_PAUSED_PERIOD2, 0) as MYLECTURE_PAUSE_PERIOD2
+                    , NVL(TO_CHAR(dd.MYLECTURE_PAUSED_DATE3,'YYYYMMDD'), '') as MYLECTURE_PAUSE_DATE3
+                    , NVL(dd.MYLECTURE_PAUSED_PERIOD3, 0) as MYLECTURE_PAUSE_PERIOD3
+                    , bb.START_DATE, bb.END_DATE, bb.PERIOD
+                    
+                  , (SELECT SUBJECT_PERIOD FROM TB_LEC_MST WHERE LECCODE = bb.PACKAGE_NO) as SUBJECT_PERIOD
+                  , cc.SUBJECT_TITLE, cc.SUBJECT_TEACHER
+                  , (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = cc.SUBJECT_TEACHER) AS SUBJECT_TEACHER_NM
+                  , TO_DATE(TO_CHAR(NVL(bb.END_DATE, SYSDATE),'YYYYMMDD'),'YYYYMMDD') - TO_DATE(TO_CHAR(SYSDATE,'YYYYMMDD'),'YYYYMMDD') + 1 AS DIFFDATE_COUNT
+                  , bb.PACKAGE_NO
+                  , TO_CHAR((dd.mylecture_paused_date1 + (dd.mylecture_paused_period1-1)),'YYYYMMDD') as MYLECTURE_PAUSE_DATE1_2
+                  , TO_CHAR((dd.mylecture_paused_date2 + (dd.mylecture_paused_period2-1)),'YYYYMMDD') as MYLECTURE_PAUSE_DATE2_2
+                  , TO_CHAR((dd.mylecture_paused_date3 + (dd.mylecture_paused_period3-1)),'YYYYMMDD') as MYLECTURE_PAUSE_DATE3_2
+                  , (bb.start_date + (bb.period-1)) as mylecture_end_date2
+                  , TLB.BRIDGE_LECCODE, TO_CHAR(SYSDATE,'YYYYMMDD') AS CURDATE
+                  , CC.SUBJECT_ISUSE
+                  , CC.LEC_SCHEDULE
+                  ,cc.MOV_ING
+                  ,cc.LEC_COUNT
+                FROM
+                  (select
+                    a.user_id, a.orderNo, b.mgntNo as package_no, b.wmv_pmp, b.price, a.off_line
+                  from tb_orders a,
+                (SELECT tomnA.* FROM TB_ORDER_MGNT_NO tomnA
+                    INNER JOIN (SELECT ORDERNO, MGNTNO     FROM TB_ORDER_MGNT_NO where statuscode = 'DLV105' GROUP BY ORDERNO, MGNTNO) tomnB
+                    ON tomnA.ORDERNO = tomnB.ORDERNO AND tomnA.MGNTNO = tomnB.MGNTNO) b
+                  where a.orderNo = b.orderNo
+                  and b.mgntNo NOT LIKE 'L%'
+                  and (b.statusCode = 'DLV105' or b.statusCode = 'DLV110' or b.statusCode = 'DLV120' or b.statusCode = 'DLV130')
+                  and a.off_line <![CDATA[ <> ]]> 1) aa
+                JOIN TB_MYLECTURE bb ON AA.ORDERNO = bb.ORDERNO AND aa.PACKAGE_NO = bb.PACKAGE_NO
+                JOIN TB_LEC_MST cc ON bb.LECTURE_NO = cc.LECCODE
+                LEFT JOIN TB_MYLECTURE_PAUSE dd ON dd.USER_ID = bb.USERID AND aa.ORDERNO = dd.ORDERNO
+                  AND aa.PACKAGE_NO = dd.PACKAGE_NO AND bb.LECTURE_NO = dd.LECTURE_NO
+                --LEFT JOIN TB_DANINTCOUNT ee ON aa.ORDERNO = ee.ORDERNO
+                LEFT JOIN TB_LEC_BRIDGE TLB ON cc.LECCODE = TLB.LECCODE
+                LEFT JOIN TB_APPROVALS TAV ON aa.ORDERNO = TAV.ORDERNO
+                WHERE 1 = 1
+                AND TO_CHAR(bb.START_DATE,'YYYYMMDD') <![CDATA[ <= ]]> TO_CHAR(SYSDATE,'YYYYMMDD') AND TO_CHAR(bb.END_DATE,'YYYYMMDD') <![CDATA[ >= ]]> TO_CHAR(SYSDATE,'YYYYMMDD')
+                AND aa.ORDERNO = #{ORDERNO} 
+                AND bb.USERID = #{USER_ID} AND PLAYYN = 'Y' 
+                AND SUBSTR(bb.PACKAGE_NO, 0, 1) <![CDATA[ = ]]> 'Y'
+                
+                ORDER BY bb.PACKAGE_NO DESC
+                ) A
+
+                ORDER BY A.REG_DT DESC ,LECCODE ASC
+	</select>
+	
+	<select id="bookView" parameterType="hashMap" resultMap="lectureMap">
+	        SELECT AA.*
+	            , TO_CHAR( (CASE WHEN AA.BOOK_STOCK <![CDATA[ < ]]> 0 THEN 0 WHEN AA.BOOK_STOCK <![CDATA[ >= ]]> 0 THEN BOOK_STOCK END)*3, '0000') B_STOCK
+	            , NVL(AA.MAIN_VIEW,'N') AS MAIN_VIEW, NVL(AA.NEW_BOOK,'N') AS NEW_BOOK
+	            , DECODE(AA.COVER_TYPE,'A','주문가능','N','신규','O','절판','S','품절',' ') COVER_TYPENM
+	            , (SELECT NAME FROM TB_CATEGORY_INFO WHERE ISUSE = 'Y' AND CODE = AA.CATEGORY_CD) CATEGORY_NM
+	        FROM TB_CA_BOOK AA
+	        WHERE AA.RSC_ID = #{RSC_ID}
+    </select>
+
+</mapper>

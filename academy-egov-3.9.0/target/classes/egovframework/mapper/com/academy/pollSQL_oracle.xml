@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="poll">
+
+	<select id="pollList" parameterType="hashMap" resultType="hashMap" >
+		SELECT * FROM  (
+				SELECT A.*, ROWNUM RNUM 
+                FROM (
+						SELECT POLL_ID, START_DT, END_DT, ISUSE, TITLE, IS_SHOW,
+								(SELECT SUM(CNT) FROM WWW_POLL_ITEM WHERE POLL_ID = WWW_POLL.POLL_ID GROUP BY POLL_ID) CNT
+                                FROM WWW_POLL
+		                        WHERE 1=1
+		                        
+		                        <if test='GOSI_CD == "GOSI_MST"'>
+		                        	AND POLL_ID BETWEEN '1' AND '16'
+		                       	</if>
+		                       	<if test='GOSI_CD == "GOSI_JI"'>
+		                        	AND POLL_ID BETWEEN '17' AND '32'
+		                       	</if>
+		                       	<if test='GOSI_CD == "GOSI_SE"'>
+		                        	AND POLL_ID BETWEEN '33' AND '48'
+		                       	</if>
+		                       	
+		                        <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+		                        AND TITLE LIKE '%'||#{SEARCHTEXT}||'%'
+		                       </if>
+                                ORDER BY POLL_ID DESC
+                 ) A 
+                 WHERE ROWNUM <![CDATA[ <= ]]> #{endNo}
+         )
+    	WHERE RNUM <![CDATA[ > ]]> #{startNo}
+	</select>
+
+	<select id="pollListCount" parameterType="hashMap" resultType="int">
+		SELECT COUNT(*) CNT 
+        FROM WWW_POLL
+        WHERE 1=1
+        <if test='GOSI_CD == "GOSI_MST"'>
+        	AND POLL_ID BETWEEN '1' AND '16'
+       	</if>
+       	<if test='GOSI_CD == "GOSI_JI"'>
+        	AND POLL_ID BETWEEN '17' AND '32'
+       	</if>
+       	<if test='GOSI_CD == "GOSI_SE"'>
+        	AND POLL_ID BETWEEN '33' AND '48'
+       	</if>
+        <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+        AND TITLE LIKE '%'||#{SEARCHTEXT}||'%'
+       </if>
+	</select>
+	
+	<select id="pollView" parameterType="hashMap" resultType="hashMap">
+		 SELECT POLL_ID, TITLE, START_DT, END_DT, ISUSE, IS_SHOW
+         FROM WWW_POLL
+		 WHERE POLL_ID = #{POLL_ID}
+	</select>
+	
+	<insert id="pollInsert" parameterType="hashMap">
+		INSERT INTO WWW_POLL(POLL_ID, START_DT, END_DT, ISUSE, TITLE, IS_SHOW)
+		VALUES(SRV_SEQ.nextval, #{START_DT}, #{END_DT}, #{ISUSE}, #{TITLE}, #{IS_SHOW})
+	</insert>
+	
+	<update id="pollUpdate" parameterType="hashMap">
+		UPDATE WWW_POLL 
+		SET START_DT = #{START_DT}
+        , END_DT = #{END_DT}
+        , ISUSE = #{IS_USE}
+        , TITLE = #{TITLE}
+        , IS_SHOW = #{IS_SHOW}
+		WHERE POLL_ID = #{POLL_ID}
+	</update>
+	
+	<delete id="pollDelete" parameterType="hashMap">
+		DELETE FROM WWW_POLL WHERE POLL_ID = #{POLL_ID}
+	</delete>
+</mapper>	

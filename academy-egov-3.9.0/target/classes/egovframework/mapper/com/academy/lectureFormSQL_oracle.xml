@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="form">
+
+	<select id="formList" parameterType="hashMap" resultType="hashMap">
+		SELECT * FROM 	(
+			SELECT A.*, ROWNUM rnum
+		  	FROM (
+					SELECT
+						LEC_DIV, (SELECT CODE_NM FROM TB_BA_CONFIG_CD WHERE SYS_CD = 'LEC_FORM' AND CODE_CD = AA.LEC_DIV) AS LEC_DIVNM
+						, CODE, NAME, ISUSE
+						, DECODE(ISUSE, 'Y', '활성', 'N', '비활성') ISUSENM
+						, REG_DT, REG_ID, UPD_DT, UPD_ID
+					FROM TB_LEARNING_FORM_INFO AA
+					WHERE 1 = 1
+				 	<if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+						<if test="SEARCHTYPE != null and SEARCHTYPE != ''">
+							<if test="SEARCHTYPE == 1">
+								AND CODE like '%'||#{SEARCHTEXT}||'%'
+							</if>
+							<if test="SEARCHTYPE == 2">
+								AND NAME like '%'||#{SEARCHTEXT}||'%'
+							</if>
+						</if>
+						<if test="SEARCHTYPE == null or SEARCHTYPE == ''">
+							AND (
+								CODE like '%'||#{SEARCHTEXT}||'%'
+								OR NAME like '%'||#{SEARCHTEXT}||'%'
+							)
+						</if>
+					</if>
+				 	ORDER BY UPD_DT DESC
+				) A
+               	WHERE rownum &lt;= #{endNo}
+			)
+		WHERE rnum &gt; #{startNo}
+	</select>
+
+	<select id="formListCount" parameterType="hashMap" resultType="int">
+		SELECT
+			COUNT(CODE)
+		FROM TB_LEARNING_FORM_INFO
+		WHERE 1 = 1
+	 	<if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+			<if test="SEARCHTYPE != null and SEARCHTYPE != ''">
+				<if test="SEARCHTYPE == 1">
+					AND CODE like '%'||#{SEARCHTEXT}||'%'
+				</if>
+				<if test="SEARCHTYPE == 2">
+					AND NAME like '%'||#{SEARCHTEXT}||'%'
+				</if>
+			</if>
+			<if test="SEARCHTYPE == null or SEARCHTYPE == ''">
+				AND (
+					CODE like '%'||#{SEARCHTEXT}||'%'
+					OR NAME like '%'||#{SEARCHTEXT}||'%'
+				)
+			</if>
+		</if>
+	</select>
+
+	<select id="formGetCode" resultType="String">
+		SELECT
+			REPLACE('M'||TO_CHAR(NVL(substr(MAX(CODE), 2, 5),100)+1 ,'0000'),' ','') CODE
+		FROM TB_LEARNING_FORM_INFO
+	</select>
+
+	<select id="getCodeList" parameterType="hashMap" resultType="hashMap">
+		SELECT
+			SYS_CD, SYS_NM, CODE_NO, CODE_CD, CODE_NM, CODE_VAL, CODE_INFO, ISUSE
+		FROM TB_BA_CONFIG_CD
+		WHERE 1 = 1
+		<if test="SEARCHPCODE != null and SEARCHPCODE != ''">
+			AND SYS_CD = #{SEARCHPCODE}
+		</if>
+		<if test="SEARCHCCODE != null and SEARCHCCODE != ''">
+			AND SYS_CD = #{SEARCHCCODE}
+		</if>
+		<if test="SEARCHCODEISUSE != null and SEARCHCODEISUSE != ''">
+			AND ISUSE = #{SEARCHCODEISUSE}
+		</if>
+	</select>
+
+	<insert id="formInsert" parameterType="hashMap" flushCache="true">
+		INSERT INTO TB_LEARNING_FORM_INFO(LEC_DIV, CODE, NAME, ISUSE, REG_DT, REG_ID, UPD_DT, UPD_ID)
+		VALUES (#{LEC_DIV}, #{CODE}, #{NAME}, #{ISUSE}, SYSDATE, #{REG_ID}, SYSDATE, #{UPD_ID})
+	</insert>
+
+	<select id="formView" parameterType="hashMap" resultType="hashMap">
+		SELECT
+			LEC_DIV, (SELECT CODE_NM FROM TB_BA_CONFIG_CD WHERE SYS_CD = 'LEC_FORM' AND CODE_CD = AA.LEC_DIV) AS LEC_DIVNM
+			, CODE, NAME, ISUSE
+			, DECODE(ISUSE, 'Y', '활성', 'N', '비활성') ISUSENM
+			, REG_DT, REG_ID, UPD_DT, UPD_ID
+		FROM TB_LEARNING_FORM_INFO AA
+		WHERE CODE = #{CODE}
+	</select>
+
+	<update id="formUpdate" parameterType="hashMap">
+		UPDATE TB_LEARNING_FORM_INFO
+		SET
+			LEC_DIV = #{LEC_DIV}
+			, NAME = #{NAME}
+			, ISUSE = #{ISUSE}
+			, UPD_DT = SYSDATE
+			, UPD_ID = #{UPD_ID}
+		WHERE CODE = #{CODE}
+	</update>
+
+	<delete id="formDelete" parameterType="hashMap">
+		UPDATE TB_LEARNING_FORM_INFO
+		SET ISUSE = 'N'
+		WHERE CODE = #{CODE}
+		<!--
+		DELETE FROM TB_LEARNING_FORM_INFO
+		WHERE CODE = #{CODE}
+		-->
+	</delete>
+
+	<select id="formCheck" parameterType="hashMap" resultType="int">
+		SELECT
+			COUNT(CODE)
+		FROM TB_LEARNING_FORM_INFO
+		WHERE 1 = 1
+		<if test="CODE != null and CODE != ''">
+			AND CODE = #{CODE}
+		</if>
+	</select>
+
+</mapper>

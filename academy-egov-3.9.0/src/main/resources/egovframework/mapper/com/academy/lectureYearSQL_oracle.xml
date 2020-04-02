@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lectureYear">
+
+	<select id="onPayList" parameterType="hashMap" resultType="hashMap">
+	<![CDATA[
+		SELECT YYYYMM, COUNT(LECCODE) CNT, SUM(ORDER_CNT) ORDER_CNT, SUM(REFUND_CNT) REFUND_CNT, SUM(ADD_POINT) ADD_POINT
+		FROM TB_ORDER_YPKG_POINT
+		GROUP BY YYYYMM
+		ORDER BY YYYYMM
+	]]>
+	</select>
+
+	<select id="onOrderList" parameterType="hashMap" resultType="hashMap">
+	<![CDATA[
+       SELECT NVL(AA.MGNTNO, BB.MGNTNO) MGNTNO, NVL(AA.SUBJECT_TEACHER, BB.SUBJECT_TEACHER) SUBJECT_TEACHER,
+                  (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = NVL(AA.SUBJECT_TEACHER, BB.SUBJECT_TEACHER)) TEACHER_NM,
+                  (SELECT SUBJECT_TITLE FROM TB_LEC_MST WHERE LECCODE = NVL(AA.MGNTNO, BB.MGNTNO)) SUBJECT_TITLE,
+               NVL(AA.CNT, 0) CNT, NVL(AA.PRICE, 0) PRICE, 
+               NVL(BB.REP_CNT,0) REP_CNT, NVL(BB.REP_PRICE,0) REP_PRICE
+        FROM (
+                SELECT B.MGNTNO, C.SUBJECT_TEACHER, C.CNT, SUM(B.PRICE) PRICE
+                FROM TB_ORDERS A, TB_ORDER_MGNT_NO B, (SELECT PACKAGE_NO, SUBJECT_TEACHER, COUNT(B.ORDERNO) CNT
+                                                        FROM TB_ORDER_MGNT_NO A,
+                                                        (SELECT PACKAGE_NO, DECODE(SUBJECT_TEACHER, 'wc_005', 'wc_005', 'wc_007', 'wc_007', 'wc_001') SUBJECT_TEACHER, B.ORDERNO
+                                                         FROM TB_ORDER_YEARPACKAGE B
+                                                         GROUP BY PACKAGE_NO, DECODE(SUBJECT_TEACHER, 'wc_005', 'wc_005', 'wc_007', 'wc_007', 'wc_001'), B.ORDERNO) B
+                                                        WHERE A.ORDERNO = B.ORDERNO
+                                                        AND A.MGNTNO = B.PACKAGE_NO
+                                                        AND A.STATUSCODE = 'DLV105'
+                                                        AND A.PRICE > 0
+                                                        AND (TO_CHAR(A.ISCONFIRM,'YYYYMMDD') BETWEEN #{searchStartDate} AND #{searchEndDate})
+                                                        GROUP BY PACKAGE_NO, SUBJECT_TEACHER) C
+                WHERE A.ORDERNO = B.ORDERNO
+                AND B.MGNTNO = C.PACKAGE_NO
+                AND B.PTYPE = 'Y'
+                AND B.STATUSCODE = 'DLV105'
+                AND B.PRICE > 0
+                AND (TO_CHAR(B.ISCONFIRM,'YYYYMMDD') BETWEEN  #{searchStartDate} AND #{searchEndDate})
+                GROUP BY B.MGNTNO, C.SUBJECT_TEACHER, C.CNT
+                ) AA FULL OUTER JOIN (
+                SELECT B.MGNTNO, C.SUBJECT_TEACHER, C.CNT REP_CNT, SUM(B.PRICE) REP_PRICE
+                FROM TB_ORDERS A, TB_ORDER_MGNT_NO B, (SELECT PACKAGE_NO, SUBJECT_TEACHER, COUNT(B.ORDERNO) CNT
+                                                        FROM TB_ORDER_MGNT_NO A, 
+                                                        (SELECT PACKAGE_NO, DECODE(SUBJECT_TEACHER, 'wc_005', 'wc_005', 'wc_007', 'wc_007', 'wc_001') SUBJECT_TEACHER, B.ORDERNO
+                                                         FROM TB_ORDER_YEARPACKAGE B
+                                                         GROUP BY PACKAGE_NO, DECODE(SUBJECT_TEACHER, 'wc_005', 'wc_005', 'wc_007', 'wc_007', 'wc_001'), B.ORDERNO) B
+                                                        WHERE A.ORDERNO = B.ORDERNO
+                                                        AND A.MGNTNO = B.PACKAGE_NO
+                                                        AND A.STATUSCODE = 'DLV230'
+                                                        AND (TO_CHAR(A.ISCONFIRM,'YYYYMMDD') BETWEEN  #{searchStartDate} AND #{searchEndDate})
+                                                        GROUP BY PACKAGE_NO, SUBJECT_TEACHER) C
+                WHERE A.ORDERNO = B.ORDERNO
+                AND B.MGNTNO = C.PACKAGE_NO
+                AND B.PTYPE = 'Y'
+                AND B.STATUSCODE = 'DLV230'
+                AND (TO_CHAR(B.ISCONFIRM,'YYYYMMDD') BETWEEN  #{searchStartDate} AND #{searchEndDate})
+                GROUP BY B.MGNTNO, C.SUBJECT_TEACHER, C.CNT
+                ) BB
+                ON AA.MGNTNO = BB.MGNTNO
+                AND AA.SUBJECT_TEACHER = BB.SUBJECT_TEACHER
+                ORDER BY NVL(AA.MGNTNO, BB.MGNTNO), NVL(AA.SUBJECT_TEACHER, BB.SUBJECT_TEACHER)
+	]]>
+	</select>
+
+	<select id="onOrderList_20171114" parameterType="hashMap" resultType="hashMap">
+	<![CDATA[
+       SELECT AA.MGNTNO, AA.SUBJECT_TEACHER,
+                  (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = AA.SUBJECT_TEACHER) TEACHER_NM,
+                  (SELECT SUBJECT_TITLE FROM TB_LEC_MST WHERE LECCODE = AA.MGNTNO) SUBJECT_TITLE,
+               NVL(SUM(AA.CNT), 0) CNT, NVL(SUM(AA.PRICE), 0) PRICE, 
+               NVL(SUM(AA.REP_CNT),0) REP_CNT, NVL(SUM(AA.REP_PRICE),0) REP_PRICE
+        FROM (
+                SELECT B.MGNTNO, C.SUBJECT_TEACHER, C.CNT, SUM(B.PRICE) PRICE, 0 REP_CNT, 0 REP_PRICE
+                FROM TB_ORDERS A, TB_ORDER_MGNT_NO B, (SELECT PACKAGE_NO, SUBJECT_TEACHER, COUNT(B.ORDERNO) CNT
+                                                        FROM TB_ORDER_MGNT_NO A,
+                                                        (SELECT PACKAGE_NO, DECODE(SUBJECT_TEACHER, 'wc_005', 'wc_005', 'wc_007', 'wc_007', 'wc_001') SUBJECT_TEACHER, B.ORDERNO
+                                                         FROM TB_ORDER_YEARPACKAGE B
+                                                         GROUP BY PACKAGE_NO, DECODE(SUBJECT_TEACHER, 'wc_005', 'wc_005', 'wc_007', 'wc_007', 'wc_001'), B.ORDERNO) B
+                                                        WHERE A.ORDERNO = B.ORDERNO
+                                                        AND A.MGNTNO = B.PACKAGE_NO
+                                                        AND A.STATUSCODE = 'DLV105'
+                                                        AND A.PRICE > 0
+                                                        AND (TO_CHAR(A.ISCONFIRM,'YYYYMMDD') BETWEEN #{searchStartDate} AND #{searchEndDate})
+                                                        GROUP BY PACKAGE_NO, SUBJECT_TEACHER) C
+                WHERE A.ORDERNO = B.ORDERNO
+                AND B.MGNTNO = C.PACKAGE_NO
+                AND B.PTYPE = 'Y'
+                AND B.STATUSCODE = 'DLV105'
+                AND B.PRICE > 0
+                AND (TO_CHAR(B.ISCONFIRM,'YYYYMMDD') BETWEEN  #{searchStartDate} AND #{searchEndDate})
+                GROUP BY B.MGNTNO, C.SUBJECT_TEACHER, C.CNT 
+                UNION ALL
+                SELECT B.MGNTNO, C.SUBJECT_TEACHER, 0 CNT, 0 PRICE, C.CNT REP_CNT, SUM(B.PRICE) REP_PRICE
+                FROM TB_ORDERS A, TB_ORDER_MGNT_NO B, (SELECT PACKAGE_NO, SUBJECT_TEACHER, COUNT(B.ORDERNO) CNT
+                                                        FROM TB_ORDER_MGNT_NO A, 
+                                                        (SELECT PACKAGE_NO, DECODE(SUBJECT_TEACHER, 'wc_005', 'wc_005', 'wc_007', 'wc_007', 'wc_001') SUBJECT_TEACHER, B.ORDERNO
+                                                         FROM TB_ORDER_YEARPACKAGE B
+                                                         GROUP BY PACKAGE_NO, DECODE(SUBJECT_TEACHER, 'wc_005', 'wc_005', 'wc_007', 'wc_007', 'wc_001'), B.ORDERNO) B
+                                                        WHERE A.ORDERNO = B.ORDERNO
+                                                        AND A.MGNTNO = B.PACKAGE_NO
+                                                        AND A.STATUSCODE = 'DLV230'
+                                                        AND (TO_CHAR(A.ISCONFIRM,'YYYYMMDD') BETWEEN  #{searchStartDate} AND #{searchEndDate})
+                                                        GROUP BY PACKAGE_NO, SUBJECT_TEACHER) C
+                WHERE A.ORDERNO = B.ORDERNO
+                AND B.MGNTNO = C.PACKAGE_NO
+                AND B.PTYPE = 'Y'
+                AND B.STATUSCODE = 'DLV230'
+                AND (TO_CHAR(B.ISCONFIRM,'YYYYMMDD') BETWEEN  #{searchStartDate} AND #{searchEndDate})
+                GROUP BY B.MGNTNO, C.SUBJECT_TEACHER, C.CNT 
+                ) AA
+                GROUP BY AA.MGNTNO, AA.SUBJECT_TEACHER 
+                ORDER BY AA.MGNTNO, AA.SUBJECT_TEACHER
+	]]>
+	</select>
+	
+	<select id="payUserListByLeccode" parameterType="hashMap" resultType="hashMap">
+		 SELECT G.*
+		    FROM (
+		    SELECT O.*, ROWNUM RNUM FROM(
+		    SELECT H.* FROM(
+			SELECT 
+			A.ORDERNO,
+	       (SELECT USER_NM  FROM TB_MA_MEMBER WHERE USER_ID = A.USER_ID) AS USER_NM,
+	       (SELECT PHONE_NO FROM TB_MA_MEMBER WHERE USER_ID = A.USER_ID) AS PHONE_NO,
+	       ISCONFIRM AS START_DATE, ISCONFIRM+FN_GET_YEAR_PACKAGE_DAY(C.SUBJECT_PERIOD) END_DATE,
+	       (SELECT CODE_NM FROM TB_BA_CONFIG_CD D WHERE D.CODE_VAL = B.STATUSCODE) AS STATUSCODE_NM,
+			B.MGNTNO,B.STATUSCODE, C.SUBJECT_TITLE, A.USER_ID,TO_CHAR(B.ISCONFIRM,'YYYY-MM-DD') AS IS_CONFIRM_DD
+	        FROM TB_ORDERS A, TB_ORDER_MGNT_NO B, TB_LEC_MST C
+	        WHERE A.ORDERNO = B.ORDERNO
+	        AND B.PTYPE = 'Y'
+	        AND B.MGNTNO = C.LECCODE
+         	AND B.MGNTNO=#{LECCODE}
+	        AND B.STATUSCODE=#{STATUSCODE}
+	        <if test='searchStartDate != null and searchStartDate != ""'>
+	        AND    (TO_CHAR(B.ISCONFIRM,'YYYYMMDD') BETWEEN #{searchStartDate} AND #{searchEndDate})
+	        </if>
+	        ORDER BY B.ISCONFIRM DESC,A.USER_ID ASC
+	         )H
+	         WHERE 1=1
+          	<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+				<if test='SEARCHTYPE == "1"'>
+					AND H.USER_NM like '%'||#{SEARCHTEXT}||'%'
+				</if>
+				<if test='SEARCHTYPE == "2"'>
+					AND H.USER_NM like '%'||#{SEARCHTEXT}||'%'
+				</if>
+			</if>
+			<if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+				AND ((H.USER_NM like '%'||#{SEARCHTEXT}||'%') OR (H.USER_NM like '%'||#{SEARCHTEXT}||'%'))
+			</if>
+			)O
+                   WHERE ROWNUM <![CDATA[ <= ]]> #{endNo}
+            ) G 
+	        WHERE RNUM <![CDATA[ > ]]> #{startNo}
+     </select>
+     
+     <select id="payUserListByLeccodeCount" parameterType="hashMap" resultType="int">
+			    SELECT COUNT(*) FROM(
+    	SELECT H.* FROM(
+            SELECT 
+           (SELECT USER_NM  FROM TB_MA_MEMBER WHERE USER_ID = A.USER_ID) AS USER_NM,A.USER_ID
+            FROM TB_ORDERS A, TB_ORDER_MGNT_NO B, TB_LEC_MST C
+	        WHERE A.ORDERNO = B.ORDERNO
+	        AND B.PTYPE = 'Y'
+	        AND B.MGNTNO = C.LECCODE
+         	AND B.MGNTNO=#{LECCODE}
+	        AND B.STATUSCODE=#{STATUSCODE}
+	        <if test='searchStartDate != null and searchStartDate != ""'>
+	        AND    (TO_CHAR(B.ISCONFIRM,'YYYYMMDD') BETWEEN #{searchStartDate} AND #{searchEndDate})
+	         )H
+	        WHERE 1=1
+	         <if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+				<if test='SEARCHTYPE == "1"'>
+					AND (H.USER_NM like '%'||#{SEARCHTEXT}||'%'
+						OR H.USER_NM like '%'||#{SEARCHTEXT}||'%')
+				</if>
+				<if test='SEARCHTYPE == "2"'>
+					AND H.USER_NM like '%'||#{SEARCHTEXT}||'%'
+				</if>
+			</if>
+			<if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+				AND ((H.USER_NM like '%'||#{SEARCHTEXT}||'%') OR (H.USER_NM like '%'||#{SEARCHTEXT}||'%'))
+			</if>
+            )O
+	        </if>
+     </select>
+</mapper>
