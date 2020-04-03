@@ -1,15 +1,15 @@
 package web.coop.service.impl;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class CoopOrderDAO extends CmmAbstractMapper {
+public class CoopOrderDAO extends EgovComAbstractDAO {
 
     // 전체상품주문관리 리스트
     @SuppressWarnings({ "rawtypes" })

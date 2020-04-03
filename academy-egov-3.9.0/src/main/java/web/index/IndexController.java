@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.willbes.platform.util.CommonUtil;
+import web.egov.util.CommonUtil;
 import web.index.service.IndexService;
 import web.login.service.LoginService;
 

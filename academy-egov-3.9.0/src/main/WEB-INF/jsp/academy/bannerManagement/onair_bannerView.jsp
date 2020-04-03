@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ page session="false" %>
-<%@ include file="/WEB-INF/views/common/topInclude.jsp" %><head>
+<%@ include file="/WEB-INF/jsp/academy/common/topInclude.jsp" %><head>
 <script type="text/javascript">
 $(document).ready(function(){
 	setDateFickerImageUrl("<c:url value='/resources/img/common/icon_calendar01.png'/>");

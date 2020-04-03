@@ -8,8 +8,8 @@ import java.util.Properties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.willbes.cmm.service.Globals;
-import com.willbes.cmm.service.MirProperties;
+import egovframework.com.cmm.service.Globals;
+import egovframework.com.cmm.service.EgovProperties;
 import web.memberManagement.service.MemberManagementService;
 
 @Service
@@ -17,7 +17,6 @@ public class MemberManagementServiceImpl  implements  MemberManagementService{
 
     @Autowired
     private MemberManagementDAO memberManagementdao;
-    Properties props = MirProperties.loadPropertiesPropertyFile(Globals.ZIP_AREA_PATH);
 
     public List<HashMap<String, Object>> getMemberList(	Map<String, Object> searchMap){
         return memberManagementdao.getMemberList(searchMap);
@@ -47,7 +46,7 @@ public class MemberManagementServiceImpl  implements  MemberManagementService{
         String zipCd = String.valueOf(params.get("ZIP_CODE"));
         if(null != zipCd && !"".equals(zipCd)) {
             if(zipCd.length() == 5) {
-                String areaCd = props.getProperty(zipCd.substring(0, 2));
+                String areaCd = zipCd.substring(0, 2);
                 if(null != areaCd && !"".equals(areaCd)) {
                     params.put("U_AREA", areaCd);
                 } else {
@@ -84,7 +83,7 @@ public class MemberManagementServiceImpl  implements  MemberManagementService{
         String zipCd = String.valueOf(params.get("ZIP_CODE"));
         if(null != zipCd && !"".equals(zipCd)) {
             if(zipCd.length() == 5) {
-                String areaCd = props.getProperty(zipCd.substring(0, 2));
+                String areaCd = zipCd.substring(0, 2);
                 if(null != areaCd && !"".equals(areaCd)) {
                     params.put("U_AREA", areaCd);
                 } else {

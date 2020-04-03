@@ -1,6 +1,6 @@
 package web.egov.util.paging;
 
-import com.willbes.platform.util.Constant;
+import web.egov.util.Constant;
 
 public class Paging {
 	private int currentPage; // 현재페이지

@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ page session="false"%>
-<%@ include file="/WEB-INF/views/common/topInclude.jsp" %>
+<%@ include file="/WEB-INF/jsp/academy/common/topInclude.jsp" %>
 <head>
 <title>인증센터</title>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0" />

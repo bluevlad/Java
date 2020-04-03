@@ -8,7 +8,7 @@
  * 
  * 
  */
-package com.willbes.platform.axis.security.cryptography;
+package web.egov.axis.security.cryptography;
 
 import java.security.MessageDigest;
 import javax.crypto.Cipher;

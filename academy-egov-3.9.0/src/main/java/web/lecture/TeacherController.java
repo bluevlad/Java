@@ -22,10 +22,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.View;
 
-import com.willbes.platform.util.CommonUtil;
-import com.willbes.platform.util.excel.ExcelDownloadView;
-import com.willbes.platform.util.file.FileUtil;
-import com.willbes.platform.util.paging.Paging;
+import web.egov.util.CommonUtil;
+import web.egov.util.excel.ExcelDownloadView;
+import web.egov.util.file.FileUtil;
+import web.egov.util.paging.Paging;
 import web.lecture.service.TeacherService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;

@@ -10,7 +10,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.willbes.platform.util.CommonUtil;
+import web.egov.util.CommonUtil;
 import web.counsel.service.CounselService;
 import web.counsel.service.impl.CounselDAO;
 

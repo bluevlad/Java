@@ -9,7 +9,7 @@
  *    - 페이지정렬 업무와 관련된 유틸리티 클래스
  */
 
-package com.willbes.cmm.util;
+package web.egov.util;
 
 public class SortUtil{
 

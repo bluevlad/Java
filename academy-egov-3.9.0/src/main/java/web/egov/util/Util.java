@@ -9,7 +9,7 @@
  *    - 기타 메소드는 객체생성후 접근한다.
  */
 
-package com.willbes.cmm.util;
+package web.egov.util;
 
 import java.io.*;
 import java.text.*;

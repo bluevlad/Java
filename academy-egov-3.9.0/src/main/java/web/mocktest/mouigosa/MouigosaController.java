@@ -26,10 +26,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.willbes.platform.util.CommonUtil;
-import com.willbes.platform.util.excel.ExcelRead;
-import com.willbes.platform.util.file.FileUtil;
-import com.willbes.platform.util.paging.Paging;
+import web.egov.util.CommonUtil;
+import web.egov.util.excel.ExcelRead;
+import web.egov.util.file.FileUtil;
+import web.egov.util.paging.Paging;
 import web.lecture.service.CategoryService;
 import web.lecture.service.KindService;
 import web.mocktest.mouigosa.service.MouigosaService;

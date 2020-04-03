@@ -13,7 +13,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.willbes.platform.util.CommonUtil;
+import web.egov.util.CommonUtil;
 import web.login.service.LoginService;
 
 @RequestMapping(value="/login")

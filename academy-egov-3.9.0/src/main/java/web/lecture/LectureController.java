@@ -29,18 +29,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.willbes.cmm.service.CmmUseService;
-import com.willbes.cmm.service.MirProperties;
-import com.willbes.platform.util.CommonUtil;
-import com.willbes.platform.util.excel.ExcelDownloadView;
-import com.willbes.platform.util.file.FileUtil;
-import com.willbes.platform.util.paging.Paging;
+import web.egov.cmm.service.CmmUseService;
+import egovframework.com.cmm.service.EgovProperties;
+import web.egov.util.CommonUtil;
+import web.egov.util.excel.ExcelDownloadView;
+import web.egov.util.file.FileUtil;
+import web.egov.util.paging.Paging;
 import web.book.service.BookService;
 import web.lecture.service.LectureService;
 import web.lecture.service.SubjectService;
 import web.lecture.service.TeacherService;
 import web.productOrder.service.ProductOrderService;
-import com.willbes.cmm.service.MirProperties;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 
@@ -1992,7 +1991,7 @@ public class LectureController {
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
 		ch = sdf1.format(d);
 
-		String contents_server = MirProperties.getProperty("Globals.DomainURL")+"/"; 
+		String contents_server = EgovProperties.getProperty("Globals.DomainURL")+"/"; 
 
 		desc = contents_server+"  : "+ch+" : "+"/pmp/DownLog.asp : [ID = "+userid+"]";
 		fileUtil.filemake(filename, desc, "pmpDownlog/");

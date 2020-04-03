@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ page session="false" %>
-<%@ include file="/WEB-INF/views/common/topInclude.jsp" %>
+<%@ include file="/WEB-INF/jsp/academy/common/topInclude.jsp" %>
 <!--content -->
 <div id="content">
     <h2>● ${params.L_MENU_NM} > <strong>${params.MENU_NM}</strong></h2>

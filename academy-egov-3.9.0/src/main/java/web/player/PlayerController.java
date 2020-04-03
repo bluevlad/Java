@@ -11,11 +11,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.willbes.platform.util.CommonUtil;
-import com.willbes.platform.util.paging.Paging;
+import web.egov.util.CommonUtil;
+import web.egov.util.paging.Paging;
 import web.lecture.service.LectureService;
-import com.willbes.platform.axis.*;
-import com.willbes.platform.axis.security.cryptography.*;
+import web.axis.*;
+import web.axis.security.cryptography.*;
 
 @RequestMapping(value="/player")
 @Controller

@@ -12,7 +12,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.springframework.stereotype.Component;
 
-import com.willbes.web.mocktest.offExamReg.OffExamRegVO;
+import web.mocktest.offExamReg.OffExamRegVO;
 
 /**
  * sample 엑셀 reader

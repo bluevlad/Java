@@ -2,7 +2,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
 <%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ include file="/WEB-INF/views/common/topInclude.jsp" %>
+<%@ include file="/WEB-INF/jsp/academy/common/topInclude.jsp" %>
 <head>
 <meta name="decorator" content="index">
 <script type="text/javascript">

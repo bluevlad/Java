@@ -38,15 +38,14 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.View;
 
 import com.inicis.inipay.escrow.INIescrow;
-import com.willbes.cmm.service.MirProperties;
-import com.willbes.platform.util.CommonUtil;
-import com.willbes.platform.util.excel.ExcelDownloadView;
-import com.willbes.platform.util.excel.ExcelRead;
-import com.willbes.platform.util.file.FileUtil;
-import com.willbes.platform.util.paging.Paging;
+import egovframework.com.cmm.service.EgovProperties;
+import web.egov.util.CommonUtil;
+import web.egov.util.excel.ExcelDownloadView;
+import web.egov.util.excel.ExcelRead;
+import web.egov.util.file.FileUtil;
+import web.egov.util.paging.Paging;
 import web.bookOrder.service.BookOrderService;
 import web.productOrder.service.ProductOrderService;
-
 import egovframework.rte.fdl.property.EgovPropertyService;
 
 
@@ -60,7 +59,7 @@ public class BookOrderController {
     @Resource(name="propertiesService")
     protected EgovPropertyService propertiesService;
 
-    protected MirProperties MirProperties;
+    protected EgovProperties MirProperties;
 
     @Autowired
 	private BookOrderService bookOrderService;

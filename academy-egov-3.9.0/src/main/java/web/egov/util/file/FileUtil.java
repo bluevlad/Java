@@ -30,8 +30,8 @@ import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 import static org.imgscalr.Scalr.*;
 
-import com.willbes.platform.util.CommonUtil;
-import com.willbes.platform.util.file.service.MultipartFileService;
+import web.egov.util.CommonUtil;
+import web.egov.util.file.service.MultipartFileService;
 
 @Component("fileUtil")
 public class FileUtil {

@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR" pageEncoding="EUC-KR"%>
-<%@ page import="com.willbes.platform.axis.*" %>
-<%@ page import="com.willbes.platform.axis.security.cryptography.*" %>
+<%@ page import="web.axis.*" %>
+<%@ page import="web.axis.security.cryptography.*" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>

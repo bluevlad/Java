@@ -17,9 +17,9 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.View;
 
-import com.willbes.platform.util.CommonUtil;
-import com.willbes.platform.util.excel.ExcelDownloadView;
-import com.willbes.platform.util.paging.Paging;
+import web.egov.util.CommonUtil;
+import web.egov.util.excel.ExcelDownloadView;
+import web.egov.util.paging.Paging;
 import web.manage.excel.TeacherAdjustDetailExcel;
 import web.manage.service.CategorySaleService;
 

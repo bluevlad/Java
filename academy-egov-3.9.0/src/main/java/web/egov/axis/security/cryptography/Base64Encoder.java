@@ -13,7 +13,7 @@
  * 
  * 
  */
-package com.willbes.platform.axis.security.cryptography;
+package web.egov.axis.security.cryptography;
 
 /**
  * This static class handles Base64 encoding.

@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.willbes.platform.util.CommonUtil;
-import com.willbes.platform.util.file.FileUtil;
-import com.willbes.platform.util.paging.Paging;
+import web.egov.util.CommonUtil;
+import web.egov.util.file.FileUtil;
+import web.egov.util.paging.Paging;
 import web.board.service.BoardService;
 import web.popup.service.PopupNewService;
 

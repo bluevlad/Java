@@ -5,10 +5,10 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class MockResultDAO extends CmmAbstractMapper {
+public class MockResultDAO extends EgovComAbstractDAO {
 
 	public List<HashMap<String, String>> getMockSubjectResultList(HashMap<String, String> params){
 		return getSqlSession().selectList("mockTestResult.getMockSubjectResultList", params);

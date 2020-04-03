@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.willbes.platform.util.file.service.MultipartFileService;
+import web.egov.util.file.service.MultipartFileService;
 import web.freeOrder.service.FreeOrderService;
 
 @Service

@@ -1,20 +1,14 @@
 package web.lecture;
 
-import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SimpleTimeZone;
-import java.util.TimeZone;
 
 import javax.annotation.Resource;
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,15 +18,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.willbes.cmm.service.CmmUseService;
-import com.willbes.platform.util.CommonUtil;
-import com.willbes.platform.util.file.FileUtil;
-import com.willbes.platform.util.paging.Paging;
 import web.book.service.BookService;
+import web.egov.cmm.service.CmmUseService;
+import web.egov.util.CommonUtil;
+import web.egov.util.file.FileUtil;
+import web.egov.util.paging.Paging;
 import web.lecture.service.OpenLectureService;
 import web.lecture.service.SubjectService;
 import web.lecture.service.TeacherService;

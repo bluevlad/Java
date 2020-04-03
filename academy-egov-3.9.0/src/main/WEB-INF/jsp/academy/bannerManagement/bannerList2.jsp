@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ include file="/WEB-INF/views/common/topInclude.jsp" %>
+<%@ include file="/WEB-INF/jsp/academy/common/topInclude.jsp" %>
   <!--content -->
   <div id="content">
     <h2>● 운영자관리 > <strong>배너관리</strong></h2>

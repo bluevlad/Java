@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.View;
 
-import com.willbes.platform.util.CommonUtil;
-import com.willbes.platform.util.MafUtil;
+import web.egov.util.CommonUtil;
+import web.egov.util.MafUtil;
 import web.manage.excel.MovieSalesExcel;
 import web.manage.excel.TeacherExcelDownload;
 import web.manage.excel.offAllSalesExcel;

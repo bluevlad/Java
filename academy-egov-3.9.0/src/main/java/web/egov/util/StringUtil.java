@@ -8,7 +8,7 @@
  *    - static method는 StringUtil.mehtod()로 호출한다.
  *
  */
-package com.willbes.cmm.util;
+package web.egov.util;
 
 import java.io.UnsupportedEncodingException;
 import java.util.regex.Pattern;

@@ -15,7 +15,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.springframework.web.servlet.view.document.AbstractExcelView;
 
-import com.willbes.platform.util.MafUtil;
+import web.egov.util.MafUtil;
 
 public class ExcelDownloadView extends AbstractExcelView {
 

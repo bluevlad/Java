@@ -17,8 +17,8 @@ import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.util.Region;
 import org.springframework.web.servlet.view.document.AbstractExcelView;
 
-import com.willbes.platform.util.CommonUtil;
-import com.willbes.platform.util.MafUtil;
+import web.egov.util.CommonUtil;
+import web.egov.util.MafUtil;
 
 public class offReceivedExcel extends AbstractExcelView {
 	@SuppressWarnings({ "unchecked", "deprecation" })

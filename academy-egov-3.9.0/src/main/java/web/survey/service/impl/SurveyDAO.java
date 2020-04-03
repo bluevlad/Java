@@ -5,10 +5,10 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class SurveyDAO extends CmmAbstractMapper {
+public class SurveyDAO extends EgovComAbstractDAO {
 
 	public List<HashMap<String, String>> bankList(HashMap<String, String> params){
 		return getSqlSession().selectList("survey.bankList", params);

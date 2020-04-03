@@ -22,16 +22,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.willbes.platform.util.CommonUtil;
-import com.willbes.platform.util.MafUtil;
-import com.willbes.platform.util.file.FileUtil;
-import com.willbes.platform.util.paging.Paging;
+import web.egov.util.CommonUtil;
+import web.egov.util.MafUtil;
+import web.egov.util.file.FileUtil;
+import web.egov.util.paging.Paging;
 import web.book.service.BookService;
 import web.excel.LectureOffListExcel;
 import web.lectureOff.service.LectureOffService;
 import web.lecture.service.TeacherService;
 import egovframework.rte.fdl.property.EgovPropertyService;
-import com.willbes.platform.util.excel.ExcelDownloadView;
+import web.egov.util.excel.ExcelDownloadView;
 import web.excel.LectureOffListExcel;
 
 @RequestMapping(value="/lectureOff")

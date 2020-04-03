@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.View;
 
-import com.willbes.platform.util.CommonUtil;
-import com.willbes.platform.util.excel.ExcelDownloadView;
-import com.willbes.platform.util.mail.SendMail;
-import com.willbes.platform.util.paging.Paging;
+import web.egov.util.CommonUtil;
+import web.egov.util.excel.ExcelDownloadView;
+import web.egov.util.mail.SendMail;
+import web.egov.util.paging.Paging;
 import web.memberAdminManagement.service.MemberAdminManagementService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;

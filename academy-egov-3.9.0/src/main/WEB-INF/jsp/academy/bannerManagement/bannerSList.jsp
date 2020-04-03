@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ include file="/WEB-INF/views/common/topInclude.jsp" %>
+<%@ include file="/WEB-INF/jsp/academy/common/topInclude.jsp" %>
 <link rel="stylesheet" type="text/css" href="<c:url value='/resources/libs/jquery/jquery.jui_dropdown.css'/>"/>
 <script type="text/javascript" src="<c:url value='/resources/libs/jquery/jquery.jui_dropdown.min.js'/>"></script>
 
