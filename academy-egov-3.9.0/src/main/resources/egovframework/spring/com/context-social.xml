@@ -12,6 +12,8 @@
         http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd">
         
     <!-- facebook 연동 설정 -->
+    <!-- 추후 사용 2020.03 rainend -->
+    <!-- 
     <bean id="connectionFactory" class="org.springframework.social.facebook.connect.FacebookConnectionFactory">
 		<constructor-arg value="${facebook.appId}" />
 		<constructor-arg value="${facebook.appSecret}" />
@@ -22,5 +24,6 @@
     <jdbc:embedded-database id="social.dataSource" type="H2">
         <jdbc:script location="classpath:/social.sql" />
     </jdbc:embedded-database>
+     -->
 
 </beans>

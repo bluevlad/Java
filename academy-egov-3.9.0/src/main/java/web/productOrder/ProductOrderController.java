@@ -21,13 +21,10 @@ import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
 import javax.annotation.Resource;
-import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
@@ -35,19 +32,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.View;
 
-import web.egov.util.Util;
+import egovframework.rte.fdl.property.EgovPropertyService;
 import web.egov.util.CommonUtil;
 import web.egov.util.MafUtil;
 import web.egov.util.excel.ExcelDownloadView;
 import web.egov.util.file.FileUtil;
-import web.egov.util.file.service.MultipartFileService;
 import web.egov.util.paging.Paging;
-import web.lecture.service.LectureService;
 import web.lecture.service.SubjectService;
 import web.lecture.service.TeacherService;
 import web.productOrder.service.ProductOrderService;
-
-import egovframework.rte.fdl.property.EgovPropertyService;
 
 @RequestMapping(value="/productOrder")
 @Controller

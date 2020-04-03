@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class LoginDAO extends EgovComAbstractDAO {
+public class ADMLoginDAO extends EgovComAbstractDAO {
 
 	public List<HashMap<String, String>> login(HashMap<String, String> params){
 		return getSqlSession().selectList("login.login", params);

@@ -28,7 +28,6 @@ import egovframework.rte.fdl.property.EgovPropertyService;
 import web.egov.cmm.service.CmmUseService;
 import web.egov.util.CommonUtil;
 import web.egov.util.excel.ExcelDownloadView;
-import web.egov.util.mail.SendMail;
 import web.egov.util.paging.Paging;
 import web.memberManagement.service.MemberManagementService;
 import web.productOrder.service.ProductOrderService;
@@ -55,9 +54,6 @@ public class MemberManagementController {
 
     @Autowired
     private ProductOrderService productOrderService;
-
-    @Resource(name="sendMail")
-    SendMail sendMail;
 
     /**
      * @Method Name  : memberList
@@ -930,22 +926,6 @@ public class MemberManagementController {
                     insertCount++;
                 }
             }
-            String[] toUser = new String[emailList.size()];
-            toUser = (String[])emailList.toArray(toUser);
-            sendMail.sendMail(String.valueOf(params.get("SUBJECT")),
-                    String.valueOf(params.get("CONT")),
-                    String.valueOf(params.get("FROM_EMAIL")),
-                    toUser);
-
-            //			for(int j=0; j<USERID_ARR.length; j++){
-            //				params.put("USER_ID", USERID_ARR[j]);
-            //				HashMap<String, String> email2 =  memberManagementService.getMemberAdminEmail(params);
-            //				if(CommonUtil.isEmail(String.valueOf(email2.get("EMAIL")))){
-            //					params.put("FROM_USERID", USERID_ARR[j]);
-            //					memberManagementService.MemberAdminInsertEmail(params);
-            //					insertCount++;
-            //				}
-            //			}
         }
 
         if(insertCount > 0) {

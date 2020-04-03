@@ -3,7 +3,7 @@ package web.login.service;
 import java.util.HashMap;
 import java.util.List;
 
-public interface LoginService {
+public interface ADMLoginService {
 
 	List<HashMap<String, String>> login(HashMap<String, String> params);
 	List<HashMap<String, String>> login_ip(HashMap<String, String> params);

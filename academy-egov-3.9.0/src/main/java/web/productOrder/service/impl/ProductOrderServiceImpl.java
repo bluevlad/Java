@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import web.egov.util.file.service.MultipartFileService;
 import web.productOrder.service.ProductOrderService;
 
 @Service
@@ -22,9 +21,6 @@ public class ProductOrderServiceImpl  implements  ProductOrderService{
 	
 	@Autowired
 	private ProductOrderDAO productOrderdao;
-	
-	@Autowired
-	private MultipartFileService multipartFileService;
 	
 	@Override @SuppressWarnings("rawtypes")
 	public List getOrderStatuscodeList(Map keyName){		

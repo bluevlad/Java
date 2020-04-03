@@ -75,6 +75,7 @@
 	</bean>
 	
 	<!-- Facebook 설정 -->
+	<!-- 
 	<mvc:default-servlet-handler />
 	<bean class="org.springframework.social.connect.web.ProviderSignInController">
 		<constructor-arg ref="connectionFactoryLocator" />
@@ -96,5 +97,6 @@
 	<mvc:view-controller path="/uss/ion/fbk/facebook.do" view-name="egovframework/com/uss/ion/fbk/EgovFacebookHome" />
 	<mvc:view-controller path="/uss/ion/fbk/facebookSignin.do" view-name="egovframework/com/uss/ion/fbk/EgovFacebookSignin" />
 	<mvc:view-controller path="/uss/ion/fbk/facebookSignout.do" view-name="egovframework/com/uss/ion/fbk/EgovFacebookHome" />
+	 -->
 
 </beans>

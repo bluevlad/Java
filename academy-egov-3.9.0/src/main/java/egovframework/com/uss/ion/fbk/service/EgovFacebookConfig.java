@@ -60,7 +60,7 @@ public class EgovFacebookConfig {
 
 	private String facebookappSecret = EgovProperties.getProperty("facebook.appSecret");
 
-	@Resource(name="social.dataSource")
+//	@Resource(name="social.dataSource")
 	private DataSource dataSource;
 
 	/**

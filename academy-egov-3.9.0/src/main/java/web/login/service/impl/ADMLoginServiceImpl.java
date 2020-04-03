@@ -6,13 +6,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import web.login.service.impl.LoginDAO;
-import web.login.service.LoginService;
+import web.login.service.impl.ADMLoginDAO;
+import web.login.service.ADMLoginService;
 
-@Service(value="loginService")
-public class LoginServiceImpl implements LoginService {
+@Service(value="admloginService")
+public class ADMLoginServiceImpl implements ADMLoginService {
 	@Autowired 
-	private LoginDAO logindao;
+	private ADMLoginDAO logindao;
 	
 	@Override
 	public List<HashMap<String, String>> login(HashMap<String, String> params) {

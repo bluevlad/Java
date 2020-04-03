@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import web.egov.util.CommonUtil;
-import web.login.service.LoginService;
+import web.login.service.ADMLoginService;
 
-@RequestMapping(value="/login")
+@RequestMapping(value="/adm/login")
 @Controller
 public class LoginController {
     @Autowired
-    private LoginService loginservice;
+    private ADMLoginService loginservice;
 
     /**
      * @Method Name : login

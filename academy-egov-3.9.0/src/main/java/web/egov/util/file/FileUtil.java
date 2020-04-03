@@ -1,13 +1,7 @@
 package web.egov.util.file;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.awt.image.ConvolveOp;
-import java.awt.image.Kernel;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -17,18 +11,14 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
-import javax.swing.ImageIcon;
 
 import org.imgscalr.Scalr;
+import org.imgscalr.Scalr.Method;
+import org.imgscalr.Scalr.Mode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
-
-import static org.imgscalr.Scalr.*;
 
 import web.egov.util.CommonUtil;
 import web.egov.util.file.service.MultipartFileService;
@@ -36,10 +26,10 @@ import web.egov.util.file.service.MultipartFileService;
 @Component("fileUtil")
 public class FileUtil {
 
-    @Autowired
+//    @Autowired
     private MultipartFileService multipartFileservice;
 
-    @Inject
+//    @Inject
     private FileSystemResource fsResource;	//DI
 
     public List<HashMap<String, Object>> uploadFiles(List<MultipartFile> uploadFileList, String rootPath, String subPath) throws IllegalStateException, IOException {

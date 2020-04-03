@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import web.egov.util.CommonUtil;
 import web.index.service.IndexService;
-import web.login.service.LoginService;
+import web.login.service.ADMLoginService;
 
 /**
  * @FileName   : IndexController.java
@@ -29,7 +29,7 @@ public class IndexController {
     @Autowired
     private IndexService indexservice;
     @Autowired
-    private LoginService loginservice;
+    private ADMLoginService loginservice;
 
     /**
      *	 LEFT 메뉴의 기본 MENU_NM

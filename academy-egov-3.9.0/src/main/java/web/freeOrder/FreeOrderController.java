@@ -31,7 +31,7 @@ import web.egov.util.excel.ExcelDownloadView;
 import web.egov.util.file.FileUtil;
 import web.egov.util.paging.Paging;
 import web.freeOrder.service.FreeOrderService;
-import web.login.service.LoginService;
+import web.login.service.ADMLoginService;
 import web.productOrder.service.ProductOrderService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
@@ -53,7 +53,7 @@ public class FreeOrderController {
     private FreeOrderService freeOrderService;
 
     @Autowired
-    private LoginService loginservice;
+    private ADMLoginService loginservice;
 
     @Resource(name="fileUtil")
     FileUtil fileUtil;

@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import web.egov.util.file.service.MultipartFileService;
 import web.bookOrder.service.BookOrderService;
 
 @Service
@@ -20,10 +19,6 @@ public class BookOrderServiceImpl  implements  BookOrderService{
 	
 	@Autowired
 	private BookOrderDAO bookOrderdao;
-	
-	@Autowired
-	private MultipartFileService multipartFileService;
-	
 	
 	// 교재배송 리스트 (택배)
 	@Override @SuppressWarnings("rawtypes")
