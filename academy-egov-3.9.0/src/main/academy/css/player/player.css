@@ -1,0 +1,135 @@
+@charset "utf-8";
+
+/*reset*/
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, del, dfn, em, img, q, 
+dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td{
+    margin:0;padding:0;border:0;font-weight:inherit;font-style:inherit;font-size:100%;font-family:inherit;vertical-align:baseline}
+body{font-family:"돋움",Dotum,Arial,sans-serif;font-size:75%;color:#888;line-height:1;word-break:break-all}
+ol,ul{list-style:none;}
+table{border-collapse:collapse;border-spacing:0}
+table, th, td{vertical-align:middle}
+blockquote:before, blockquote:after, q:before, q:after{content:""}
+blockquote, q{quotes:"" ""}
+/*:focus{outline:none}*/
+img{border:0 none;vertical-align:top;font-size:0;line-height:0}
+/*a:focus img{border-bottom:1px solid #000}*/
+a img{border:none}
+a{color:#777;text-decoration:none}
+a:focus{text-decoration:underline}
+input, textarea, select, file, button{margin:0;padding:0;vertical-align:middle;font-size:1em;color:#888;font-family:"돋움",Dotum,Arial,sans-serif}
+select{font-family:"돋움",Dotum,Arial,sans-serif}
+button, input{overflow:visible}/*ie6,7 여분의 패딩제거*/
+hr{display:none}
+ins{text-decoration:none}
+del{text-decoration:line-through}
+abbr, acronym, dfn{border-bottom:1px dotted #666;cursor:help}
+em, address{font-style:normal}
+.skip, hr, legend{position:absolute;left:-5000px}
+.skip, hr, legend, caption{visibility:hidden;width:0;height:0;font-size:0;line-height:0;overflow:hidden}
+button{margin:0;padding:0;border:0}
+body{background:#424850}
+/**/
+.playerWrap{position:relative;overflow:hidden;width:960px;height:520px;padding:0 10px 0 5px;background:#424850}
+.playerWrap .playerAr{float:left}
+.playerWrap .playerAr h1{height:40px;background:url(../../img/h_dot.png) no-repeat 10px 50%;padding-left:34px;font-size:14px;font-weight:bold;color:#fff;line-height:40px}
+.playerWrap .playerAr .st{font-weight:normal;font-size:12px;}
+.playerWrap .playerAr .movAr{width:680px;height:470px;border:1px solid #000;background:#000}
+.playerWrap .playerListAr{float:right;width:270px}
+.playerWrap .playerListAr .head{height:33px;padding-top:7px;text-align:right}
+.playerWrap .playerListAr .foot{height:55px;padding-top:5px;text-align:center}
+.playerWrap .playerListAr .content{height:420px}
+.playerWrap .openClose{position:absolute;top:50%;right:0;width:10px;height:100px;margin-top:-50px;background:url(../../img/openclose.png) no-repeat;font-size:0;cursor:pointer;}
+.playerWrap .openClose.close{background:url(../../img/openclose.png) no-repeat right top}
+/* 시원스쿨용 */
+.siwonplayerWrap{position:relative;overflow:hidden;width:995px;height:523px;padding:0 10px 0 5px;background:#424850}
+.siwonplayerWrap .playerAr{float:left}
+.siwonplayerWrap .playerAr h1{height:40px;background:url(../../img/h_dot.png) no-repeat 10px 50%;padding-left:34px;font-size:14px;font-weight:bold;color:#fff;line-height:40px}
+.siwonplayerWrap .playerAr .st{font-weight:normal;font-size:12px;}
+.siwonplayerWrap .playerAr .movAr{width:720px;height:480px;border:1px solid #000;background:#000}
+.siwonplayerWrap .playerListAr{float:right;width:270px}
+.siwonplayerWrap .playerListAr .head{height:33px;padding-top:7px;text-align:right}
+.siwonplayerWrap .playerListAr .foot{height:55px;padding-top:5px;text-align:center}
+.siwonplayerWrap .playerListAr .content{height:420px}
+.siwonplayerWrap .openClose{position:absolute;top:50%;right:0;width:10px;height:100px;margin-top:-50px;background:url(../../img/openclose.png) no-repeat;font-size:0;cursor:pointer;}
+.siwonplayerWrap .openClose.close{background:url(../../img/openclose.png) no-repeat right top}
+.pConts{;}
+.pTab{overflow:hidden;border:1px solid #000}
+.pTab li{float:left;width:50%;background:url(../../img/bg_tab.png) repeat-x}
+.pTab li a{display:block;height:33px;padding-top:14px;text-align:center}
+.pTab li:first-child a{border-right:1px solid #323a42}
+.pTab li:last-child a{border-left:1px solid #58636f}
+.pTab.pTabFree li{width:100%;}
+.listHead table{width:100%;background:#424850}
+.listHead table td{border-left:1px solid #1f262c;border-bottom:1px solid #1f262c}
+.listHead table td:first-child{border-left:0}
+.listHead table td span{display:block;border-left:1px solid #565e68;border-top:1px solid #565e68;height:29px;font-size:11px;color:#fff;line-height:29px;text-align:center}
+.listHead table .th1{width:15%}
+.listHead table .th2{}
+.listHead table .th3{width:25%}
+.listBody{overflow:hidden;overflow-y:scroll;height:336px;scrollbar-track-color:#363d44;scrollbar-face-color: #565e68;scrollbar-shadow-color:#565e68;background:#2e3238;border-top:1px solid #565e68}
+.listBody.bookMk{height:180px;border-bottom:1px solid #000}
+.listBody table{width:100%}
+.listBody table td{padding:10px 0 8px;border-bottom:1px solid #4d555e;text-align:center}
+.listBody table .td1{width:15%}
+.listBody table .td2{}
+.listBody table .td3{width:15%}
+.listBody table .td4{width:30%;font-weight:bold;color:#afd3cc}
+.listBody table tr .file{display:block;width:18px;height:19px;margin:0 auto;background:url(../../img/ico_file.png) no-repeat;font-size:0}
+.listBody table tr.hv td{color:#afd3cc}
+.listBody table tr.hv .file{background:url(../../img/ico_file_on.png) no-repeat}
+.btnAr{background:#424850;text-align:right;background:#424850}
+.contWp{border:1px solid #000;background:#2e3238}
+.bookMkAdd{margin-top:4px;background:#2e3238;border:1px solid #000}
+.bookMkAdd .txt{padding:0 0 0 15px;border-top:1px solid #67717d;border-bottom:1px solid #000;font-size:11px;line-height:1.6}
+.bookMkAdd .txt textarea{width:100%;background:#2e3238;border:0;scrollbar-track-color:#363d44;scrollbar-face-color: #565e68;scrollbar-shadow-color:#565e68;padding:5px 0;height:60px;}
+.btnAr{padding:3px;border-top:1px solid #565e68}
+.bookMkAdd .txt textarea{height:40px}
+
+/*저화질*/
+.playerWrap.lowPlayer{width:920px;height:410px}
+.playerWrap.lowPlayer .playerAr .movAr{width:640px;height:356px} 
+.playerWrap.lowPlayer .playerListAr .content{height:324px}
+.playerWrap.lowPlayer .listBody{height:238px}
+.playerWrap.lowPlayer .listBody.bookMk{height:105px}
+.contWp.lowPlayerCont .listBody{height:238px}
+.contWp.lowPlayerCont .listBody.bookMk{height:105px}
+
+/*고화질*/
+.playerWrap.highPlayer{width:1240px;height:545px}
+.playerWrap.highPlayer .playerAr .movAr{width:960px;height:494px} 
+.playerWrap.highPlayer .playerListAr .content{height:455px}
+.playerWrap.highPlayer .listBody{height:365px}
+.playerWrap.highPlayer .listBody.bookMk{height:235px}
+.playerWrap.highPlayer .playerListAr .foot{height:auto}
+.contWp.highPlayerCont .listBody{height:365px}
+.contWp.highPlayerCont .listBody.bookMk{height:235px}
+
+/*와이드*/
+.playerWrap.widePlayer{width:1172px}
+.playerWrap.widePlayer .playerAr .movAr{width:892px} 
+.playerWrap.widePlayer .playerListAr .foot{height:auto}
+.playerWrap.widePlayer2{width:1560px;height:680px}
+.playerWrap.widePlayer2 .playerAr .movAr{width:1280px;height:630px} 
+.playerWrap.widePlayer2 .playerListAr .content{height:580px}
+.playerWrap.widePlayer2 .listBody{height:490px}
+.playerWrap.widePlayer2 .bookMkAdd .txt textarea{height:60px}
+.playerWrap.widePlayer2 .playerListAr .foot{height:auto}
+.contWp.widePlayerCont .listBody.bookMk{height:200px}
+.contWp.widePlayer2Cont .listBody{height:490px}
+.contWp.widePlayer2Cont .listBody.bookMk{height:345px}
+
+.playerWrap.movArOnly{width:680px}
+.playerWrap.lowPlayer.movArOnly{width:640px}
+.playerWrap.highPlayer.movArOnly{width:960px}
+.playerWrap.widePlayer.movArOnly{width:892px}
+.playerWrap.widePlayer2.movArOnly{width:1280px}
+
+/*단축키*/
+.ctrlKey{display:none;position:absolute;top:30px;right:9px;width:262px;height:176px}
+
+iframe{margin:0;padding:0;}
+.page{padding:10px 0;text-align:center;vertical-align:middle}
+.page strong{color:#fff}
+.page .p_prev, .page .p_next{padding:2px 5px;border:1px solid #4d555e;background:transparent;cursor:pointer}
+
+

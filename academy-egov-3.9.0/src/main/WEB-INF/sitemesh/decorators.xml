@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<decorators defaultdir="/WEB-INF/sitemesh/decorators">
+    <decorator name="layout" page="layout.jsp">
+        <pattern>/*.do</pattern>
+    </decorator>
+
+    <decorator name="layoutPopup" page="layoutPopup.jsp">
+        <pattern>/*.pop</pattern>
+    </decorator>
+
+    <decorator name="layoutPopup2" page="layoutPopup2.jsp">
+        <pattern>/*.pop2</pattern>
+    </decorator>
+
+    <decorator name="blankpanel" page="blankpanel.jsp"/>
+</decorators>

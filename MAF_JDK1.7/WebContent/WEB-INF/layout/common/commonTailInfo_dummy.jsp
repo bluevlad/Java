@@ -1,1 +1,0 @@
-<%@ page contentType="charset=UTF-8"%>
