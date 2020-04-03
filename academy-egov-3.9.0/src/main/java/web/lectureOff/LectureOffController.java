@@ -1,4 +1,4 @@
-package com.willbes.web.lectureOff;
+package web.lectureOff;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,13 +26,13 @@ import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.MafUtil;
 import com.willbes.platform.util.file.FileUtil;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.book.service.BookService;
-import com.willbes.web.excel.LectureOffListExcel;
-import com.willbes.web.lectureOff.service.LectureOffService;
-import com.willbes.web.lecture.service.TeacherService;
+import web.book.service.BookService;
+import web.excel.LectureOffListExcel;
+import web.lectureOff.service.LectureOffService;
+import web.lecture.service.TeacherService;
 import egovframework.rte.fdl.property.EgovPropertyService;
 import com.willbes.platform.util.excel.ExcelDownloadView;
-import com.willbes.web.excel.LectureOffListExcel;
+import web.excel.LectureOffListExcel;
 
 @RequestMapping(value="/lectureOff")
 @Controller

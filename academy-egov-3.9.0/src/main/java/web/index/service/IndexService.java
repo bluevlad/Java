@@ -1,4 +1,4 @@
-package com.willbes.web.index.service;
+package web.index.service;
 
 import java.util.HashMap;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.willbes.web.lecture;
+package web.lecture;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.file.FileUtil;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.book.service.BookService;
-import com.willbes.web.lecture.service.LectureMstService;
-import com.willbes.web.lecture.service.TeacherService;
+import web.book.service.BookService;
+import web.lecture.service.LectureMstService;
+import web.lecture.service.TeacherService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

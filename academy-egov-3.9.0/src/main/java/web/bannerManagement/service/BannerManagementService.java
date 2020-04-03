@@ -1,4 +1,4 @@
-package com.willbes.web.bannerManagement.service;
+package web.bannerManagement.service;
 
 import java.util.HashMap;
 import java.util.List;

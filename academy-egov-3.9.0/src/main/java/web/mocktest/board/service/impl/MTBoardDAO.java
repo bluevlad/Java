@@ -1,11 +1,11 @@
-package com.willbes.web.mocktest.board.service.impl;
+package web.mocktest.board.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.web.board.service.impl.BoardDAO;
+import web.board.service.impl.BoardDAO;
 
 @Repository
 public class MTBoardDAO extends BoardDAO {

@@ -1,4 +1,4 @@
-package com.willbes.web.tm.service.impl;
+package web.tm.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.willbes.web.tm.service.TMService;
+import web.tm.service.TMService;
 
 @Service(value="tmservice")
 public class TMServiceImpl implements TMService {

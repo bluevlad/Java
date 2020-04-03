@@ -1,4 +1,4 @@
-package com.willbes.web.mocktest.lectureFees.service;
+package web.mocktest.lectureFees.service;
 
 import java.util.HashMap;
 import java.util.List;

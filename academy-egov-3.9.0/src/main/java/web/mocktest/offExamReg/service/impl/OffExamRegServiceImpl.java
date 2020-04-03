@@ -1,4 +1,4 @@
-package com.willbes.web.mocktest.offExamReg.service.impl;
+package web.mocktest.offExamReg.service.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,8 +8,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.willbes.web.mocktest.offExamReg.OffExamRegVO;
-import com.willbes.web.mocktest.offExamReg.service.OffExamRegService;
+import web.mocktest.offExamReg.OffExamRegVO;
+import web.mocktest.offExamReg.service.OffExamRegService;
 
 @Service
 public class OffExamRegServiceImpl implements OffExamRegService {

@@ -1,4 +1,4 @@
-package com.willbes.web.box.service.impl;
+package web.box.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,8 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.willbes.web.box.service.impl.BoxDAO;
-import com.willbes.web.box.service.BoxService;
+import web.box.service.impl.BoxDAO;
+import web.box.service.BoxService;
 
 @Service(value="boxservice")
 public class BoxServiceImpl implements BoxService {

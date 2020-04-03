@@ -1,4 +1,4 @@
-package com.willbes.web.manage;
+package web.manage;
 
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
@@ -22,13 +22,13 @@ import org.springframework.web.servlet.View;
 
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.MafUtil;
-import com.willbes.web.manage.excel.MovieSalesExcel;
-import com.willbes.web.manage.excel.TeacherExcelDownload;
-import com.willbes.web.manage.excel.offAllSalesExcel;
-import com.willbes.web.manage.excel.offLecSalesExcel;
-import com.willbes.web.manage.excel.offReceivedExcel;
-import com.willbes.web.manage.excel.onReceivedExcel;
-import com.willbes.web.manage.service.CategorySaleService;
+import web.manage.excel.MovieSalesExcel;
+import web.manage.excel.TeacherExcelDownload;
+import web.manage.excel.offAllSalesExcel;
+import web.manage.excel.offLecSalesExcel;
+import web.manage.excel.offReceivedExcel;
+import web.manage.excel.onReceivedExcel;
+import web.manage.service.CategorySaleService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

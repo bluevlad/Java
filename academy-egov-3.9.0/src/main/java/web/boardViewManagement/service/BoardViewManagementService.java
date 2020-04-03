@@ -1,4 +1,4 @@
-package com.willbes.web.boardViewManagement.service;
+package web.boardViewManagement.service;
 
 import java.util.HashMap;
 import java.util.List;

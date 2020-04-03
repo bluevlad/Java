@@ -1,14 +1,14 @@
-package com.willbes.web.login.service.impl;
+package web.login.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class LoginDAO extends CmmAbstractMapper {
+public class LoginDAO extends EgovComAbstractDAO {
 
 	public List<HashMap<String, String>> login(HashMap<String, String> params){
 		return getSqlSession().selectList("login.login", params);

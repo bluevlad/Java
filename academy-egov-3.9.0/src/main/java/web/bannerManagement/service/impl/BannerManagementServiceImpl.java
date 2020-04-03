@@ -1,4 +1,4 @@
-package com.willbes.web.bannerManagement.service.impl;
+package web.bannerManagement.service.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,7 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.willbes.web.bannerManagement.service.BannerManagementService;
+import web.bannerManagement.service.BannerManagementService;
 
 @Service
 public class BannerManagementServiceImpl  implements  BannerManagementService{

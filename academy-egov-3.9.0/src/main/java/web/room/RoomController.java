@@ -1,4 +1,4 @@
-package com.willbes.web.room;
+package web.room;
 
 import java.io.File;
 import java.net.URLDecoder;
@@ -31,11 +31,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.excel.ExcelDownloadView;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.room.service.RoomService;
+import web.room.service.RoomService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 
-import com.willbes.web.memberManagement.service.MemberManagementService;
+import web.memberManagement.service.MemberManagementService;
 
 @RequestMapping(value = "/room")
 @Controller

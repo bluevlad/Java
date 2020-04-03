@@ -1,4 +1,4 @@
-package com.willbes.web.boardManagement;
+package web.boardManagement;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.boardManagement.service.BoardManagementService;
+import web.boardManagement.service.BoardManagementService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

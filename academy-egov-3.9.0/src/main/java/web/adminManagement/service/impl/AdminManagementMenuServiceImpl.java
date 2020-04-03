@@ -1,4 +1,4 @@
-package com.willbes.web.adminManagement.service.impl;
+package web.adminManagement.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.willbes.web.adminManagement.service.AdminManagementMenuService;
+import web.adminManagement.service.AdminManagementMenuService;
 
 @Service
 public class AdminManagementMenuServiceImpl  implements  AdminManagementMenuService{

@@ -1,4 +1,4 @@
-package com.willbes.web.lectureReply.service;
+package web.lectureReply.service;
 
 import java.util.HashMap;
 import java.util.List;

@@ -1,14 +1,14 @@
-package com.willbes.web.dday.service.impl;
+package web.dday.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class DdayDAO extends CmmAbstractMapper {
+public class DdayDAO extends EgovComAbstractDAO {
 
 	public List<HashMap<String, String>> categoryList(HashMap<String, String> params) {
 		return getSqlSession().selectList("dday.categoryList", params);

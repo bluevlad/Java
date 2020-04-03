@@ -1,4 +1,4 @@
-package com.willbes.web.mocktest.stats;
+package web.mocktest.stats;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,9 +21,9 @@ import org.springframework.web.servlet.View;
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.excel.ExcelDownloadView;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.mocktest.mouigosa.service.MouigosaService;
-import com.willbes.web.mocktest.offExamReg.service.OffExamRegService;
-import com.willbes.web.mocktest.stats.service.StatsService;
+import web.mocktest.mouigosa.service.MouigosaService;
+import web.mocktest.offExamReg.service.OffExamRegService;
+import web.mocktest.stats.service.StatsService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

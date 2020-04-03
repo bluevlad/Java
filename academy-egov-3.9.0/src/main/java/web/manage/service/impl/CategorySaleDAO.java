@@ -1,4 +1,4 @@
-package com.willbes.web.manage.service.impl;
+package web.manage.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,10 +6,10 @@ import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class CategorySaleDAO extends CmmAbstractMapper {
+public class CategorySaleDAO extends EgovComAbstractDAO {
 
 	/**
 	 * 경영관리 - 온라인 직종별 매출 리스트

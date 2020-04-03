@@ -1,4 +1,4 @@
-package com.willbes.web.box;
+package web.box;
 
 import java.net.URLDecoder;
 import java.text.DateFormat;
@@ -28,8 +28,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.excel.ExcelDownloadView;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.box.service.BoxService;
-import com.willbes.web.memberManagement.service.MemberManagementService;
+import web.box.service.BoxService;
+import web.memberManagement.service.MemberManagementService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

@@ -1,4 +1,4 @@
-package com.willbes.web.lectureReply.service.impl;
+package web.lectureReply.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,7 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.willbes.web.lectureReply.service.LectureReplyService;
+import web.lectureReply.service.LectureReplyService;
 
 @Service
 public class LectureReplyServiceImpl  implements  LectureReplyService{

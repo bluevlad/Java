@@ -1,4 +1,4 @@
-package com.willbes.web.mocktest.offerer.service.impl;
+package web.mocktest.offerer.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.willbes.web.mocktest.offerer.service.OffererService;
-import com.willbes.web.mocktest.offerer.service.impl.OffererDAO;
+import web.mocktest.offerer.service.OffererService;
+import web.mocktest.offerer.service.impl.OffererDAO;
 
 @Service(value="offererservice")
 public class OffererServiceImpl implements OffererService{

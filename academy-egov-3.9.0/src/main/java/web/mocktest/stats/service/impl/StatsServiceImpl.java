@@ -1,4 +1,4 @@
-package com.willbes.web.mocktest.stats.service.impl;
+package web.mocktest.stats.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,8 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.willbes.web.mocktest.stats.service.StatsService;
-import com.willbes.web.mocktest.stats.service.impl.StatsDAO;
+import web.mocktest.stats.service.StatsService;
+import web.mocktest.stats.service.impl.StatsDAO;
 
 @Service(value="statsservice")
 public class StatsServiceImpl implements StatsService{

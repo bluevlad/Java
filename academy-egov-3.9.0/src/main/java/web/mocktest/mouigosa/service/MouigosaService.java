@@ -1,4 +1,4 @@
-package com.willbes.web.mocktest.mouigosa.service;
+package web.mocktest.mouigosa.service;
 
 import java.util.List;
 import java.util.Map;

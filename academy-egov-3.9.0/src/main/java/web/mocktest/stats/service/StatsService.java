@@ -1,4 +1,4 @@
-package com.willbes.web.mocktest.stats.service;
+package web.mocktest.stats.service;
 
 import java.util.HashMap;
 import java.util.List;

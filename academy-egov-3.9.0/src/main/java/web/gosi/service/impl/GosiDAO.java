@@ -1,14 +1,14 @@
-package com.willbes.web.gosi.service.impl;
+package web.gosi.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class GosiDAO extends CmmAbstractMapper {
+public class GosiDAO extends EgovComAbstractDAO {
 
 	public List<HashMap<String, String>> GosiList(HashMap<String, String> params){
 		return getSqlSession().selectList("gosi.GosiList", params);

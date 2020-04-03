@@ -1,4 +1,4 @@
-package com.willbes.web.eventManagement;
+package web.eventManagement;
 
 
 import java.io.UnsupportedEncodingException;
@@ -28,14 +28,14 @@ import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.excel.ExcelDownloadView;
 import com.willbes.platform.util.file.FileUtil;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.adminManagement.service.AdminManagementCodeService;
-import com.willbes.web.book.service.BookService;
-import com.willbes.web.eventManagement.service.LecEventMngService;
-import com.willbes.web.lecture.service.LectureService;
-import com.willbes.web.lecture.service.TeacherService;
-import com.willbes.web.manage.excel.MovieSalesExcel;
-import com.willbes.web.productOrder.service.ProductOrderService;
-import com.willbes.web.excel.LecEventExcel;
+import web.adminManagement.service.AdminManagementCodeService;
+import web.book.service.BookService;
+import web.eventManagement.service.LecEventMngService;
+import web.lecture.service.LectureService;
+import web.lecture.service.TeacherService;
+import web.manage.excel.MovieSalesExcel;
+import web.productOrder.service.ProductOrderService;
+import web.excel.LecEventExcel;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

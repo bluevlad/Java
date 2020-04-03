@@ -1,4 +1,4 @@
-package com.willbes.web.book.service.impl;
+package web.book.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,8 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.willbes.web.book.service.BookService;
-import com.willbes.web.book.service.impl.BookDAO;
+import web.book.service.BookService;
+import web.book.service.impl.BookDAO;
 
 @Service(value="bookservice")
 public class BookServiceImpl implements BookService{

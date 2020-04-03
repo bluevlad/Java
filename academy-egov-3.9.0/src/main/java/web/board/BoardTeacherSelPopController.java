@@ -1,4 +1,4 @@
-package com.willbes.web.board;
+package web.board;
 
 import java.util.HashMap;
 
@@ -11,7 +11,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.willbes.platform.util.CommonUtil;
-import com.willbes.web.board.service.BoardService;
+import web.board.service.BoardService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

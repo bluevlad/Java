@@ -1,4 +1,4 @@
-package com.willbes.web.eventManagement.service;
+package web.eventManagement.service;
 
 import java.util.HashMap;
 import java.util.List;

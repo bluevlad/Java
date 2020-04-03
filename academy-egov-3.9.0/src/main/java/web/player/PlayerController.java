@@ -1,4 +1,4 @@
-package com.willbes.web.player;
+package web.player;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.lecture.service.LectureService;
+import web.lecture.service.LectureService;
 import com.willbes.platform.axis.*;
 import com.willbes.platform.axis.security.cryptography.*;
 

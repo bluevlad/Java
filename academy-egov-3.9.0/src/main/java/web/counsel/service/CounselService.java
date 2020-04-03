@@ -1,4 +1,4 @@
-package com.willbes.web.counsel.service;
+package web.counsel.service;
 
 import java.util.HashMap;
 import java.util.List;

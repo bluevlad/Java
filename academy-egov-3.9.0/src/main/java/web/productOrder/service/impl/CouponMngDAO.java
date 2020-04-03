@@ -1,14 +1,14 @@
-package com.willbes.web.productOrder.service.impl;
+package web.productOrder.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class CouponMngDAO extends CmmAbstractMapper {
+public class CouponMngDAO extends EgovComAbstractDAO {
 
 	public List<HashMap<String, String>> getCoopList(HashMap<String, String> params) {
 		return getSqlSession().selectList("CouponMng.getCoopList", params);

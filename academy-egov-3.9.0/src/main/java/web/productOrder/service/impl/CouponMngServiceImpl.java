@@ -1,4 +1,4 @@
-package com.willbes.web.productOrder.service.impl;
+package web.productOrder.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,7 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.willbes.web.productOrder.service.CouponMngService;
+import web.productOrder.service.CouponMngService;
 
 @Service
 public class CouponMngServiceImpl  implements  CouponMngService{

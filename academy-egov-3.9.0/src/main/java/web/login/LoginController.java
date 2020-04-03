@@ -1,4 +1,4 @@
-package com.willbes.web.login;
+package web.login;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.willbes.platform.util.CommonUtil;
-import com.willbes.web.login.service.LoginService;
+import web.login.service.LoginService;
 
 @RequestMapping(value="/login")
 @Controller

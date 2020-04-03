@@ -1,4 +1,4 @@
-package com.willbes.web.bookCmmt.service.impl;
+package web.bookCmmt.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.willbes.web.bookCmmt.service.BookCmmtService;
+import web.bookCmmt.service.BookCmmtService;
 
 @Service
 public class BookCmmtServiceImpl  implements  BookCmmtService {

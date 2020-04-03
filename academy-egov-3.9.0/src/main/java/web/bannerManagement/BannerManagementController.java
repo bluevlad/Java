@@ -1,4 +1,4 @@
-package com.willbes.web.bannerManagement;
+package web.bannerManagement;
 
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
@@ -26,8 +26,8 @@ import com.willbes.cmm.service.CmmUseService;
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.file.FileUtil;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.adminManagement.service.AdminManagementCodeService;
-import com.willbes.web.bannerManagement.service.BannerManagementService;
+import web.adminManagement.service.AdminManagementCodeService;
+import web.bannerManagement.service.BannerManagementService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

@@ -1,4 +1,4 @@
-package com.willbes.web.stat.service.impl;
+package web.stat.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,7 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.willbes.web.stat.service.SalesStatService;
+import web.stat.service.SalesStatService;
 
 @Service(value="SalesStatService")
 public class SalesStatServiceImpl  implements  SalesStatService {

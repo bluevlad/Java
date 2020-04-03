@@ -1,17 +1,17 @@
-package com.willbes.web.productOrder.service.impl;
+package web.productOrder.service.impl;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class ProductOrderDAO extends CmmAbstractMapper {
+public class ProductOrderDAO extends EgovComAbstractDAO {
 
 	/* last modified 2014-08-20 */
 	/** log */

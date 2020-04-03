@@ -1,4 +1,4 @@
-package com.willbes.web.board.service.impl;
+package web.board.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,7 +7,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.willbes.web.board.service.BoardService;
+import web.board.service.BoardService;
 
 @Service
 public class BoardServiceImpl implements BoardService {

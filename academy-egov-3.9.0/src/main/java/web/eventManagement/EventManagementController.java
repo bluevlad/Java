@@ -1,4 +1,4 @@
-package com.willbes.web.eventManagement;
+package web.eventManagement;
 
 
 import java.io.UnsupportedEncodingException;
@@ -31,8 +31,8 @@ import com.willbes.platform.util.MafUtil;
 import com.willbes.platform.util.excel.ExcelDownloadView;
 import com.willbes.platform.util.file.FileUtil;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.eventManagement.service.EventManagementService;
-import com.willbes.web.lecture.service.TeacherService;
+import web.eventManagement.service.EventManagementService;
+import web.lecture.service.TeacherService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

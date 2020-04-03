@@ -1,4 +1,4 @@
-package com.willbes.web.coop;
+package web.coop;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -24,8 +24,8 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.file.FileUtil;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.adminManagement.service.AdminManagementCodeService;
-import com.willbes.web.coop.service.CoopBoardManagementService;
+import web.adminManagement.service.AdminManagementCodeService;
+import web.coop.service.CoopBoardManagementService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

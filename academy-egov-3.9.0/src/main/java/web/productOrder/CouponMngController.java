@@ -1,4 +1,4 @@
-package com.willbes.web.productOrder;
+package web.productOrder;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -28,8 +28,8 @@ import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.excel.ExcelDownloadView;
 import com.willbes.platform.util.MafUtil;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.freeOrder.service.FreeOrderService;
-import com.willbes.web.productOrder.service.CouponMngService;
+import web.freeOrder.service.FreeOrderService;
+import web.productOrder.service.CouponMngService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

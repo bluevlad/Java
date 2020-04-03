@@ -1,4 +1,4 @@
-package com.willbes.web.lectureOff.service.impl;
+package web.lectureOff.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,8 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.willbes.web.lectureOff.service.LectureOffService;
-import com.willbes.web.lectureOff.service.impl.LectureOffDAO;
+import web.lectureOff.service.LectureOffService;
+import web.lectureOff.service.impl.LectureOffDAO;
 
 @Service(value="lectureoffservice")
 public class LectureOffServiceImpl implements LectureOffService{

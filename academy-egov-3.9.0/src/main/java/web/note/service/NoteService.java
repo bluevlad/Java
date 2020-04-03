@@ -1,4 +1,4 @@
-package com.willbes.web.note.service;
+package web.note.service;
 
 import java.util.HashMap;
 import java.util.List;

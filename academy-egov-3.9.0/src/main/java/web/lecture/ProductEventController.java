@@ -1,4 +1,4 @@
-package com.willbes.web.lecture;
+package web.lecture;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.book.service.BookService;
-import com.willbes.web.lecture.service.LectureService;
-import com.willbes.web.lecture.service.ProductEventService;
-import com.willbes.web.lecture.service.TeacherService;
+import web.book.service.BookService;
+import web.lecture.service.LectureService;
+import web.lecture.service.ProductEventService;
+import web.lecture.service.TeacherService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

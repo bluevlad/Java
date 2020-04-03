@@ -1,14 +1,14 @@
-package com.willbes.web.mocktest.offerer.service.impl;
+package web.mocktest.offerer.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class OffererDAO extends CmmAbstractMapper {
+public class OffererDAO extends EgovComAbstractDAO {
 
     public List<HashMap<String, String>> offererClsClsList(HashMap<String, String> params){
         return getSqlSession().selectList("offerer.offererClsClsList", params);

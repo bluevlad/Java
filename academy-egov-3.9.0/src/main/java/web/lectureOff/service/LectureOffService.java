@@ -1,4 +1,4 @@
-package com.willbes.web.lectureOff.service;
+package web.lectureOff.service;
 
 import java.util.HashMap;
 import java.util.List;

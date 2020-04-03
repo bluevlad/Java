@@ -1,4 +1,4 @@
-package com.willbes.web.mocktest.offerer;
+package web.mocktest.offerer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,7 +17,7 @@ import org.springframework.web.servlet.View;
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.excel.ExcelDownloadView;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.mocktest.offerer.service.OffererService;
+import web.mocktest.offerer.service.OffererService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

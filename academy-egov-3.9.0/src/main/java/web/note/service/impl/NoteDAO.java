@@ -1,14 +1,14 @@
-package com.willbes.web.note.service.impl;
+package web.note.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class NoteDAO extends CmmAbstractMapper {
+public class NoteDAO extends EgovComAbstractDAO {
 
 	public List<HashMap<String, String>> noteList(HashMap<String, String> params){
 		return getSqlSession().selectList("note.noteList", params);

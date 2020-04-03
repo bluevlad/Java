@@ -1,4 +1,4 @@
-package com.willbes.web.mocktest.lectureFees.service.impl;
+package web.mocktest.lectureFees.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,8 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.willbes.web.mocktest.lectureFees.service.LectureFeesService;
-//import com.willbes.web.mocktest.offExamReg.service.OffExamRegService;
+import web.mocktest.lectureFees.service.LectureFeesService;
+//import web.mocktest.offExamReg.service.OffExamRegService;
 
 @Service
 public class LectureFeesServiceImpl implements LectureFeesService {

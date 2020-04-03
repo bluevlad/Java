@@ -1,4 +1,4 @@
-package com.willbes.web.gosi.service.impl;
+package web.gosi.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,8 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.willbes.web.gosi.service.GosiService;
-import com.willbes.web.gosi.service.impl.GosiDAO;
+import web.gosi.service.GosiService;
+import web.gosi.service.impl.GosiDAO;
 
 @Service(value="gosiservice")
 public class GosiServiceImpl implements GosiService{

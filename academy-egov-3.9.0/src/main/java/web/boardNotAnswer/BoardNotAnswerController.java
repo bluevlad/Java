@@ -1,4 +1,4 @@
-package com.willbes.web.boardNotAnswer;
+package web.boardNotAnswer;
 
 import java.io.File;
 import java.util.HashMap;
@@ -24,8 +24,8 @@ import com.willbes.cmm.util.StringUtil;
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.file.FileUtil;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.board.service.BoardService;
-import com.willbes.web.boardNotAnswer.service.BoardNotAnswerService;
+import web.board.service.BoardService;
+import web.boardNotAnswer.service.BoardNotAnswerService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

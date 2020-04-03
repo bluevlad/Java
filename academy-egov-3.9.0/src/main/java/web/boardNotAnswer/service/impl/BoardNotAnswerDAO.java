@@ -1,14 +1,14 @@
-package com.willbes.web.boardNotAnswer.service.impl;
+package web.boardNotAnswer.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class BoardNotAnswerDAO extends CmmAbstractMapper {
+public class BoardNotAnswerDAO extends EgovComAbstractDAO {
 
 	public List<HashMap<String, String>> boardList(HashMap<String, String> params) {
 		return getSqlSession().selectList("boardNotAnswer.boardList", params);

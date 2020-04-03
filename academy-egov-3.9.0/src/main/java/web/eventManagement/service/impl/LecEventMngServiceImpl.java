@@ -1,4 +1,4 @@
-package com.willbes.web.eventManagement.service.impl;
+package web.eventManagement.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,7 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.willbes.web.eventManagement.service.LecEventMngService;
+import web.eventManagement.service.LecEventMngService;
 
 @Service
 public class LecEventMngServiceImpl  implements  LecEventMngService{

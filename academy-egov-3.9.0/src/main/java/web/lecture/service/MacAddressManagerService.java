@@ -1,4 +1,4 @@
-package com.willbes.web.lecture.service;
+package web.lecture.service;
 
 import java.util.HashMap;
 import java.util.List;

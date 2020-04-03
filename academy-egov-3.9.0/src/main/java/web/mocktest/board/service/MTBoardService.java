@@ -1,9 +1,9 @@
-package com.willbes.web.mocktest.board.service;
+package web.mocktest.board.service;
 
 import java.util.HashMap;
 import java.util.List;
 
-import com.willbes.web.board.service.BoardService;
+import web.board.service.BoardService;
 
 public interface MTBoardService extends BoardService {
 

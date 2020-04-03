@@ -1,14 +1,14 @@
-package com.willbes.web.room.service.impl;
+package web.room.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class RoomDAO extends CmmAbstractMapper {
+public class RoomDAO extends EgovComAbstractDAO {
 
 	// 독서실 목록 조회  2013.11.08
 	public List<HashMap<String, String>> roomList(HashMap<String, String> params) {

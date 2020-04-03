@@ -1,4 +1,4 @@
-package com.willbes.web.lecture.service.impl;
+package web.lecture.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,9 +7,9 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.willbes.web.freeOrder.service.impl.FreeOrderDAO;
-import com.willbes.web.lecture.service.ProductEventService;
-import com.willbes.web.lecture.service.impl.ProductEventDAO;
+import web.freeOrder.service.impl.FreeOrderDAO;
+import web.lecture.service.ProductEventService;
+import web.lecture.service.impl.ProductEventDAO;
 
 @Service(value="ProductEventService")
 public class ProductEventServiceImpl implements ProductEventService{

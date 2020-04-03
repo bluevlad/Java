@@ -1,4 +1,4 @@
-package com.willbes.web.stat;
+package web.stat;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.stat.service.SalesStatService;
+import web.stat.service.SalesStatService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

@@ -1,4 +1,4 @@
-package com.willbes.web.boardViewManagement.service.impl;
+package web.boardViewManagement.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,10 +6,10 @@ import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class BoardViewManagementDAO extends CmmAbstractMapper {
+public class BoardViewManagementDAO extends EgovComAbstractDAO {
 
 	/**
 	 * @Method Name  : getCommonCodeList

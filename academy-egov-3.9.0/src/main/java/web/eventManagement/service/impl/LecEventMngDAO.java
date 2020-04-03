@@ -1,15 +1,15 @@
-package com.willbes.web.eventManagement.service.impl;
+package web.eventManagement.service.impl;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class LecEventMngDAO extends CmmAbstractMapper {
+public class LecEventMngDAO extends EgovComAbstractDAO {
 
 	public List<HashMap<String, String>> getEventList(Map<String, String> searchMap) {
 		return getSqlSession().selectList("LecEventMng.getEventList", searchMap);

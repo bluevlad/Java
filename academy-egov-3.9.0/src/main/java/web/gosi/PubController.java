@@ -1,4 +1,4 @@
-package com.willbes.web.gosi;
+package web.gosi;
 
 import java.io.File;
 import java.util.HashMap;
@@ -25,7 +25,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.file.FileUtil;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.gosi.service.PubService;
+import web.gosi.service.PubService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

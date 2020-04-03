@@ -1,4 +1,4 @@
-package com.willbes.web.lecture;
+package web.lecture;
 
 import java.net.URLDecoder;
 import java.util.HashMap;
@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.lecture.service.SubjectService;
-import com.willbes.web.lecture.service.TeacherService;
+import web.lecture.service.SubjectService;
+import web.lecture.service.TeacherService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

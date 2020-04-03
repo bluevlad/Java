@@ -1,14 +1,14 @@
-package com.willbes.web.tm.service.impl;
+package web.tm.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class TMDAO extends CmmAbstractMapper {
+public class TMDAO extends EgovComAbstractDAO {
 
 	// TM관리자 목록 조회  2013.12.30
 	public List<HashMap<String, String>> tmAdminList(HashMap<String, String> params) {

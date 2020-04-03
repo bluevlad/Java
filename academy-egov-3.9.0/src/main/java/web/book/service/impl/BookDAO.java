@@ -1,14 +1,14 @@
-package com.willbes.web.book.service.impl;
+package web.book.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class BookDAO extends CmmAbstractMapper {
+public class BookDAO extends EgovComAbstractDAO {
 
 	public List<HashMap<String, String>> bookList(HashMap<String, String> params){
 		return getSqlSession().selectList("book.bookList", params);

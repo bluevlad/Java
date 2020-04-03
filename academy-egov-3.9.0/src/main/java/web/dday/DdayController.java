@@ -1,4 +1,4 @@
-package com.willbes.web.dday;
+package web.dday;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.dday.service.DdayService;
+import web.dday.service.DdayService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

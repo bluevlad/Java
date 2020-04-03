@@ -1,4 +1,4 @@
-package com.willbes.web.mocktest.board.service.impl;
+package web.mocktest.board.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,8 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.willbes.web.board.service.impl.BoardServiceImpl;
-import com.willbes.web.mocktest.board.service.MTBoardService;
+import web.board.service.impl.BoardServiceImpl;
+import web.mocktest.board.service.MTBoardService;
 
 @Service
 public class MTBoardServiceImpl extends BoardServiceImpl implements MTBoardService {

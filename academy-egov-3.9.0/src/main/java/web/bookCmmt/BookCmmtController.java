@@ -1,4 +1,4 @@
-package com.willbes.web.bookCmmt;
+package web.bookCmmt;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.book.service.BookService;
-import com.willbes.web.bookCmmt.service.BookCmmtService;
-import com.willbes.web.lecture.service.KindService;
+import web.book.service.BookService;
+import web.bookCmmt.service.BookCmmtService;
+import web.lecture.service.KindService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

@@ -1,4 +1,4 @@
-package com.willbes.web.lecture.service.impl;
+package web.lecture.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.willbes.web.lecture.service.SeriesService;
+import web.lecture.service.SeriesService;
 
 @Service(value="seriesService")
 public class SeriesServiceImpl implements SeriesService {

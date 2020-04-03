@@ -1,14 +1,14 @@
-package com.willbes.web.mocktest.offExamReg.service.impl;
+package web.mocktest.offExamReg.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class OffExamRegDAO extends CmmAbstractMapper {
+public class OffExamRegDAO extends EgovComAbstractDAO {
 
 	public List<HashMap<String, String>> offExamList(HashMap<String, String> params){
 		return getSqlSession().selectList("offExamReg.offExamList", params);

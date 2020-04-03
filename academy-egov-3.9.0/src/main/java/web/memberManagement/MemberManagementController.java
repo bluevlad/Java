@@ -1,4 +1,4 @@
-package com.willbes.web.memberManagement;
+package web.memberManagement;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -33,8 +33,8 @@ import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.excel.ExcelDownloadView;
 import com.willbes.platform.util.mail.SendMail;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.memberManagement.service.MemberManagementService;
-import com.willbes.web.productOrder.service.ProductOrderService;
+import web.memberManagement.service.MemberManagementService;
+import web.productOrder.service.ProductOrderService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

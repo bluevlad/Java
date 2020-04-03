@@ -1,15 +1,15 @@
-package com.willbes.web.memberAdminManagement.service.impl;
+package web.memberAdminManagement.service.impl;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class MemberAdminManagementDAO extends CmmAbstractMapper {
+public class MemberAdminManagementDAO extends EgovComAbstractDAO {
 
 
 	/**

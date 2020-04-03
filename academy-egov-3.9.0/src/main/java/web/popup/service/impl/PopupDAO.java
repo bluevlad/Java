@@ -1,14 +1,14 @@
-package com.willbes.web.popup.service.impl;
+package web.popup.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class PopupDAO extends CmmAbstractMapper {
+public class PopupDAO extends EgovComAbstractDAO {
 
 	public List<HashMap<String, Object>> popupList(HashMap<String, String> params){
 		return getSqlSession().selectList("popup.popupList", params);

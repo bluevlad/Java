@@ -1,4 +1,4 @@
-package com.willbes.web.mocktest.board;
+package web.mocktest.board;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,9 +16,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.file.FileUtil;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.board.BoardController;
-import com.willbes.web.board.service.BoardService;
-import com.willbes.web.mocktest.offExamReg.service.OffExamRegService;
+import web.board.BoardController;
+import web.board.service.BoardService;
+import web.mocktest.offExamReg.service.OffExamRegService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

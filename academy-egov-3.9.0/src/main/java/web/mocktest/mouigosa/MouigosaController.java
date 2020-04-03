@@ -1,4 +1,4 @@
-package com.willbes.web.mocktest.mouigosa;
+package web.mocktest.mouigosa;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -30,9 +30,9 @@ import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.excel.ExcelRead;
 import com.willbes.platform.util.file.FileUtil;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.lecture.service.CategoryService;
-import com.willbes.web.lecture.service.KindService;
-import com.willbes.web.mocktest.mouigosa.service.MouigosaService;
+import web.lecture.service.CategoryService;
+import web.lecture.service.KindService;
+import web.mocktest.mouigosa.service.MouigosaService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

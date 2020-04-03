@@ -1,4 +1,4 @@
-package com.willbes.web.popup.service.impl;
+package web.popup.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.willbes.web.popup.service.PopupNewService;
+import web.popup.service.PopupNewService;
 
 @Service(value="popupnewservice")
 public class PopupNewServiceImpl implements PopupNewService{

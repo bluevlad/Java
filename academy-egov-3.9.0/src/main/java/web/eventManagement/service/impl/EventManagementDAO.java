@@ -1,15 +1,15 @@
-package com.willbes.web.eventManagement.service.impl;
+package web.eventManagement.service.impl;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class EventManagementDAO extends CmmAbstractMapper {
+public class EventManagementDAO extends EgovComAbstractDAO {
 
 	/**
 	 * @Method Name  : getMemberList

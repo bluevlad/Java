@@ -1,4 +1,4 @@
-package com.willbes.web.productOrder.service.impl;
+package web.productOrder.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.willbes.platform.util.file.service.MultipartFileService;
-import com.willbes.web.productOrder.service.ProductOrderService;
+import web.productOrder.service.ProductOrderService;
 
 @Service
 public class ProductOrderServiceImpl  implements  ProductOrderService{

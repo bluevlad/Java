@@ -1,14 +1,14 @@
-package com.willbes.web.adminManagement.service.impl;
+package web.adminManagement.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class AdminManagementMenuDAO extends CmmAbstractMapper {
+public class AdminManagementMenuDAO extends EgovComAbstractDAO {
 
 	/**
 	 * @Method Name  : getMenuTree

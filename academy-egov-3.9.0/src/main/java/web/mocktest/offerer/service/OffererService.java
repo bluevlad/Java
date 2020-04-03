@@ -1,4 +1,4 @@
-package com.willbes.web.mocktest.offerer.service;
+package web.mocktest.offerer.service;
 
 import java.util.HashMap;
 import java.util.List;

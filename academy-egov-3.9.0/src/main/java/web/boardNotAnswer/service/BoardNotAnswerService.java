@@ -1,4 +1,4 @@
-package com.willbes.web.boardNotAnswer.service;
+package web.boardNotAnswer.service;
 
 import java.util.HashMap;
 import java.util.List;

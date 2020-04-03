@@ -1,4 +1,4 @@
-package com.willbes.web.memberManagement.service.impl;
+package web.memberManagement.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.willbes.cmm.service.Globals;
 import com.willbes.cmm.service.MirProperties;
-import com.willbes.web.memberManagement.service.MemberManagementService;
+import web.memberManagement.service.MemberManagementService;
 
 @Service
 public class MemberManagementServiceImpl  implements  MemberManagementService{

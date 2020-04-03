@@ -1,4 +1,4 @@
-package com.willbes.web.bookCmmt.service;
+package web.bookCmmt.service;
 
 import java.util.HashMap;
 import java.util.List;

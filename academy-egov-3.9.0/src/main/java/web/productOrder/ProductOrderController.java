@@ -1,4 +1,4 @@
-package com.willbes.web.productOrder;
+package web.productOrder;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -42,10 +42,10 @@ import com.willbes.platform.util.excel.ExcelDownloadView;
 import com.willbes.platform.util.file.FileUtil;
 import com.willbes.platform.util.file.service.MultipartFileService;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.lecture.service.LectureService;
-import com.willbes.web.lecture.service.SubjectService;
-import com.willbes.web.lecture.service.TeacherService;
-import com.willbes.web.productOrder.service.ProductOrderService;
+import web.lecture.service.LectureService;
+import web.lecture.service.SubjectService;
+import web.lecture.service.TeacherService;
+import web.productOrder.service.ProductOrderService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

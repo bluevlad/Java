@@ -1,4 +1,4 @@
-package com.willbes.web.lecture;
+package web.lecture;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.lecture.service.MacAddressManagerService;
+import web.lecture.service.MacAddressManagerService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 	

@@ -1,4 +1,4 @@
-package com.willbes.web.lecture;
+package web.lecture;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.lecture.service.KindService;
+import web.lecture.service.KindService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

@@ -1,4 +1,4 @@
-package com.willbes.web.note.service.impl;
+package web.note.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.willbes.web.note.service.NoteService;
+import web.note.service.NoteService;
 
 @Service(value="noteservice")
 public class NoteServiceImpl implements NoteService{

@@ -1,14 +1,14 @@
-package com.willbes.web.lectureOff.service.impl;
+package web.lectureOff.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class LectureOffDAO extends CmmAbstractMapper {
+public class LectureOffDAO extends EgovComAbstractDAO {
 
 	public List<HashMap<String, String>> lectureList(HashMap<String, String> params){
 		return getSqlSession().selectList("lectureOff.lectureList", params);

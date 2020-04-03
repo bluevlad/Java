@@ -1,4 +1,4 @@
-package com.willbes.web.adminManagement.service.impl;
+package web.adminManagement.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,7 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.willbes.web.adminManagement.service.AdminManagementAuthService;
+import web.adminManagement.service.AdminManagementAuthService;
 
 @Service
 public class AdminManagementAuthServiceImpl  implements  AdminManagementAuthService {

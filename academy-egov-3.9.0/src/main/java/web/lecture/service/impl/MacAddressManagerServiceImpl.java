@@ -1,4 +1,4 @@
-package com.willbes.web.lecture.service.impl;
+package web.lecture.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.willbes.web.lecture.service.MacAddressManagerService;
+import web.lecture.service.MacAddressManagerService;
 
 @Service(value="macaddressmanagerservice")
 public class MacAddressManagerServiceImpl implements MacAddressManagerService{

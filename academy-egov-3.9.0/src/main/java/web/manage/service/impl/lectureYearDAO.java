@@ -1,4 +1,4 @@
-package com.willbes.web.manage.service.impl;
+package web.manage.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,10 +6,10 @@ import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class lectureYearDAO extends CmmAbstractMapper {
+public class lectureYearDAO extends EgovComAbstractDAO {
 
 	/**
 	 * 경영관리 - 년회원 패키지 매출 내역

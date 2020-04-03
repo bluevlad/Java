@@ -1,4 +1,4 @@
-package com.willbes.web.gosi.service;
+package web.gosi.service;
 
 import java.util.HashMap;
 import java.util.List;

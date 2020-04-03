@@ -1,14 +1,14 @@
-package com.willbes.web.bookCmmt.service.impl;
+package web.bookCmmt.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class BookCmmtDAO extends CmmAbstractMapper {
+public class BookCmmtDAO extends EgovComAbstractDAO {
 
     /**
      * @Method Name  : bookCmmtList

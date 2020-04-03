@@ -1,4 +1,4 @@
-package com.willbes.web.survey;
+package web.survey;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.adminManagement.service.AdminManagementCodeService;
-import com.willbes.web.survey.service.SurveyService;
+import web.adminManagement.service.AdminManagementCodeService;
+import web.survey.service.SurveyService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

@@ -1,4 +1,4 @@
-package com.willbes.web.lecture;
+package web.lecture;
 
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
@@ -35,11 +35,11 @@ import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.excel.ExcelDownloadView;
 import com.willbes.platform.util.file.FileUtil;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.book.service.BookService;
-import com.willbes.web.lecture.service.LectureService;
-import com.willbes.web.lecture.service.SubjectService;
-import com.willbes.web.lecture.service.TeacherService;
-import com.willbes.web.productOrder.service.ProductOrderService;
+import web.book.service.BookService;
+import web.lecture.service.LectureService;
+import web.lecture.service.SubjectService;
+import web.lecture.service.TeacherService;
+import web.productOrder.service.ProductOrderService;
 import com.willbes.cmm.service.MirProperties;
 
 import egovframework.rte.fdl.property.EgovPropertyService;

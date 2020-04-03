@@ -1,4 +1,4 @@
-package com.willbes.web.dday.service;
+package web.dday.service;
 
 import java.util.HashMap;
 import java.util.List;

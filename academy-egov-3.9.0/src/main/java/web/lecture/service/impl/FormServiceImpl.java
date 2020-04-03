@@ -1,4 +1,4 @@
-package com.willbes.web.lecture.service.impl;
+package web.lecture.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,8 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.willbes.web.lecture.service.FormService;
-import com.willbes.web.lecture.service.impl.FormDAO;
+import web.lecture.service.FormService;
+import web.lecture.service.impl.FormDAO;
 
 @Service(value="formservice")
 public class FormServiceImpl implements FormService{

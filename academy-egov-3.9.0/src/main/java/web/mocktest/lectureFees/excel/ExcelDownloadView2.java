@@ -1,4 +1,4 @@
-package com.willbes.web.mocktest.lectureFees.excel;
+package web.mocktest.lectureFees.excel;
 
 import java.io.IOException;
 import java.util.ArrayList;

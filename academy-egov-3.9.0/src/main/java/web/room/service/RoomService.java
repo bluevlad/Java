@@ -1,4 +1,4 @@
-package com.willbes.web.room.service;
+package web.room.service;
 
 import java.util.HashMap;
 import java.util.List;

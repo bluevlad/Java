@@ -1,4 +1,4 @@
-package com.willbes.web.lecture.service.impl;
+package web.lecture.service.impl;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.willbes.web.lecture.service.LectureService;
-import com.willbes.web.lecture.service.impl.LectureDAO;
+import web.lecture.service.LectureService;
+import web.lecture.service.impl.LectureDAO;
 
 @Service(value="lectureservice")
 public class LectureServiceImpl implements LectureService{

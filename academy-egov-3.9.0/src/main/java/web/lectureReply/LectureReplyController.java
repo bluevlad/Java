@@ -1,4 +1,4 @@
-package com.willbes.web.lectureReply;
+package web.lectureReply;
 
 
 import java.io.UnsupportedEncodingException;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.lectureReply.service.LectureReplyService;
+import web.lectureReply.service.LectureReplyService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

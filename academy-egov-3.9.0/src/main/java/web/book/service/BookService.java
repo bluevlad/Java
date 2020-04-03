@@ -1,4 +1,4 @@
-package com.willbes.web.book.service;
+package web.book.service;
 
 import java.util.HashMap;
 import java.util.List;

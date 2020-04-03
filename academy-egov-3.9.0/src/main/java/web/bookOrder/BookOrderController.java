@@ -1,4 +1,4 @@
-package com.willbes.web.bookOrder;
+package web.bookOrder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -44,8 +44,8 @@ import com.willbes.platform.util.excel.ExcelDownloadView;
 import com.willbes.platform.util.excel.ExcelRead;
 import com.willbes.platform.util.file.FileUtil;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.bookOrder.service.BookOrderService;
-import com.willbes.web.productOrder.service.ProductOrderService;
+import web.bookOrder.service.BookOrderService;
+import web.productOrder.service.ProductOrderService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

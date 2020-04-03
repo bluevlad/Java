@@ -1,4 +1,4 @@
-package com.willbes.web.mocktest.lectureFees;
+package web.mocktest.lectureFees;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.excel.ExcelRead;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.mocktest.lectureFees.excel.ExcelDownloadView2;
-import com.willbes.web.mocktest.lectureFees.service.LectureFeesService;
+import web.mocktest.lectureFees.excel.ExcelDownloadView2;
+import web.mocktest.lectureFees.service.LectureFeesService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

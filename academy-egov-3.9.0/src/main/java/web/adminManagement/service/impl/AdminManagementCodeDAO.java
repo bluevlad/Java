@@ -1,4 +1,4 @@
-package com.willbes.web.adminManagement.service.impl;
+package web.adminManagement.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,10 +6,10 @@ import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class AdminManagementCodeDAO extends CmmAbstractMapper { 
+public class AdminManagementCodeDAO extends EgovComAbstractDAO { 
 
 
 	/**

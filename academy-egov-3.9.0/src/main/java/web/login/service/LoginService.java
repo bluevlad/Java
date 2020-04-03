@@ -1,4 +1,4 @@
-package com.willbes.web.login.service;
+package web.login.service;
 
 import java.util.HashMap;
 import java.util.List;

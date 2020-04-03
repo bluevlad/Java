@@ -1,4 +1,4 @@
-package com.willbes.web.memberAdminManagement.service.impl;
+package web.memberAdminManagement.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,7 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.willbes.web.memberAdminManagement.service.MemberAdminManagementService;
+import web.memberAdminManagement.service.MemberAdminManagementService;
 
 @Service
 public class MemberAdminManagementServiceImpl  implements  MemberAdminManagementService{

@@ -1,4 +1,4 @@
-package com.willbes.web.manage;
+package web.manage;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import org.springframework.web.servlet.View;
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.excel.ExcelDownloadView;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.manage.service.lectureYearService;
+import web.manage.service.lectureYearService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

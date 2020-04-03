@@ -1,15 +1,15 @@
-package com.willbes.web.bannerManagement.service.impl;
+package web.bannerManagement.service.impl;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class BannerManagementDAO extends CmmAbstractMapper {
+public class BannerManagementDAO extends EgovComAbstractDAO {
 
     public List<HashMap<String, String>> getCateKindList(HashMap<String, String> params){
         return getSqlSession().selectList("bannerManagement.getCateKindList", params);

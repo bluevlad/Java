@@ -1,4 +1,4 @@
-package com.willbes.web.adminManagement;
+package web.adminManagement;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -15,11 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.willbes.platform.util.CommonUtil;
-import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.adminManagement.service.AdminManagementAuthService;
-
 import egovframework.rte.fdl.property.EgovPropertyService;
+import web.adminManagement.service.AdminManagementAuthService;
+import web.egov.util.CommonUtil;
+import web.egov.util.paging.Paging;
 
 /**
  * @FileName   : AdminManagementController.java

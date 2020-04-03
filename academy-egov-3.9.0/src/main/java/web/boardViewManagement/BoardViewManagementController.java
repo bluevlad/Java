@@ -1,4 +1,4 @@
-package com.willbes.web.boardViewManagement;
+package web.boardViewManagement;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -22,8 +22,8 @@ import org.springframework.web.servlet.View;
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.excel.ExcelDownloadView;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.boardViewManagement.service.BoardViewManagementService;
-import com.willbes.web.productOrder.service.ProductOrderService;
+import web.boardViewManagement.service.BoardViewManagementService;
+import web.productOrder.service.ProductOrderService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

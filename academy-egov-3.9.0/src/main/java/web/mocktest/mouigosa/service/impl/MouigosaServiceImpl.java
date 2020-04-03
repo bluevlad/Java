@@ -1,4 +1,4 @@
-package com.willbes.web.mocktest.mouigosa.service.impl;
+package web.mocktest.mouigosa.service.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.willbes.web.mocktest.mouigosa.service.MouigosaService;
+import web.mocktest.mouigosa.service.MouigosaService;
 
 @Service
 public class MouigosaServiceImpl  implements  MouigosaService{ 

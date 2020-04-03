@@ -1,4 +1,4 @@
-package com.willbes.web.note;
+package web.note;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.note.service.NoteService;
+import web.note.service.NoteService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

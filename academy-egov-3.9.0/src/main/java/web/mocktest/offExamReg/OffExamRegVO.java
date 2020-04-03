@@ -1,4 +1,4 @@
-package com.willbes.web.mocktest.offExamReg;
+package web.mocktest.offExamReg;
 
 public class OffExamRegVO {
 

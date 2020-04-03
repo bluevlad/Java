@@ -1,11 +1,7 @@
-package com.willbes.web.adminManagement;
+package web.adminManagement;
 
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -13,16 +9,13 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.willbes.platform.util.CommonUtil;
-import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.adminManagement.service.AdminManagementCodeService;
-
 import egovframework.rte.fdl.property.EgovPropertyService;
+import web.adminManagement.service.AdminManagementCodeService;
+import web.egov.util.CommonUtil;
 
 
 /**

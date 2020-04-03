@@ -1,4 +1,4 @@
-package com.willbes.web.popup.service;
+package web.popup.service;
 
 import java.util.HashMap;
 import java.util.List;

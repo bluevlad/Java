@@ -1,15 +1,14 @@
-package com.willbes.web.gosi.service.impl;
+package web.gosi.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class PubDAO extends CmmAbstractMapper {
+public class PubDAO extends EgovComAbstractDAO {
 
 	public List<HashMap<String, String>> getPubCategory(HashMap<String, String> params){
 		return getSqlSession().selectList("pub.getPubCategory", params);

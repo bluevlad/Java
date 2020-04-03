@@ -1,14 +1,14 @@
-package com.willbes.web.index.service.impl;
+package web.index.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class IndexDAO extends CmmAbstractMapper {
+public class IndexDAO extends EgovComAbstractDAO {
 
     public List<HashMap<String, String>> list(HashMap<String, String> params){
         return getSqlSession().selectList("index.list", params);

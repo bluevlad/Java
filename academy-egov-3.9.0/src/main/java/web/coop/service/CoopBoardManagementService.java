@@ -1,4 +1,4 @@
-package com.willbes.web.coop.service;
+package web.coop.service;
 
 import java.util.HashMap;
 import java.util.List;

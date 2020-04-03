@@ -1,4 +1,4 @@
-package com.willbes.web.productOrder.service;
+package web.productOrder.service;
 
 import java.util.HashMap;
 import java.util.List;

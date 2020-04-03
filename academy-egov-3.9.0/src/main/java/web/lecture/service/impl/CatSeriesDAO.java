@@ -1,11 +1,11 @@
-package com.willbes.web.lecture.service.impl;
+package web.lecture.service.impl;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class CatSeriesDAO extends CmmAbstractMapper {
+public class CatSeriesDAO extends EgovComAbstractDAO {
 
     public void catSeriesInsert(Object obj){
         getSqlSession().insert("catSeries.catSeriesInsert", obj);

@@ -1,16 +1,16 @@
-package com.willbes.web.freeOrder.service.impl;
+package web.freeOrder.service.impl;
 
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class FreeOrderDAO extends CmmAbstractMapper {
+public class FreeOrderDAO extends EgovComAbstractDAO {
 
 	/** log */
     protected static final Log Logger = LogFactory.getLog(FreeOrderDAO.class);

@@ -1,4 +1,4 @@
-package com.willbes.web.tm;
+package web.tm;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,16 +22,16 @@ import org.springframework.web.servlet.View;
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.excel.ExcelDownloadView;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.lecture.service.LectureService;
-import com.willbes.web.lecture.service.TeacherService;
-import com.willbes.web.tm.service.TMService;
+import web.lecture.service.LectureService;
+import web.lecture.service.TeacherService;
+import web.tm.service.TMService;
 import egovframework.rte.fdl.property.EgovPropertyService;
 
-import com.willbes.web.tm.excel.tmPassListExcel;
-import com.willbes.web.tm.excel.tmPassLecListExcel;
-import com.willbes.web.tm.excel.tmPassLecStdListExcel;
-import com.willbes.web.tm.excel.tmPassOrderListExcel;
-import com.willbes.web.tm.excel.tmPassBoardListExcel;
+import web.tm.excel.tmPassListExcel;
+import web.tm.excel.tmPassLecListExcel;
+import web.tm.excel.tmPassLecStdListExcel;
+import web.tm.excel.tmPassOrderListExcel;
+import web.tm.excel.tmPassBoardListExcel;
 
 @RequestMapping(value = "/tm")
 @Controller

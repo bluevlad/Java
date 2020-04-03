@@ -1,14 +1,14 @@
-package com.willbes.web.counsel.service.impl;
+package web.counsel.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class CounselDAO extends CmmAbstractMapper {
+public class CounselDAO extends EgovComAbstractDAO {
 
     // 상담운영 일자표  2015.01.06
     public List<HashMap<String, String>> dayList(Object obj) {

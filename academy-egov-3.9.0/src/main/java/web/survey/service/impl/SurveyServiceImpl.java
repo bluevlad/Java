@@ -1,4 +1,4 @@
-package com.willbes.web.survey.service.impl;
+package web.survey.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.willbes.web.survey.service.SurveyService;
+import web.survey.service.SurveyService;
 
 @Service(value="SurveyService")
 public class SurveyServiceImpl implements SurveyService{

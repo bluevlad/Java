@@ -1,4 +1,4 @@
-package com.willbes.web.board.service.impl;
+package web.board.service.impl;
 
 import java.util.HashMap;
 import java.util.List;

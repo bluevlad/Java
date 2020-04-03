@@ -1,4 +1,4 @@
-package com.willbes.web.stat.service.impl;
+package web.stat.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,10 +6,10 @@ import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class SalesStatDAO extends CmmAbstractMapper {
+public class SalesStatDAO extends EgovComAbstractDAO {
 
 	/**
 	 * 	경영관리 - 강사 정보 리스트

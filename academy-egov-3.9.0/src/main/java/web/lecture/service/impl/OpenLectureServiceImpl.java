@@ -1,4 +1,4 @@
-package com.willbes.web.lecture.service.impl;
+package web.lecture.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,8 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.willbes.web.lecture.service.OpenLectureService;
-import com.willbes.web.lecture.service.impl.OpenLectureDAO;
+import web.lecture.service.OpenLectureService;
+import web.lecture.service.impl.OpenLectureDAO;
 
 @Service(value="openlectureservice")
 public class OpenLectureServiceImpl implements OpenLectureService{

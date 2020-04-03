@@ -1,4 +1,4 @@
-package com.willbes.web.box.service;
+package web.box.service;
 
 import java.util.HashMap;
 import java.util.List;

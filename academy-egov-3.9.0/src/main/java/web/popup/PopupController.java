@@ -1,4 +1,4 @@
-package com.willbes.web.popup;
+package web.popup;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,8 +22,8 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.file.FileUtil;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.board.service.BoardService;
-import com.willbes.web.popup.service.PopupService;
+import web.board.service.BoardService;
+import web.popup.service.PopupService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

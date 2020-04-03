@@ -1,4 +1,4 @@
-package com.willbes.web.mocktest.stats;
+package web.mocktest.stats;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.mocktest.mouigosa.service.MouigosaService;
-import com.willbes.web.mocktest.stats.service.MockResultService;
+import web.mocktest.mouigosa.service.MouigosaService;
+import web.mocktest.stats.service.MockResultService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

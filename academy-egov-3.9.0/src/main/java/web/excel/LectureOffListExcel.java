@@ -1,4 +1,4 @@
-package com.willbes.web.excel;
+package web.excel;
 
 import java.util.HashMap;
 import java.util.List;

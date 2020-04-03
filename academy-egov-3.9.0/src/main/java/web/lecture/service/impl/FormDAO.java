@@ -1,14 +1,14 @@
-package com.willbes.web.lecture.service.impl;
+package web.lecture.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class FormDAO extends CmmAbstractMapper {
+public class FormDAO extends EgovComAbstractDAO {
 
 	public List<HashMap<String, String>> formList(HashMap<String, String> params){
 		return getSqlSession().selectList("form.formList", params);

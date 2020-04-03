@@ -1,4 +1,4 @@
-package com.willbes.web.survey.service.impl;
+package web.survey.service.impl;
 
 import java.util.HashMap;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.willbes.web.counsel;
+package web.counsel;
 
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.board.service.BoardService;
-import com.willbes.web.counsel.service.CounselService;
+import web.board.service.BoardService;
+import web.counsel.service.CounselService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

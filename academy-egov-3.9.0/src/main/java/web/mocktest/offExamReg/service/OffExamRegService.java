@@ -1,10 +1,10 @@
-package com.willbes.web.mocktest.offExamReg.service;
+package web.mocktest.offExamReg.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.willbes.web.mocktest.offExamReg.OffExamRegVO;
+import web.mocktest.offExamReg.OffExamRegVO;
 
 public interface OffExamRegService {
 

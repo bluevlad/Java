@@ -1,4 +1,4 @@
-package com.willbes.web.counsel.service.impl;
+package web.counsel.service.impl;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.willbes.platform.util.CommonUtil;
-import com.willbes.web.counsel.service.CounselService;
-import com.willbes.web.counsel.service.impl.CounselDAO;
+import web.counsel.service.CounselService;
+import web.counsel.service.impl.CounselDAO;
 
 @Service(value="counselservice")
 public class CounselServiceImpl implements CounselService {

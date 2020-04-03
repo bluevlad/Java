@@ -1,4 +1,4 @@
-package com.willbes.web.freeOrder.service;
+package web.freeOrder.service;
 
 import java.util.HashMap;
 import java.util.List;

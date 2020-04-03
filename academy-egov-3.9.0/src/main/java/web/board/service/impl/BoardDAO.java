@@ -1,14 +1,14 @@
-package com.willbes.web.board.service.impl;
+package web.board.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class BoardDAO extends CmmAbstractMapper {
+public class BoardDAO extends EgovComAbstractDAO {
 
 	public List<HashMap<String, String>> getRankCode(HashMap<String, String> params) {
 		return getSqlSession().selectList("board.getRankCode", params);

@@ -1,4 +1,4 @@
-package com.willbes.web.index;
+package web.index;
 
 import java.util.HashMap;
 import java.util.List;
@@ -11,8 +11,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.willbes.platform.util.CommonUtil;
-import com.willbes.web.index.service.IndexService;
-import com.willbes.web.login.service.LoginService;
+import web.index.service.IndexService;
+import web.login.service.LoginService;
 
 /**
  * @FileName   : IndexController.java

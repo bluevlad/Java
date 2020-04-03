@@ -1,4 +1,4 @@
-package com.willbes.web.freeOrder;
+package web.freeOrder;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -30,9 +30,9 @@ import com.willbes.platform.util.CommonUtil;
 import com.willbes.platform.util.excel.ExcelDownloadView;
 import com.willbes.platform.util.file.FileUtil;
 import com.willbes.platform.util.paging.Paging;
-import com.willbes.web.freeOrder.service.FreeOrderService;
-import com.willbes.web.login.service.LoginService;
-import com.willbes.web.productOrder.service.ProductOrderService;
+import web.freeOrder.service.FreeOrderService;
+import web.login.service.LoginService;
+import web.productOrder.service.ProductOrderService;
 
 import egovframework.rte.fdl.property.EgovPropertyService;
 

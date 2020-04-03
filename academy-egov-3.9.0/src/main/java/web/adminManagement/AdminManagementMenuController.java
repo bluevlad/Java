@@ -1,4 +1,4 @@
-package com.willbes.web.adminManagement;
+package web.adminManagement;
 
 import java.util.HashMap;
 
@@ -11,8 +11,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.willbes.platform.util.CommonUtil;
-import com.willbes.web.adminManagement.service.AdminManagementMenuService;
+import web.adminManagement.service.AdminManagementMenuService;
+import web.egov.util.CommonUtil;
 
 /**
  * @FileName   : AdminManagementController.java

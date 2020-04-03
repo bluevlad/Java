@@ -1,4 +1,4 @@
-package com.willbes.web.adminManagement.service;
+package web.adminManagement.service;
 
 import java.util.HashMap;
 import java.util.List;

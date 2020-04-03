@@ -1,4 +1,4 @@
-package com.willbes.web.dday.service.impl;
+package web.dday.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.willbes.web.dday.service.DdayService;
+import web.dday.service.DdayService;
 
 @Service
 public class DdayServiceImpl implements DdayService {

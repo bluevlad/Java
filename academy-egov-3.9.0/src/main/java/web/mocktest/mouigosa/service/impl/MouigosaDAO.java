@@ -1,14 +1,14 @@
-package com.willbes.web.mocktest.mouigosa.service.impl;
+package web.mocktest.mouigosa.service.impl;
 
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
-import com.willbes.cmm.service.impl.CmmAbstractMapper;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository
-public class MouigosaDAO extends CmmAbstractMapper {
+public class MouigosaDAO extends EgovComAbstractDAO {
 
     @SuppressWarnings({ "rawtypes" })
     public int deleteQuestionMouigosa(Map keyName){
