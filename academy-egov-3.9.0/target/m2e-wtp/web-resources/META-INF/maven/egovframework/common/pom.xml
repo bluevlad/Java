@@ -363,6 +363,8 @@
         </dependency>
         
         <!-- facebook 연동시 추가 -->
+        <!-- 
+         -->
         <dependency>
 		    <groupId>org.springframework.social</groupId>
 		    <artifactId>spring-social-facebook</artifactId>

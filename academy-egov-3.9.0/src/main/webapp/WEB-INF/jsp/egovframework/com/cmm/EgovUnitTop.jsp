@@ -6,8 +6,8 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/cmm/main.css' />">
+<link type="text/css" rel="stylesheet" href="/css/egovframework/com/cmm/main.css">
 <title>eGovFrame 공통 컴포넌트</title>
 </head>
 <body>

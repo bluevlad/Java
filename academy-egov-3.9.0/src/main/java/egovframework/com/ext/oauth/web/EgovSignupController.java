@@ -67,12 +67,6 @@ public class EgovSignupController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EgovSignupController.class);
 	
-	@Resource(name="signupService")
-	private EgovSignupService signupService;
-
-    //private ConnectionRepository connectionRepository;
-	private final ProviderSignInUtils providerSignInUtils;
-
 	@Inject
 	private OAuthVO naverAuthVO;
 	
@@ -81,28 +75,6 @@ public class EgovSignupController {
 
 	@Inject
 	private OAuthVO kakaoAuthVO;
-	
-	@Inject
-	public EgovSignupController(ConnectionFactoryLocator connectionFactoryLocator,UsersConnectionRepository connectionRepository) {
-		//this.providerSignInUtils = new ProviderSignInUtils();
-		this.providerSignInUtils = new ProviderSignInUtils(connectionFactoryLocator, connectionRepository);
-	}
-
-	@RequestMapping(value="/signup", method=RequestMethod.GET)
-	public String signupForm(WebRequest request) throws Exception {
-		Connection<?> connection = providerSignInUtils.getConnectionFromSession(request);
-		if (connection != null) {
-			UserProfile profile = connection.fetchUserProfile();
-
-			String key =  EgovStringUtil.remove(connection.getKey().toString(), ':');
-			String account = signupService.signup(profile, request, key);
-			if (account != null) {
-				providerSignInUtils.doPostSignUp(key, request);
-				return "redirect:/";
-			}
-		}
-		return "redirect:/";
-	}
 	
 	@RequestMapping(value = "/uat/uia/oauthLoginUsr", method = RequestMethod.GET)
 	public String login(Model model) throws Exception {
