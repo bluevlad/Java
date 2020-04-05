@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="counsel">
+
+    <!-- 상담계횟일정을 가져온다.  -->
+    <select id="dayList" parameterType="hashMap" resultType="hashMap">
+        SELECT SUBSTR(AA.SCH_DAY, 6, 5) V_DAY, AA.SCH_DAY, TO_CHAR(TO_DATE(AA.SCH_DAY), 'dy') WEEK,
+        (SELECT SUM(MAX_USR) FROM COUNSEL_SCH WHERE SCH_DAY = AA.SCH_DAY AND CAT_CD = AA.CAT_CD) MAX_USR,
+        (SELECT SUM(REQ_CNT) FROM COUNSEL_SCH WHERE SCH_DAY = AA.SCH_DAY AND CAT_CD = AA.CAT_CD) REQ_CNT,
+        AA.CAT_CD,
+        (SELECT BB.NAME FROM TB_CATEGORY_INFO BB WHERE BB.CODE = AA.CAT_CD) AS CAT_NM
+        FROM (
+            SELECT B.CAT_CD, B.SCH_DAY
+            FROM COUNSEL_TIME A, COUNSEL_SCH B
+            WHERE A.IDX = B.TS_IDX
+            <if test='SDate != "" and SDate != null'>
+            AND REPLACE(B.SCH_DAY, '-', '') BETWEEN #{SDate} AND #{EDate}
+            </if>
+            <if test="CATE_LIST != null and CATE_LIST.size() > 0">
+                AND B.CAT_CD IN
+              <foreach collection="CATE_LIST" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+              </foreach>
+            </if>
+            GROUP BY B.CAT_CD, B.SCH_DAY
+        ) AA
+        ORDER BY SCH_DAY DESC
+    </select>
+
+    <!-- 상담운영 일자별 정보를 모두 가져온다.  -->
+    <select id="counselList" parameterType="hashMap" resultType="hashMap">
+        SELECT A.TIME_SET, B.TS_IDX, B.MAX_USR, B.REQ_CNT, B.ISUSE, B.REQ_TYPE
+        FROM COUNSEL_TIME A, COUNSEL_SCH B
+        WHERE A.IDX = B.TS_IDX
+        AND B.SCH_DAY = #{SCH_DAY}
+        <if test="CAT_CD != null and CAT_CD != ''">
+        AND B.CAT_CD = #{CAT_CD}
+        </if>
+        ORDER BY TS_IDX ASC
+    </select>
+
+    <!-- 상담실 신청 정보를 가져온다.  -->
+    <select id="getCounselReqList" parameterType="hashMap" resultType="hashMap">
+        SELECT A.TIME_SET, B.SCH_DAY, B.TS_IDX, B.MAX_USR, B.REQ_CNT, B.ISUSE, B.REQ_TYPE, C.USER_ID, C.USER_NM
+        FROM COUNSEL_TIME A, COUNSEL_SCH B, COUNSEL_RST C
+        WHERE A.IDX = B.TS_IDX
+        AND B.SCH_DAY = C.SCH_DAY
+        AND B.TS_IDX = C.TS_IDX
+        AND B.CAT_CD = C.USER_CATEGORY
+        AND B.SCH_DAY = #{SCH_DAY}
+        AND C.RESERVE = 'Y'
+        <if test="CAT_CD != null and CAT_CD != ''">
+        AND B.CAT_CD = #{CAT_CD}
+        </if>
+    </select>
+
+    <!-- 상담신청자 리스트 조회  -->
+    <select id="getList" parameterType="hashMap" resultType="hashMap">
+        SELECT * FROM   (
+            SELECT A.*, ROWNUM RNUM
+            FROM (
+                SELECT B.SCH_DAY, A.TIME_SET, B.TS_IDX, B.MAX_USR, B.REQ_CNT, B.ISUSE, B.REQ_TYPE,
+                    C.USER_CATEGORY,
+                    (SELECT NAME FROM TB_CATEGORY_INFO INFO WHERE INFO.CODE = C.USER_CATEGORY ) AS USER_CATEGORY_NM,
+                    C.USER_PERIOD,
+                    CASE C.USER_PERIOD WHEN 'A' THEN '6개월 미만'
+                                       WHEN 'B' THEN '1년 미만'
+                                       WHEN 'C' THEN '1년 이상'
+                    END USER_PERIOD_NM,
+                    C.USER_LEC,
+                    GET_COUNSEL_USERLEC_NM(C.USER_LEC) AS USER_LEC_NM,
+                    C.USER_ID, C.USER_NM, C.USER_BIRTHDAY, C.USER_PHONE, C.USER_EMAIL,
+                    C.USER_CODE1, GET_COUNSEL_USERCODE_NM(C.USER_CODE1) AS USER_CODE1_NM,
+                    C.USER_CODE2, GET_COUNSEL_USERCODE_NM(C.USER_CODE2) AS USER_CODE2_NM,
+                    C.USER_SUBJECT, C.USER_COMMENTS, C.REG_DT, C.CANCEL_DATE, C.RESERVE
+                FROM COUNSEL_TIME A, COUNSEL_SCH B, COUNSEL_RST C
+                WHERE A.IDX = B.TS_IDX
+                AND B.SCH_DAY = C.SCH_DAY
+                AND B.TS_IDX = C.TS_IDX
+                AND B.CAT_CD = C.USER_CATEGORY
+            <if test="CATE_LIST != null and CATE_LIST.size() > 0">
+                AND B.CAT_CD IN
+              <foreach collection="CATE_LIST" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+              </foreach>
+            </if>
+            <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+              <choose>
+                <when test='SEARCHTYPE == "USER_ID"'>
+                AND C.USER_ID LIKE '%'||#{SEARCHKEYWORD}||'%'
+                </when>
+                <when test='SEARCHTYPE == "USER_NM"'>
+                AND C.USER_NM LIKE '%'||#{SEARCHKEYWORD}||'%'
+                </when>
+                <otherwise>
+                AND ( C.USER_ID LIKE '%'||#{SEARCHKEYWORD}||'%'
+                        OR C.USER_NM LIKE '%'||#{SEARCHKEYWORD}||'%' )
+                </otherwise>
+              </choose>
+            </if>
+                ORDER BY B.SCH_DAY DESC,  B.TS_IDX DESC, C.USER_NM ASC
+            ) A
+            WHERE ROWNUM <![CDATA[ <= ]]> #{endNo}
+        )
+        WHERE RNUM <![CDATA[ > ]]> #{startNo}
+    </select>
+
+    <select id="getListCount" parameterType="hashMap" resultType="int">
+        SELECT
+            COUNT(*) CNT
+        FROM COUNSEL_TIME A, COUNSEL_SCH B, COUNSEL_RST C
+        WHERE A.IDX = B.TS_IDX
+        AND B.SCH_DAY = C.SCH_DAY
+        AND B.TS_IDX = C.TS_IDX
+        AND B.CAT_CD = C.USER_CATEGORY
+    <if test="CATE_LIST != null and CATE_LIST.size() > 0">
+        AND B.CAT_CD IN
+      <foreach collection="CATE_LIST" item="item" index="index" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+      <choose>
+        <when test='SEARCHTYPE == "USER_ID"'>
+        AND C.USER_ID LIKE '%'||#{SEARCHKEYWORD}||'%'
+        </when>
+        <when test='SEARCHTYPE == "USER_NM"'>
+        AND C.USER_NM LIKE '%'||#{SEARCHKEYWORD}||'%'
+        </when>
+        <otherwise>
+        AND ( C.USER_ID LIKE '%'||#{SEARCHKEYWORD}||'%'
+                OR C.USER_NM LIKE '%'||#{SEARCHKEYWORD}||'%' )
+        </otherwise>
+      </choose>
+    </if>
+    </select>
+
+    <!-- 개인 상담실 신청 정보를 가져온다.  -->
+    <select id="getCounselUserReq" parameterType="hashMap" resultType="hashMap">
+        SELECT A.TIME_SET, B.TS_IDX, B.MAX_USR, B.REQ_CNT, B.ISUSE, B.REQ_TYPE,
+            (SELECT NAME FROM TB_CATEGORY_INFO INFO WHERE INFO.CODE = C.USER_CATEGORY ) AS USER_CATEGORY_NM,
+            CASE C.USER_PERIOD WHEN 'A' THEN '6개월 미만'
+                               WHEN 'B' THEN '1년 미만'
+                               WHEN 'C' THEN '1년 이상'
+            END USER_PERIOD_NM,
+            GET_COUNSEL_USERLEC_NM(C.USER_LEC) AS USER_LEC_NM,
+            C.*,
+            GET_COUNSEL_USERCODE_NM(C.USER_CODE1) AS USER_CODE1_NM,
+            GET_COUNSEL_USERCODE_NM(C.USER_CODE2) AS USER_CODE2_NM
+        FROM COUNSEL_TIME A, COUNSEL_SCH B, COUNSEL_RST C
+        WHERE A.IDX = B.TS_IDX
+        AND B.SCH_DAY = C.SCH_DAY
+        AND B.TS_IDX = C.TS_IDX
+        AND B.CAT_CD = C.USER_CATEGORY
+        AND B.SCH_DAY = #{SCH_DAY}
+        AND C.USER_ID = #{USER_ID}
+        AND B.CAT_CD = #{CAT_CD}
+    </select>
+
+    <select id="getTimeTable" parameterType="hashMap" resultType="hashMap">
+		SELECT * FROM COUNSEL_TIME
+		WHERE ISUSE = 'Y'
+		ORDER BY IDX ASC
+    </select>
+
+    <select id="getScheduleCount" parameterType="hashMap" resultType="int">
+        SELECT COUNT(*) FROM COUNSEL_SCH
+        WHERE TO_CHAR(TO_DATE(SCH_DAY), 'YYYYMMDD') BETWEEN #{SDATE} AND #{EDATE}
+        AND ISUSE = 'Y'
+        <if test="CAT_CD != null and CAT_CD != ''">
+        AND CAT_CD = #{CAT_CD}
+        </if>
+    </select>
+
+    <insert id="InsertSchedule" parameterType="hashMap" flushCache="true">
+        INSERT INTO COUNSEL_SCH(SCH_DAY, TS_IDX, MAX_USR, REQ_CNT, ISUSE, REQ_TYPE, CAT_CD)
+        VALUES(#{SCH_DAY}, #{TS_IDX}, #{REQ_CNT}, '0', #{ISUSE}, #{REQ_TYPE}, #{CAT_CD})
+    </insert>
+
+    <select id="getSchTable" parameterType="hashMap" resultType="hashMap">
+        SELECT *
+        FROM COUNSEL_SCH A, COUNSEL_TIME B
+        WHERE A.TS_IDX = B.IDX
+        AND A.SCH_DAY = #{UPDATE_DATE}
+        <if test="CAT_CD != null and CAT_CD != ''">
+        AND A.CAT_CD = #{CAT_CD}
+        </if>
+        ORDER BY A.TS_IDX ASC
+    </select>
+
+    <update id="Sch_Modify" parameterType="hashMap">
+        UPDATE COUNSEL_SCH
+        SET
+            MAX_USR = #{REQ_CNT}
+            , ISUSE = #{ISUSE}
+            , REQ_TYPE = #{REQ_TYPE}
+        WHERE SCH_DAY = #{UPDATE_DATE}
+        AND TS_IDX = #{TS_IDX}
+        AND CAT_CD = #{CAT_CD}
+    </update>
+
+    <delete id="Sch_Delete" parameterType="hashMap" flushCache="true">
+        DELETE FROM COUNSEL_SCH
+        WHERE SCH_DAY = #{DEL_DATE}
+        AND CAT_CD = #{CAT_CD}
+    </delete>
+
+    <!-- 설명회 신청 내역을 가져온다.  -->
+    <select id="presentReqList" parameterType="hashMap" resultType="hashMap">
+        SELECT * FROM   (
+            SELECT A.*, ROWNUM RNUM
+            FROM (
+                SELECT A.USER_ID, A.UNIV_CD, TO_CHAR(A.REG_DT, 'YYYY-MM-DD') REG_DT,
+                B.CODE_NM, DECODE(C.USER_NM, NULL, A.USER_NM, C.USER_NM) USER_NM,
+                DECODE(C.PHONE_NO, NULL, A.PHONE, C.PHONE_NO) PHONE_NO,
+                DECODE(C.EMAIL, NULL, A.EMAIL, C.EMAIL) EMAIL,
+                A.COMENTS
+                FROM TB_PRESENT A, TB_BA_CONFIG_CD B, TB_MA_MEMBER C
+                WHERE A.UNIV_CD = B.CODE_VAL
+                AND A.USER_ID = C.USER_ID(+)
+                AND B.SYS_CD = 'TB_PRESENT'
+                <if test="SEARCHTYPE != null and SEARCHTYPE == 'USER_ID'">
+                AND A.USER_ID LIKE '%'||#{SEARCHKEYWORD}||'%'
+                </if>
+                <if test="SEARCHTYPE != null and SEARCHTYPE == 'USER_NM'">
+                AND C.USER_NM LIKE '%'||#{SEARCHKEYWORD}||'%'
+                </if>
+                <if test="SEARCHCODE != null and SEARCHCODE != ''">
+                AND A.UNIV_CD = #{SEARCHCODE}
+                </if>
+                ORDER BY A.REG_DT DESC
+            ) A
+            WHERE ROWNUM <![CDATA[ <= ]]> #{ENDNO}
+        )
+        WHERE RNUM <![CDATA[ > ]]> #{STARTNO}
+    </select>
+
+    <select id="presentReqListCount" parameterType="hashMap" resultType="int">
+        SELECT
+            COUNT(*) CNT
+        FROM TB_PRESENT A, TB_BA_CONFIG_CD B, TB_MA_MEMBER C
+        WHERE A.UNIV_CD = B.CODE_VAL
+        AND A.USER_ID = C.USER_ID(+)
+        AND B.SYS_CD = 'TB_PRESENT'
+        <if test="SEARCHTYPE != null and SEARCHTYPE == 'USER_ID'">
+        AND A.USER_ID LIKE '%'||#{SEARCHKEYWORD}||'%'
+        </if>
+        <if test="SEARCHTYPE != null and SEARCHTYPE == 'USER_NM'">
+        AND C.USER_NM LIKE '%'||#{SEARCHKEYWORD}||'%'
+        </if>
+        <if test="SEARCHCODE != null and SEARCHCODE != ''">
+        AND A.UNIV_CD = #{SEARCHCODE}
+        </if>
+    </select>
+
+    <!-- 설명회 신청 내역을 가져온다.  -->
+    <select id="presentCodeList" parameterType="hashMap" resultType="hashMap">
+        SELECT CODE_VAL, CODE_NM
+        FROM TB_BA_CONFIG_CD
+        WHERE SYS_CD = 'TB_PRESENT'
+    </select>
+
+</mapper>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ProductEvent">
+
+	<select id="list" parameterType="hashMap" resultType="hashMap">
+		SELECT A.*, (SELECT COUNT(LECCODE) FROM PRD_EVENT_DET WHERE EVENT_ID = A.EVENT_ID) CNT
+		FROM PRD_EVENT A
+	</select>
+	
+	<select id="listCount" parameterType="hashMap" resultType="int">
+		SELECT COUNT(*) 
+		FROM PRD_EVENT 
+	</select>
+
+	<select id="getOne" parameterType="hashMap" resultType="hashMap">
+		SELECT * 
+		FROM PRD_EVENT
+		WHERE EVENT_ID = #{EVENT_ID}
+	</select>
+
+	<insert id="insert" parameterType="hashMap" flushCache="true">
+		INSERT INTO PRD_EVENT(
+			EVENT_ID, EVENT_NM, EVENT_TYPE, EVENT_AMOUNT, ST_DATE, ED_DATE, EVENT_YN
+		) VALUES (
+			 SEQ_PRD_EVENT.NEXTVAL, #{EVENT_NM}, #{EVENT_TYPE}, #{EVENT_AMOUNT}, #{ST_DATE}, #{ED_DATE}, #{EVENT_YN}
+		)
+	</insert>
+
+	<update id="update" parameterType="hashMap">
+		UPDATE PRD_EVENT
+			SET 
+				EVENT_NM = #{EVENT_NM}
+				, EVENT_TYPE = #{EVENT_TYPE}
+				, EVENT_AMOUNT = #{EVENT_AMOUNT}
+				, ST_DATE = #{ST_DATE}
+				, ED_DATE = #{ED_DATE}
+				, EVENT_YN = #{EVENT_YN}
+			WHERE EVENT_ID = #{EVENT_ID}
+	</update>
+
+	<select id="list_prd" parameterType="hashMap" resultType="hashMap">
+		SELECT A.EVENT_ID, A.EVENT_NM, B.LECCODE, C.SUBJECT_TITLE
+		FROM PRD_EVENT A, PRD_EVENT_DET B, TB_LEC_MST C
+		WHERE A.EVENT_ID = B.EVENT_ID
+		AND B.LECCODE = C.LECCODE
+		AND A.EVENT_ID = #{EVENT_ID}
+	</select>
+
+	<insert id="lec_insert" parameterType="hashMap" flushCache="true">
+		INSERT INTO PRD_EVENT_DET(EVENT_ID, LECCODE, OBJ_CD) 
+		VALUES (#{EVENT_ID}, #{LECCODE}, 'L')
+	</insert>
+
+	<update id="lec_delete" parameterType="hashMap">
+		DELETE PRD_EVENT_DET
+		WHERE EVENT_ID = #{EVENT_ID}
+		AND LECCODE = #{LECCODE}
+	</update>
+
+</mapper>

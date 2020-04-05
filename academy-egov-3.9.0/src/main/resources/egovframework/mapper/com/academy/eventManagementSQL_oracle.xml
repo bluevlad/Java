@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="eventManagement">
+	
+	<resultMap type="java.util.HashMap" id="eventMap">
+	   <result column="CONTENTS_TEXT" property="CONTENTS_TEXT" javaType="java.lang.String" jdbcType="CLOB"/>
+	</resultMap>
+	
+	<select id="getEventList" parameterType="hashMap" resultType="hashMap" >
+	SELECT * FROM 	( 
+					SELECT A.*, ROWNUM rnum 
+				  	FROM (
+						  SELECT   EVENT_NO,
+							       ONOFF_DIV,
+							       CATEGORY_CODE,
+							       (SELECT NAME FROM TB_CATEGORY_INFO WHERE ISUSE = 'Y' AND CODE = CATEGORY_CODE) CATEGORY_NAME,    
+							       NOTICE_GUBUN,
+							       OPEN_YN,
+							       MEMBER_GUBUN,
+							       HIT,
+							       START_DATE,
+							       START_TIME,
+							       END_DATE,
+							       END_TIME,
+					               CASE WHEN START_DATE <![CDATA[ > ]]>TO_CHAR(SYSDATE,'YYYYMMDD') THEN '대기중'
+					                    WHEN START_DATE <![CDATA[ <= ]]> TO_CHAR(SYSDATE,'YYYYMMDD') 
+					                             AND END_DATE||END_TIME <![CDATA[ >= ]]> TO_CHAR(SYSDATE,'YYYYMMDDHH24') THEN '진행중'
+					                    WHEN END_DATE||END_TIME <![CDATA[ < ]]> TO_CHAR(SYSDATE,'YYYYMMDDHH24') THEN '완료'
+					               END STATUS,
+							       TITLE,
+							       CONTENTS_TEXT,
+							       CONTENTS_IMG,
+							       LIST_THUMBNAIL,
+							       ISSUE_THUMBNAIL,
+							       REG_ID,
+							       TO_CHAR(REG_DT, 'YYYY-MM-DD') REG_DT,
+							       UPD_ID,
+							       TO_CHAR(UPD_DT, 'YYYY-MM-DD') UPD_DT,
+							       OPTION1_YN,
+							       OPTION2_YN,
+							       OPTION3_YN,
+								   (SELECT COUNT(EVENT_NO) FROM TB_EVENT_FILE WHERE EVENT_NO = a.EVENT_NO) ATTACH_FILE,
+			                       (SELECT COUNT(EVENT_NO) FROM TB_EVENT_OPTION2 WHERE EVENT_NO = a.EVENT_NO) OPTION2_CNT,							       
+							  		(SELECT COUNT(*)FROM TB_EVENT_RESULT WHERE EVENT_NO = a.EVENT_NO) PEOPLE_CNT
+							  FROM TB_EVENT_INFO a
+								WHERE 1=1
+							<choose>
+								<when test='ONOFF_DIV == "L"'>
+									AND ONOFF_DIV = 'L'
+							    </when>
+								<otherwise>
+								<if test="MENUTYPE != null and MENUTYPE != '' and MENUTYPE == 'FM_ROOT'">
+									AND ONOFF_DIV = 'F'
+								</if>
+								<if test="MENUTYPE != null and MENUTYPE != '' and MENUTYPE == 'OM_ROOT'">
+									AND ONOFF_DIV = 'O'
+								</if>
+								</otherwise>
+							</choose>
+								<if test="SEARCHCATEGORY != null and SEARCHCATEGORY != ''">
+									AND CATEGORY_CODE = #{SEARCHCATEGORY}
+								</if>
+								<if test="SEARCHKEYWORD != null and SEARCHKEYWORD != ''">
+									<choose>
+										<when test='SEARCHTYPE == "TITLE"'>
+											AND TITLE LIKE '%'||#{SEARCHKEYWORD}||'%'
+									    </when>
+										<when test='SEARCHTYPE == "CONTENTS_TEXT"'>
+											AND DBMS_LOB.INSTR(CONTENTS_TEXT, #{SEARCHKEYWORD} ) > 0
+									    </when>
+									</choose>
+								</if>								
+								ORDER BY TO_NUMBER(EVENT_NO) DESC
+							) A 
+                 	WHERE rownum <![CDATA[ <= ]]> #{endNo}
+					)
+	WHERE rnum <![CDATA[ > ]]> #{startNo}
+	</select>
+
+	<select id="getEventListCount" parameterType="hashMap" resultType="int">
+		SELECT COUNT(*)
+		  FROM TB_EVENT_INFO
+			WHERE 1=1
+		<choose>
+			<when test='ONOFF_DIV == "L"'>
+				AND ONOFF_DIV = 'L'
+		    </when>
+			<otherwise>
+			<if test="MENUTYPE != null and MENUTYPE != '' and MENUTYPE == 'FM_ROOT'">
+				AND ONOFF_DIV = 'F'
+			</if>
+			<if test="MENUTYPE != null and MENUTYPE != '' and MENUTYPE == 'OM_ROOT'">
+				AND ONOFF_DIV = 'O'
+			</if>
+			</otherwise>
+		</choose>
+			<if test="SEARCHCATEGORY != null and SEARCHCATEGORY != ''">
+				AND CATEGORY_CODE = #{SEARCHCATEGORY}
+			</if>
+			<if test="SEARCHKEYWORD != null and SEARCHKEYWORD != ''">
+				<choose>
+					<when test='SEARCHTYPE == "TITLE"'>
+						AND TITLE LIKE '%'||#{SEARCHKEYWORD}||'%'
+				    </when>
+					<when test='SEARCHTYPE == "CONTENTS_TEXT"'>
+						AND DBMS_LOB.INSTR(CONTENTS_TEXT, #{SEARCHKEYWORD} ) > 0
+				    </when>
+				</choose>
+			</if>
+	</select>
+		
+	<select id="eventDetail" parameterType="hashMap" resultMap="eventMap">
+		SELECT a.EVENT_NO,
+		       ONOFF_DIV,
+		       CATEGORY_CODE,
+		       (SELECT NAME FROM TB_CATEGORY_INFO WHERE ISUSE = 'Y' AND CODE = CATEGORY_CODE) CATEGORY_NAME,
+		       NOTICE_GUBUN,
+		       OPEN_YN,
+		       MEMBER_GUBUN,
+		       HIT,
+		       START_DATE,
+		       START_TIME,
+		       END_DATE,
+		       END_TIME,
+               CASE WHEN START_DATE <![CDATA[ > ]]> TO_CHAR(SYSDATE,'YYYYMMDD') THEN '대기중'
+                    WHEN START_DATE <![CDATA[ <= ]]> TO_CHAR(SYSDATE,'YYYYMMDD') 
+                             AND END_DATE||END_TIME <![CDATA[ >= ]]> TO_CHAR(SYSDATE,'YYYYMMDDHH24') THEN '진행중'
+                    WHEN END_DATE||END_TIME <![CDATA[ < ]]> TO_CHAR(SYSDATE,'YYYYMMDDHH24') THEN '완료'
+               END STATUS,
+		       TITLE,
+		       CONTENTS_TEXT,
+		       CONTENTS_IMG,
+		       LIST_THUMBNAIL,
+		       ISSUE_THUMBNAIL,
+		       a.REG_ID,
+		       TO_CHAR(a.REG_DT, 'YYYY-MM-DD') REG_DT,
+		       a.UPD_ID,
+		       TO_CHAR(a.UPD_DT, 'YYYY-MM-DD') UPD_DT,
+		       OPTION1_YN,
+		       OPTION2_YN,
+		       OPTION3_YN,
+		       OPTION2_HIDDEN,
+	        	(SELECT SMS_MESSAGE_BOX FROM TB_EVENT_OPTION3 WHERE EVENT_NO = #{EVENT_NO}) SMS_MESSAGE_BOX,
+               (SELECT SMS_NUM FROM TB_EVENT_OPTION3 WHERE EVENT_NO = #{EVENT_NO}) SMS_NUM,
+			   (SELECT COUNT(EVENT_NO) FROM TB_EVENT_FILE WHERE a.EVENT_NO = a.EVENT_NO) ATTACH_FILE_CNT
+		  FROM TB_EVENT_INFO a
+		  WHERE EVENT_NO = #{EVENT_NO}
+	</select>
+	
+	<insert id="eventInsertProcess" parameterType="hashMap" flushCache="true" keyProperty="eventNo" keyColumn="eventNo">
+		INSERT INTO TB_EVENT_INFO(
+				   EVENT_NO,
+			       ONOFF_DIV,
+			       CATEGORY_CODE,
+			       NOTICE_GUBUN,
+			       OPEN_YN,
+			       MEMBER_GUBUN,
+			       HIT,
+			       START_DATE,
+			       START_TIME,
+			       END_DATE,
+			       END_TIME,
+			       TITLE,
+			       <if test="CONTENTS_TEXT != null and CONTENTS_TEXT != ''">
+			       CONTENTS_TEXT,
+			       </if>
+			       <if test="CONTENTS_IMG != null and CONTENTS_IMG != ''">
+			       CONTENTS_IMG,
+			       </if>
+			       <if test="LIST_THUMBNAIL != null and LIST_THUMBNAIL != ''">
+			       LIST_THUMBNAIL,
+			       </if>
+			       <if test="ISSUE_THUMBNAIL != null and ISSUE_THUMBNAIL != ''">
+			       ISSUE_THUMBNAIL,
+			       </if>
+			       REG_ID,
+			       REG_DT,
+			       UPD_ID,
+			       UPD_DT,
+			       OPTION1_YN,
+			       OPTION2_YN,
+			       OPTION3_YN,
+			       OPTION2_HIDDEN
+		)VALUES(
+			   (SELECT NVL(MAX(TO_NUMBER(EVENT_NO)) , 0)+1  FROM TB_EVENT_INFO),
+		       #{ONOFF_DIV},
+		       #{CATEGORY_CODE},
+		       #{NOTICE_GUBUN},
+		       #{OPEN_YN},
+		       #{MEMBER_GUBUN},
+		       0,
+		       #{START_DATE},
+		       #{START_TIME},
+		       #{END_DATE},
+		       #{END_TIME},
+		       #{TITLE},
+		       <if test="CONTENTS_TEXT != null and CONTENTS_TEXT != ''">
+		       #{CONTENTS_TEXT},
+		       </if>
+		       <if test="CONTENTS_IMG != null and CONTENTS_IMG != ''">
+		       #{CONTENTS_IMG},
+		       </if>
+		       <if test="LIST_THUMBNAIL != null and LIST_THUMBNAIL != ''">
+		       #{LIST_THUMBNAIL},
+		       </if>
+		       <if test="ISSUE_THUMBNAIL != null and ISSUE_THUMBNAIL != ''">
+		       #{ISSUE_THUMBNAIL},
+		       </if>
+		       #{REG_ID},
+		       SYSDATE,
+		       #{REG_ID},
+		       SYSDATE,
+		       #{OPTION1_YN},
+		       #{OPTION2_YN},
+		       #{OPTION3_YN},
+		       #{OPTION2_HIDDEN}
+		)
+		<selectKey keyProperty="eventNo" resultType="String" order="AFTER">
+			(SELECT NVL(MAX(TO_NUMBER(EVENT_NO)) , 0) FROM TB_EVENT_INFO)
+		</selectKey>
+	</insert>
+	
+	<select id="eventFileList" parameterType="hashMap" resultType="hashMap">
+		 SELECT EVENT_NO, FILE_NO, FILE_NAME, FILE_PATH, REG_ID, REG_DT, UPD_ID, UPD_DT
+		   FROM TB_EVENT_FILE 
+		  WHERE EVENT_NO = #{EVENT_NO}
+		 <if test="FILE_NO != null and FILE_NO != ''">
+		   AND FILE_NO = #{FILE_NO}
+		 </if>		  
+		  ORDER BY REG_DT
+	</select>
+	
+	<select id="eventDetailOption1List" parameterType="hashMap" resultType="hashMap">
+		SELECT EVENT_NO,
+		       OPTION_NO,
+		       OPTION_NAME,
+		       PEOPLE_GUBUN,
+		       PEOPLE_CNT,
+		       MULTI_SELECT_YN,
+		       REG_ID,
+		       REG_DT,
+		       UPD_ID,
+		       UPD_DT
+	  FROM TB_EVENT_OPTION1
+	  WHERE EVENT_NO = #{EVENT_NO}
+	  ORDER BY TO_NUMBER(OPTION_NO) ASC
+	</select>
+	
+	<select id="eventDetailOption2ListAll" parameterType="hashMap" resultType="hashMap">
+                SELECT A.*, ROWNUM RNUM 
+                  FROM (
+                        SELECT 
+                        				TE.EVENT_NO
+                        				, TE.NO
+                        				, NVL(TE.USER_ID, 'guest') USER_ID
+                        				, NVL(TE.USER_NM, '수강생') USER_NM
+                        				, ( SELECT NVL (PHONE_NO, '000-0000-0000')
+                          				    FROM TB_MA_MEMBER
+                          				    WHERE USER_ID = TE.USER_ID ) PHONE_NO          
+                        				, NVL(TE.TXT, '내용없음') TXT
+                        				, TE.REG_DT
+                        FROM 
+                        				( SELECT * FROM TB_EVENT_OPTION2 ORDER BY REG_DT DESC ) TE
+                        WHERE 
+                        				TE.EVENT_NO = #{EVENT_NO}	
+                        ) A 
+	</select>
+	
+	<select id="eventDetailOption2List" parameterType="hashMap" resultType="hashMap">
+        SELECT * FROM     ( 
+                SELECT A.*, ROWNUM RNUM 
+                  FROM (
+                        SELECT 
+                        				TE.EVENT_NO
+                        				, TE.NO
+                        				, TE.USER_ID
+                        				, TE.USER_NM
+                                    	, ( SELECT PHONE_NO
+                                      		FROM TB_MA_MEMBER
+                                      		WHERE USER_ID = TE.USER_ID 
+                                    	) PHONE_NO        
+                        				, TE.TXT
+                        				, TE.REG_DT
+                        FROM 
+                        				( SELECT * FROM TB_EVENT_OPTION2 ORDER BY REG_DT DESC ) TE
+                        WHERE 
+                        				TE.EVENT_NO = #{EVENT_NO}                        
+                        ) A 
+                    WHERE ROWNUM <![CDATA[ <= ]]> #{endNo}
+                )
+        WHERE RNUM <![CDATA[ > ]]> #{startNo}
+	</select>
+	
+	<select id="eventDetailOption2ListCount" parameterType="hashMap" resultType="int">
+		SELECT COUNT(*)
+		FROM TB_EVENT_OPTION2 
+		WHERE EVENT_NO = #{EVENT_NO}
+	</select>
+	
+	<insert id="insertEventFile" parameterType="hashMap" flushCache="true" >
+		INSERT INTO TB_EVENT_FILE(
+			EVENT_NO,
+	        FILE_NO,
+	        FILE_NAME,
+	        FILE_PATH,
+	        REG_ID,
+	        REG_DT,
+	        UPD_ID,
+	        UPD_DT
+		)VALUES(
+			#{EVENT_NO},
+			(SELECT NVL(MAX(TO_NUMBER(FILE_NO)) , 0)+1  FROM TB_EVENT_FILE),
+			#{FILE_NAME},
+			#{FILE_PATH},
+			#{REG_ID},
+			SYSDATE,
+			#{REG_ID},
+			SYSDATE
+		)
+	</insert>
+	
+	<insert id="insertEventOption1" parameterType="hashMap" flushCache="true" >
+		INSERT INTO TB_EVENT_OPTION1(
+		   EVENT_NO,
+	       OPTION_NO,
+	       OPTION_NAME,
+	       PEOPLE_GUBUN,
+	       PEOPLE_CNT,
+	       MULTI_SELECT_YN,
+	       REG_ID,
+	       REG_DT,
+	       UPD_ID,
+	       UPD_DT
+		)VALUES(
+			#{EVENT_NO},
+			(SELECT NVL(MAX(TO_NUMBER(OPTION_NO)) , 0)+1  FROM TB_EVENT_OPTION1 WHERE EVENT_NO = #{EVENT_NO}),
+			#{OPTION_NAME},
+			#{PEOPLE_GUBUN},
+			#{PEOPLE_CNT},
+			#{MULTI_SELECT_YN},
+			#{REG_ID},
+			SYSDATE,
+			#{REG_ID},
+			SYSDATE
+		)
+	</insert>	
+		
+	<insert id="insertEventOption2" parameterType="hashMap" flushCache="true">
+		INSERT INTO TB_EVENT_OPTION2
+		VALUES(#{EVENT_NO},
+			     (SELECT NVL(MAX(NO),0) + 1 FROM TB_EVENT_OPTION2 WHERE EVENT_NO = #{EVENT_NO}),
+				 #{REG_ID},
+				 #{REG_NM},
+				 #{TXT},
+				 SYSDATE)
+	</insert>	
+	
+	<insert id="insertEventOption3" parameterType="hashMap" flushCache="true" >
+		INSERT INTO TB_EVENT_OPTION3(
+		   EVENT_NO,
+	       SMS_MESSAGE_BOX,
+	       SMS_NUM,
+	       MMS_YN,
+	       REG_ID,
+	       REG_DT,
+	       UPD_ID,
+	       UPD_DT
+		)VALUES(
+			#{EVENT_NO},
+			#{MESSAGEBOX},
+			#{SMSNUM},
+			#{MMS_YN},
+			#{REG_ID},
+			SYSDATE,
+			#{REG_ID},
+			SYSDATE
+		)
+	</insert>
+	
+	<update id="eventUpdateProcess" parameterType="hashMap" flushCache="true" >
+		UPDATE TB_EVENT_INFO
+		SET 
+	       NOTICE_GUBUN = #{NOTICE_GUBUN},
+	       OPEN_YN = #{OPEN_YN},
+	       MEMBER_GUBUN = #{MEMBER_GUBUN},
+	       START_DATE = #{START_DATE},
+	       START_TIME = #{START_TIME},
+	       END_DATE = #{END_DATE}, 
+	       END_TIME = #{END_TIME},
+	       TITLE = #{TITLE},
+	       CONTENTS_TEXT = #{CONTENTS_TEXT},
+	       CONTENTS_IMG = #{CONTENTS_IMG},
+	       LIST_THUMBNAIL = #{LIST_THUMBNAIL},
+	       ISSUE_THUMBNAIL = #{ISSUE_THUMBNAIL},
+	       UPD_ID = #{REG_ID},
+	       UPD_DT = SYSDATE,
+	       OPTION1_YN = #{OPTION1_YN},
+	       OPTION2_YN = #{OPTION2_YN},
+	       OPTION3_YN = #{OPTION3_YN},
+	       OPTION2_HIDDEN = #{OPTION2_HIDDEN}
+		WHERE EVENT_NO = #{EVENT_NO}
+	</update>
+	
+	<delete id="eventDelete" parameterType="hashMap">
+		DELETE FROM TB_EVENT_INFO WHERE EVENT_NO = #{EVENT_NO}
+	</delete>
+	
+	<delete id="deleteEventFile" parameterType="hashMap">
+		DELETE FROM TB_EVENT_FILE 
+		WHERE EVENT_NO = #{EVENT_NO}
+		 <if test="FILE_NO != null and FILE_NO != ''">
+		   AND FILE_NO = #{FILE_NO}
+		 </if>
+	</delete>
+	
+	<delete id="deleteEventOption1" parameterType="hashMap">
+		DELETE FROM TB_EVENT_OPTION1 
+		 WHERE EVENT_NO = #{EVENT_NO}
+		 <if test="OPTION_NO != null and OPTION_NO != ''">
+		   AND OPTION_NO = #{OPTION_NO}
+		 </if>
+	</delete>
+		
+	<delete id="deleteEventOption2" parameterType="hashMap">
+		DELETE FROM TB_EVENT_OPTION2 
+		 WHERE EVENT_NO = #{EVENT_NO}
+		 <if test="NO != null and NO != ''">
+		   AND NO = #{NO}
+		 </if>
+	</delete>
+	
+	<delete id="deleteEventOption3" parameterType="hashMap">
+		DELETE FROM TB_EVENT_OPTION3 
+		WHERE EVENT_NO = #{EVENT_NO}
+	</delete>
+	
+	<select id="getEventResultList" parameterType="hashMap" resultType="hashMap" >
+	SELECT * FROM 	( 
+					SELECT A.*, ROWNUM rnum 
+				  	FROM (
+                        SELECT 
+                            EVENT_NO, OPTION_NO, 
+                            NVL(A.USER_ID, B.USER_ID) USER_ID, 
+                            NVL(A.USER_NAME, B.USER_NM) USER_NAME, 
+                            NVL(A.PHONE_NO, B.PHONE_NO) PHONE_NO, 
+                            NVL(A.EMAIL, B.EMAIL) EMAIL, 
+                            A.REG_DT, CATEGORY_INFO,A.ARM_NO,ARM_NM,EVENT_TXT
+                        FROM TB_EVENT_RESULT A, TB_MA_MEMBER B 
+                        WHERE A.EVENT_NO = #{EVENT_NO}
+						<if test="SEARCHOPTIONNO != null and SEARCHOPTIONNO != ''">
+						AND A.OPTION_NO = #{SEARCHOPTIONNO}
+						</if>
+                        AND A.USER_ID = B.USER_ID(+)
+                        ORDER BY REG_DT DESC				
+						) A 
+                 	WHERE rownum <![CDATA[ <= ]]> #{rsltEndNo}
+					)
+	WHERE rnum <![CDATA[ > ]]> #{rsltStartNo}
+	</select>
+
+	<select id="getEventResultListCount" parameterType="hashMap" resultType="int">
+		SELECT 
+		    COUNT(*)
+		FROM TB_EVENT_RESULT 
+		WHERE EVENT_NO = #{EVENT_NO}
+		<if test="SEARCHOPTIONNO != null and SEARCHOPTIONNO != ''">
+		AND OPTION_NO = #{SEARCHOPTIONNO}
+		</if>		
+	</select>
+
+</mapper>	

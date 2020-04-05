@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="boardViewManagement">
+    <select id="getBoardMngList" parameterType="hashMap" resultType="hashMap" >
+        SELECT * FROM   (
+            SELECT A.*, ROWNUM rnum
+            FROM (
+                SELECT
+                    BOARD_MNG_SEQ ,
+                    BOARD_MNG_NAME ,
+                    DECODE(ONOFF_DIV, 'O', '온라인', 'F', '오프라인', 'T', '강사용') ONOFF_DIV_NM ,
+                    (SELECT CODE_NM FROM TB_BA_CONFIG_CD
+                    WHERE SYS_CD='BOARD_MNG_TYPE'
+                    AND CODE_CD=BOARD_MNG_TYPE)  BOARD_MNG_TYPE_NM ,
+                    BOARD_MNG_TYPE,
+                    DECODE(OPEN_YN, 'Y', '로그인', 'N', '비로그인') OPEN_YN_NM ,
+                    DECODE(ISUSE, 'Y', '활성', 'N', '비활성') ISUSE_NM ,
+                    TO_CHAR(REG_DT , 'yyyy-mm-dd hh24:mi:ss')  REG_DT ,
+                    REG_ID ,
+                    TO_CHAR(UPD_DT , 'yyyy-mm-dd hh24:mi:ss')  UPD_DT ,
+                    UPD_ID,
+                    (SELECT COUNT(BOARD_SEQ) FROM TB_BOARD WHERE BOARD_MNG_SEQ = A.BOARD_MNG_SEQ) CNT,
+                    (SELECT COUNT(BOARD_SEQ) FROM TB_BOARD WHERE BOARD_MNG_SEQ = A.BOARD_MNG_SEQ AND TO_CHAR(REG_DT, 'YYYY-MM-DD') = TO_CHAR(SYSDATE, 'YYYY-MM-DD')) TODAY
+                FROM TB_BOARD_MNG A
+                WHERE 1=1
+                <choose>
+                    <when test="SEARCHONOFFDIV != null and SEARCHONOFFDIV != ''">
+                        AND ONOFF_DIV = #{SEARCHONOFFDIV}
+                    </when>
+                    <otherwise>
+                        <if test='ONOFF_DIV != null and ONOFF_DIV == "O" '>
+                        AND ONOFF_DIV = 'O'
+                        </if>
+                        <if test='ONOFF_DIV != null and ONOFF_DIV == "F" '>
+                        AND ONOFF_DIV = 'F'
+                        </if>
+                        <if test='ONOFF_DIV != null and ONOFF_DIV == "T" '>
+                        AND ONOFF_DIV = 'T'
+                        </if>
+                    </otherwise>
+                </choose>
+                <if test="SEARCHKEYWORD != null and SEARCHKEYWORD != ''">
+                    <choose>
+                        <when test='SEARCHTYPE == "BOARD_MNG_SEQ"'>
+                            AND BOARD_MNG_SEQ LIKE '%'||#{SEARCHKEYWORD}||'%'
+                        </when>
+                        <when test='SEARCHTYPE == "BOARD_MNG_NAME"'>
+                            AND BOARD_MNG_NAME LIKE '%'||#{SEARCHKEYWORD}||'%'
+                        </when>
+                        <!-- <when test='SEARCHTYPE == "BOARD_MNG_TYPE"'>
+                            AND BOARD_MNG_TYPE LIKE '%'||#{SEARCHKEYWORD}||'%'
+                        </when> -->
+                        <when test='SEARCHTYPE == ""'>
+                            AND (BOARD_MNG_SEQ LIKE '%'||#{SEARCHKEYWORD}||'%'
+                                OR BOARD_MNG_NAME LIKE '%'||#{SEARCHKEYWORD}||'%'
+                                <!-- OR BOARD_MNG_TYPE LIKE '%'||#{SEARCHKEYWORD}||'%' -->
+                                )
+                        </when>
+                    </choose>
+                </if>
+                ORDER BY REG_DT DESC
+            ) A
+            WHERE rownum &lt;= #{endNo}
+        )
+        WHERE rnum &gt; #{startNo}
+    </select>
+
+    <select id="getBoardMngListCount" parameterType="hashMap" resultType="int">
+        SELECT
+            COUNT(*) CNT
+        FROM TB_BOARD_MNG
+        WHERE 1=1
+        <choose>
+            <when test="SEARCHONOFFDIV != null and SEARCHONOFFDIV != ''">
+                AND ONOFF_DIV = #{SEARCHONOFFDIV}
+            </when>
+            <otherwise>
+                <if test='ONOFF_DIV != null and ONOFF_DIV == "O" '>
+                AND ONOFF_DIV = 'O'
+                </if>
+                <if test='ONOFF_DIV != null and ONOFF_DIV == "F" '>
+                AND ONOFF_DIV = 'F'
+                </if>
+                <if test='ONOFF_DIV != null and ONOFF_DIV == "T" '>
+                AND ONOFF_DIV = 'T'
+                </if>
+            </otherwise>
+        </choose>
+        <if test="SEARCHKEYWORD != null and SEARCHKEYWORD != ''">
+            <choose>
+                <when test='SEARCHTYPE == "BOARD_MNG_SEQ"'>
+                    AND BOARD_MNG_SEQ LIKE '%'||#{SEARCHKEYWORD}||'%'
+                </when>
+                <when test='SEARCHTYPE == "BOARD_MNG_NAME"'>
+                    AND BOARD_MNG_NAME LIKE '%'||#{SEARCHKEYWORD}||'%'
+                </when>
+               <!--  <when test='SEARCHTYPE == "BOARD_MNG_TYPE"'>
+                    AND BOARD_MNG_TYPE LIKE '%'||#{SEARCHKEYWORD}||'%'
+                </when> -->
+                <when test='SEARCHTYPE == ""'>
+                    AND (BOARD_MNG_SEQ LIKE '%'||#{SEARCHKEYWORD}||'%'
+                        OR BOARD_MNG_NAME LIKE '%'||#{SEARCHKEYWORD}||'%'
+                        <!-- OR BOARD_MNG_TYPE LIKE '%'||#{SEARCHKEYWORD}||'%' -->
+                        )
+                </when>
+            </choose>
+        </if>
+    </select>
+
+	<select id="getBoardTypeList"  resultType="hashMap">
+		SELECT CODE_VAL , CODE_NM FROM TB_BA_CONFIG_CD  WHERE SYS_CD='BOARD_TYPE'
+	</select>
+
+	<insert id="boardMngInsertProcess" parameterType="hashMap" >
+
+		INSERT INTO TB_BOARD_MNG(
+		        BOARD_SEQ ,
+	            BOARD_NAME ,
+	            BOARD_TYPE,
+	            <if test="BOARD_TYPE =='NOTICE' or BOARD_TYPE =='FAQ'">
+	            ATTACH_FILE_YN,
+	            </if>
+	            <if test="BOARD_TYPE =='BOARD'">
+	            ATTACH_FILE_YN,
+	            OPEN_YN,
+	            REPLY_YN,
+	            </if>
+	            ISUSE,
+				REG_DT ,
+	            REG_ID ,
+				UPD_DT ,
+	            UPD_ID
+		)VALUES(
+				(SELECT
+           		  #{BOARD_TYPE}||'_'||LPAD(NVL(SUBSTR(MAX(BOARD_SEQ), -1)+1 , '0')  , 3 ,'0' )	BOARD_SEQ
+				FROM TB_BOARD_MNG
+				WHERE  BOARD_TYPE=#{BOARD_TYPE})  ,
+	            #{BOARD_NAME} ,
+	            #{BOARD_TYPE},
+	            <if test="BOARD_TYPE =='NOTICE' or BOARD_TYPE =='FAQ'">
+	            #{ATTACH_FILE_YN},
+	            </if>
+	            <if test="BOARD_TYPE =='BOARD'">
+	            #{ATTACH_FILE_YN},
+	            #{OPEN_YN},
+	            #{REPLY_YN},
+	            </if>
+	            #{ISUSE},
+				SYSDATE ,
+	            #{REG_ID} ,
+				SYSDATE ,
+	            #{UPD_ID}
+		)
+	</insert>
+
+	<select id="boardMngDetail" parameterType="hashMap" resultType="hashMap">
+		 SELECT
+ 				  BOARD_SEQ ,
+ 				  (SELECT CODE_NM FROM TB_BA_CONFIG_CD
+					WHERE SYS_CD='BOARD_TYPE'
+					AND			CODE_VAL=BOARD_TYPE)  BOARD_TYPE_NM ,
+		          BOARD_NAME ,
+		          BOARD_TYPE,
+		          ATTACH_FILE_YN,
+		          OPEN_YN ,
+		          REPLY_YN,
+		          ISUSE,
+		          TO_CHAR(REG_DT , 'yyyy-mm-dd hh24:mi:ss')  REG_DT ,
+		          REG_ID ,
+		          TO_CHAR(UPD_DT , 'yyyy-mm-dd hh24:mi:ss')  UPD_DT ,
+		          UPD_ID
+		 FROM TB_BOARD_MNG
+		 WHERE BOARD_SEQ = #{DETAIL_BOARD_SEQ}
+	</select>
+
+	<update id="boardMngUpdateProcess" parameterType="hashMap">
+		UPDATE TB_BOARD_MNG
+		SET
+			          	BOARD_NAME = #{BOARD_NAME} ,
+			            <if test="BOARD_TYPE =='NOTICE' or BOARD_TYPE =='FAQ'">
+			            	ATTACH_FILE_YN=#{ATTACH_FILE_YN},
+			            </if>
+			            <if test="BOARD_TYPE =='BOARD'">
+				            ATTACH_FILE_YN =#{ATTACH_FILE_YN},
+				            OPEN_YN 			= #{OPEN_YN},
+				            REPLY_YN			= #{REPLY_YN},
+			            </if>
+			            ISUSE					= #{ISUSE},
+						UPD_DT					= SYSDATE ,
+			            UPD_ID					= #{UPD_ID}
+			          WHERE BOARD_SEQ = #{DETAIL_BOARD_SEQ}
+	</update>
+
+	<delete id="boardMngDelete" parameterType="hashMap">
+		DELETE FROM TB_BOARD_MNG WHERE BOARD_SEQ = #{DETAIL_BOARD_SEQ}
+	</delete>
+	<delete id="boardMngCheckDelete" parameterType="hashMap">
+		DELETE FROM TB_BOARD_MNG  WHERE BOARD_SEQ IN(${deleteIds})
+	</delete>
+
+	<select id="boardCSList" parameterType="hashMap" resultType="hashMap" >
+		SELECT *
+		FROM (SELECT BB.*, ROWNUM RNUM
+		      FROM (
+                  SELECT * FROM (
+		              SELECT TO_CHAR(CONTENT) AS SUBJECT, TO_CHAR(A.REG_DT, 'YYYY-MM-DD HH24:MI') REG_DT,
+		                     (SELECT USER_NICKNM FROM TB_MA_MEMBER WHERE A.COUNSELOR_ID = USER_ID) AS ADMIN_NM,
+		                     NVL(NVL(B.USER_NM, A.REG_NM), '비회원') USER_NM, A.CS_DIV,
+		                     DECODE(A.CS_DIV, 'CSCOUNSEL', '고객상담', 'CSREFUND', '환불', '미분류') AS B_TYPE, '조치' B_ACT,
+		                     A.SUBJECT AS BOARD_TYPE
+		              FROM TB_BOARD_CS A, TB_MA_MEMBER B
+		              WHERE A.REG_ID = B.USER_ID(+)
+		              AND TO_CHAR(A.REG_DT, 'YYYYMMDD') BETWEEN #{sdate} AND #{edate}
+		              UNION ALL
+		              SELECT A.SUBJECT, TO_CHAR(REG_DT, 'YYYY-MM-DD HH24:MI') REG_DT,
+		                     (SELECT USER_NICKNM FROM TB_MA_MEMBER WHERE A.UPD_ID  = USER_ID) AS ADMIN_NM,
+		                     NVL((SELECT CREATENAME FROM TB_BOARD WHERE BOARD_SEQ = A.PARENT_BOARD_SEQ AND BOARD_MNG_SEQ = A.BOARD_MNG_SEQ), '비회원') AS USER_NM,
+		                     'BOARD' AS CS_DIV,
+		                           '상담게시판' AS B_TYPE, '조치' B_ACT,
+		                           CASE  WHEN BOARD_TYPE = 'A' THEN '강좌개강일'
+		                                 WHEN BOARD_TYPE = 'B' THEN '시작일변경'
+		                                 WHEN BOARD_TYPE = 'C' THEN '결제'
+		                                 WHEN BOARD_TYPE = 'D' THEN '환불문의'
+		                                 WHEN BOARD_TYPE = 'E' THEN '재수강,연장'
+		                                 WHEN BOARD_TYPE = 'F' THEN 'PMP'
+		                                 WHEN BOARD_TYPE = 'G' THEN '동영상오류'
+		                                 WHEN BOARD_TYPE = 'H' THEN '일시중지'
+		                                 WHEN BOARD_TYPE = 'I' THEN '불만/건의'
+		                                 WHEN BOARD_TYPE = 'J' THEN '교재 및 자료'
+		                                 WHEN BOARD_TYPE = 'K' THEN '배송문의'
+		                                 WHEN BOARD_TYPE = 'L' THEN '회원정보'
+		                                 ELSE '기타'
+		                           END AS BOARD_TYPE
+		                    FROM TB_BOARD A
+		                    WHERE BOARD_MNG_SEQ LIKE 'BOARD_%'
+		                    AND PARENT_BOARD_SEQ <![CDATA[ <> ]]> '0'
+		                    AND TO_CHAR(A.REG_DT, 'YYYYMMDD') BETWEEN #{sdate} AND #{edate}
+		                    AND BOARD_MNG_SEQ NOT IN ('BOARD_000', 'BOARD_012')
+                       ) AA
+		                <if test="CS_DIV != null and CS_DIV != ''">
+	                       WHERE CS_DIV = #{CS_DIV}
+				        </if>
+	                   ORDER BY REG_DT DESC
+		           ) BB
+		     WHERE ROWNUM <![CDATA[ <= ]]> #{endNo}
+		    )
+		WHERE RNUM <![CDATA[ > ]]> #{startNo}
+	</select>
+
+	<select id="boardCSListCount" parameterType="hashMap" resultType="int">
+		SELECT
+		COUNT(*) CNT
+        FROM (
+                 SELECT * FROM (
+	              SELECT TO_CHAR(CONTENT) AS SUBJECT, TO_CHAR(A.REG_DT, 'YYYY-MM-DD HH24:MI') REG_DT,
+	                     (SELECT USER_NICKNM FROM TB_MA_MEMBER WHERE A.COUNSELOR_ID = USER_ID) AS ADMIN_NM,
+	                     NVL(NVL(B.USER_NM, A.REG_NM), '비회원') USER_NM,  A.CS_DIV,
+	                     DECODE(A.CS_DIV, 'CSCOUNSEL', '고객상담', 'CSREFUND', '환불', '미분류') AS B_TYPE, '조치' B_ACT,
+	                     A.SUBJECT AS BOARD_TYPE
+	              FROM TB_BOARD_CS A, TB_MA_MEMBER B
+	              WHERE A.REG_ID = B.USER_ID(+)
+	              AND TO_CHAR(A.REG_DT, 'YYYYMMDD') BETWEEN #{sdate} AND #{edate}
+	              UNION ALL
+	              SELECT A.SUBJECT, TO_CHAR(REG_DT, 'YYYY-MM-DD HH24:MI') REG_DT,
+	                     (SELECT USER_NICKNM FROM TB_MA_MEMBER WHERE A.UPD_ID  = USER_ID) AS ADMIN_NM,
+	                     NVL((SELECT CREATENAME FROM TB_BOARD WHERE BOARD_SEQ = A.PARENT_BOARD_SEQ), '비회원') AS USER_NM,
+	                      'BOARD' AS CS_DIV,
+	                           '상담게시판' AS B_TYPE, '조치' B_ACT,
+	                           CASE  WHEN BOARD_TYPE = 'A' THEN '강좌개강일'
+	                                 WHEN BOARD_TYPE = 'B' THEN '시작일변경'
+	                                 WHEN BOARD_TYPE = 'C' THEN '결제'
+	                                 WHEN BOARD_TYPE = 'D' THEN '환불문의'
+	                                 WHEN BOARD_TYPE = 'E' THEN '재수강,연장'
+	                                 WHEN BOARD_TYPE = 'F' THEN 'PMP'
+	                                 WHEN BOARD_TYPE = 'G' THEN '동영상오류'
+	                                 WHEN BOARD_TYPE = 'H' THEN '일시중지'
+	                                 WHEN BOARD_TYPE = 'I' THEN '불만/건의'
+	                                 WHEN BOARD_TYPE = 'J' THEN '교재 및 자료'
+	                                 WHEN BOARD_TYPE = 'K' THEN '배송문의'
+	                                 WHEN BOARD_TYPE = 'L' THEN '회원정보'
+	                                 ELSE '기타'
+	                           END AS BOARD_TYPE
+	                    FROM TB_BOARD A
+	                    WHERE BOARD_MNG_SEQ LIKE 'BOARD_%'
+	                    AND PARENT_BOARD_SEQ <![CDATA[ <> ]]> '0'
+	                    AND TO_CHAR(A.REG_DT, 'YYYYMMDD') BETWEEN #{sdate} AND #{edate}
+	                    AND BOARD_MNG_SEQ NOT IN ('BOARD_000', 'BOARD_012')
+				) AA
+		                <if test="CS_DIV != null and CS_DIV != ''">
+	                       WHERE CS_DIV = #{CS_DIV}
+				        </if>
+        )
+	</select>
+
+</mapper>

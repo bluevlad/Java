@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CoopOrder">
+
+	<!-- 전체상품주문관리 리스트 -->
+	<select id="getOrderListDB" parameterType="hashMap" resultType="hashMap">
+        SELECT * 
+        FROM (SELECT ROWNUM AS RNUM, H.* 
+              FROM (SELECT DISTINCT(G.ORDERNO) ORDERNO,
+                           G.ORDERS_USERID, G.ORDERS_USERNAME,
+                           G.ORDERS_TELNO, G.ORDERS_CELLNO,
+                           G.ORDERS_ZIPCD, G.ORDERS_ADDR,
+                           G.ORDERS_EMAIL, G.ORDERS_REGDATE,
+                           G.DELIVERS_SENDNO, G.DELIVERS_USERNAME, 
+                           G.DELIVERS_TELNO, G.DELIVERS_CELLNO,
+                           G.DELIVERS_ZIPCD, G.DELIVERS_ADDR,
+                           G.DELIVERS_MEMO, G.DELIVERS_REGDATE,
+                           G.DELIVERS_SENDDATE, G.APPROVALS_PRICE,
+                           G.APPROVALS_ADDPRICE, G.APPROVALS_PAYCODE,
+                           G.APPROVALS_ACCTNOCODE, G.APPROVALS_PAYNAME,
+                           G.APPROVALS_POINT, G.REFUND_POINT,
+                           G.APPROVALS_RETURNVALUE, G.APPROVALS_REGDATE,
+                           G.APPROVALS_REPRICE, G.APPROVALS_PAYCODENAME,
+                           G.APPROVALS_ACCTNONAME, G.OPEN_ADMIN_ID,
+                           G.ROWCNT, G.SENDDATE, G.DAN_POINT
+                    FROM(SELECT A.ORDERNO,
+                               A.USER_ID AS ORDERS_USERID,
+                               A.USER_NM AS ORDERS_USERNAME,
+                               A.TEL_NO AS ORDERS_TELNO,
+                               A.PHONE_NO AS ORDERS_CELLNO,
+                               A.ZIP_CODE AS ORDERS_ZIPCD,
+                               A.ADDRESS1 AS ORDERS_ADDR,
+                               A.EMAIL AS ORDERS_EMAIL,
+                               TO_CHAR(A.REG_DT, 'YYYY-MM-DD') AS ORDERS_REGDATE,
+                               B.SENDNO AS DELIVERS_SENDNO,
+                               B.USERNAME AS DELIVERS_USERNAME,
+                               B.TELNO AS DELIVERS_TELNO,
+                               B.CELLNO AS DELIVERS_CELLNO,
+                               B.ZIPCD AS DELIVERS_ZIPCD,
+                               B.ADDR AS DELIVERS_ADDR,
+                               B.MEMO AS DELIVERS_MEMO,
+                               B.REGDATE AS DELIVERS_REGDATE,
+                               B.SENDDATE AS DELIVERS_SENDDATE,
+                               C.PRICE AS APPROVALS_PRICE,
+                               NVL(C.ADDPRICE,0) AS APPROVALS_ADDPRICE,
+                               C.PAYCODE AS APPROVALS_PAYCODE,
+                               C.ACCTNOCODE AS APPROVALS_ACCTNOCODE,
+                               C.PAYNAME AS APPROVALS_PAYNAME,
+                               C.POINT AS APPROVALS_POINT,
+                               C.REFUND_POINT AS REFUND_POINT,
+                               C.RETURNVALUE AS APPROVALS_RETURNVALUE,
+                               C.REG_DT AS APPROVALS_REGDATE,
+                               C.REPRICE AS APPROVALS_REPRICE,
+                               C.PAYCODE APPROVALS_PAYCODENAME,
+                               C.ACCTNOCODE APPROVALS_ACCTNONAME,
+                               (SELECT OPEN_ADMIN_ID 
+                                FROM TB_ORDER_MGNT_NO WHERE ORDERNO = A.ORDERNO AND
+                                ROWNUM =1) AS OPEN_ADMIN_ID,
+                               (SELECT COUNT(*)
+                                FROM TB_ORDER_MGNT_NO
+                                WHERE ORDERNO = A.ORDERNO
+                                <if test="orderstatuscode !=null and orderstatuscode != '' ">
+                                AND STATUSCODE = #{orderstatuscode}
+                                </if>
+                                ) AS ROWCNT,
+                                TO_CHAR(B.SENDDATE, 'YYYY-MM-DD hh24miss') SENDDATE,
+                                (SELECT NVL(DAN_POINT, '') 
+                                 FROM TB_DANPINT D 
+                                 WHERE A.ORDERNO = D.ORDERNO 
+                                 AND REAL_CARTSUM <![CDATA[ <> ]]> 999999 
+                                 AND DAN_POINT <![CDATA[ > ]]> 0) AS DAN_POINT
+                        FROM  
+                    <choose>
+                        <when test="coop_cd == 'NSUAD'">
+                        (SELECT AA.*
+                         FROM TB_ORDERS AA, TB_MA_MEMBER BB
+                         WHERE AA.USER_ID = BB.USER_ID
+                         AND BB.COOP_CD = 'NSU')
+                        </when>
+                        <when test="coop_cd == 'COOP_SIWON'">
+                        (SELECT AA.*
+                         FROM TB_ORDERS AA, TB_ORDER_MGNT_NO BB, TB_LEC_COOP CC
+                         WHERE AA.ORDERNO = BB.ORDERNO
+                         AND BB.MGNTNO = CC.LECCODE
+                         AND CC.COOP_CD = 'SIWON')
+                        </when>
+                        <otherwise>
+                        (SELECT AA.*
+                         FROM TB_ORDERS AA, TB_ORDER_MGNT_NO BB, TB_LEC_COOP CC
+                         WHERE AA.ORDERNO = BB.ORDERNO
+                         AND BB.MGNTNO = CC.LECCODE
+                         AND CC.COOP_CD = 'SIWON')
+                        </otherwise>
+                    </choose>
+                        A
+                        LEFT OUTER JOIN TB_DELIVERS B
+                        ON B.ORDERNO = A.ORDERNO
+                        LEFT JOIN TB_APPROVALS C
+                        ON
+                        <choose>
+                            <when test="search_date_type == '배송일'">
+                            C.ORDERNO = B.ORDERNO
+                            </when>
+                            <when test="searchtype == 'c.payName'">
+                            C.ORDERNO = B.ORDERNO
+                            </when>
+                            <otherwise>
+                            C.ORDERNO = A.ORDERNO
+                            </otherwise>
+                        </choose>
+                        LEFT OUTER JOIN TB_ORDER_MGNT_NO D
+                        ON D.ORDERNO = A.ORDERNO
+                        LEFT OUTER JOIN TB_LEC_MST E
+                        ON E.LECCODE = D.MGNTNO
+                        LEFT OUTER JOIN TB_CA_BOOK F
+                        ON F.RSC_ID = D.MGNTNO
+                        WHERE 1=1
+                        <if test="orderstatuscode != null and orderstatuscode != '' ">
+                        AND A.ORDERNO IN ( SELECT ORDERNO
+                        FROM TB_ORDER_MGNT_NO
+                        WHERE ORDERNO = A.ORDERNO
+                        AND STATUSCODE = #{orderstatuscode} )
+                        </if>
+                        <if test="paycode != null and paycode != '' ">
+                        AND C.PAYCODE = #{paycode}
+                        </if>
+                    <choose>
+                        <when test="search_date_type == '등록일'">
+                        AND TO_CHAR(A.REG_DT, 'YYYYMMDD') BETWEEN #{sdate} AND #{edate}
+                        </when>
+                        <otherwise>
+                        AND TO_CHAR(B.SENDDATE, 'YYYYMMDD') BETWEEN #{sdate} AND #{edate}
+                        </otherwise>
+                    </choose>
+        <if test="searchkey != null and searchkey != '' ">
+        <if test="searchtype != null and searchtype != '' ">
+            <choose>
+                <when test="searchtype != 'all'">
+                    <choose>
+                        <when test="search_date_type == '배송일'">
+                        AND ${searchtype} LIKE '%'||#{searchkey}||'%'
+                        </when>
+                        <when test="searchtype == 'c.payName'">
+                        AND ${searchtype} LIKE '%'||#{searchkey}||'%'
+                        </when>
+                        <otherwise>
+                            <choose>
+                                <when test="searchtype == 'b.username'">
+                        AND 0 = 0
+                                </when>
+                                <otherwise>
+                        AND ${searchtype} LIKE '%'||#{searchkey}||'%'
+                                </otherwise>
+                            </choose>
+                        </otherwise>
+                    </choose>
+                </when>
+                <when test="searchtype == 'all'">
+                        AND (
+                        A.ORDERNO LIKE '%'||#{searchkey}||'%'
+                        OR A.USER_ID LIKE '%'||#{searchkey}||'%'
+                        OR A.USER_NM LIKE '%'||#{searchkey}||'%'
+                        OR D.MGNTNO LIKE '%'||#{searchkey}||'%'
+                        <if test="search_date_type == '배송일 '">
+                        OR B.USERNAME LIKE '%'||#{searchkey}||'%'
+                        </if>
+                        <if test="searchtype == 'c.payName' ">
+                        OR B.USERNAME LIKE '%'||#{searchkey}||'%'
+                        </if>
+                        OR C.PAYNAME LIKE '%'||#{searchkey}||'%'
+                        )
+                </when>
+            </choose>
+        </if>
+        </if>
+                       ) G
+                    ORDER BY ORDERS_REGDATE DESC, ORDERNO DESC
+                   ) H 
+             WHERE ROWNUM <![CDATA[ <= ]]> #{endNo}
+             ) 
+        WHERE RNUM <![CDATA[ > ]]> #{startNo}
+	</select>
+
+	<!-- 전체상품주문관리 카운트 -->
+	<select id="getOrderListCount" parameterType="hashMap" resultType="int">
+		SELECT COUNT(distinct(a.orderno)) FROM 
+                    <choose>
+                        <when test="coop_cd == 'NSUAD'">
+                        (SELECT AA.*
+                         FROM TB_ORDERS AA, TB_MA_MEMBER BB
+                         WHERE AA.USER_ID = BB.USER_ID
+                         AND BB.COOP_CD = 'NSU')
+                        </when>
+                        <when test="coop_cd == 'COOP_SIWON'">
+                        (SELECT AA.*
+                         FROM TB_ORDERS AA, TB_ORDER_MGNT_NO BB, TB_LEC_COOP CC
+                         WHERE AA.ORDERNO = BB.ORDERNO
+                         AND BB.MGNTNO = CC.LECCODE
+                         AND CC.COOP_CD = 'SIWON')
+                        </when>
+                        <otherwise>
+                        (SELECT AA.*
+                         FROM TB_ORDERS AA, TB_ORDER_MGNT_NO BB, TB_LEC_COOP CC
+                         WHERE AA.ORDERNO = BB.ORDERNO
+                         AND BB.MGNTNO = CC.LECCODE
+                         AND CC.COOP_CD = 'SIWON')
+                        </otherwise>
+                    </choose>
+                        A
+                        LEFT OUTER JOIN TB_DELIVERS B
+                        ON B.ORDERNO = A.ORDERNO
+                        LEFT JOIN TB_APPROVALS C
+                        ON
+                        <choose>
+                            <when test="search_date_type == '배송일'">
+                            C.ORDERNO = B.ORDERNO
+                            </when>
+                            <when test="searchtype == 'c.payName'">
+                            C.ORDERNO = B.ORDERNO
+                            </when>
+                            <otherwise>
+                            C.ORDERNO = A.ORDERNO
+                            </otherwise>
+                        </choose>
+                        LEFT OUTER JOIN TB_ORDER_MGNT_NO D
+                        ON D.ORDERNO = A.ORDERNO
+                        LEFT OUTER JOIN TB_LEC_MST E
+                        ON E.LECCODE = D.MGNTNO
+                        LEFT OUTER JOIN TB_CA_BOOK F
+                        ON F.RSC_ID = D.MGNTNO
+                        WHERE 1=1
+                        <if test="orderstatuscode != null and orderstatuscode != '' ">
+                        AND A.ORDERNO IN ( SELECT ORDERNO
+                        FROM TB_ORDER_MGNT_NO
+                        WHERE ORDERNO = A.ORDERNO
+                        AND STATUSCODE = #{orderstatuscode} )
+                        </if>
+                        <if test="paycode != null and paycode != '' ">
+                        AND C.PAYCODE = #{paycode}
+                        </if>
+                    <choose>
+                        <when test="search_date_type == '등록일'">
+                        AND TO_CHAR(A.REG_DT, 'YYYYMMDD') BETWEEN #{sdate} AND #{edate}
+                        </when>
+                        <otherwise>
+                        AND TO_CHAR(B.SENDDATE, 'YYYYMMDD') BETWEEN #{sdate} AND #{edate}
+                        </otherwise>
+                    </choose>
+        <if test="searchkey != null and searchkey != '' ">
+        <if test="searchtype != null and searchtype != '' ">
+            <choose>
+                <when test="searchtype != 'all'">
+                    <choose>
+                        <when test="search_date_type == '배송일'">
+                        AND ${searchtype} LIKE '%'||#{searchkey}||'%'
+                        </when>
+                        <when test="searchtype == 'c.payName'">
+                        AND ${searchtype} LIKE '%'||#{searchkey}||'%'
+                        </when>
+                        <otherwise>
+                            <choose>
+                                <when test="searchtype == 'b.username'">
+                        AND 0 = 0
+                                </when>
+                                <otherwise>
+                        AND ${searchtype} LIKE '%'||#{searchkey}||'%'
+                                </otherwise>
+                            </choose>
+                        </otherwise>
+                    </choose>
+                </when>
+                <when test="searchtype == 'all'">
+                        AND (
+                        A.ORDERNO LIKE '%'||#{searchkey}||'%'
+                        OR A.USER_ID LIKE '%'||#{searchkey}||'%'
+                        OR A.USER_NM LIKE '%'||#{searchkey}||'%'
+                        OR D.MGNTNO LIKE '%'||#{searchkey}||'%'
+                        <if test="search_date_type == '배송일 '">
+                        OR B.USERNAME LIKE '%'||#{searchkey}||'%'
+                        </if>
+                        <if test="searchtype == 'c.payName' ">
+                        OR B.USERNAME LIKE '%'||#{searchkey}||'%'
+                        </if>
+                        OR C.PAYNAME LIKE '%'||#{searchkey}||'%'
+                        )
+                </when>
+            </choose>
+        </if>
+        </if>
+	</select>
+
+	<select id="onPayDetail" parameterType="hashMap" resultType="hashMap">
+	<![CDATA[
+		SELECT  A.USERID,
+	                A.USER_NM,
+	                DECODE(A.LEC_TYPE_CHOICE,'D','단과반','J','종합반','N','선택형종합반','패키지') LEC_TYPE_CHOICE,
+	                A.SUBJECT_TITLE,
+	                TO_CHAR(A.REG_DT,'YYYY-MM-DD') REG_DT,
+	                TO_CHAR(A.START_DATE,'YYYY-MM-DD') START_DATE,
+	                TO_CHAR(A.END_DATE,'YYYY-MM-DD') END_DATE,
+	                NVL(A.TOTAL_PAY,0) TOTAL_PAY,
+	                NVL(A.PAYMENT,0) PAYMENT,
+	                DECODE(A.PAYCODE,'PAY110','신용카드','PAY120','가상계좌','PAY130','계좌이체','PAY100','무통장입금') PAYCODE,
+	                NVL(ROUND((CASE A.PAYCODE WHEN 'PAY110' THEN A.TOTAL_PAY - (A.TOTAL_PAY * 0.036)
+	                                WHEN 'PAY120' THEN A.TOTAL_PAY - 275
+	                                WHEN 'PAY130' THEN A.TOTAL_PAY - (A.TOTAL_PAY * 0.0143)
+	                                WHEN 'PAY100' THEN A.TOTAL_PAY
+	                END) * (A.PAYMENT / 100),0),0) TEACHER_PAY,
+	                NVL((CASE A.PAYCODE WHEN 'PAY110' THEN 3.04
+	                                WHEN 'PAY120' THEN 275
+	                                WHEN 'PAY130' THEN 1.43
+	                                WHEN 'PAY100' THEN 0
+	                END),0) SUSU,
+	                NVL(ROUND((CASE A.PAYCODE WHEN 'PAY110' THEN A.TOTAL_PAY * 0.036
+	                                WHEN 'PAY120' THEN 275
+	                                WHEN 'PAY130' THEN A.TOTAL_PAY * 0.0143
+	                                WHEN 'PAY100' THEN 0
+	                END),0),0) SUSU_PAY,
+	                NVL(ROUND((CASE A.PAYCODE WHEN 'PAY110' THEN A.TOTAL_PAY - (A.TOTAL_PAY * 0.036)
+	                                WHEN 'PAY120' THEN A.TOTAL_PAY - 275
+	                                WHEN 'PAY130' THEN A.TOTAL_PAY - (A.TOTAL_PAY * 0.0143)
+	                                WHEN 'PAY100' THEN A.TOTAL_PAY
+	                END) * (A.PAYMENT / 100) * 0.03,0),0) TEACHER_PAY_TEMP1,
+	                NVL(ROUND((CASE A.PAYCODE WHEN 'PAY110' THEN A.TOTAL_PAY - (A.TOTAL_PAY * 0.036)
+	                                WHEN 'PAY120' THEN A.TOTAL_PAY - 275
+	                                WHEN 'PAY130' THEN A.TOTAL_PAY - (A.TOTAL_PAY * 0.0143)
+	                                WHEN 'PAY100' THEN A.TOTAL_PAY
+	                END) * (A.PAYMENT / 100) * 0.03 * 0.1,0),0) TEACHER_PAY_TEMP2,
+	                ROUND(NVL(CASE A.PAYCODE WHEN 'PAY110' THEN A.TOTAL_PAY END,0),0) PAY110_PRICE,
+	                ROUND(NVL(CASE A.PAYCODE WHEN 'PAY120' THEN A.TOTAL_PAY END,0),0) PAY120_PRICE,
+	                ROUND(NVL(CASE A.PAYCODE WHEN 'PAY130' THEN A.TOTAL_PAY END,0),0) PAY130_PRICE,
+	                ROUND(NVL(CASE A.PAYCODE WHEN 'PAY100' THEN A.TOTAL_PAY END,0),0) PAY100_PRICE,
+	                ROUND(NVL(CASE A.PAYCODE WHEN 'PAY110' THEN A.TOTAL_PAY * 0.036 END,0),0) PAY110_SUSU,
+	                ROUND(NVL(CASE A.PAYCODE WHEN 'PAY120' THEN 275 END,0),0) PAY120_SUSU,
+	                ROUND(NVL(CASE A.PAYCODE WHEN 'PAY130' THEN A.TOTAL_PAY * 0.0143 END,0),0) PAY130_SUSU,
+	                ROUND(NVL(CASE A.PAYCODE WHEN 'PAY100' THEN 0 END,0),0) PAY100_SUSU,
+	                NVL(A.DISCOUNTPER,0) DISCOUNTPER
+        FROM    (
+                    SELECT  A.*,
+	                            CASE A.P_PRICE WHEN 0 THEN A.PRICE
+	                                           ELSE        A.P_PRICE
+	                            END TOTAL_PAY
+                    FROM    (
+                            SELECT A.LECCODE, A.SUBJECT_TEACHER, A.SUBJECT_TITLE, A.LEC_TYPE_CHOICE,
+	                                   B.ORDERNO, B.STATUSCODE, B.WMV_PMP, B.DISCOUNTPER, B.REG_DT, B.USERID, B.USER_NM, B.START_DATE, B.END_DATE,
+	                                   A.PAYMENT, B.PAYCODE, B.PRICE, 0 P_PRICE
+                            FROM   (
+                                    SELECT LECCODE, SUBJECT_TEACHER, SUBJECT_TITLE, LEC_TYPE_CHOICE, SUBJECT_TEACHER_PAYMENT PAYMENT
+                                    FROM   TB_LEC_MST
+                                    WHERE  LEC_TYPE_CHOICE = 'D'
+                                   ) A,
+                                   (
+                                    SELECT A.REG_DT, A.USERID, A.USER_NM, A.START_DATE, A.END_DATE,
+                                           B.ORDERNO, B.MGNTNO, B.PRICE, B.STATUSCODE, B.WMV_PMP, B.DISCOUNTPER, C.PAYCODE
+                                    FROM   (
+                                            SELECT A.ORDERNO, A.PACKAGE_NO, A.REG_DT, A.USERID, A.START_DATE, A.END_DATE, B.USER_NM
+                                            FROM   TB_MYLECTURE A LEFT JOIN TB_MA_MEMBER B
+                                            ON     A.USERID = B.USER_ID
+                                            WHERE  TO_CHAR(A.REG_DT,'YYYYMMDD') BETWEEN #{searchStartDate} AND #{searchEndDate}
+                                            AND B.COOP_CD = #{COOP_CD}
+                                           ) A, TB_ORDER_MGNT_NO B, TB_APPROVALS C
+                                    WHERE  A.ORDERNO     = B.ORDERNO
+                                    AND    A.PACKAGE_NO  = B.MGNTNO
+                                    AND    A.ORDERNO     = C.ORDERNO
+                                    AND    B.PRICE > 0
+                                    AND    B.STATUSCODE = 'DLV105'
+                                   ) B
+                            WHERE  A.LECCODE = B.MGNTNO
+                            UNION
+                            SELECT A.LECCODE, A.SUBJECT_TEACHER, A.SUBJECT_TITLE, A.LEC_TYPE_CHOICE,
+                                   B.ORDERNO, B.STATUSCODE, B.WMV_PMP, B.DISCOUNTPER, B.REG_DT, B.USERID, B.USER_NM, B.START_DATE, B.END_DATE,
+                                   A.PAYMENT, B.PAYCODE, B.PRICE,
+                                   ROUND(B.PRICE/(SELECT COUNT(LECTURE_NO) FROM TB_MYLECTURE WHERE PACKAGE_NO = B.PACKAGE_NO AND ORDERNO = B.ORDERNO AND LECTURE_NO LIKE '%D%'),0) AS P_PRICE
+                            FROM   (
+                                    SELECT A.LECCODE, A.SUBJECT_TEACHER,
+                                           (SELECT SUBJECT_TITLE FROM TB_LEC_MST WHERE LECCODE = B.LECCODE) SUBJECT_TITLE,
+                                           (SELECT LEC_TYPE_CHOICE FROM TB_LEC_MST WHERE LECCODE = B.LECCODE) LEC_TYPE_CHOICE, SUBJECT_TEACHER_PAYMENT PAYMENT,
+                                           B.LECCODE JONG_LECCODE
+                                    FROM   TB_LEC_MST A, TB_LEC_JONG B
+                                    WHERE  A.LECCODE = B.MST_LECCODE
+                                    AND    A.LEC_TYPE_CHOICE = 'D'
+                                   ) A,
+                                   (
+                                    SELECT A.REG_DT, A.USERID, A.USER_NM, A.START_DATE, A.END_DATE, A.PACKAGE_NO, A.LECTURE_NO,
+                                           B.ORDERNO, B.PRICE, B.STATUSCODE, B.WMV_PMP, B.DISCOUNTPER, C.PAYCODE
+                                    FROM   (
+                                            SELECT A.ORDERNO, A.PACKAGE_NO, A.LECTURE_NO, A.REG_DT, A.USERID, A.START_DATE, A.END_DATE,
+                                                   B.USER_NM
+                                            FROM   TB_MYLECTURE A LEFT JOIN TB_MA_MEMBER B
+                                            ON     A.USERID = B.USER_ID
+                                            WHERE  TO_CHAR(A.REG_DT,'YYYYMMDD') BETWEEN #{searchStartDate} AND #{searchEndDate}
+                                            AND B.COOP_CD = #{COOP_CD}
+                                           ) A, TB_ORDER_MGNT_NO B, TB_APPROVALS C
+                                    WHERE  A.ORDERNO     = B.ORDERNO
+                                    AND    A.ORDERNO     = C.ORDERNO
+                                    AND    B.PRICE > 0
+                                    AND    B.STATUSCODE = 'DLV105'
+                                    AND    B.PTYPE <> 'L'
+                                   ) B
+                            WHERE  A.LECCODE = B.LECTURE_NO
+                            AND    A.JONG_LECCODE = B.PACKAGE_NO
+                    ) A 
+         ) A
+	]]>        
+	</select>
+	
+	<select id="onCoopOrder" parameterType="hashMap" resultType="hashMap">
+	<![CDATA[
+		SELECT AA.*, ROUND((AA.PRICE / BB.CNT)) R_PRICE,
+		DECODE(AA.PAYCODE,'PAY110','신용카드','PAY120','가상계좌','PAY130','계좌이체','PAY100','무통장입금') PAYNM,
+		CASE AA.PAYCODE WHEN 'PAY110' THEN '3.04 %'
+		                WHEN 'PAY120' THEN '275 원'
+		                WHEN 'PAY130' THEN '1.43 %'
+		                WHEN 'PAY100' THEN '0 원'
+		                END CMSN,
+		CASE AA.PAYCODE WHEN 'PAY110' THEN ROUND((AA.PRICE / BB.CNT)) * 0.0304 
+		                WHEN 'PAY120' THEN 275
+		                WHEN 'PAY130' THEN ROUND((AA.PRICE / BB.CNT)) * 0.0143
+		                WHEN 'PAY100' THEN 0
+		                END CM_PIRCE
+		FROM (
+		SELECT M.USER_ID, M.USER_NM, A.ORDERNO, B.MGNTNO, C.SUBJECT_TITLE, A.REG_DT, B.PRICE,
+		       D.START_DATE, D.END_DATE, E.PAYCODE
+		FROM TB_ORDERS A, TB_ORDER_MGNT_NO B, TB_LEC_MST C, TB_MYLECTURE D, TB_APPROVALS E, TB_MA_MEMBER M
+		WHERE M.USER_ID = A.USER_ID
+		AND A.ORDERNO = B.ORDERNO
+		AND D.LECTURE_NO = C.LECCODE
+		AND B.ORDERNO = D.ORDERNO
+		AND B.MGNTNO = D.PACKAGE_NO
+		AND A.ORDERNO = E.ORDERNO
+		AND M.COOP_CD = 'NSU' ) AA,
+		(
+		SELECT A.ORDERNO, B.MGNTNO, COUNT(B.MGNTNO) CNT
+		FROM TB_ORDERS A, TB_ORDER_MGNT_NO B, TB_MYLECTURE D, TB_MA_MEMBER M
+		WHERE M.USER_ID = A.USER_ID
+		AND A.ORDERNO = B.ORDERNO
+		AND B.ORDERNO = D.ORDERNO
+		AND B.MGNTNO = D.PACKAGE_NO
+		AND M.COOP_CD = 'NSU'
+		GROUP BY A.ORDERNO, B.MGNTNO ) BB
+		WHERE AA.ORDERNO = BB.ORDERNO
+		AND AA.MGNTNO = BB.MGNTNO
+		ORDER BY AA.ORDERNO DESC
+	]]>        
+	</select>
+
+</mapper>

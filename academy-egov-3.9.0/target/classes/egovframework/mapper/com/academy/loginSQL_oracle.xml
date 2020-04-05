@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="login">
+
+  	<select id="login" parameterType="hashMap" resultType="hashMap">
+	    SELECT
+	            USER_ID, USER_NM, USER_ROLE, ADMIN_ROLE, PHONE_NO, EMAIL,
+	                   (SELECT ONOFF_DIV  FROM TB_SG_SITE WHERE SITE_ID=ADMIN_ROLE )  ONOFF_DIV,
+	                USER_NICKNM
+	    FROM TB_MA_MEMBER
+	    WHERE USER_ID = #{USERID}
+        <if test="PSWD != null and PSWD != ''">
+	    AND USER_PWD = damo.hash_str_data(#{PSWD})
+	    </if>
+	    AND USER_ROLE = 'ADMIN'
+  	</select>
+
+  	<select id="login_ip" parameterType="hashMap" resultType="hashMap">
+		SELECT ACCESS_DT, USER_IP
+		FROM (
+		      SELECT ACCESS_DT, USER_IP,
+		             RANK () OVER(PARTITION BY USERID ORDER BY ACCESS_DT DESC) RNK
+		      FROM MB_ACCESS_LOG
+		      WHERE USERID = #{USERID}
+		      AND IS_LOGIN = 'Y'
+	          <if test="isLec != null and isLec != ''">
+		 	  AND IS_LEC_OPEN = 'Y'
+			  </if>
+		      ) AA
+		WHERE AA.RNK <![CDATA[ < ]]> #{LOG_CNT}
+        <if test="isAdmin != null and isAdmin != ''">
+		AND USER_IP = #{USER_IP}
+		</if>
+  	</select>
+
+  	<insert id="mbAccessInsert" parameterType="hashMap" flushCache="true" >
+	    INSERT INTO MB_ACCESS_LOG(
+            ACCESS_DT, USERID, USER_IP, IS_LOGIN
+	        <if test="isLec != null and isLec != ''">
+	    	,IS_LEC_OPEN
+			</if>
+	    )VALUES(
+	        SYSDATE,  #{USERID}, #{USER_IP}, 'Y'
+		    <if test="isLec != null and isLec != ''">
+			,'Y'
+			</if>
+	    )
+  	</insert>
+
+	<insert id="insertSMS" parameterType="hashMap" flushCache="true">
+		<choose>
+        	<when test='isLec == "Y"'>
+				CALL SP_INS_MMS_MSG@WILLBESGOSI_OLD(
+				#{PHONE_NO, mode=IN}, #{COMPANY_NO, mode=IN}, #{MESSAGE, mode=IN}
+				)
+			</when>
+			<otherwise>
+				CALL SP_INS_SC_TRAN@WILLBESGOSI_OLD(
+				#{PHONE_NO, mode=IN}, #{COMPANY_NO, mode=IN}, #{MESSAGE, mode=IN}
+				)
+			</otherwise>
+		</choose>
+	</insert>
+
+</mapper>

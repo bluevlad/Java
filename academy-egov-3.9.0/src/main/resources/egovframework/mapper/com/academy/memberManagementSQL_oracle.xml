@@ -1,0 +1,593 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="memberManagement">
+
+	<resultMap type="java.util.HashMap" id="memberMap">
+	<result column="REMARK" property="REMARK" javaType="java.lang.String" jdbcType="CLOB"/>
+	</resultMap>
+
+	<select id="getMemberList" parameterType="hashMap" resultType="hashMap" >
+		SELECT *
+		FROM (
+				SELECT AA.USER_ID, AA.USER_NM, AA.BIRTH_DAY, AA.EMAIL, SITE_NM,
+						AA.PHONE, AA.ISUSENM, AA.ISOK_SMS, AA.ISOK_EMAIL, AA.C_NAME, AA.REG_DT, AA.UPD_DT, AA.MEMBER_TYPE,
+						ROWNUM rnum
+				FROM (
+						SELECT A.USER_ID, A.USER_NM, A.BIRTH_DAY,
+								DAMO.DEC_VARCHAR@WILLBESGOSI_OLD('WILLBES_GOSI', 'TB_MA_MEMBER', 'PHONE_NO', A.SEC_PHONE_NO) AS PHONE,
+								DECODE(A.ISUSE, 'Y', '활성', 'N', '비활성') ISUSENM,
+								EMAIL, NVL(A.ISOK_SMS, 'N') ISOK_SMS, NVL(A.ISOK_EMAIL, 'N') ISOK_EMAIL,
+								(SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = A.CATEGORY_CODE) C_NAME,
+								FN_GET_CODE_NM@WILLBESGOSI_OLD('USER_POSITION', NVL(A.USER_POSITION, 'PUB')) SITE_NM,
+								A.REG_DT, A.UPD_DT, 'NEW' AS MEMBER_TYPE
+						FROM TB_MA_MEMBER_DAMO@WILLBESGOSI_OLD A
+						WHERE USER_ROLE IN ('USER', 'AST')
+						<if test="USER_POSITION != null and USER_POSITION != 'ALL'">
+						AND DECODE(NVL(A.USER_POSITION, 'PUB'), 'PUB', 'PUB', 'COP', 'COP', 'CAM') = #{USER_POSITION}
+						</if>
+						<if test="SEARCHKEYWORD != null and SEARCHKEYWORD != ''">
+							<choose>
+								<when test='SEARCHTYPE == "USER_ID"'>
+						AND INSTR(A.USER_ID, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+								</when>
+								<when test='SEARCHTYPE == "USER_NM"'>
+						AND INSTR(A.USER_NM, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+								</when>
+								<when test='SEARCHTYPE == "PHONE_NO"'>
+						AND INSTR(DAMO.DEC_VARCHAR@WILLBESGOSI_OLD('WILLBES_GOSI', 'TB_MA_MEMBER', 'PHONE_NO', A.SEC_PHONE_NO), #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+								</when>
+								<when test='SEARCHTYPE == ""'>
+						AND ( INSTR(A.USER_ID, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+								OR INSTR(A.USER_NM, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0 )
+								</when>
+							</choose>
+						</if>
+						<if test='(SDATE != null and SDATE != "") or (EDATE != null and EDATE != "") '>
+							<if test='SDATE != null and SDATE != ""'>
+						AND A.REG_DT <![CDATA[ >= ]]> TO_DATE('${SDATE}')
+							</if>
+							<if test='EDATE != null and EDATE != ""'>
+						AND A.REG_DT <![CDATA[ < ]]> TO_DATE('${EDATE}') + 1
+							</if>
+						</if>
+						) AA
+				WHERE rownum <![CDATA[ <= ]]> #{endNo}
+				)
+		WHERE rnum <![CDATA[ > ]]> #{startNo}
+	</select>
+
+	<select id="getMemberListCount" parameterType="hashMap" resultType="int">
+		SELECT
+			COUNT(*) CNT
+						FROM TB_MA_MEMBER_DAMO@WILLBESGOSI_OLD A
+						WHERE USER_ROLE IN ('USER', 'AST')
+						<if test="USER_POSITION != null and USER_POSITION != 'ALL'">
+						AND DECODE(NVL(A.USER_POSITION, 'PUB'), 'PUB', 'PUB', 'COP', 'COP', 'CAM') = #{USER_POSITION}
+						</if>
+						<if test="SEARCHKEYWORD != null and SEARCHKEYWORD != ''">
+							<choose>
+								<when test='SEARCHTYPE == "USER_ID"'>
+						AND INSTR(A.USER_ID, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+								</when>
+								<when test='SEARCHTYPE == "USER_NM"'>
+						AND INSTR(A.USER_NM, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+								</when>
+								<when test='SEARCHTYPE == "PHONE_NO"'>
+						AND INSTR(DAMO.DEC_VARCHAR@WILLBESGOSI_OLD('WILLBES_GOSI', 'TB_MA_MEMBER', 'PHONE_NO', A.SEC_PHONE_NO), #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+								</when>
+								<when test='SEARCHTYPE == ""'>
+						AND ( INSTR(A.USER_ID, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+								OR INSTR(A.USER_NM, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0 )
+								</when>
+							</choose>
+						</if>
+						<if test='(SDATE != null and SDATE != "") or (EDATE != null and EDATE != "") '>
+							<if test='SDATE != null and SDATE != ""'>
+						AND A.REG_DT <![CDATA[ >= ]]> TO_DATE('${SDATE}')
+							</if>
+							<if test='EDATE != null and EDATE != ""'>
+						AND A.REG_DT <![CDATA[ < ]]> TO_DATE('${EDATE}') + 1
+							</if>
+						</if>
+	</select>
+
+	<select id="getOldMemberList" parameterType="hashMap" resultType="hashMap" >
+		SELECT *
+		FROM (
+				SELECT BB.USER_ID, BB.USER_NM, BB.BIRTH_DAY, BB.EMAIL,
+						BB.PHONE, BB.ISUSENM, BB.ISOK_SMS, BB.ISOK_EMAIL, BB.C_NAME, BB.REG_DT, BB.UPD_DT, 'O' MTYPE, BB.MEMBER_TYPE,
+						ROWNUM rnum
+				FROM (
+						SELECT AA.USER_ID, AA.USER_NM, AA.BIRTH_DAY, AA.COOP_CD,
+                                AA.PHONE,
+                                AA.ISUSENM,
+                                EMAIL, AA.ISOK_SMS, AA.ISOK_EMAIL,
+                                AA.C_NAME,
+                                AA.REG_DT, AA.UPD_DT, AA.MEMBER_TYPE
+                        FROM(
+                        SELECT A.USER_ID, A.USER_NM, A.BIRTH_DAY, A.COOP_CD, A.USER_ROLE, 
+                                DAMO.DEC_VARCHAR@WILLBESGOSI_OLD('WILLBES_GOSI', 'TB_MA_MEMBER', 'PHONE_NO', A.SEC_PHONE_NO) AS PHONE,
+                                DECODE(A.ISUSE, 'Y', '활성', 'N', '비활성') ISUSENM,
+                                EMAIL, NVL(A.ISOK_SMS, 'N') ISOK_SMS, NVL(A.ISOK_EMAIL, 'N') ISOK_EMAIL,
+                                (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = A.CATEGORY_CODE) C_NAME,
+                                A.REG_DT, A.UPD_DT, 'NEW' AS MEMBER_TYPE
+                        FROM TB_MA_MEMBER_DAMO@WILLBESGOSI_OLD A
+                        UNION ALL
+                        SELECT A.USER_ID, A.USER_NM, A.BIRTH_DAY, A.COOP_CD, A.USER_ROLE, 
+                                DAMO.DEC_VARCHAR@WILLBESGOSI_OLD('WILLBES_GOSI', 'TB_MA_MEMBER', 'PHONE_NO', A.SEC_PHONE_NO) AS PHONE,
+                                DECODE(A.ISUSE, 'Y', '활성', 'N', '비활성') ISUSENM,
+                                EMAIL, NVL(A.ISOK_SMS, 'N') ISOK_SMS, NVL(A.ISOK_EMAIL, 'N') ISOK_EMAIL,
+                                (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = A.CATEGORY_CODE) C_NAME,
+                                A.REG_DT, A.UPD_DT, 'OLD' AS MEMBER_TYPE
+                        FROM TB_MA_MEMBER_OLD@WILLBESGOSI_OLD A
+                        ) AA
+                        WHERE AA.USER_ROLE = 'USER'
+						<if test="COOP_CD != null and COOP_CD != ''">
+						AND AA.COOP_CD = #{COOP_CD}
+						</if>
+						<if test="SEARCHKEYWORD != null and SEARCHKEYWORD != ''">
+							<choose>
+								<when test='SEARCHTYPE == "USER_ID"'>
+						AND INSTR(AA.USER_ID, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+								</when>
+								<when test='SEARCHTYPE == "USER_NM"'>
+						AND INSTR(AA.USER_NM, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+								</when>
+								<when test='SEARCHTYPE == "PHONE_NO"'>
+						AND INSTR(AA.PHONE, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+								</when>
+								<when test='SEARCHTYPE == ""'>
+						AND ( INSTR(AA.USER_ID, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+								OR INSTR(AA.USER_NM, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0 )
+								</when>
+							</choose>
+						</if>
+						<if test='(SDATE != null and SDATE != "") or (EDATE != null and EDATE != "") '>
+							<if test='SDATE != null and SDATE != ""'>
+						AND AA.REG_DT <![CDATA[ >= ]]> TO_DATE('${SDATE}')
+							</if>
+							<if test='EDATE != null and EDATE != ""'>
+						AND AA.REG_DT <![CDATA[ < ]]> TO_DATE('${EDATE}') + 1
+							</if>
+						</if>
+						) BB
+				WHERE rownum <![CDATA[ <= ]]> #{endNo}
+				)
+		WHERE rnum <![CDATA[ > ]]> #{startNo}
+	</select>
+
+	<select id="getOldMemberListCount" parameterType="hashMap" resultType="int">
+		SELECT
+			COUNT(*) CNT
+                        FROM(
+                        SELECT A.USER_ID, A.USER_NM, A.BIRTH_DAY, A.COOP_CD, A.USER_ROLE, 
+                                DAMO.DEC_VARCHAR@WILLBESGOSI_OLD('WILLBES_GOSI', 'TB_MA_MEMBER', 'PHONE_NO', A.SEC_PHONE_NO) AS PHONE,
+                                DECODE(A.ISUSE, 'Y', '활성', 'N', '비활성') ISUSENM,
+                                EMAIL, NVL(A.ISOK_SMS, 'N') ISOK_SMS, NVL(A.ISOK_EMAIL, 'N') ISOK_EMAIL,
+                                (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = A.CATEGORY_CODE) C_NAME,
+                                A.REG_DT, A.UPD_DT
+                        FROM TB_MA_MEMBER_DAMO@WILLBESGOSI_OLD A
+                        UNION ALL
+                        SELECT A.USER_ID, A.USER_NM, A.BIRTH_DAY, A.COOP_CD, A.USER_ROLE, 
+                                DAMO.DEC_VARCHAR@WILLBESGOSI_OLD('WILLBES_GOSI', 'TB_MA_MEMBER', 'PHONE_NO', A.SEC_PHONE_NO) AS PHONE,
+                                DECODE(A.ISUSE, 'Y', '활성', 'N', '비활성') ISUSENM,
+                                EMAIL, NVL(A.ISOK_SMS, 'N') ISOK_SMS, NVL(A.ISOK_EMAIL, 'N') ISOK_EMAIL,
+                                (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = A.CATEGORY_CODE) C_NAME,
+                                A.REG_DT, A.UPD_DT
+                        FROM TB_MA_MEMBER_OLD@WILLBESGOSI_OLD A
+                        ) AA
+                        WHERE 1=1
+						<if test="COOP_CD != null and COOP_CD != ''">
+						AND AA.COOP_CD = #{COOP_CD}
+						</if>
+						<if test="SEARCHKEYWORD != null and SEARCHKEYWORD != ''">
+							<choose>
+								<when test='SEARCHTYPE == "USER_ID"'>
+						AND INSTR(AA.USER_ID, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+								</when>
+								<when test='SEARCHTYPE == "USER_NM"'>
+						AND INSTR(AA.USER_NM, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+								</when>
+								<when test='SEARCHTYPE == "PHONE_NO"'>
+						AND INSTR(AA.PHONE_NO, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+								</when>
+								<when test='SEARCHTYPE == ""'>
+						AND ( INSTR(AA.USER_ID, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+								OR INSTR(AA.USER_NM, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0 )
+								</when>
+							</choose>
+						</if>
+						<if test='(SDATE != null and SDATE != "") or (EDATE != null and EDATE != "") '>
+							<if test='SDATE != null and SDATE != ""'>
+						AND AA.REG_DT <![CDATA[ >= ]]> TO_DATE('${SDATE}')
+							</if>
+							<if test='EDATE != null and EDATE != ""'>
+						AND AA.REG_DT <![CDATA[ < ]]> TO_DATE('${EDATE}') + 1
+							</if>
+						</if>
+	</select>
+
+	<select id="getCategoryList" parameterType="hashMap" resultType="hashMap">
+		SELECT
+			ID, CODE, NAME, ISUSE, DECODE(ISUSE, 'Y', '활성', 'N', '비활성') ISUSENM
+			, REG_DT, REG_ID, UPD_DT, UPD_ID
+		FROM TB_CATEGORY_INFO
+		WHERE ISUSE = 'Y' AND P_CODE = 'CLASSCODE'
+		ORDER BY CODE ASC
+	</select>
+
+	<insert id="memberInsertProcess" parameterType="hashMap" flushCache="true" >
+		INSERT INTO TB_MA_MEMBER(
+			USER_ID
+			, USER_NM
+			, USER_PWD
+			, USER_ROLE
+			, USER_POSITION
+			, BIRTH_DAY
+			, EMAIL
+			, CATEGORY_CODE
+			, PHONE_NO
+			, TEL_NO
+			, USER_POINT
+			, ZIP_CODE
+			, ADDRESS1
+			, ADDRESS2
+			, ISUSE
+			, REG_DT
+			, REG_ID
+			, UPD_DT
+			, UPD_ID
+			, JOIN_CHANNEL
+			, JOB
+			, EXAM_REQ
+			, F_CAT_CD
+			, F_AREA
+			, S_CAT_CD
+			, S_AREA
+			, INFO_REQ
+			, EVENT_REQ
+			, SBJ_REQ
+			, EVENT_REQ_ETC
+			, ISOK_SMS
+			, ISOK_EMAIL
+		<if test="U_AREA != null and U_AREA != ''">
+			, U_AREA
+		</if>
+		)VALUES(
+			#{USER_ID}
+			, #{USER_NM}
+			, DAMO.HASH_STR_DATA@WILLBESGOSI_OLD(#{USER_PWD})
+			, #{USER_ROLE}
+			, 'COP'
+			, #{BIRTH_DAY}
+			, #{EMAIL}
+			, #{CATEGORY_CODE}
+			, #{PHONE_NO}
+			, #{TEL_NO}
+			, #{USER_POINT}
+			, #{ZIP_CODE}
+			, #{ADDRESS1}
+			, #{ADDRESS2}
+			, #{ISUSE}
+			, SYSDATE
+			, #{REG_ID}
+			, SYSDATE
+			, #{UPD_ID}
+			, #{JOIN_CHANNEL}
+			, #{JOB}
+			, #{EXAM_REQ}
+			, #{F_CAT_CD}
+			, #{F_AREA}
+			, #{S_CAT_CD}
+			, #{S_AREA}
+			, #{INFO_REQ}
+			, #{EVENT_REQ}
+			, #{SBJ_REQ}
+			, #{EVENT_REQ_ETC}
+			, #{ISOK_SMS}
+			, #{ISOK_EMAIL}
+		<if test="U_AREA != null and U_AREA != ''">
+			, #{U_AREA}
+		</if>
+		)
+	</insert>
+
+	<insert id="memberInfoInsertProcess" parameterType="hashMap" flushCache="true" >
+		INSERT INTO TB_MA_MEMBER_INFO(
+			USER_ID
+			, REMARK
+		)VALUES(
+			#{USER_ID}
+			, #{REMARK}
+		)
+	</insert>
+
+	<select id="memberIdCheck" parameterType="hashMap" resultType="int">
+		SELECT
+			COUNT(USER_ID)
+		FROM TB_MA_MEMBER
+		WHERE USER_ID = #{USER_ID}
+	</select>
+
+	<delete id="memberCategoryDelete" parameterType="hashMap" flushCache="true">
+		DELETE FROM TB_MA_MEMBER_CATEGORY WHERE USER_ID = #{USER_ID}
+	</delete>
+
+	<insert id="memberCategoryInsert" parameterType="hashMap" flushCache="true">
+		INSERT INTO TB_MA_MEMBER_CATEGORY(
+			USER_ID, CATEGORY_CODE, SEQ, REG_DT, REG_ID, UPD_DT, UPD_ID
+		) VALUES(
+			#{USER_ID}, #{CATEGORY_CODE}, 1 , SYSDATE, #{REG_ID}, SYSDATE, #{UPD_ID}
+		)
+	</insert>
+
+
+	<select id="memberDetail" parameterType="hashMap" resultMap="memberMap">
+		SELECT
+			A.USER_ID,
+			USER_NM ,
+			USER_ROLE,
+			USER_PWD,
+			BIRTH_DAY,
+			EMAIL,
+			CATEGORY_CODE ,
+			CATEGORY_CODE AS USER_CATEGORY_CODE ,
+			PHONE_NO ,
+			TEL_NO,
+			USER_POINT,
+			ZIP_CODE,
+			ADDRESS1,
+			ADDRESS2,
+			ISUSE,
+			TO_CHAR(REG_DT , 'yyyy-mm-dd')  REG_DT ,
+			REG_ID ,
+			TO_CHAR(UPD_DT , 'yyyy-mm-dd')  UPD_DT ,
+			UPD_ID,
+			JOIN_CHANNEL ,
+			JOB,
+			EXAM_REQ ,
+			F_CAT_CD ,
+			F_AREA ,
+			S_CAT_CD ,
+			S_AREA ,
+			INFO_REQ ,
+			EVENT_REQ ,
+			SBJ_REQ ,
+			EVENT_REQ_ETC ,
+			NVL(A.ISOK_SMS, 'N') ISOK_SMS, 
+			NVL(A.ISOK_EMAIL, 'N') ISOK_EMAIL,
+			B.REMARK
+		FROM TB_MA_MEMBER A, TB_MA_MEMBER_INFO B
+		WHERE A.USER_ID = B.USER_ID(+)
+		AND A.USER_ID = #{USER_ID}
+	</select>
+
+	<select id="oldMemberDetail" parameterType="hashMap" resultMap="memberMap">
+		SELECT
+			USER_ID,
+			USER_NM ,
+			USER_ROLE,
+			USER_PWD,
+			BIRTH_DAY,
+			EMAIL,
+			CATEGORY_CODE ,
+			CATEGORY_CODE AS USER_CATEGORY_CODE ,
+            DAMO.DEC_VARCHAR@WILLBESGOSI_OLD('WILLBES_GOSI', 'TB_MA_MEMBER', 'PHONE_NO', SEC_PHONE_NO) AS PHONE_NO,
+            DAMO.DEC_VARCHAR@WILLBESGOSI_OLD('WILLBES_GOSI', 'TB_MA_MEMBER', 'TEL_NO', SEC_TEL_NO) AS TEL_NO,
+			USER_POINT,
+			ZIP_CODE,
+			ADDRESS1,
+			ADDRESS2,
+			-- REMARK ,
+			ISUSE,
+			TO_CHAR(REG_DT , 'yyyy-mm-dd')  REG_DT ,
+			REG_ID ,
+			TO_CHAR(UPD_DT , 'yyyy-mm-dd')  UPD_DT ,
+			UPD_ID,
+			JOIN_CHANNEL ,
+			JOB ,
+			EXAM_REQ ,
+			F_CAT_CD ,
+			F_AREA ,
+			S_CAT_CD ,
+			S_AREA ,
+			INFO_REQ ,
+			EVENT_REQ ,
+			SBJ_REQ ,
+			EVENT_REQ_ETC ,
+			NVL(ISOK_SMS, 'N') ISOK_SMS, 
+			NVL(ISOK_EMAIL, 'N') ISOK_EMAIL,
+			ISOK_SMS ,
+			ISOK_EMAIL
+		FROM TB_MA_MEMBER_OLD@WILLBESGOSI_OLD
+		WHERE USER_ID = #{USER_ID}
+	</select>
+
+	<update id="memberUpdateProcess" parameterType="hashMap">
+		UPDATE TB_MA_MEMBER
+		SET
+			USER_NM                 = #{USER_NM}
+			<if test="USER_PWD != null and USER_PWD != ''">
+			, USER_PWD  = DAMO.HASH_STR_DATA@WILLBESGOSI_OLD(#{USER_PWD})
+			</if>
+			, BIRTH_DAY             = #{BIRTH_DAY}
+			, EMAIL                 = #{EMAIL}
+			, CATEGORY_CODE         = #{CATEGORY_CODE}
+			, PHONE_NO              = #{PHONE_NO}
+			, TEL_NO                = #{TEL_NO}
+			, USER_POINT            = #{USER_POINT}
+			, ZIP_CODE              = #{ZIP_CODE}
+			, ADDRESS1              = #{ADDRESS1}
+			, ADDRESS2              = #{ADDRESS2}
+			, ISUSE                 = #{ISUSE}
+			, UPD_DT                = SYSDATE
+			, UPD_ID                = #{UPD_ID}
+			, JOIN_CHANNEL          = #{JOIN_CHANNEL}
+			, JOB                   = #{JOB}
+			, EXAM_REQ              = #{EXAM_REQ}
+			, SBJ_REQ               = #{SBJ_REQ}
+			, F_CAT_CD              = #{F_CAT_CD}
+			, F_AREA                = #{F_AREA}
+			, S_CAT_CD              = #{S_CAT_CD}
+			, S_AREA                = #{S_AREA}
+			, INFO_REQ              = #{INFO_REQ}
+			, EVENT_REQ             = #{EVENT_REQ}
+			, EVENT_REQ_ETC         = #{EVENT_REQ_ETC}
+			, ISOK_SMS              = #{ISOK_SMS}
+			, ISOK_EMAIL            = #{ISOK_EMAIL}
+		<if test="U_AREA != null and U_AREA != ''">
+			, U_AREA                = #{U_AREA}
+		</if>
+		WHERE USER_ID = #{USER_ID}
+	</update>
+
+	<update id="memberInfoUpdateProcess" parameterType="hashMap">
+		UPDATE TB_MA_MEMBER_INFO
+		SET
+			REMARK = #{REMARK}
+		WHERE USER_ID = #{USER_ID}
+	</update>
+
+	<delete id="memberDelete" parameterType="hashMap">
+		DELETE FROM TB_MA_MEMBER WHERE USER_ID = #{USER_ID}
+	</delete>
+
+	<delete id="memberInfoDelete" parameterType="hashMap">
+		DELETE FROM TB_MA_MEMBER_INFO WHERE USER_ID = #{USER_ID}
+	</delete>
+
+	<select id="searchZipCode" parameterType="hashMap" resultType="hashMap" >
+		SELECT
+			ZIPCD||SIDO||' '||GUGUN||' '||DONG||' '||RI||' '||BUNJI  AS JUSO_VALUE ,
+			'['||ZIPCD||'] '||SIDO||' '||GUGUN||' '||DONG||' '||RI||' '||BUNJI  AS JUSO_NM
+		FROM TB_ZIPCODE_NEW
+		WHERE 1=1
+		<if test="SEARCHAREA != null and SEARCHAREA != ''">
+		AND (DONG LIKE '%'||#{SEARCHAREA}||'%' OR RI LIKE '%'||#{SEARCHAREA}||'%' )
+		</if>
+	</select>
+
+	<insert id="memberSendMessage" parameterType="hashMap">
+		INSERT INTO TB_NOTE_SEND_INFO(
+			NOTEID,
+			FROM_USERID,
+			SEND_DT,
+			SEND_ID,
+			CONT,
+			READ_YN
+		)VALUES(
+			SEQ_NOTE_ID.NEXTVAL,
+			#{FROM_USERID},
+			SYSDATE,
+			#{SEND_ID},
+			#{CONT},
+			'N'
+		)
+	</insert>
+
+	<select id="getMemberAdminEmail" parameterType="hashMap" resultType="hashMap">
+		SELECT
+			EMAIL
+		FROM TB_MA_MEMBER
+		WHERE 1=1
+		AND USER_ID =#{USER_ID}
+	</select>
+
+	<insert id="MemberAdminInsertEmail" parameterType="hashMap">
+		INSERT INTO TB_MAIL_SEND_INFO(
+			MAILID,
+			FROM_USERID,
+			SEND_DT ,
+			SEND_ID  ,
+			SUBJECT ,
+			CONT     ,
+			READ_YN
+		)VALUES(
+			SEQ_EMAIL_ID.NEXTVAL,
+			#{FROM_USERID},
+			SYSDATE,
+			#{SEND_ID},
+			#{SUBJECT} ,
+			#{CONT},
+			'N'
+		)
+	</insert>
+
+	<select id="getMemberStatList" parameterType="hashMap" resultType="hashMap">
+		SELECT
+		<if test="selType == 'YY'">
+		TO_CHAR(REG_DT, 'YYYY') DT,
+		</if>
+		<if test="selType == 'MM'">
+		TO_CHAR(REG_DT, 'YYYY-MM') DT,
+		</if>
+		<if test="selType == 'WW'">
+		TO_CHAR(REG_DT, 'YYYY-MM-W') DT,
+		</if>
+		<if test="selType == null or selType == ''">
+		TO_CHAR(REG_DT, 'YYYY') DT,
+		</if>
+		COUNT(USER_ID) CNT, SUM(DECODE(AA.ISUSE, 'N', 1, 0)) WD_CNT
+		FROM TB_MA_MEMBER AA
+		WHERE AA.USER_ROLE = 'USER'
+		AND AA.USER_POSITION = 'COP'
+		<if test="searchStartDate != null and searchStartDate != ''">
+		AND TO_CHAR(REG_DT, 'YYYYMMDD') between #{searchStartDate} and #{searchEndDate}
+		</if>
+		<if test="selType == 'YY'">
+		GROUP BY TO_CHAR(REG_DT, 'YYYY')
+		ORDER BY TO_CHAR(REG_DT, 'YYYY')
+		</if>
+		<if test="selType == 'MM'">
+		GROUP BY TO_CHAR(REG_DT, 'YYYY-MM')
+		ORDER BY TO_CHAR(REG_DT, 'YYYY-MM')
+		</if>
+		<if test="selType == 'WW'">
+		GROUP BY TO_CHAR(REG_DT, 'YYYY-MM-W')
+		ORDER BY TO_CHAR(REG_DT, 'YYYY-MM-W')
+		</if>
+		<if test="selType == null or selType == ''">
+		GROUP BY TO_CHAR(REG_DT, 'YYYY')
+		ORDER BY TO_CHAR(REG_DT, 'YYYY')
+		</if>
+	</select>
+	
+	<select id="getPrimeMemberList" parameterType="hashMap" resultType="hashMap" >
+			
+		SELECT   DISTINCT A.USER_ID, MIN(C.UPD_DT) UPD_DT
+        FROM TB_ORDERS A, TB_ORDER_MGNT_NO B, TB_MYMOVIE C, TB_MA_MEMBER D
+        WHERE A.ORDERNO = B.ORDERNO
+        AND A.ORDERNO = C.ORDERNO
+        AND A.USER_ID = D.USER_ID
+        AND ADMIN_ROLE = '${COOPNM}'
+        AND PRICE = 0
+        AND STATUSCODE = 'DLV105'
+        AND (MGNTNO = 'Y201600001' OR MGNTNO = 'Y201600002')
+        AND C.UPD_DT  <![CDATA[ >= ]]>  TO_DATE('${SDATE}')
+        AND C.UPD_DT  <![CDATA[ <  ]]> TO_DATE('${EDATE}') + 1
+        GROUP BY A.USER_ID
+        ORDER BY A.USER_ID ASC
+
+	</select>
+	
+	<select id="getPrimeMemberListCount" parameterType="hashMap" resultType="int">
+		
+		SELECT   COUNT(DISTINCT A.USER_ID)
+        FROM TB_ORDERS A, TB_ORDER_MGNT_NO B, TB_MYMOVIE C, TB_MA_MEMBER D
+        WHERE A.ORDERNO = B.ORDERNO
+        AND A.ORDERNO = C.ORDERNO
+        AND A.USER_ID = D.USER_ID 
+        AND ADMIN_ROLE =  '${COOPNM}'
+        AND PRICE = 0
+        AND STATUSCODE = 'DLV105'
+        AND (MGNTNO = 'Y201600001' OR MGNTNO = 'Y201600002')
+        AND C.UPD_DT  <![CDATA[ >= ]]>  TO_DATE('${SDATE}')
+        AND C.UPD_DT  <![CDATA[ < ]]>  TO_DATE('${EDATE}') + 1
+
+	</select>
+	
+	<delete id="OldmemberDeleteProcess" parameterType="hashMap">
+		DELETE FROM TB_MA_MEMBER_OLD@WILLBESGOSI_OLD WHERE USER_ID = #{USER_ID}
+	</delete>
+
+</mapper>

@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="book">
+ 	<resultMap type="java.util.HashMap" id="bookMap">
+	   <result column="BOOK_INFO" property="BOOK_INFO" javaType="java.lang.String" jdbcType="CLOB"/>
+	</resultMap>
+
+	<select id="bookList" parameterType="hashMap" resultType="hashMap">
+		SELECT LTBL.*,
+				  (SELECT NAME FROM TB_CATEGORY_INFO WHERE ISUSE = 'Y' AND CODE = LTBL.CATEGORY_CD) CATEGORY_NM,
+			      (SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE ISUSE = 'Y' AND CODE = LTBL.LEARNING_CD) LEARNING_NM,
+			      (SELECT COUNT(RSC_ID) FROM TB_CA_BOOK WHERE SEQ = LTBL.SEQ AND RSC_ID NOT IN (LTBL.RSC_ID)) RELCNT
+		FROM (
+			     SELECT TBL.*, ROWNUM rnum
+		  	     FROM (
+				          SELECT T2.SEQ, T2.RSC_ID, T2.BOOK_NM, T2.BOOK_AUTHOR, T2.BOOK_PUBLISHERS,
+		       		                DECODE(T2.COVER_TYPE,'A','주문가능','S','품절','O','절판','N','신규', 'E', '이벤트도서','') COVER_TYPE,
+                                    T2.BOOK_STOCK, T2.CATEGORY_CD, T2.LEARNING_CD, T2.REG_DT, T2.BOOK_PAGE, T2.BOOK_FORMAT
+				          FROM (SELECT SEQ, MIN(RSC_ID) RSC_ID FROM TB_CA_BOOK GROUP BY SEQ) T1 INNER JOIN TB_CA_BOOK T2
+		  			      ON T1.RSC_ID = T2.RSC_ID
+		  		          WHERE 1 = 1
+		  		      <if test='SEARCHKIND != null and SEARCHKIND != ""'>
+		  			      AND T2.CATEGORY_CD = #{SEARCHKIND}
+		  		      </if>
+			 	      <if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+					  	<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+							<if test='SEARCHTYPE == "1"'>
+		  		      	  		AND INSTR(T2.BOOK_AUTHOR, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+						    </if>
+						    <if test='SEARCHTYPE == "2"'>
+		  		      	  		AND INSTR(T2.RSC_ID, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+						    </if>
+						    <if test='SEARCHTYPE == "3"'>
+		  		      	  		AND INSTR(T2.BOOK_NM, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+						    </if>
+						    <if test='SEARCHTYPE == "4"'>
+						    	<if test='SEARCHTEXT == "주문가능"'>
+						    		AND COVER_TYPE = 'A'
+						    	</if>
+						    	<if test='SEARCHTEXT == "품절"'>
+						    		AND COVER_TYPE = 'S'
+						    	</if>
+						    	<if test='SEARCHTEXT == "절판"'>
+						    		AND COVER_TYPE = 'O'
+						    	</if>
+						    	<if test='SEARCHTEXT == "신규"'>
+						    		AND COVER_TYPE = 'N'
+						    	</if>
+						    	<if test='SEARCHTEXT == "이벤트도서"'>
+						    		AND COVER_TYPE = 'E'
+						    	</if>				    	
+					  		</if>
+					   </if>
+					   <if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+						AND (
+							INSTR(T2.BOOK_AUTHOR, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+							OR INSTR(T2.RSC_ID, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+							OR INSTR(T2.BOOK_NM, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+						)
+					    </if>
+				     </if>
+		  		       ORDER BY TO_CHAR(T2.REG_DT,'YYYYMMDD') DESC, T2.CATEGORY_CD
+				   ) TBL
+               	  WHERE rownum <![CDATA[ <= ]]> #{endNo}
+			 ) LTBL
+		WHERE rnum <![CDATA[ > ]]> #{startNo}
+	</select>
+
+	<select id="bookListCount" parameterType="hashMap" resultType="int">
+		SELECT COUNT(T1.SEQ)
+		FROM (SELECT SEQ, MAX(RSC_ID) RSC_ID FROM TB_CA_BOOK GROUP BY SEQ) T1 INNER JOIN TB_CA_BOOK T2
+  		ON T1.RSC_ID = T2.RSC_ID
+  		WHERE 1 = 1
+		  		      <if test='SEARCHKIND != null and SEARCHKIND != ""'>
+		  			      AND T2.CATEGORY_CD = #{SEARCHKIND}
+		  		      </if>
+			 	      <if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+					  	<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+							<if test='SEARCHTYPE == "1"'>
+		  		      	  AND INSTR(T2.BOOK_AUTHOR, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+						    </if>
+						    <if test='SEARCHTYPE == "2"'>
+		  		      	  AND INSTR(T2.RSC_ID, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+						    </if>
+						    <if test='SEARCHTYPE == "3"'>
+		  		      	  AND INSTR(T2.BOOK_NM, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+						    </if>
+						    <if test='SEARCHTYPE == "4"'>
+						    	<if test='SEARCHTEXT == "주문가능"'>
+						    		AND COVER_TYPE = 'A'
+						    	</if>
+						    	<if test='SEARCHTEXT == "품절"'>
+						    		AND COVER_TYPE = 'S'
+						    	</if>
+						    	<if test='SEARCHTEXT == "절판"'>
+						    		AND COVER_TYPE = 'O'
+						    	</if>
+						    	<if test='SEARCHTEXT == "신규"'>
+						    		AND COVER_TYPE = 'N'
+						    	</if>
+						    	<if test='SEARCHTEXT == "이벤트도서"'>
+						    		AND COVER_TYPE = 'E'
+						    	</if>				    	
+					  		</if>
+					   </if>
+					   <if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+						AND (
+							INSTR(T2.BOOK_AUTHOR, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+							OR INSTR(T2.RSC_ID, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+							OR INSTR(T2.BOOK_NM, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+						)
+					    </if>
+				     </if>
+	</select>
+
+	<select id="getLearningFormList" parameterType="hashMap" resultType="hashMap">
+		SELECT
+			LEC_DIV, CODE, NAME
+		FROM TB_LEARNING_FORM_INFO
+		WHERE 1 = 1
+		<if test='LEC_TYPE_CHOICE != null and LEC_TYPE_CHOICE != ""'>
+			<if test='LEC_TYPE_CHOICE == "D"'>
+				AND LEC_DIV = 'LEC_A'
+			</if>
+			<if test='LEC_TYPE_CHOICE == "J"'>
+				AND LEC_DIV = 'LEC_B'
+			</if>
+			<if test='LEC_TYPE_CHOICE == "N"'>
+				AND LEC_DIV = 'LEC_D'
+			</if>
+			<if test='LEC_TYPE_CHOICE == "P"'>
+				AND LEC_DIV = 'LEC_C'
+			</if>
+			<if test='LEC_TYPE_CHOICE == "Y"'>
+				AND LEC_DIV = 'LEC_Y'
+			</if>
+		</if>
+		<if test='LEC_TYPE_CHOICE == null or LEC_TYPE_CHOICE == ""'>
+			AND LEC_DIV = 'LEC_A'
+		</if>
+		AND ISUSE = 'Y'
+		ORDER BY CODE ASC
+	</select>
+
+	<select id="getCaSubjectTeacherList" parameterType="hashMap" resultType="hashMap">
+	    SELECT TBL.* FROM (
+	      SELECT
+	        CC.USER_ID, AA.SUBJECT_NM, CC.USER_NM, AA.SUBJECT_CD, CC.PAYMENT, CC.OFF_PAYMENT
+			<if test='RSC_ID != null and RSC_ID != ""'>
+				, (SELECT COUNT(SUBJECT_SJT_CD) FROM TB_CA_BOOK WHERE RSC_ID = #{RSC_ID} AND SUBJECT_SJT_CD LIKE '%' || AA.SUBJECT_CD||'#'||CC.USER_ID || '%') SCNT
+			</if>
+			<if test='LECCODE != null and LECCODE != ""'>
+				<if test='MENUTYPE == "FM_ROOT"'>
+          		, (SELECT COUNT(SUBJECT_SJT_CD) FROM TB_OFF_LEC_MST WHERE LECCODE = #{LECCODE}
+          			AND BB.USER_ID = (SELECT SUBJECT_TEACHER FROM TB_OFF_LEC_MST WHERE LECCODE = #{LECCODE}) AND SUBJECT_SJT_CD = AA.SUBJECT_CD) SCNT
+				</if>
+				<if test='MENUTYPE != "FM_ROOT"'>
+          		, (SELECT COUNT(SUBJECT_SJT_CD) FROM TB_LEC_MST WHERE LECCODE = #{LECCODE}
+          			AND BB.USER_ID = (SELECT SUBJECT_TEACHER FROM TB_LEC_MST WHERE LECCODE = #{LECCODE}) AND SUBJECT_SJT_CD = AA.SUBJECT_CD) SCNT
+          		</if>
+			</if>
+	      FROM
+	      	TB_SUBJECT_INFO AA INNER JOIN TB_MA_MEMBER_SUBJECT BB ON AA.SUBJECT_CD = BB.SUBJECT_CD
+	      INNER JOIN TB_MA_MEMBER CC ON BB.USER_ID = CC.USER_ID AND CC.USER_POSITION = 'COP'
+	      WHERE
+	        AA.ISUSE = 'Y' AND CC.ISUSE = 'Y' AND CC.USER_NM IS NOT NULL
+
+	    <if test='TEACHER_NM != null and TEACHER_NM != ""'>
+  			AND (CC.USER_NM LIKE '%'||#{TEACHER_NM}||'%' OR AA.SUBJECT_NM LIKE '%'||#{TEACHER_NM}||'%')
+  		</if>
+  		<if test='TEACHER_SUBJECT != null and TEACHER_SUBJECT != ""'>
+
+  		</if>
+	    ) TBL
+		ORDER BY
+		<if test='(RSC_ID != null and RSC_ID != "") or (LECCODE != null and LECCODE != "")'>
+			TBL.SCNT DESC,
+		</if>
+
+		TBL.USER_NM, TBL.SUBJECT_NM ASC
+	</select>
+
+	<select id="getCaBookSeq" parameterType="hashMap" resultType="int">
+		SELECT (NVL(MAX(SEQ),0)+1) AS SEQ FROM  TB_CA_BOOK
+	</select>
+
+	<select id="getCaBookRscId" parameterType="hashMap" resultType="String">
+		SELECT REPLACE('L' || TO_CHAR(SYSDATE,'YYYY') || TO_CHAR(SEQ_TB_CA_BOOK_ID.NEXTVAL,'00000'),' ','') AS RSC_ID  FROM DUAL
+	</select>
+
+	<insert id="bookInsert" parameterType="hashMap" flushCache="true">
+		INSERT INTO TB_CA_BOOK(
+					SEQ, RSC_ID, SUBJECT_SJT_CD, CATEGORY_CD, LEARNING_CD
+					, BOOK_NM, BOOK_INFO, BOOK_MEMO, BOOK_KEYWORD, ISSUE_DATE
+					, COVER_TYPE, BOOK_CONTENTS, PRICE, DISCOUNT, DISCOUNT_PRICE
+					, POINT, BOOK_PUBLISHERS, BOOK_AUTHOR, BOOK_SUPPLEMENTDATA, BOOK_PRINTINGDATE
+					, BOOK_MAIN, BOOK_SUB, BOOK_STUDENTBOOK
+					, ATTACH_FILE, ATTACH_IMG_L, ATTACH_IMG_M, ATTACH_IMG_S, ATTACH_DETAIL_INFO
+					, BOOK_STOCK, FREE_POST, BOOK_DATE, NEW_BOOK, MAIN_VIEW, USE_YN, REG_DT, REG_ID, UPD_DT, UPD_ID
+					, BOOK_PAGE, BOOK_FORMAT
+		) VALUES (
+					#{SEQ}, #{RSC_ID}, #{SUBJECT_SJT_CD}, #{CATEGORY_CD}, #{LEARNING_CD}
+					, #{BOOK_NM}, #{BOOK_INFO}, #{BOOK_MEMO}, #{BOOK_KEYWORD}, #{ISSUE_DATE}
+					, #{COVER_TYPE}, #{BOOK_CONTENTS}, #{PRICE}, #{DISCOUNT}, #{DISCOUNT_PRICE}
+					, #{POINT}, #{BOOK_PUBLISHERS}, #{BOOK_AUTHOR}, #{BOOK_SUPPLEMENTDATA}, #{BOOK_PRINTINGDATE}
+					, #{BOOK_MAIN}, #{BOOK_SUB}, #{BOOK_STUDENTBOOK}
+					, #{ATTACH_FILE}, #{ATTACH_IMG_L}, #{ATTACH_IMG_M}, #{ATTACH_IMG_S}, #{ATTACH_DETAIL_INFO}
+					, #{BOOK_STOCK}, #{FREE_POST}, #{BOOK_DATE}, #{NEW_BOOK}, #{MAIN_VIEW}, #{USE_YN}, SYSDATE, #{REG_ID}, SYSDATE, #{UPD_ID}
+					, #{BOOK_PAGE}, #{BOOK_FORMAT}
+		)
+	</insert>
+
+	<select id="bookViewList" parameterType="hashMap" resultType="hashMap">
+		SELECT
+  			((SELECT NVL(SUM(CNT),0) FROM TB_ORDER_MGNT_NO WHERE STATUSCODE IN ('DLV105','DLV110','DLV120','DLV125','DLV130') AND MGNTNO = AA.RSC_ID)
+  			-(SELECT NVL(SUM(CNT),0) FROM TB_ORDER_MGNT_NO WHERE MGNTNO = AA.RSC_ID AND PRICE <![CDATA[<]]> 0)) AS CNT,
+  			SEQ, RSC_ID, SUBJECT_SJT_CD, CATEGORY_CD, LEARNING_CD, BOOK_NM,
+  			BOOK_INFO, BOOK_MEMO, BOOK_KEYWORD, ISSUE_DATE,
+			DECODE(AA.COVER_TYPE,'A','주문가능','S','품절','O','절판','N','신규','E','이벤트','') COVER_TYPE,
+			BOOK_CONTENTS, PRICE, DISCOUNT, DISCOUNT_PRICE,
+			POINT, BOOK_PUBLISHERS, BOOK_AUTHOR, BOOK_MAIN,
+			ATTACH_FILE, ATTACH_IMG_L, ATTACH_IMG_M, ATTACH_IMG_S, ATTACH_DETAIL_INFO,
+			BOOK_STOCK, REG_DT, UPD_DT, UPD_ID,
+  			BOOK_PAGE, BOOK_FORMAT,
+  			(SELECT NAME FROM TB_CATEGORY_INFO WHERE ISUSE = 'Y' AND CODE = AA.CATEGORY_CD) CATEGORY_NM,
+			(SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE ISUSE = 'Y' AND CODE = AA.LEARNING_CD) LEARNING_NM
+		FROM TB_CA_BOOK AA
+		WHERE SEQ = #{SEQ}
+		<if test='GUBUN == "1"'>
+            AND RSC_ID = #{RSC_ID}
+        </if>
+		ORDER BY AA.SEQ DESC, AA.RSC_ID ASC
+	</select>
+
+	<select id="bookView" parameterType="hashMap" resultMap="bookMap">
+		SELECT AA.*,
+			NVL(AA.MAIN_VIEW,'N') AS MAIN_VIEW, NVL(AA.NEW_BOOK,'N') AS NEW_BOOK
+		FROM TB_CA_BOOK AA
+		WHERE AA.RSC_ID = #{RSC_ID}
+	</select>
+
+	<select id="bookUseCheck" parameterType="hashMap" resultType="int">
+		SELECT COUNT(*) FROM TB_PLUS_CA_BOOK
+		WHERE RSC_ID = #{RSC_ID}
+	</select>
+
+	<update id="bookUpdate" parameterType="hashMap">
+		UPDATE TB_CA_BOOK
+			SET
+			SUBJECT_SJT_CD = #{SUBJECT_SJT_CD}
+          <if test='UPDATE_FLAG == ""'>
+            , CATEGORY_CD = #{CATEGORY_CD}
+          </if>
+			, LEARNING_CD =  #{LEARNING_CD}
+			, BOOK_NM = #{BOOK_NM}
+			, BOOK_INFO = #{BOOK_INFO}
+			, BOOK_MEMO = #{BOOK_MEMO}
+			, BOOK_KEYWORD = #{BOOK_KEYWORD}
+			, ISSUE_DATE = #{ISSUE_DATE}
+			, COVER_TYPE = #{COVER_TYPE}
+			, BOOK_CONTENTS = #{BOOK_CONTENTS}
+			, PRICE = #{PRICE}
+			, DISCOUNT = #{DISCOUNT}
+			, DISCOUNT_PRICE = #{DISCOUNT_PRICE}
+			, POINT = #{POINT}
+			, BOOK_PUBLISHERS = #{BOOK_PUBLISHERS}
+			, BOOK_AUTHOR = #{BOOK_AUTHOR}
+			, BOOK_SUPPLEMENTDATA = #{BOOK_SUPPLEMENTDATA}
+			, BOOK_PRINTINGDATE = #{BOOK_PRINTINGDATE}
+			, BOOK_MAIN = #{BOOK_MAIN}
+			, BOOK_SUB = #{BOOK_SUB}
+			, BOOK_STUDENTBOOK = #{BOOK_STUDENTBOOK}
+			<if test='ATTACH_FILE_DEL == "Y" and ATTACH_FILE == ""'>, ATTACH_FILE = ''</if>
+			<if test='ATTACH_FILE != ""'>, ATTACH_FILE = #{ATTACH_FILE}</if>
+			<if test='ATTACH_IMG_L_DEL == "Y" and ATTACH_IMG_L == ""'>, ATTACH_IMG_L = ''</if>
+			<if test='ATTACH_IMG_L != ""'>, ATTACH_IMG_L = #{ATTACH_IMG_L}</if>
+			<if test='ATTACH_IMG_M_DEL == "Y" and ATTACH_IMG_M == ""'>, ATTACH_IMG_M = ''</if>
+			<if test='ATTACH_IMG_M != ""'>, ATTACH_IMG_M = #{ATTACH_IMG_M}</if>
+			<if test='ATTACH_IMG_S_DEL == "Y" and ATTACH_IMG_S == ""'>, ATTACH_IMG_S = ''</if>
+			<if test='ATTACH_IMG_S != ""'>, ATTACH_IMG_S = #{ATTACH_IMG_S}</if>
+			<if test='ATTACH_DETAIL_INFO_DEL == "Y" and ATTACH_DETAIL_INFO == ""'>, ATTACH_DETAIL_INFO = ''</if>
+			<if test='ATTACH_DETAIL_INFO != ""'>, ATTACH_DETAIL_INFO = #{ATTACH_DETAIL_INFO}</if>
+			, BOOK_STOCK = #{BOOK_STOCK}
+			, FREE_POST = #{FREE_POST}
+			, BOOK_DATE = #{BOOK_DATE}
+			, NEW_BOOK = #{NEW_BOOK}
+			, MAIN_VIEW = #{MAIN_VIEW}
+			, BOOK_PAGE = #{BOOK_PAGE}
+			, BOOK_FORMAT = #{BOOK_FORMAT}
+			, UPD_DT = SYSDATE
+			, UPD_ID = #{UPD_ID}
+			, USE_YN = #{USE_YN}
+		WHERE 0=0
+		<if test='UPDATE_FLAG == "ALL"'>
+		 AND SEQ = #{SEQ}
+		</if>
+		<if test='UPDATE_FLAG == ""'>
+		 AND RSC_ID = #{RSC_ID}
+		</if>
+	</update>
+
+	<delete id="bookDelete" parameterType="hashMap" flushCache="true">
+		DELETE FROM TB_CA_BOOK
+		<if test='GUBN == null or GUBN == ""'>
+			WHERE RSC_ID = #{RSC_ID}
+		</if>
+		<if test='GUBN != null and GUBN != ""'>
+			WHERE SEQ = #{SEQ}
+		</if>
+	</delete>
+
+	<select id="bookSellList" parameterType="hashMap" resultType="hashMap">
+		SELECT *
+		FROM 	(
+			SELECT TBL.*, ROWNUM rnum
+		  	FROM (
+				SELECT AA.* FROM (
+						SELECT
+							A.ORDERNO, B.USER_ID AS ORDERS_USERID , B.USER_NM AS ORDERS_USERNAME
+							, C.PAYCODE, FN_GET_CODE_NM('PAYMENT_CODE', C.PAYCODE) PAY_NM
+							, C.REG_DT AS ORDERS_REGDATE
+							, D.BOOK_NM, A.PRICE, A.STATUSCODE, FN_GET_CODE_NM('ORDER_STATUSCODE', (SELECT STATUSCODE FROM TB_ORDER_MGNT_NO WHERE ORDERNO = A.ORDERNO AND ROWNUM = 1)) STATUSNAME
+						FROM TB_ORDER_MGNT_NO A
+						INNER JOIN (SELECT ORDERNO, MGNTNO	 FROM TB_ORDER_MGNT_NO
+						GROUP BY ORDERNO, MGNTNO HAVING COUNT(*) = 1) E
+						ON A.ORDERNO = E.ORDERNO AND A.MGNTNO = E.MGNTNO
+						LEFT OUTER JOIN TB_ORDERS B ON A.ORDERNO = B.ORDERNO
+						LEFT OUTER JOIN TB_APPROVALS C ON A.ORDERNO = C.ORDERNO
+						LEFT OUTER JOIN TB_CA_BOOK D ON A.MGNTNO = D.RSC_ID
+						WHERE A.MGNTNO = #{RSC_ID} AND A.STATUSCODE IN ('DLV105','DLV110','DLV120','DLV125','DLV130')
+					) AA WHERE AA.ORDERNO NOT IN (SELECT ORDERNO FROM TB_ORDER_MGNT_NO WHERE PRICE <![CDATA[<]]> 0)
+					ORDER BY AA.ORDERS_REGDATE DESC
+				) TBL
+               	WHERE rownum &lt;= #{endNo}
+			)
+		WHERE rnum &gt; #{startNo}
+	</select>
+
+	<select id="bookSellListCount" parameterType="hashMap" resultType="int">
+		SELECT COUNT(AA.ORDERNO) FROM (
+			SELECT
+				A.ORDERNO
+			FROM TB_ORDER_MGNT_NO A
+			INNER JOIN (SELECT ORDERNO, MGNTNO	 FROM TB_ORDER_MGNT_NO <!-- WHERE ORDERNO = #{RSC_ID} --> GROUP BY ORDERNO, MGNTNO HAVING COUNT(*) = 1) E
+			ON A.ORDERNO = E.ORDERNO AND A.MGNTNO = E.MGNTNO
+			LEFT OUTER JOIN TB_ORDERS B ON A.ORDERNO = B.ORDERNO
+			LEFT OUTER JOIN TB_APPROVALS C ON A.ORDERNO = C.ORDERNO
+			LEFT OUTER JOIN TB_CA_BOOK D ON A.MGNTNO = D.RSC_ID
+			WHERE A.MGNTNO = #{RSC_ID} AND A.STATUSCODE IN ('DLV105','DLV110','DLV120','DLV125','DLV130')
+		) AA WHERE AA.ORDERNO NOT IN (SELECT ORDERNO FROM TB_ORDER_MGNT_NO WHERE PRICE <![CDATA[<]]> 0)
+	</select>
+
+	<select id="bookSellListExcel" parameterType="hashMap" resultType="hashMap">
+		SELECT AA.* FROM (
+			SELECT
+				A.ORDERNO, B.USER_ID AS ORDERS_USERID , B.USER_NM AS ORDERS_USERNAME
+				, C.PAYCODE, FN_GET_CODE_NM('PAYMENT_CODE', C.PAYCODE) PAY_NM
+				, TO_CHAR(C.REG_DT , 'yyyy-mm-dd')  AS ORDERS_REGDATE
+				, D.BOOK_NM, TO_CHAR(A.PRICE) AS PRICE, A.STATUSCODE
+				, FN_GET_CODE_NM('ORDER_STATUSCODE', (SELECT STATUSCODE FROM TB_ORDER_MGNT_NO WHERE ORDERNO = A.ORDERNO AND ROWNUM = 1)) STATUSNAME
+			FROM TB_ORDER_MGNT_NO A
+			INNER JOIN (SELECT ORDERNO, MGNTNO	 FROM TB_ORDER_MGNT_NO <!-- WHERE ORDERNO = #{RSC_ID} --> GROUP BY ORDERNO, MGNTNO HAVING COUNT(*) = 1) E
+			ON A.ORDERNO = E.ORDERNO AND A.MGNTNO = E.MGNTNO
+			LEFT OUTER JOIN TB_ORDERS B ON A.ORDERNO = B.ORDERNO
+			LEFT OUTER JOIN TB_APPROVALS C ON A.ORDERNO = C.ORDERNO
+			LEFT OUTER JOIN TB_CA_BOOK D ON A.MGNTNO = D.RSC_ID
+			WHERE A.MGNTNO = #{RSC_ID} AND A.STATUSCODE IN ('DLV105','DLV110','DLV120','DLV125','DLV130')
+		) AA WHERE AA.ORDERNO NOT IN (SELECT ORDERNO FROM TB_ORDER_MGNT_NO WHERE PRICE <![CDATA[<]]> 0)
+		ORDER BY AA.ORDERS_REGDATE DESC
+	</select>
+
+	<insert id="bookLogInsert" parameterType="hashMap">
+		INSERT INTO TB_CA_BOOK_LOG (
+			SEQ, RSC_ID, BOOK_STOCK, COVER_TYPE, USE_YN, REG_DT, REG_ID
+		) VALUES (
+			(SELECT NVL(MAX(SEQ),0)+1 FROM TB_CA_BOOK_LOG), #{RSC_ID}, #{BOOK_STOCK}, #{COVER_TYPE}, #{USE_YN}, SYSDATE, #{REG_ID}
+		)
+	</insert>
+
+</mapper>

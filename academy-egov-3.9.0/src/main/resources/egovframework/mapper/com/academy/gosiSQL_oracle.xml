@@ -1,0 +1,527 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="gosi">
+	
+	<select id="GosiList" parameterType="hashMap" resultType="hashMap">
+		SELECT GOSI_CD,GOSI_NM,GOSI_TYPE,NVL(GOSI_COUNT,0) AS GOSI_COUNT,START_DATE,NVL(IS_USE,'N') IS_USE
+		<if test="SCH_GOSI_CD != null and SCH_GOSI_CD != ''">
+		,(SELECT COUNT(*) FROM GOSI_RST_MST WHERE GOSI_CD = #{SCH_GOSI_CD}) AS USER_CNT
+		,(SELECT COUNT(*) FROM( SELECT USER_ID FROM <choose><when test='IS_OLD =="Y"'>GOSI_RST_SBJ_OLD</when><otherwise>GOSI_RST_SBJ</otherwise></choose> WHERE GOSI_CD = #{SCH_GOSI_CD} AND SUM_POINT IS NOT NULL GROUP BY USER_ID)) AS DET_CNT
+		,(SELECT COUNT(*) FROM WWW_SURVEY_RST@WILLBESGOSI_OLD  
+		WHERE 
+		<choose>
+			<when test='SCH_GOSI_CD == "2017_MST_2"'>SURVEYID =59</when>
+			<when test='SCH_GOSI_CD == "2017_MST_3"'>SURVEYID =83</when>
+			<otherwise>1=0 </otherwise>
+		</choose>
+		) AS POLL_CNT
+		</if>
+		FROM GOSI_MST
+		<if test="SCH_GOSI_CD != null and SCH_GOSI_CD != ''">
+			WHERE GOSI_CD = #{SCH_GOSI_CD}
+		</if>
+	</select>
+	
+	<select id="chkGosiInfo" parameterType="hashMap" resultType="hashMap">
+		SELECT GOSI_CD,NVL(IS_USE,'N') IS_USE
+		FROM GOSI_MST
+		WHERE GOSI_CD = #{GOSI_CD}
+	</select>
+	
+	<select id="GosiUpdate" parameterType="hashMap" resultType="hashMap">
+		Update GOSI_MST SET GOSI_COUNT = NVL(GOSI_COUNT,0)+#{GOSI_COUNT}, START_DATE =  #{START_DATE} WHERE GOSI_CD = #{GOSI_CD}
+	</select>
+
+	<select id="sample_List" parameterType="hashMap" resultType="hashMap">
+		SELECT *
+		FROM(
+			SELECT A.*, ROWNUM rnum  
+			FROM(
+				SELECT *
+				FROM GOSI_RST_SMP
+				WHERE 1=1
+				<if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+					<if test="SEARCHTYPE != null and SEARCHTYPE != ''">
+						<if test="SEARCHTYPE == 1">
+							AND RST_NO like '%'||#{SEARCHTEXT}||'%'
+						</if>
+					</if>
+					<if test="SEARCHTYPE == null or SEARCHTYPE == ''">
+						AND RST_NO like '%'||#{SEARCHTEXT}||'%' 
+					</if>
+				</if>
+			) A
+			WHERE rownum <![CDATA[<]]>= #{endNo}
+		)
+		WHERE rnum <![CDATA[>]]> #{startNo}
+	</select>
+	
+	<select id="sample_ListCount" parameterType="hashMap" resultType="int">
+
+		SELECT COUNT(*)   
+		FROM GOSI_RST_SMP 
+			 	
+	</select>
+	<select id="event1_List" parameterType="hashMap" resultType="hashMap">
+		SELECT *
+		FROM(
+			SELECT A.*, ROWNUM rnum  
+			FROM(
+				SELECT a.user_id, b.user_nm , c.file_path, a.reg_dt,TO_CHAR(a.reg_dt,'YYYY-MM-DD') as REG_DD, f.GOSI_AREA_NM , f.GOSI_AREA_FULL_NM , e.RST_NO
+				FROM GOSI_EVENT_1 a, TB_MA_MEMBER b , TB_EVENT_FILE c , GOSI_RST_MST e , GOSI_AREA_MST f 
+				WHERE 1=1
+				and a.user_id = b.user_id
+				and a.event_no = c.event_no
+				and a.user_id = c.upd_id
+				and a.user_id = e.user_id
+				and f.GOSI_AREA = e.GOSI_AREA
+				and f.GOSI_TYPE = e.GOSI_TYPE
+				<if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+					<choose>
+					<when test='SEARCHTYPE == "USER_ID"'>
+					AND a.USER_ID like '%'||#{SEARCHTEXT}||'%'
+					</when>
+					<when test='SEARCHTYPE == "USER_NM"'>
+					AND b.USER_NM like '%'||#{SEARCHTEXT}||'%'
+					</when>
+					<when test='SEARCHTYPE == "GOSI_AREA_FULL_NM"'>
+					AND f.GOSI_AREA_FULL_NM like '%'||#{SEARCHTEXT}||'%'
+					</when>
+					<when test='SEARCHTYPE == ""'>
+						AND (a.USER_ID like '%'||#{SEARCHTEXT}||'%'
+								OR b.USER_NM like '%'||#{SEARCHTEXT}||'%'
+								OR f.GOSI_AREA_FULL_NM like '%'||#{SEARCHTEXT}||'%'
+								) 
+								</when>
+					</choose>
+				</if>
+				<if test='(SDATE != null and SDATE != "") or (EDATE != null and EDATE != "") '>
+							<if test='SDATE != null and SDATE != ""'>
+						AND A.REG_DT <![CDATA[ >= ]]> TO_DATE('${SDATE}')
+							</if>
+							<if test='EDATE != null and EDATE != ""'>
+						AND A.REG_DT <![CDATA[ < ]]> TO_DATE('${EDATE}') + 1
+							</if>
+						</if>
+				order by a.reg_dt desc
+			) A
+			WHERE rownum <![CDATA[<]]>= #{endNo}
+		)
+		WHERE rnum <![CDATA[>]]> #{startNo}	
+		
+	</select>
+	
+	<select id="event1_ListCount" parameterType="hashMap" resultType="int">
+
+		SELECT COUNT(*)   
+		FROM GOSI_EVENT_1 a, TB_MA_MEMBER b , TB_EVENT_FILE c , GOSI_RST_MST e , GOSI_AREA_MST f 
+		where a.user_id = b.user_id
+		and a.event_no = c.event_no
+				and a.user_id = c.upd_id
+				and a.user_id = e.user_id
+				and f.GOSI_AREA = e.GOSI_AREA
+				and f.GOSI_TYPE = e.GOSI_TYPE
+				
+				<if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+					<choose>
+					<when test='SEARCHTYPE == "USER_ID"'>
+					AND a.USER_ID like '%'||#{SEARCHTEXT}||'%'
+					</when>
+					<when test='SEARCHTYPE == "USER_NM"'>
+					AND b.USER_NM like '%'||#{SEARCHTEXT}||'%'
+					</when>
+					<when test='SEARCHTYPE == "GOSI_AREA_FULL_NM"'>
+					AND f.GOSI_AREA_FULL_NM like '%'||#{SEARCHTEXT}||'%'
+					</when>
+					<when test='SEARCHTYPE == ""'>
+						AND (a.USER_ID like '%'||#{SEARCHTEXT}||'%'
+								OR b.USER_NM like '%'||#{SEARCHTEXT}||'%'
+								OR f.GOSI_AREA_FULL_NM like '%'||#{SEARCHTEXT}||'%'
+								) 
+								</when>
+					</choose>
+				</if>
+				<if test='(SDATE != null and SDATE != "") or (EDATE != null and EDATE != "") '>
+							<if test='SDATE != null and SDATE != ""'>
+						AND A.REG_DT <![CDATA[ >= ]]> TO_DATE('${SDATE}')
+							</if>
+							<if test='EDATE != null and EDATE != ""'>
+						AND A.REG_DT <![CDATA[ < ]]> TO_DATE('${EDATE}') + 1
+							</if>
+						</if>
+			 	
+	</select>
+	
+	<select id="event2_List" parameterType="hashMap" resultType="hashMap">
+		SELECT *
+		FROM(
+			SELECT A.*, ROWNUM rnum  
+			FROM(
+				SELECT a.user_id, b.user_nm , a.share_url
+				FROM GOSI_EVENT_2 a, TB_MA_MEMBER b 
+				WHERE 1=1
+				and a.user_id = b.user_id
+				<if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+					<if test="SEARCHTYPE != null and SEARCHTYPE != ''">
+						<if test="SEARCHTYPE == 1">
+							AND a.USER_ID like '%'||#{SEARCHTEXT}||'%'
+						</if>
+					</if>
+					<if test="SEARCHTYPE == null or SEARCHTYPE == ''">
+						AND a.USER_ID like '%'||#{SEARCHTEXT}||'%' 
+					</if>
+				</if>
+			) A
+			WHERE rownum <![CDATA[<]]>= #{endNo}
+		)
+		WHERE rnum <![CDATA[>]]> #{startNo}	
+		
+	</select>
+	
+	<select id="event2_ListCount" parameterType="hashMap" resultType="int">
+
+		SELECT COUNT(*)   
+		FROM GOSI_EVENT_2 a, TB_MA_MEMBER b
+		where a.user_id = b.user_id
+			 	
+	</select>
+	
+	<select id="event3_List" parameterType="hashMap" resultType="hashMap">
+		SELECT *
+		FROM(
+			SELECT A.*, ROWNUM rnum  
+			FROM(
+            	SELECT A.RST_NO, A.USER_ID, B.USER_NM,
+                       (SELECT C.FILE_PATH FROM TB_EVENT_FILE C 
+                        WHERE C.FILE_NO = TRIM(REGEXP_SUBSTR(A.FILE_ID, '[^_,]+', 1, 1))AND C.EVENT_NO = A.EVENT_NO AND C.UPD_ID = A.USER_ID) AS FILE_PATH1,
+                       (SELECT E.FILE_PATH FROM TB_EVENT_FILE E 
+                        WHERE E.FILE_NO = TRIM(REGEXP_SUBSTR(A.FILE_ID, '[^_,]+', 1, 2))AND E.EVENT_NO = A.EVENT_NO AND E.UPD_ID = A.USER_ID) AS FILE_PATH2,
+                       A.REG_DT, TO_CHAR (A.REG_DT, 'YYYY-MM-DD') AS REG_DD, F.GOSI_AREA_NM, F.GOSI_AREA_FULL_NM
+                FROM GOSI_EVENT_3 A, TB_MA_MEMBER B, GOSI_AREA_MST F
+                WHERE A.USER_ID = B.USER_ID
+                AND F.GOSI_AREA = A.GOSI_AREA
+                AND F.GOSI_TYPE = A.GOSI_TYPE
+                AND F.GOSI_CD = #{GOSI_CD}
+				<if test="EVENT_NO != null and EVENT_NO != ''">
+                AND A.EVENT_NO = #{EVENT_NO}
+                </if>
+				<if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+					<choose>
+						<when test='SEARCHTYPE == "USER_ID"'>
+				AND INSTR(A.USER_ID, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+						</when>
+						<when test='SEARCHTYPE == "USER_NM"'>
+				AND INSTR(B.USER_NM, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+						</when>
+						<when test='SEARCHTYPE == "GOSI_AREA_FULL_NM"'>
+				AND INSTR(F.GOSI_AREA_FULL_NM, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+						</when>
+						<when test='SEARCHTYPE == "RST_NO"'>
+				AND INSTR(A.RST_NO, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+						</when>
+						<when test='SEARCHTYPE == ""'>
+				AND (INSTR(A.USER_ID, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+						OR INSTR(B.USER_NM, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+						OR INSTR(F.GOSI_AREA_FULL_NM, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+						OR INSTR(A.RST_NO, #{SEARCHTEXT}) <![CDATA[ > ]]> 0)
+						</when>
+					</choose>
+				</if>
+				<if test='(SDATE != null and SDATE != "") or (EDATE != null and EDATE != "") '>
+					<if test='SDATE != null and SDATE != ""'>
+				AND A.REG_DT <![CDATA[ >= ]]> TO_DATE('${SDATE}')
+					</if>
+					<if test='EDATE != null and EDATE != ""'>
+				AND A.REG_DT <![CDATA[ < ]]> TO_DATE('${EDATE}') + 1
+					</if>
+				</if>
+			) A
+			WHERE rownum <![CDATA[<=]]> #{endNo}
+		)
+		WHERE rnum <![CDATA[>]]> #{startNo}	
+		
+	</select>
+	
+	<select id="event3_ListCount" parameterType="hashMap" resultType="int">
+		SELECT COUNT(*)   
+                FROM GOSI_EVENT_3 A, TB_MA_MEMBER B, GOSI_AREA_MST F
+                WHERE A.USER_ID = B.USER_ID
+                AND F.GOSI_AREA = A.GOSI_AREA
+                AND F.GOSI_TYPE = A.GOSI_TYPE
+                AND F.GOSI_CD = #{GOSI_CD}
+				<if test="EVENT_NO != null and EVENT_NO != ''">
+                AND A.EVENT_NO = #{EVENT_NO}
+                </if>
+				<if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+					<choose>
+						<when test='SEARCHTYPE == "USER_ID"'>
+				AND INSTR(A.USER_ID, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+						</when>
+						<when test='SEARCHTYPE == "USER_NM"'>
+				AND INSTR(B.USER_NM, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+						</when>
+						<when test='SEARCHTYPE == "GOSI_AREA_FULL_NM"'>
+				AND INSTR(F.GOSI_AREA_FULL_NM, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+						</when>
+						<when test='SEARCHTYPE == "RST_NO"'>
+				AND INSTR(A.RST_NO, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+						</when>
+						<when test='SEARCHTYPE == ""'>
+				AND (INSTR(A.USER_ID, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+						OR INSTR(B.USER_NM, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+						OR INSTR(F.GOSI_AREA_FULL_NM, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+						OR INSTR(A.RST_NO, #{SEARCHTEXT}) <![CDATA[ > ]]> 0)
+						</when>
+					</choose>
+				</if>
+				<if test='(SDATE != null and SDATE != "") or (EDATE != null and EDATE != "") '>
+					<if test='SDATE != null and SDATE != ""'>
+				AND A.REG_DT <![CDATA[ >= ]]> TO_DATE('${SDATE}')
+					</if>
+					<if test='EDATE != null and EDATE != ""'>
+				AND A.REG_DT <![CDATA[ < ]]> TO_DATE('${EDATE}') + 1
+					</if>
+				</if>
+	</select>
+	
+	<insert id="InsertSampleUser" parameterType="hashMap" flushCache="true">
+		INSERT INTO GOSI_RST_SMP(AREA_01, AREA_02, RST_NO, USER_NM, USER_AGE, STUDY_WAIT, STUDY_TYPE, ADD_POINT, EXAM_STAT, SEL_SBJ_01, SEL_SBJ_02, ISUSE, SBJ_01, SBJ_MO_01, SBJ_02, SBJ_MO_02, SBJ_03, SBJ_MO_03, SBJ_04, SBJ_MO_04, SBJ_05, SBJ_MO_05, USER_SEX) 
+		VALUES (#{AREA_01}, #{AREA_02}, #{RST_NO}, #{USER_NM}, #{USER_AGE}, #{STUDY_WAIT}, #{STUDY_TYPE}, #{ADD_POINT}, #{EXAM_STAT}, #{SEL_SBJ_01}, #{SEL_SBJ_02}, #{ISUSE}, #{SBJ_01}, #{SBJ_MO_01}, #{SBJ_02}, #{SBJ_MO_02}, #{SBJ_03}, #{SBJ_MO_03}, #{SBJ_04}, #{SBJ_MO_04}, #{SBJ_05}, #{SBJ_MO_05}, #{USER_SEX})	
+	</insert>
+	
+	<select id="SampleIdView" parameterType="hashMap" resultType="hashMap">
+		SELECT *
+		FROM GOSI_RST_SMP
+		WHERE RST_NO = #{VIW_RST_NO}
+	</select>
+	
+	<update id="SampleIdUpdate" parameterType="hashMap" flushCache="true">
+		UPDATE GOSI_RST_SMP 
+		SET AREA_01 = #{AREA_01}, 
+				AREA_02 = #{AREA_02}, 
+				RST_NO = #{RST_NO},
+				USER_NM = #{USER_NM},
+				USER_AGE = #{USER_AGE},
+				STUDY_WAIT = #{STUDY_WAIT},
+				STUDY_TYPE = #{STUDY_TYPE},
+				ADD_POINT = #{ADD_POINT},
+				EXAM_STAT = #{EXAM_STAT},
+				SEL_SBJ_01 = #{SEL_SBJ_01},
+				SEL_SBJ_02 = #{SEL_SBJ_02},
+				ISUSE = #{ISUSE},
+				SBJ_01 = #{SBJ_01},
+				SBJ_MO_01 = #{SBJ_MO_01}, 
+				SBJ_02 = #{SBJ_02}, 
+				SBJ_MO_02 = #{SBJ_MO_02}, 
+				SBJ_03 = #{SBJ_03}, 
+				SBJ_MO_03 = #{SBJ_MO_03}, 
+				SBJ_04 = #{SBJ_04}, 
+				SBJ_MO_04 = #{SBJ_MO_04}, 
+				SBJ_05 = #{SBJ_05}, 
+				SBJ_MO_05 = #{SBJ_MO_05},
+				USER_SEX = #{USER_SEX}
+		WHERE RST_NO = #{RST_NO}
+	</update>
+	
+	<delete id="SampleIdDelete" parameterType="hashMap">
+		DELETE 
+		FROM GOSI_RST_SMP 
+		WHERE RST_NO = #{RST_NO} 		
+	</delete>
+	
+	<select id="getGosiAreaMst" parameterType="hashMap" resultType="hashMap">
+		SELECT C.*,
+		           (SELECT COUNT(*) FROM
+              ( SELECT A.USER_ID,A.GOSI_CD,A.GOSI_TYPE,A.GOSI_AREA
+                      FROM GOSI_RST_MST A, <choose><when test='IS_OLD =="Y"'>GOSI_RST_SBJ_OLD</when><otherwise>GOSI_RST_SBJ</otherwise></choose> B
+                     WHERE     A.USER_ID = B.USER_ID
+                           AND A.GOSI_CD = B.GOSI_CD
+                           AND A.RST_NO = B.RST_NO
+                    GROUP BY A.USER_ID,A.GOSI_CD,A.GOSI_TYPE,A.GOSI_AREA)G
+                    WHERE G.GOSI_CD = C.GOSI_CD
+                    AND G.GOSI_TYPE = C.GOSI_TYPE
+                    AND G.GOSI_AREA = C.GOSI_AREA)
+            AS USER_CNT,
+             (SELECT COUNT(*) FROM
+              (  SELECT A.USER_ID,A.GOSI_CD,A.GOSI_TYPE,A.GOSI_AREA
+                      FROM GOSI_RST_MST A, <choose><when test='IS_OLD =="Y"'>GOSI_RST_SBJ_OLD</when><otherwise>GOSI_RST_SBJ</otherwise></choose> B
+                     WHERE     A.USER_ID = B.USER_ID
+                           AND A.GOSI_CD = B.GOSI_CD
+                           AND A.RST_NO = B.RST_NO
+                           AND B.SUM_POINT IS NOT NULL
+                    GROUP BY A.USER_ID,A.GOSI_CD,A.GOSI_TYPE,A.GOSI_AREA)G
+                    WHERE G.GOSI_CD = C.GOSI_CD
+                    AND G.GOSI_TYPE = C.GOSI_TYPE
+                    AND G.GOSI_AREA = C.GOSI_AREA)
+            AS SCORE_CNT
+		FROM GOSI_AREA_MST C
+		WHERE C.GOSI_CD = #{GOSI_CD}
+		ORDER BY C.GOSI_TYPE
+	</select>
+
+	<update id="updateGosiAreaMst" parameterType="hashMap">  
+		UPDATE GOSI_AREA_MST
+		SET 
+		ISUSE = #{ISUSE}, 
+		SHOW_STAT = #{SHOW_STAT},
+		GOSI_AREA_FULL_NM = #{GOSI_AREA_FULL_NM} 
+		<if test="REQ_NUM != null and REQ_NUM != ''">
+		,REQ_NUM = #{REQ_NUM} 
+		</if>
+		<if test="USE_NUM != null and USE_NUM != ''">
+		,USE_NUM = #{USE_NUM} 
+		</if>
+		<if test="GOSI_CMP_STAT != null and GOSI_CMP_STAT != ''">
+		, GOSI_CMP_STAT = #{GOSI_CMP_STAT}
+		</if>
+		<if test="PASS_RANKING != null and PASS_RANKING != ''">
+		,PASS_RANKING = #{PASS_RANKING}
+		</if>
+		<if test="AVR_POINT != null and AVR_POINT != ''">
+		,AVR_POINT = #{AVR_POINT}
+		</if>
+		<if test="GOSI_5_POINT != null and GOSI_5_POINT != ''">
+		,GOSI_5_POINT = #{GOSI_5_POINT}
+		</if>
+		<if test="MUST_PASS != null and MUST_PASS != ''">
+		,MUST_PASS = #{MUST_PASS}
+		</if>
+		<if test="CAN_PASS != null and CAN_PASS != ''">
+		,CAN_PASS = #{CAN_PASS}
+		</if>
+		<if test="GOSI_CMP_STAT_LAST != null and GOSI_CMP_STAT_LAST != ''">
+		,GOSI_CMP_STAT_LAST = #{GOSI_CMP_STAT_LAST}
+		</if>
+		<if test="CAN_PASS_LAST != null and CAN_PASS_LAST != ''">
+		,CAN_PASS_LAST = #{CAN_PASS_LAST}
+		</if>
+		<if test="CAN_PASS_L != null and CAN_PASS_L != ''">
+		,CAN_PASS_L = #{CAN_PASS_L}
+		</if>
+		<if test="CAN_PASS_H != null and CAN_PASS_H != ''">
+		,CAN_PASS_H = #{CAN_PASS_H}
+		</if>
+		WHERE GOSI_TYPE = #{GOSI_TYPE}
+		AND GOSI_AREA = #{GOSI_AREA}
+		AND GOSI_CD = #{GOSI_CD}
+	</update>
+	
+	<select id="getVodSubject" parameterType="hashMap" resultType="hashMap">
+		SELECT *
+		FROM GOSI_VOD
+	    <if test="GOSI_CD != null and GOSI_CD != ''">
+		WHERE GOSI_CD = #{GOSI_CD}
+	    </if>
+		ORDER BY IDX ASC
+	</select>
+
+	<update id="updateGosiVod" parameterType="hashMap" flushCache="true">
+		UPDATE GOSI_VOD
+		SET TITLE = #{TITLE},
+		    VOD_URL = #{VOD_URL},
+		    FILE_URL = #{FILE_URL},
+		    ISUSE = #{ISUSE},
+		    IDX = #{IDX}
+		WHERE PRF_ID = #{PRF_ID}
+		AND GOSI_CD = #{GOSI_CD}
+		<if test="T_NO != null and T_NO != ''">
+			AND T_NO = #{T_NO}
+		</if>
+	</update>
+	
+	<select id="getGosiStatMst" parameterType="hashMap" resultType="hashMap">
+		SELECT B.GOSI_AREA_FULL_NM, C.GOSI_SUBJECT_NM, B.GOSI_AREA_NM,
+		          A.GOSI_USER_NUM, A.GOSI_AVR_POINT,
+				  DECODE(A.GOSI_3_POINT, 0, '-', A.GOSI_3_POINT) GOSI_3_POINT, 
+				  DECODE(A.GOSI_10_POINT, 0, '-', A.GOSI_10_POINT) GOSI_10_POINT 
+		FROM GOSI_STAT_MST A, GOSI_AREA_MST B, GOSI_SUBJECT C
+		WHERE A.GOSI_TYPE = B.GOSI_TYPE
+		AND A.GOSI_AREA = B.GOSI_AREA
+		AND A.GOSI_TYPE = C.GOSI_TYPE
+		AND A.GOSI_SUBJECT_CD = C.GOSI_SUBJECT_CD
+		AND A.GOSI_CD = B.GOSI_CD
+		AND A.GOSI_CD = #{GOSI_CD}
+		ORDER BY B.GOSI_TYPE ASC, B.GOSI_AREA ASC
+	</select>
+	
+	<insert id="makeGosiResult" statementType="CALLABLE" parameterType="hashMap">
+		CALL PKG_GOSI.SP_MAKE_GOSI_STANDARD(
+		        #{GOSI_CD, mode=IN}
+		)
+	</insert>
+	
+	<insert id="makeGosiStatMst" statementType="CALLABLE" parameterType="hashMap">
+		CALL PKG_GOSI.SP_MAKE_GOSI_STAT(
+		        #{GOSI_CD, mode=IN}
+		)
+	</insert>
+	
+	<insert id="makeGosiAdjustMst" statementType="CALLABLE" parameterType="hashMap">
+		CALL PKG_GOSI.SP_MAKE_GOSI_ADJ_MST(
+		        #{GOSI_CD, mode=IN}
+		)
+	</insert>
+	
+	<insert id="makeGosiRank" statementType="CALLABLE" parameterType="hashMap">
+		CALL PKG_GOSI.SP_MAKE_GOSI_SUM(
+		        #{GOSI_CD, mode=IN}
+		)
+	</insert>
+	
+	<insert id="makeGosiPer" statementType="CALLABLE" parameterType="hashMap">
+		CALL PKG_GOSI.SP_MAKE_GOSI_PER(
+		        #{GOSI_CD, mode=IN}
+		)
+	</insert>
+	<select id="getTestArea" parameterType="hashMap" resultType="hashMap">
+	        SELECT A.GOSI_TYPE,NVL(A.IS_SHOW,'N') AS IS_SHOW,
+	        (SELECT B.GOSI_AREA_FULL_NM FROM GOSI_AREA_MST B WHERE B.GOSI_CD = #{GOSI_CD} AND B.GOSI_TYPE = A.GOSI_TYPE AND ROWNUM=1) AS GOSI_AREA_FULL_NM
+	        FROM GOSI_COD A
+	        <if test="GOSI_CD !='' and GOSI_CD !=null ">
+	        	WHERE GOSI_CD = #{GOSI_CD}
+	        </if>
+	</select>
+	
+	<update id="updateGosiCod" parameterType="hashMap" flushCache="true">
+		UPDATE GOSI_COD
+		SET IS_SHOW = #{IS_SHOW}
+		WHERE 1=1
+		AND GOSI_CD = #{GOSI_CD}
+		<if test="GOSI_TYPE !='' and GOSI_TYPE !=null ">
+			AND GOSI_TYPE = #{GOSI_TYPE}
+		</if>
+	</update>
+	
+	<select id="getGosiScorePer" parameterType="hashMap" resultType="hashMap">
+	        SELECT *
+	        FROM GOSI_MST A
+	        WHERE A.GOSI_CD = #{GOSI_CD}
+	</select>
+	
+	<select id="getSubjectScorePer" parameterType="hashMap" resultType="hashMap">
+	        SELECT *
+	        FROM GOSI_SBJ_MST A
+	        WHERE A.GOSI_CD = #{GOSI_CD}
+	</select>
+	
+	<update id="updateGosiScorePer" parameterType="hashMap" flushCache="true">
+		UPDATE GOSI_MST
+                SET SCORE_1_PER = #{SCORE_1_PER},
+                    SCORE_2_PER = #{SCORE_2_PER},
+                    SCORE_3_PER = #{SCORE_3_PER},
+                    SCORE_4_PER = #{SCORE_4_PER},
+                    SCORE_5_PER = #{SCORE_5_PER}
+            WHERE GOSI_CD =#{GOSI_CD}
+	</update>
+	
+	<update id="updateSubjectScorePer" parameterType="hashMap" flushCache="true">
+		UPDATE GOSI_SBJ_MST
+                SET SCORE_1_PER = #{SBJ_1_PER},
+                    SCORE_2_PER = #{SBJ_2_PER},
+                    SCORE_3_PER = #{SBJ_3_PER},
+                    SCORE_4_PER = #{SBJ_4_PER},
+                    SCORE_5_PER = #{SBJ_5_PER}
+            WHERE GOSI_CD =#{GOSI_CD}
+            AND SUBJECT_CD = #{SUBJECT_CD}
+	</update>
+</mapper>

@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kind">
+
+  <select id="kindList" parameterType="hashMap" resultType="hashMap">
+    SELECT * FROM   (
+      SELECT A.*, ROWNUM rnum
+        FROM (
+          SELECT
+            ID, CODE, NAME, ISUSE, DECODE(ISUSE, 'Y', '활성', 'N', '비활성') ISUSENM
+            , DECODE(USE_ON, 'Y', '사용', 'N', '미사용') USE_ON
+            , DECODE(USE_OFF, 'Y', '사용', 'N', '미사용') USE_OFF
+            , REG_DT, REG_ID, UPD_DT, UPD_ID, ORDR
+          FROM TB_CATEGORY_INFO
+          WHERE 1 = 1
+          AND P_CODE = 'CLASSCODE'
+					<if test='Seq_Update == "Y"'>	
+						AND USE_ON = 'Y'  
+						AND ISUSE = 'Y'  
+					</if>
+           <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+            <if test="SEARCHTYPE != null and SEARCHTYPE != ''">
+              <if test="SEARCHTYPE == 1">
+                AND CODE like '%'||#{SEARCHTEXT}||'%'
+              </if>
+              <if test="SEARCHTYPE == 2">
+                AND NAME like '%'||#{SEARCHTEXT}||'%'
+              </if>
+            </if>
+            <if test="SEARCHTYPE == null or SEARCHTYPE == ''">
+              AND (
+                CODE like '%'||#{SEARCHTEXT}||'%'
+                OR NAME like '%'||#{SEARCHTEXT}||'%'
+              )
+            </if>
+          </if>
+					<if test='Seq_Update == "Y"'>	
+						ORDER BY ORDR ASC
+					</if>
+					<if test='Seq_Update != "Y"'>	
+						ORDER BY UPD_DT DESC
+					</if>
+        ) A
+                 WHERE rownum &lt;= #{endNo}
+      )
+    WHERE rnum &gt; #{startNo}
+  </select>
+
+  <select id="kindListCount" parameterType="hashMap" resultType="int">
+    SELECT
+      COUNT(CODE)
+    FROM TB_CATEGORY_INFO
+    WHERE 1 = 1
+    AND P_CODE = 'CLASSCODE'
+		<if test='Seq_Update == "Y"'>	
+				AND USE_ON = 'Y'  
+				AND ISUSE = 'Y'  
+		</if>
+     <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+      <if test="SEARCHTYPE != null and SEARCHTYPE != ''">
+        <if test="SEARCHTYPE == 1">
+          AND CODE like '%'||#{SEARCHTEXT}||'%'
+        </if>
+        <if test="SEARCHTYPE == 2">
+          AND NAME like '%'||#{SEARCHTEXT}||'%'
+        </if>
+      </if>
+      <if test="SEARCHTYPE == null or SEARCHTYPE == ''">
+        AND (
+          CODE like '%'||#{SEARCHTEXT}||'%'
+          OR NAME like '%'||#{SEARCHTEXT}||'%'
+        )
+      </if>
+    </if>
+  </select>
+
+  <insert id="kindInsert" parameterType="hashMap" flushCache="true">
+    INSERT INTO TB_CATEGORY_INFO(
+        ID, CODE, NAME, ISUSE, USE_ON, USE_OFF
+        , REG_DT, REG_ID, UPD_DT, UPD_ID
+     <if test="P_CODE != null and P_CODE != ''">, P_CODE</if>
+        , ORDR
+    ) VALUES (
+        SEQ_TB_CATEGORY_INFO_ID.NEXTVAL, #{CODE}, #{NAME}, #{ISUSE}, #{USE_ON}, #{USE_OFF}
+        , SYSDATE, #{REG_ID}, SYSDATE, #{UPD_ID}
+     <if test="P_CODE != null and P_CODE != ''">, #{P_CODE}</if>
+     <choose>
+         <when test="ORDR != null and ORDR != ''">, #{ORDR} </when>
+         <otherwise>
+           <choose>
+            <when test="P_CODE != null and P_CODE != ''">, ( SELECT (NVL(MAX(ORDR), 0) + 1)  ORDR FROM TB_CATEGORY_INFO WHERE P_CODE=#{P_CODE})</when>
+            <otherwise>, 1</otherwise>
+           </choose>
+         </otherwise>
+     </choose>
+    )
+  </insert>
+
+  <select id="kindView" parameterType="hashMap" resultType="hashMap">
+    SELECT
+      ID, CODE, NAME, ISUSE, DECODE(ISUSE, 'Y', '활성', 'N', '비활성') ISUSENM
+      , USE_ON, USE_OFF
+      , REG_DT, REG_ID, UPD_DT, UPD_ID
+      , P_CODE, ( SELECT B.NAME FROM TB_CATEGORY_INFO B WHERE B.CODE = A.P_CODE) AS P_NAME
+      , ORDR
+    FROM TB_CATEGORY_INFO A
+    WHERE CODE = #{CODE}
+    AND P_CODE = 'CLASSCODE'
+  </select>
+
+  <update id="kindUpdate" parameterType="hashMap">
+    UPDATE TB_CATEGORY_INFO
+    SET
+      NAME = #{NAME}
+      , ISUSE = #{ISUSE}
+      , USE_ON = #{USE_ON}
+      , USE_OFF = #{USE_OFF}
+      <if test="ORDR != null and ORDR != ''">, ORDR = #{ORDR} </if>
+      , UPD_DT = SYSDATE
+      , UPD_ID = #{UPD_ID}
+    WHERE CODE = #{CODE}
+  </update>
+
+  <delete id="kindDelete" parameterType="hashMap">
+    UPDATE TB_CATEGORY_INFO
+    SET ISUSE = 'N'
+    WHERE CODE = #{CODE}
+    <!--
+    DELETE FROM TB_CATEGORY_INFO
+    WHERE CODE = #{CODE}
+    -->
+  </delete>
+
+  <select id="kindCheck" parameterType="hashMap" resultType="int">
+    SELECT
+      COUNT(CODE)
+    FROM TB_CATEGORY_INFO
+    WHERE 1 = 1
+    <if test='SEARCHCODE != null and SEARCHCODE != ""'>
+      AND CODE = #{SEARCHCODE}
+    </if>
+  </select>
+    
+	<update id="SeqUpdate" parameterType="hashMap">  
+
+			UPDATE TB_CATEGORY_INFO 
+			SET ORDR = #{NUM} WHERE NAME = #{CODE_NM} AND CODE = #{CODE}
+				
+	</update>
+    
+    <select id="selectKindCode" parameterType="hashMap" resultType="hashMap">
+        SELECT
+            CODE, NAME
+        FROM TB_CATEGORY_INFO
+        WHERE ISUSE = 'Y'
+        AND P_CODE = 'CLASSCODE'
+        <if test='ONOFF_DIV != null and ONOFF_DIV == "O" '>
+        AND     USE_ON = 'Y'
+        </if>
+        <if test='ONOFF_DIV != null and ONOFF_DIV == "F" '>
+        AND     USE_OFF = 'Y'
+        </if>
+        ORDER BY CODE ASC
+    </select>
+
+    <select id="getSeriesCateTree"  resultType="hashMap" >
+        SELECT
+            CODE, NAME, ORDR, NVL(P_CODE, -1) as P_CODE, LEVEL
+        FROM (
+            SELECT
+                CODE , NAME , ORDR , P_CODE , A.ISUSE
+            FROM TB_CATEGORY_INFO A
+            WHERE 1 = 1
+            -- AND A.ISUSE = 'Y'
+        )
+        WHERE (1=1)
+        AND LEVEL > 0
+        START WITH CODE = 'CLASSCODE'
+        CONNECT BY PRIOR CODE = P_CODE
+    </select>
+
+    <select id="getMaxOrdr" parameterType="hashMap" resultType="hashMap">
+    SELECT
+        ( SELECT (NVL(MAX(ORDR), 0) + 1)  ORDR FROM TB_CATEGORY_INFO WHERE P_CODE=#{CODE}) AS ORDR
+        , ( SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE=#{CODE}) AS P_NAME
+    FROM DUAL
+    </select>
+
+    <select id="getKindList" parameterType="hashMap" resultType="hashMap">
+        <if test='SEARCHGUBN == "T"'>
+            SELECT
+                ID, CODE, NAME, ISUSE, DECODE(ISUSE, 'Y', '활성', 'N', '비활성') ISUSENM
+                , REG_DT, REG_ID, UPD_DT, UPD_ID
+            FROM TB_CATEGORY_INFO
+            WHERE ISUSE = 'Y'
+            AND P_CODE = 'CLASSCODE'
+            ORDER BY CODE ASC
+        </if>
+        <if test='SEARCHGUBN == "M"'>
+            SELECT
+                USER_ID, CATEGORY_CODE, ORDR FROM
+            TB_MA_MEMBER_CATEGORY WHERE USER_ID = #{USER_ID}
+        </if>
+    </select>
+
+</mapper>

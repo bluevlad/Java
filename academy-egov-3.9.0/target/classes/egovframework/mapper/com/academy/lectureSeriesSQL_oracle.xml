@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="series">
+
+  <select id="seriesList" parameterType="hashMap" resultType="hashMap">
+    SELECT * FROM   (
+        SELECT A.*, ROWNUM rnum
+        FROM (
+          SELECT
+            SRS_CD, SRS_NM, ISUSE, DECODE(ISUSE, 'Y', '활성', 'N', '비활성') ISUSENM
+            , REG_DT, REG_ID, UPD_DT, UPD_ID
+            , (SELECT LISTAGG(B.NAME,', ') WITHIN GROUP(ORDER BY ORDR) AS SRS_CD
+                FROM TB_CATEGORY_INFO B, TB_CATEGORY_SERIES C
+                WHERE B.CODE = C.CAT_CD AND C.SRS_CD = A.SRS_CD
+              ) AS CAT_NM
+          FROM TB_SERIES_INFO A
+          WHERE 1 = 1
+    <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+      <if test="SEARCHTYPE != null and SEARCHTYPE != ''">
+        <if test="SEARCHTYPE == 1">
+          AND SRS_CD like '%'||#{SEARCHTEXT}||'%'
+        </if>
+        <if test="SEARCHTYPE == 2">
+          AND SRS_NM like '%'||#{SEARCHTEXT}||'%'
+        </if>
+      </if>
+      <if test="SEARCHTYPE == null or SEARCHTYPE == ''">
+          AND (
+            SRS_CD like '%'||#{SEARCHTEXT}||'%'
+            OR SRS_NM like '%'||#{SEARCHTEXT}||'%'
+          )
+      </if>
+    </if>
+          ORDER BY ORDR ASC
+        ) A
+        WHERE rownum &lt;= #{endNo}
+    )
+    WHERE rnum &gt; #{startNo}
+  </select>
+
+  <select id="seriesListCount" parameterType="hashMap" resultType="int">
+    SELECT
+      COUNT(SRS_CD)
+    FROM TB_SERIES_INFO
+    WHERE 1 = 1
+    <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+      <if test="SEARCHTYPE != null and SEARCHTYPE != ''">
+        <if test="SEARCHTYPE == 1">
+    AND SRS_CD like '%'||#{SEARCHTEXT}||'%'
+        </if>
+        <if test="SEARCHTYPE == 2">
+    AND SRS_NM like '%'||#{SEARCHTEXT}||'%'
+        </if>
+      </if>
+      <if test="SEARCHTYPE == null or SEARCHTYPE == ''">
+    AND (
+        SRS_CD like '%'||#{SEARCHTEXT}||'%'
+        OR SRS_NM like '%'||#{SEARCHTEXT}||'%'
+    )
+      </if>
+    </if>
+  </select>
+
+  <insert id="seriesInsert" parameterType="hashMap" flushCache="true">
+    INSERT INTO TB_CATEGORY_INFO (
+        ID
+        , CODE
+        , NAME
+        , ISUSE
+        <if test="USE_ON != null and USE_ON != ''">, USE_ON </if>
+        <if test="USE_OFF != null and USE_OFF != ''">, USE_OFF </if>
+        <if test="ORDR != null and ORDR != ''">, ORDR </if>
+        <if test="P_CODE != null and P_CODE != ''">, P_CODE </if>
+        , REG_DT
+        , REG_ID
+    ) VALUES (
+        SEQ_TB_CATEGORY_INFO_ID.NEXTVAL
+        , #{CODE}
+        , #{NAME}
+        , #{ISUSE}
+        <if test="USE_ON != null and USE_ON != ''">, #{USE_ON} </if>
+        <if test="USE_OFF != null and USE_OFF != ''">, #{USE_OFF} </if>
+        <if test="ORDR != null and ORDR != ''">, #{ORDR} </if>
+        <if test="P_CODE != null and P_CODE != ''">, #{P_CODE} </if>
+        , SYSDATE
+        , #{REG_ID}
+    )
+  </insert>
+
+  <select id="seriesView" parameterType="hashMap" resultType="hashMap">
+    SELECT
+        CODE, NAME, ISUSE, DECODE(ISUSE, 'Y', '활성', 'N', '비활성') ISUSENM
+        , USE_ON, USE_OFF, REG_DT, REG_ID, UPD_DT, UPD_ID
+        , P_CODE
+        , (SELECT NAME FROM TB_CATEGORY_INFO B WHERE B.CODE = A.P_CODE) AS P_NAME
+        , ORDR, CODE_VAL
+    FROM TB_CATEGORY_INFO A
+    WHERE CODE = #{CODE}
+  </select>
+
+  <update id="seriesUpdate" parameterType="hashMap">
+    UPDATE TB_CATEGORY_INFO
+    SET
+      NAME = #{NAME}
+      , ISUSE = #{ISUSE}
+      <if test="USE_ON != null and USE_ON != ''">, USE_ON = #{USE_ON} </if>
+      <if test="USE_OFF != null and USE_OFF != ''">, USE_OFF = #{USE_OFF} </if>
+      <if test="ORDR != null and ORDR != ''">, ORDR = #{ORDR} </if>
+      , UPD_ID = #{UPD_ID}
+      , UPD_DT = SYSDATE
+    WHERE CODE = #{CODE}
+  </update>
+
+  <delete id="categoryDelete" parameterType="hashMap">
+    DELETE FROM TB_CATEGORY_INFO
+    WHERE P_CODE = #{CODE}
+  </delete>
+
+  <delete id="seriesDelete" parameterType="hashMap">
+    DELETE FROM TB_CATEGORY_INFO
+    WHERE CODE = #{CODE}
+  </delete>
+
+  <select id="seriesCheck" parameterType="hashMap" resultType="int">
+    SELECT
+      COUNT(CODE)
+    FROM CODE
+    WHERE 1 = 1
+    <if test='SEARCHCODE != null and SEARCHCODE != ""'>
+      AND CODE = #{SEARCHCODE}
+    </if>
+  </select>
+
+</mapper>
