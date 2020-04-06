@@ -1,4 +1,4 @@
-package egovframework.com.cmm.web;
+package egovframework.com.academy.index;
 
 /**
  * 컴포넌트 설치 후 설치된 컴포넌트들을 IncludedInfo annotation을 통해 찾아낸 후
@@ -48,11 +48,11 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-public class EgovComIndexController implements ApplicationContextAware, InitializingBean {
+public class IndexController implements ApplicationContextAware, InitializingBean {
 
 	private ApplicationContext applicationContext;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(EgovComIndexController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(IndexController.class);
 
 	public void afterPropertiesSet() throws Exception {}
 
@@ -64,17 +64,17 @@ public class EgovComIndexController implements ApplicationContextAware, Initiali
 
 	@RequestMapping("/index.do")
 	public String index(ModelMap model) {
-		return "egovframework/com/cmm/EgovUnitMain";
+		return "egovframework/com/academy/main/EgovUnitMain";
 	}
 
 	@RequestMapping("/EgovTop.do")
 	public String top() {
-		return "egovframework/com/cmm/EgovUnitTop";
+		return "egovframework/com/academy/main/EgovUnitTop";
 	}
 
 	@RequestMapping("/EgovBottom.do")
 	public String bottom() {
-		return "egovframework/com/cmm/EgovUnitBottom";
+		return "egovframework/com/academy/main/EgovUnitBottom";
 	}
 
 	@RequestMapping("/EgovContent.do")
@@ -83,7 +83,7 @@ public class EgovComIndexController implements ApplicationContextAware, Initiali
 		LoginVO loginVO = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
 		model.addAttribute("loginVO", loginVO);
 
-		return "egovframework/com/cmm/EgovUnitContent";
+		return "egovframework/com/academy/main/EgovUnitContent";
 	}
 
 	@RequestMapping("/EgovLeft.do")
@@ -160,6 +160,6 @@ public class EgovComIndexController implements ApplicationContextAware, Initiali
 		
 		LOGGER.debug("EgovComIndexController index is called ");
 
-		return "egovframework/com/cmm/EgovUnitLeft";
+		return "egovframework/com/academy/main/EgovUnitLeft";
 	}
 }
