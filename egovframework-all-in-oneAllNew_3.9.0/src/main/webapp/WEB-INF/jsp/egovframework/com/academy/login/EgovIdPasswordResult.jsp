@@ -37,11 +37,11 @@ function fncGoAfterPage(){
 }
 
 function fncGoIdPwd(){
-    location.href="<c:url value='/uat/uia/egovIdPasswordSearch.do'/>";
+    location.href="<c:url value='/login/egovIdPasswordSearch.do'/>";
 }
 
 function fncGoLogin(){
-	location.href="<c:url value='/uat/uia/egovLoginUsr.do'/>";
+	location.href="<c:url value='/login/egovLoginUsr.do'/>";
 }
 
 </script>

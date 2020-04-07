@@ -47,6 +47,7 @@ link:hover { color: #000000; text-decoration: none; }
 			</li>
 			<c:set var="isSec" value="true"/>
 		</c:if>
+		<%--
 		<c:if test="${isSts == 'false' && result.gid == '30'}">
 			<li>
 				<strong class="left_title_strong"><strong class="top_title_strong"><spring:message code="comCmm.sts.title"/></strong></strong><!-- 통계/리포팅 -->
@@ -95,6 +96,7 @@ link:hover { color: #000000; text-decoration: none; }
 			</li>
 			<c:set var="isExt" value="true"/>
 		</c:if>
+		 --%>
 	
 		<c:set var="componentMsgKey">comCmm.left.${result.order}</c:set>
 		<ul class="2depth">

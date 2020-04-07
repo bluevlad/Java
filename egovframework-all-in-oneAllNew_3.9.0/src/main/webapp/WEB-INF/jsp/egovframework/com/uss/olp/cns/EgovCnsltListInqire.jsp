@@ -70,7 +70,7 @@ function fn_egov_regist_cnsltdtls(){
 	var	loginRealnm_status 	= "dialogWidth=350px;dialogHeight=150px;resizable=no;center=yes";
 
 	// 로그인 화면
-	var	login_url 		= "<c:url value='/uat/uia/egovLoginUsr.do'/>";
+	var	login_url 		= "<c:url value='/login/egovLoginUsr.do'/>";
 	var login_status 	= "dialogWidth=700px;dialogHeight=420px;resizable=no;center=yes";
 
 
@@ -105,7 +105,7 @@ function fn_egov_regist_cnsltdtls(){
 				*/
 
 				// 팝업이 아닌 메인 화면으로 처리.
-	 			document.CnsltListForm.action = "<c:url value='/uat/uia/egovLoginUsr.do'/>";
+	 			document.CnsltListForm.action = "<c:url value='/login/egovLoginUsr.do'/>";
 	 			document.CnsltListForm.submit();
 
 
@@ -162,7 +162,7 @@ function showModalDialogCallback(returnValue) {
 			*/
 
 			// 팝업이 아닌 메인 화면으로 처리.
- 			document.CnsltListForm.action = "<c:url value='/uat/uia/egovLoginUsr.do'/>";
+ 			document.CnsltListForm.action = "<c:url value='/login/egovLoginUsr.do'/>";
  			document.CnsltListForm.submit();
 
 

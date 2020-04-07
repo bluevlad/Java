@@ -114,24 +114,6 @@ public class EgovLoginController {
 	@RequestMapping(value = "/login/actionLogin.do")
 	public String actionLogin(@ModelAttribute("loginVO") LoginVO loginVO, HttpServletRequest request, ModelMap model) throws Exception {
 
-		// 1. 로그인인증제한 활성화시 
-		/*
-		 * if( egovLoginConfig.isLock()){ Map<?,?> mapLockUserInfo =
-		 * (EgovMap)loginService.selectLoginIncorrect(loginVO); if(mapLockUserInfo !=
-		 * null){ //2.1 로그인인증제한 처리 String sLoginIncorrectCode =
-		 * loginService.processLoginIncorrect(loginVO, mapLockUserInfo);
-		 * if(!sLoginIncorrectCode.equals("E")){ if(sLoginIncorrectCode.equals("L")){
-		 * model.addAttribute("message",
-		 * egovMessageSource.getMessageArgs("fail.common.loginIncorrect", new Object[]
-		 * {egovLoginConfig.getLockCount(),request.getLocale()})); }else
-		 * if(sLoginIncorrectCode.equals("C")){ model.addAttribute("message",
-		 * egovMessageSource.getMessage("fail.common.login",request.getLocale())); }
-		 * return "egovframework/com/academy/login/EgovLoginUsr"; } }else{
-		 * model.addAttribute("message",
-		 * egovMessageSource.getMessage("fail.common.login",request.getLocale()));
-		 * return "egovframework/com/academy/login/EgovLoginUsr"; } }
-		 */		
-		
 		// 2. 로그인 처리
 		LoginVO resultVO = loginService.actionLogin(loginVO);
 		
@@ -164,69 +146,6 @@ public class EgovLoginController {
 		String userIp = EgovClntInfo.getClntIP(request);
 		LOGGER.debug("User IP : {}", userIp);
 
-		/*
-		// 1. GPKI 인증
-		GPKIHttpServletResponse gpkiresponse = null;
-		GPKIHttpServletRequest gpkirequest = null;
-		String dn = "";
-		try{
-			gpkiresponse = new GPKIHttpServletResponse(response);
-		    gpkirequest = new GPKIHttpServletRequest(request);
-		    gpkiresponse.setRequest(gpkirequest);
-		    X509Certificate cert = null;
-
-		    byte[] signData = null;
-		    byte[] privatekey_random = null;
-		    String signType = "";
-		    String queryString = "";
-
-		    cert = gpkirequest.getSignerCert();
-		    dn = cert.getSubjectDN();
-
-		    java.math.BigInteger b = cert.getSerialNumber();
-		    b.toString();
-		    int message_type =  gpkirequest.getRequestMessageType();
-		    if( message_type == gpkirequest.ENCRYPTED_SIGNDATA || message_type == gpkirequest.LOGIN_ENVELOP_SIGN_DATA ||
-		        message_type == gpkirequest.ENVELOP_SIGNDATA || message_type == gpkirequest.SIGNED_DATA){
-		        signData = gpkirequest.getSignedData();
-		        if(privatekey_random != null) {
-		            privatekey_random   = gpkirequest.getSignerRValue();
-		        }
-		        signType = gpkirequest.getSignType();
-		    }
-		    queryString = gpkirequest.getQueryString();
-		}catch(Exception e){
-			return "cmm/egovError";
-		}
-
-		// 2. 업무사용자 테이블에서 dn값으로 사용자의 ID, PW를 조회하여 이를 일반로그인 형태로 인증하도록 함
-		if (dn != null && !dn.equals("")) {
-
-			loginVO.setDn(dn);
-			LoginVO resultVO = loginService.actionCrtfctLogin(loginVO);
-		    if (resultVO != null && resultVO.getId() != null && !resultVO.getId().equals("")) {
-
-		    	//스프링 시큐리티패키지를 사용하는지 체크하는 로직
-		    	if(EgovComponentChecker.hasComponent("egovAuthorManageService")){
-		    		// 3-1. spring security 연동
-		            return "redirect:/j_spring_security_check?j_username=" + resultVO.getUserSe() + resultVO.getId() + "&j_password=" + resultVO.getUniqId();
-
-		    	}else{
-		    		// 3-2. 로그인 정보를 세션에 저장
-		        	request.getSession().setAttribute("loginVO", resultVO);
-		    		return "redirect:/uat/uia/actionMain.do";
-		    	}
-
-
-		    } else {
-		    	model.addAttribute("message", egovMessageSource.getMessage("fail.common.login"));
-		    	return "egovframework/com/uat/uia/EgovLoginUsr";
-		    }
-		} else {
-			model.addAttribute("message", egovMessageSource.getMessage("fail.common.login"));
-			return "egovframework/com/uat/uia/EgovLoginUsr";
-		}
-		*/
 		return "egovframework/com/academy/login/EgovLoginUsr";
 	}
 
@@ -249,19 +168,6 @@ public class EgovLoginController {
 		
 		LOGGER.debug("User Id : {}", user == null ? "" : EgovStringUtil.isNullToString(user.getId()));
 
-		/*
-		// 2. 메뉴조회
-		MenuManageVO menuManageVO = new MenuManageVO();
-		menuManageVO.setTmp_Id(user.getId());
-		menuManageVO.setTmp_UserSe(user.getUserSe());
-		menuManageVO.setTmp_Name(user.getName());
-		menuManageVO.setTmp_Email(user.getEmail());
-		menuManageVO.setTmp_OrgnztId(user.getOrgnztId());
-		menuManageVO.setTmp_UniqId(user.getUniqId());
-		List list_headmenu = menuManageService.selectMainMenuHead(menuManageVO);
-		model.addAttribute("list_headmenu", list_headmenu);
-		*/
-
 		// 3. 메인 페이지 이동
 		String main_page = Globals.MAIN_PAGE;
 
@@ -274,22 +180,6 @@ public class EgovLoginController {
 			return main_page;
 		}
 
-		/*
-		if (main_page != null && !main_page.equals("")) {
-
-			// 3-1. 설정된 메인화면이 있는 경우
-			return main_page;
-
-		} else {
-
-			// 3-2. 설정된 메인화면이 없는 경우
-			if (user.getUserSe().equals("USR")) {
-				return "egovframework/com/EgovMainView";
-			} else {
-				return "egovframework/com/EgovMainViewG";
-			}
-		}
-		*/
 	}
 
 	/**
@@ -299,11 +189,6 @@ public class EgovLoginController {
 	 */
 	@RequestMapping(value = "/login/actionLogout.do")
 	public String actionLogout(HttpServletRequest request, ModelMap model) throws Exception {
-
-		/*String userIp = EgovClntInfo.getClntIP(request);
-
-		// 1. Security 연동
-		return "redirect:/j_spring_security_logout";*/
 
 		request.getSession().setAttribute("loginVO", null);
 

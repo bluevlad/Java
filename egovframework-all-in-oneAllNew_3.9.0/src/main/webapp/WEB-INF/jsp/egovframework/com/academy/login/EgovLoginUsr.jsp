@@ -128,11 +128,10 @@ function fnShowLogin(stat) {
 
 </script>
 </head>
-<body onLoad="fnInit();">
+<body>
 
 <!-- javascript warning tag  -->
 <noscript class="noScriptTitle"><spring:message code="common.noScriptTitle.msg" /></noscript>
-
 
 <!-- 일반로그인 -->
 <div class="login_form">
