@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import egovframework.com.cmm.LoginVO;
 import egovframework.com.uat.sso.service.EgovSSOService;
-import egovframework.com.uat.uia.service.EgovLoginService;
+import egovframework.com.academy.login.service.EgovLoginService;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;

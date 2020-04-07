@@ -98,7 +98,7 @@ public class IndexController implements ApplicationContextAware, InitializingBea
 		 * EgovLoginController가 AOP Proxy되는 바람에 클래스를 reflection으로 가져올 수 없음
 		 */
 		try {
-			Class<?> loginController = Class.forName("egovframework.com.uat.uia.web.EgovLoginController");
+			Class<?> loginController = Class.forName("egovframework.com.academy.login.web.EgovLoginController");
 			Method[] methods = loginController.getMethods();
 			for (int i = 0; i < methods.length; i++) {
 				annotation = methods[i].getAnnotation(IncludedInfo.class);
@@ -120,7 +120,7 @@ public class IndexController implements ApplicationContextAware, InitializingBea
 				}
 			}
 		} catch (ClassNotFoundException e) {
-			LOGGER.error("No egovframework.com.uat.uia.web.EgovLoginController!!");
+			LOGGER.error("No egovframework.com.academy.login.web.EgovLoginController!!");
 		}
 		/* 여기까지 AOP Proxy로 인한 코드 */
 

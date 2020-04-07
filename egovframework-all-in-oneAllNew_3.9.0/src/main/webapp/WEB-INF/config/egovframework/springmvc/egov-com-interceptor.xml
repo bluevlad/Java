@@ -24,7 +24,7 @@
 	        -->
 	        <mvc:interceptor>
 	            <mvc:mapping path="/**/*.do" />
-	            <mvc:exclude-mapping path="/uat/uia/**" />
+	            <mvc:exclude-mapping path="/login/**" /> <!-- 로그인 패키지 변경 -->
 	            <mvc:exclude-mapping path="/index.do" />
 	            <mvc:exclude-mapping path="/cmm/fms/getImage.do" /> <!-- 로그인화면이미지 -->
 	            <mvc:exclude-mapping path="/uss/ion/bnr/getBannerImage.do" /> <!-- 포털예제배너 -->
