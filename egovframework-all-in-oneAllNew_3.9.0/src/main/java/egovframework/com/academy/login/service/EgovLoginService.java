@@ -1,4 +1,4 @@
-package egovframework.com.uat.uia.service;
+package egovframework.com.academy.login.service;
 
 import java.util.Map;
 

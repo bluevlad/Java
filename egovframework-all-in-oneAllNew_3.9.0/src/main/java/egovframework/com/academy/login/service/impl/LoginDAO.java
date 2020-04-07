@@ -1,4 +1,4 @@
-package egovframework.com.uat.uia.service.impl;
+package egovframework.com.academy.login.service.impl;
 
 import java.util.Map;
 
@@ -35,7 +35,7 @@ public class LoginDAO extends EgovComAbstractDAO {
 	 * @exception Exception
 	 */
     public LoginVO actionLoginByEsntlId(LoginVO vo) throws Exception {
-    	return (LoginVO)selectOne("LoginUsr.ssoLoginByEsntlId", vo);
+    	return (LoginVO)selectOne("Login.ssoLoginByEsntlId", vo);
     }
 
 	/**
@@ -45,7 +45,7 @@ public class LoginDAO extends EgovComAbstractDAO {
 	 * @exception Exception
 	 */
     public LoginVO actionLogin(LoginVO vo) throws Exception {
-    	return (LoginVO)selectOne("LoginUsr.actionLogin", vo);
+    	return (LoginVO)selectOne("Login.actionLogin", vo);
     }
 
     /**
@@ -56,7 +56,7 @@ public class LoginDAO extends EgovComAbstractDAO {
 	 */
     public LoginVO actionCrtfctLogin(LoginVO vo) throws Exception {
 
-    	return (LoginVO)selectOne("LoginUsr.actionCrtfctLogin", vo);
+    	return (LoginVO)selectOne("Login.actionCrtfctLogin", vo);
     }
 
     /**
@@ -67,7 +67,7 @@ public class LoginDAO extends EgovComAbstractDAO {
 	 */
     public LoginVO searchId(LoginVO vo) throws Exception {
 
-    	return (LoginVO)selectOne("LoginUsr.searchId", vo);
+    	return (LoginVO)selectOne("Login.searchId", vo);
     }
 
     /**
@@ -78,7 +78,7 @@ public class LoginDAO extends EgovComAbstractDAO {
 	 */
     public LoginVO searchPassword(LoginVO vo) throws Exception {
 
-    	return (LoginVO)selectOne("LoginUsr.searchPassword", vo);
+    	return (LoginVO)selectOne("Login.searchPassword", vo);
     }
 
     /**
@@ -87,7 +87,7 @@ public class LoginDAO extends EgovComAbstractDAO {
 	 * @exception Exception
 	 */
     public void updatePassword(LoginVO vo) throws Exception {
-    	update("LoginUsr.updatePassword", vo);
+    	update("Login.updatePassword", vo);
     }
     
     
@@ -98,7 +98,7 @@ public class LoginDAO extends EgovComAbstractDAO {
 	 * @exception Exception
 	 */
 	public Map<?,?> selectLoginIncorrect(LoginVO vo) throws Exception {
-    	return (Map<?,?>)selectOne("LoginUsr.selectLoginIncorrect", vo);
+    	return (Map<?,?>)selectOne("Login.selectLoginIncorrect", vo);
     }
 
     /**
@@ -108,7 +108,7 @@ public class LoginDAO extends EgovComAbstractDAO {
 	 * @exception Exception
 	 */
     public void updateLoginIncorrect(Map<?,?> map) throws Exception {
-    	update("LoginUsr.updateLoginIncorrect"+map.get("USER_SE"), map);
+    	update("Login.updateLoginIncorrect"+map.get("USER_SE"), map);
     }
 
 }

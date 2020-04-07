@@ -1,4 +1,4 @@
-package egovframework.com.uat.uia.web;
+package egovframework.com.academy.login.web;
 
 import java.util.List;
 import java.util.Map;
@@ -23,10 +23,10 @@ import egovframework.com.cmm.config.EgovLoginConfig;
 import egovframework.com.cmm.service.EgovCmmUseService;
 import egovframework.com.cmm.service.Globals;
 import egovframework.com.cmm.util.EgovUserDetailsHelper;
-import egovframework.com.uat.uia.service.EgovLoginService;
 import egovframework.com.utl.fcc.service.EgovStringUtil;
 import egovframework.com.utl.sim.service.EgovClntInfo;
 import egovframework.rte.psl.dataaccess.util.EgovMap;
+import egovframework.com.academy.login.service.EgovLoginService;
 
 /*
 import com.gpki.gpkiapi.cert.X509Certificate;
@@ -55,6 +55,7 @@ import com.gpki.servlet.GPKIHttpServletResponse;
  *  2017.07.21  장동한          로그인인증제한 작업
  *  2018.10.26  신용호          로그인 화면에 message 파라미터 전달 수정
  *  2019.10.01	EFW Center	  로그인 인증세션 추가
+ *  2020.03.00	rainend	  학원관리 로그인 적용
  *  </pre>
  */
 @Controller
@@ -84,8 +85,8 @@ public class EgovLoginController {
 	 * @return 로그인 페이지
 	 * @exception Exception
 	 */
-	@IncludedInfo(name = "로그인", listUrl = "/uat/uia/egovLoginUsr.do", order = 10, gid = 10)
-	@RequestMapping(value = "/uat/uia/egovLoginUsr.do")
+	@IncludedInfo(name = "로그인", listUrl = "/login/egovLoginUsr.do", order = 10, gid = 10)
+	@RequestMapping(value = "/login/egovLoginUsr.do")
 	public String loginUsrView(@ModelAttribute("loginVO") LoginVO loginVO, HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception {
 		if (EgovComponentChecker.hasComponent("mberManageService")) {
 			model.addAttribute("useMemberManage", "true");
@@ -97,26 +98,10 @@ public class EgovLoginController {
 			return "egovframework/com/cmm/error/accessDenied";
 		}
 
-		/*
-		GPKIHttpServletResponse gpkiresponse = null;
-		GPKIHttpServletRequest gpkirequest = null;
-
-		try{
-
-			gpkiresponse=new GPKIHttpServletResponse(response);
-		    gpkirequest= new GPKIHttpServletRequest(request);
-		    gpkiresponse.setRequest(gpkirequest);
-		    model.addAttribute("challenge", gpkiresponse.getChallenge());
-		    return "egovframework/com/uat/uia/EgovLoginUsr";
-
-		}catch(Exception e){
-		    return "egovframework/com/cmm/egovError";
-		}
-		*/
 		String message = (String)request.getParameter("message");
 		if (message!=null) model.addAttribute("message", message);
 		
-		return "egovframework/com/uat/uia/EgovLoginUsr";
+		return "egovframework/com/academy/login/EgovLoginUsr";
 	}
 
 	/**
@@ -126,28 +111,26 @@ public class EgovLoginController {
 	 * @return result - 로그인결과(세션정보)
 	 * @exception Exception
 	 */
-	@RequestMapping(value = "/uat/uia/actionLogin.do")
+	@RequestMapping(value = "/login/actionLogin.do")
 	public String actionLogin(@ModelAttribute("loginVO") LoginVO loginVO, HttpServletRequest request, ModelMap model) throws Exception {
 
 		// 1. 로그인인증제한 활성화시 
-		if( egovLoginConfig.isLock()){
-		    Map<?,?> mapLockUserInfo = (EgovMap)loginService.selectLoginIncorrect(loginVO);
-		    if(mapLockUserInfo != null){			
-				//2.1 로그인인증제한 처리
-				String sLoginIncorrectCode = loginService.processLoginIncorrect(loginVO, mapLockUserInfo);
-				if(!sLoginIncorrectCode.equals("E")){
-					if(sLoginIncorrectCode.equals("L")){
-						model.addAttribute("message", egovMessageSource.getMessageArgs("fail.common.loginIncorrect", new Object[] {egovLoginConfig.getLockCount(),request.getLocale()}));
-					}else if(sLoginIncorrectCode.equals("C")){
-						model.addAttribute("message", egovMessageSource.getMessage("fail.common.login",request.getLocale()));
-					}
-					return "egovframework/com/uat/uia/EgovLoginUsr";
-				}
-		    }else{
-		    	model.addAttribute("message", egovMessageSource.getMessage("fail.common.login",request.getLocale()));
-		    	return "egovframework/com/uat/uia/EgovLoginUsr";
-		    }
-		}
+		/*
+		 * if( egovLoginConfig.isLock()){ Map<?,?> mapLockUserInfo =
+		 * (EgovMap)loginService.selectLoginIncorrect(loginVO); if(mapLockUserInfo !=
+		 * null){ //2.1 로그인인증제한 처리 String sLoginIncorrectCode =
+		 * loginService.processLoginIncorrect(loginVO, mapLockUserInfo);
+		 * if(!sLoginIncorrectCode.equals("E")){ if(sLoginIncorrectCode.equals("L")){
+		 * model.addAttribute("message",
+		 * egovMessageSource.getMessageArgs("fail.common.loginIncorrect", new Object[]
+		 * {egovLoginConfig.getLockCount(),request.getLocale()})); }else
+		 * if(sLoginIncorrectCode.equals("C")){ model.addAttribute("message",
+		 * egovMessageSource.getMessage("fail.common.login",request.getLocale())); }
+		 * return "egovframework/com/academy/login/EgovLoginUsr"; } }else{
+		 * model.addAttribute("message",
+		 * egovMessageSource.getMessage("fail.common.login",request.getLocale()));
+		 * return "egovframework/com/academy/login/EgovLoginUsr"; } }
+		 */		
 		
 		// 2. 로그인 처리
 		LoginVO resultVO = loginService.actionLogin(loginVO);
@@ -160,11 +143,11 @@ public class EgovLoginController {
 			// 2019.10.01 로그인 인증세션 추가
 			request.getSession().setAttribute("accessUser", resultVO.getUserSe().concat(resultVO.getId()));
 
-			return "redirect:/uat/uia/actionMain.do";
+			return "redirect:/login/actionMain.do";
 
 		} else {
 			model.addAttribute("message", egovMessageSource.getMessage("fail.common.login",request.getLocale()));
-			return "egovframework/com/uat/uia/EgovLoginUsr";
+			return "egovframework/com/academy/login/EgovLoginUsr";
 		}
 	}
 
@@ -174,7 +157,7 @@ public class EgovLoginController {
 	 * @return result - 로그인결과(세션정보)
 	 * @exception Exception
 	 */
-	@RequestMapping(value = "/uat/uia/actionCrtfctLogin.do")
+	@RequestMapping(value = "/login/actionCrtfctLogin.do")
 	public String actionCrtfctLogin(@ModelAttribute("loginVO") LoginVO loginVO, HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception {
 
 		// 접속IP
@@ -244,7 +227,7 @@ public class EgovLoginController {
 			return "egovframework/com/uat/uia/EgovLoginUsr";
 		}
 		*/
-		return "egovframework/com/uat/uia/EgovLoginUsr";
+		return "egovframework/com/academy/login/EgovLoginUsr";
 	}
 
 	/**
@@ -253,14 +236,14 @@ public class EgovLoginController {
 	 * @return 로그인 페이지
 	 * @exception Exception
 	 */
-	@RequestMapping(value = "/uat/uia/actionMain.do")
+	@RequestMapping(value = "/login/actionMain.do")
 	public String actionMain(ModelMap model) throws Exception {
 
 		// 1. Spring Security 사용자권한 처리
 		Boolean isAuthenticated = EgovUserDetailsHelper.isAuthenticated();
 		if (!isAuthenticated) {
 			model.addAttribute("message", egovMessageSource.getMessage("fail.common.login"));
-			return "egovframework/com/uat/uia/EgovLoginUsr";
+			return "egovframework/com/academy/login/EgovLoginUsr";
 		}
 		LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
 		
@@ -314,7 +297,7 @@ public class EgovLoginController {
 	 * @return String
 	 * @exception Exception
 	 */
-	@RequestMapping(value = "/uat/uia/actionLogout.do")
+	@RequestMapping(value = "/login/actionLogout.do")
 	public String actionLogout(HttpServletRequest request, ModelMap model) throws Exception {
 
 		/*String userIp = EgovClntInfo.getClntIP(request);
@@ -334,7 +317,7 @@ public class EgovLoginController {
 	 * @return 아이디/비밀번호 찾기 페이지
 	 * @exception Exception
 	 */
-	@RequestMapping(value = "/uat/uia/egovIdPasswordSearch.do")
+	@RequestMapping(value = "/login/egovIdPasswordSearch.do")
 	public String idPasswordSearchView(ModelMap model) throws Exception {
 
 		// 1. 비밀번호 힌트 공통코드 조회
@@ -343,7 +326,7 @@ public class EgovLoginController {
 		List<?> code = cmmUseService.selectCmmCodeDetail(vo);
 		model.addAttribute("pwhtCdList", code);
 
-		return "egovframework/com/uat/uia/EgovIdPasswordSearch";
+		return "egovframework/com/academy/login/EgovIdPasswordSearch";
 	}
 
 	/**
@@ -351,9 +334,9 @@ public class EgovLoginController {
 	 * @return 인증서안내 페이지
 	 * @exception Exception
 	 */
-	@RequestMapping(value = "/uat/uia/egovGpkiIssu.do")
+	@RequestMapping(value = "/login/egovGpkiIssu.do")
 	public String gpkiIssuView(ModelMap model) throws Exception {
-		return "egovframework/com/uat/uia/EgovGpkiIssu";
+		return "egovframework/com/academy/login/EgovGpkiIssu";
 	}
 
 	/**
@@ -362,7 +345,7 @@ public class EgovLoginController {
 	 * @return result - 아이디
 	 * @exception Exception
 	 */
-	@RequestMapping(value = "/uat/uia/searchId.do")
+	@RequestMapping(value = "/login/searchId.do")
 	public String searchId(@ModelAttribute("loginVO") LoginVO loginVO, ModelMap model) throws Exception {
 
 		if (loginVO == null || loginVO.getName() == null || loginVO.getName().equals("") && loginVO.getEmail() == null || loginVO.getEmail().equals("")
@@ -377,10 +360,10 @@ public class EgovLoginController {
 		if (resultVO != null && resultVO.getId() != null && !resultVO.getId().equals("")) {
 
 			model.addAttribute("resultInfo", "아이디는 " + resultVO.getId() + " 입니다.");
-			return "egovframework/com/uat/uia/EgovIdPasswordResult";
+			return "egovframework/com/academy/login/EgovIdPasswordResult";
 		} else {
 			model.addAttribute("resultInfo", egovMessageSource.getMessage("fail.common.idsearch"));
-			return "egovframework/com/uat/uia/EgovIdPasswordResult";
+			return "egovframework/com/academy/login/EgovIdPasswordResult";
 		}
 	}
 
@@ -390,7 +373,7 @@ public class EgovLoginController {
 	 * @return result - 임시비밀번호전송결과
 	 * @exception Exception
 	 */
-	@RequestMapping(value = "/uat/uia/searchPassword.do")
+	@RequestMapping(value = "/login/searchPassword.do")
 	public String searchPassword(@ModelAttribute("loginVO") LoginVO loginVO, ModelMap model) throws Exception {
 
 		//KISA 보안약점 조치 (2018-10-29, 윤창원)
@@ -406,10 +389,10 @@ public class EgovLoginController {
 		// 2. 결과 리턴
 		if (result) {
 			model.addAttribute("resultInfo", "임시 비밀번호를 발송하였습니다.");
-			return "egovframework/com/uat/uia/EgovIdPasswordResult";
+			return "egovframework/com/academy/login/EgovIdPasswordResult";
 		} else {
 			model.addAttribute("resultInfo", egovMessageSource.getMessage("fail.common.pwsearch"));
-			return "egovframework/com/uat/uia/EgovIdPasswordResult";
+			return "egovframework/com/academy/login/EgovIdPasswordResult";
 		}
 	}
 
@@ -419,7 +402,7 @@ public class EgovLoginController {
 	 * @return String
 	 * @exception Exception
 	 */
-	@RequestMapping(value = "/uat/uia/getEncodingData.do")
+	@RequestMapping(value = "/login/getEncodingData.do")
 	public void getEncodingData() throws Exception {
 
 		/*
@@ -444,7 +427,7 @@ public class EgovLoginController {
 	 * @return 인증서 등록 페이지
 	 * @exception Exception
 	 */
-	@RequestMapping(value = "/uat/uia/EgovGpkiRegist.do")
+	@RequestMapping(value = "/login/EgovGpkiRegist.do")
 	public String gpkiRegistView(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception {
 
 		/** GPKI 인증 부분 */
@@ -483,7 +466,7 @@ public class EgovLoginController {
 		}
 		}
 		*/
-		return "egovframework/com/uat/uia/EgovGpkiRegist";
+		return "egovframework/com/academy/login/EgovGpkiRegist";
 	}
 
 	/**
@@ -491,7 +474,7 @@ public class EgovLoginController {
 	 * @return result - dn값
 	 * @exception Exception
 	 */
-	@RequestMapping(value = "/uat/uia/actionGpkiRegist.do")
+	@RequestMapping(value = "/login/actionGpkiRegist.do")
 	public String actionGpkiRegist(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception {
 
 		/** GPKI 인증 부분 */
@@ -540,6 +523,6 @@ public class EgovLoginController {
 			}
 		}
 		*/
-		return "egovframework/com/uat/uia/EgovGpkiRegist";
+		return "egovframework/com/academy/login/EgovGpkiRegist";
 	}
 }
