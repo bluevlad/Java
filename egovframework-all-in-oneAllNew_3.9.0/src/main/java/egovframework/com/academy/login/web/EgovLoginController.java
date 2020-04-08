@@ -1,7 +1,6 @@
 package egovframework.com.academy.login.web;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +13,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import egovframework.com.academy.login.service.EgovLoginService;
 import egovframework.com.cmm.ComDefaultCodeVO;
 import egovframework.com.cmm.EgovComponentChecker;
 import egovframework.com.cmm.EgovMessageSource;
@@ -25,8 +25,6 @@ import egovframework.com.cmm.service.Globals;
 import egovframework.com.cmm.util.EgovUserDetailsHelper;
 import egovframework.com.utl.fcc.service.EgovStringUtil;
 import egovframework.com.utl.sim.service.EgovClntInfo;
-import egovframework.rte.psl.dataaccess.util.EgovMap;
-import egovframework.com.academy.login.service.EgovLoginService;
 
 /*
 import com.gpki.gpkiapi.cert.X509Certificate;
@@ -134,22 +132,6 @@ public class EgovLoginController {
 	}
 
 	/**
-	 * 인증서 로그인을 처리한다
-	 * @param vo - 주민번호가 담긴 LoginVO
-	 * @return result - 로그인결과(세션정보)
-	 * @exception Exception
-	 */
-	@RequestMapping(value = "/login/actionCrtfctLogin.do")
-	public String actionCrtfctLogin(@ModelAttribute("loginVO") LoginVO loginVO, HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception {
-
-		// 접속IP
-		String userIp = EgovClntInfo.getClntIP(request);
-		LOGGER.debug("User IP : {}", userIp);
-
-		return "egovframework/com/academy/login/EgovLoginUsr";
-	}
-
-	/**
 	 * 로그인 후 메인화면으로 들어간다
 	 * @param
 	 * @return 로그인 페이지
@@ -192,7 +174,6 @@ public class EgovLoginController {
 
 		request.getSession().setAttribute("loginVO", null);
 
-		//return "redirect:/egovDevIndex.jsp";
 		return "redirect:/EgovContent.do";
 	}
 

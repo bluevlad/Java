@@ -25,7 +25,7 @@
     	- excludeList에 등록하게 되면 접근권한 체크를 SKIP하게 되니 반드시 주의한다.
     -->
 	<egov-access:config id="egovAccessConfig"
-	    globalAuthen="dummy"
+	    globalAuthen="session"
 	    mappingPath="/**/*.do"
 	    dataSource="egov.dataSource"
 	    loginUrl="/login/egovLoginUsr.do"

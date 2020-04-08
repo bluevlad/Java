@@ -16,7 +16,7 @@
 	
 	<!-- 세션(Session) 방식 인증시에만 AuthenticInterceptor 동작  -->
 	<!-- 동작모드(프로파일명) : dummy, session, security ex)<beans profile="session"/> -->
-    <beans profile="dummy">
+    <beans profile="session">
 	    <mvc:interceptors>
 	        <!--
 	        	* 로그인 체크가 필요한 URL과 로그인 여부를 체크해줄 인터셉터 등록에 대한 간단한 기능 예시이다.
