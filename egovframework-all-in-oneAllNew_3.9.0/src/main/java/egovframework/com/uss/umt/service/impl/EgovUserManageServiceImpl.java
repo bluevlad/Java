@@ -39,14 +39,6 @@ public class EgovUserManageServiceImpl extends EgovAbstractServiceImpl implement
 	@Resource(name="userManageDAO")
 	private UserManageDAO userManageDAO;
 
-	/** mberManageDAO */
-	@Resource(name="mberManageDAO")
-	private MberManageDAO mberManageDAO;
-
-	/** entrprsManageDAO */
-	@Resource(name="entrprsManageDAO")
-	private EntrprsManageDAO entrprsManageDAO;
-
 	/** egovUsrCnfrmIdGnrService */
 	@Resource(name="egovUsrCnfrmIdGnrService")
 	private EgovIdGnrService idgenService;
@@ -73,16 +65,8 @@ public class EgovUserManageServiceImpl extends EgovAbstractServiceImpl implement
 		String [] delId = EgovStringUtil.isNullToString(checkedIdForDel).split(",");
 		for (int i=0; i<delId.length ; i++){
 			String [] id = delId[i].split(":");
-			if (id[0].equals("USR03")){
-		        //업무사용자(직원)삭제
-				userManageDAO.deleteUser(id[1]);
-			}else if(id[0].equals("USR01")){
-				//일반회원삭제
-				mberManageDAO.deleteMber(id[1]);
-			}else if(id[0].equals("USR02")){
-				//기업회원삭제
-				entrprsManageDAO.deleteEntrprsmber(id[1]);
-			}
+	        //업무사용자(직원)삭제
+			userManageDAO.deleteUser(id[1]);
 		}
 	}
 
