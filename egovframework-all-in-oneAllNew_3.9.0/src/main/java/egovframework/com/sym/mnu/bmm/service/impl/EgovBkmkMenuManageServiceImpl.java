@@ -7,7 +7,7 @@ import java.util.Map;
 import egovframework.com.sym.mnu.bmm.service.BkmkMenuManage;
 import egovframework.com.sym.mnu.bmm.service.BkmkMenuManageVO;
 import egovframework.com.sym.mnu.bmm.service.EgovBkmkMenuManageservice;
-import egovframework.com.sym.mnu.mpm.service.MenuManageVO;
+import egovframework.com.academy.menu.service.MenuManageVO;
 
 import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
 

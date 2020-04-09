@@ -5,7 +5,7 @@ import java.util.List;
 import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 import egovframework.com.sym.mnu.bmm.service.BkmkMenuManage;
 import egovframework.com.sym.mnu.bmm.service.BkmkMenuManageVO;
-import egovframework.com.sym.mnu.mpm.service.MenuManageVO;
+import egovframework.com.academy.menu.service.MenuManageVO;
 
 import org.springframework.stereotype.Repository;
 

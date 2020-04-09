@@ -23,6 +23,9 @@ link:hover { color: #000000; text-decoration: none; }
 		<ul class="2depth">
 			<li><a href="/login/egovLoginUsr.do" target="_content" class="link"> 10. 로그인<!-- 로그인 --></a></li>
 		</ul>
+		<ul class="2depth">
+			<li><a href="/menu/EgovMenuListSelect.do" target="_content" class="link"> 1090. 메뉴리스트관리<!-- 메뉴리스트관리 --></a></li>
+		</ul>
 	<ul class="lnb_title">
 		<li><strong class="left_title_strong"><strong class="top_title_strong">보안</strong></strong><!-- 보안 --></li>
 	</ul>
@@ -186,9 +189,6 @@ link:hover { color: #000000; text-decoration: none; }
 		</ul>
 		<ul class="2depth">
 			<li><a href="/sym/log/plg/SelectPrivacyLogList.do" target="_content" class="link"> 1085. 개인정보조회로그관리<!-- 개인정보조회로그관리 --></a></li>
-		</ul>
-		<ul class="2depth">
-			<li><a href="/sym/mnu/mpm/EgovMenuListSelect.do" target="_content" class="link"> 1090. 메뉴리스트관리<!-- 메뉴리스트관리 --></a></li>
 		</ul>
 		<ul class="2depth">
 			<li><a href="/sym/mnu/mpm/EgovMenuManageSelect.do" target="_content" class="link"> 1091. 메뉴관리리스트<!-- 메뉴관리리스트 --></a></li>

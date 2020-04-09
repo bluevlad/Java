@@ -3,7 +3,7 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="menuManageDAO">
 	
-	<select id="selectMainMenuHead" parameterType="egovframework.com.sym.mnu.mpm.service.MenuManageVO" resultType="egovMap">
+	<select id="selectMainMenuHead" parameterType="egovframework.com.academy.menu.service.MenuManageVO" resultType="egovMap">
 		 
             SELECT
 			      B.MENU_NO AS menuNo
@@ -25,7 +25,7 @@
 		 
 	</select>
 
-	<select id="selectMainMenuLeft" parameterType="egovframework.com.sym.mnu.mpm.service.MenuManageVO" resultType="egovMap">
+	<select id="selectMainMenuLeft" parameterType="egovframework.com.academy.menu.service.MenuManageVO" resultType="egovMap">
 		 
 			SELECT
 			       B.MENU_NO AS menuNo
@@ -43,7 +43,7 @@
 		 
 	</select>
 
-	<select id="selectLastMenuURL" parameterType="egovframework.com.sym.mnu.mpm.service.MenuManageVO" resultType="String">
+	<select id="selectLastMenuURL" parameterType="egovframework.com.academy.menu.service.MenuManageVO" resultType="String">
 		 
 			SELECT URL 
 			FROM   COMTNPROGRMLIST
@@ -53,7 +53,7 @@
 		 
 	</select>
 
-	<select id="selectLastMenuNo" parameterType="egovframework.com.sym.mnu.mpm.service.MenuManageVO" resultType="int">
+	<select id="selectLastMenuNo" parameterType="egovframework.com.academy.menu.service.MenuManageVO" resultType="int">
 		 
 			select MIN(MENU_NO) 
 			from   COMTNMENUINFO
@@ -68,7 +68,7 @@
 		 
 	</select>
 
-	<select id="selectLastMenuNoCnt" parameterType="egovframework.com.sym.mnu.mpm.service.MenuManageVO" resultType="int">
+	<select id="selectLastMenuNoCnt" parameterType="egovframework.com.academy.menu.service.MenuManageVO" resultType="int">
 		 
 			select count(MENU_NO) 
 			from   COMTNMENUINFO

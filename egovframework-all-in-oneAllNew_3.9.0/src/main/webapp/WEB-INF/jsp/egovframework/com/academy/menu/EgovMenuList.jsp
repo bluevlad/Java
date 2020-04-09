@@ -11,6 +11,7 @@
   * @ 2009.03.10   이용               최초 생성
   *   2013.10.04   이기하            메뉴트리 위치 변경
   *   2018.09.10   신용호            표준프레임워크 v3.8 개선
+  *   2020.03.00		rainend			myProject 적용
   *
   *  @author 공통서비스 개발팀 이용
   *  @since 2009.03.10
@@ -49,14 +50,13 @@ var imgpath = "<c:url value='/images/egovframework/com/cmm/utl/'/>";
 
 <script language="javascript1.2" type="text/javaScript" src="<c:url value='/js/egovframework/com/sym/mnu/mpm/EgovMenuList.js' />"></script>
 <script language="javascript1.2" type="text/javaScript">
-<!--
 /* ********************************************************
  * 메뉴등록 처리 함수
  ******************************************************** */
 function insertMenuList() {
 	if(!fn_validatorMenuList()){return;}
     if(document.menuManageVO.tmp_CheckVal.value == "U"){alert("<spring:message code="comSymMnuMpm.menuList.validate.checkVal" />"); return;} //상세조회시는 수정혹은 삭제만 가능합니다.
-	document.menuManageVO.action = "<c:url value='/sym/mnu/mpm/EgovMenuListInsert.do'/>";
+	document.menuManageVO.action = "<c:url value='/menu/EgovMenuListInsert.do'/>";
 	menuManageVO.submit();
 
 }
@@ -67,7 +67,7 @@ function insertMenuList() {
 function updateMenuList() {
     if(!fn_validatorMenuList()){return;}
     if(document.menuManageVO.tmp_CheckVal.value != "U"){alert("<spring:message code="comSymMnuMpm.menuList.validate.checkVal.update" />"); return;} //상세조회시는 수정혹은 삭제만 가능합니다. 초기화 하신 후 등록하세요.
-	document.menuManageVO.action = "<c:url value='/sym/mnu/mpm/EgovMenuListUpdt.do'/>";
+	document.menuManageVO.action = "<c:url value='/menu/EgovMenuListUpdt.do'/>";
 	menuManageVO.submit();
 }
 
@@ -77,7 +77,7 @@ function updateMenuList() {
 function deleteMenuList() {
     if(!fn_validatorMenuList()){return;}
     if(document.menuManageVO.tmp_CheckVal.value != "U"){alert("<spring:message code="comSymMnuMpm.menuList.validate.checkVal" />"); return;} //상세조회시는 수정혹은 삭제만 가능합니다.
-	document.menuManageVO.action = "<c:url value='/sym/mnu/mpm/EgovMenuListDelete.do'/>";
+	document.menuManageVO.action = "<c:url value='/menu/EgovMenuListDelete.do'/>";
 	menuManageVO.submit();
 }
 
@@ -85,7 +85,7 @@ function deleteMenuList() {
  * 메뉴리스트 조회 함수
  ******************************************************** */
 function selectMenuList() {
-    document.menuManageVO.action = "<c:url value='/sym/mnu/mpm/EgovMenuListSelect.do'/>";
+    document.menuManageVO.action = "<c:url value='/menu/EgovMenuListSelect.do'/>";
     document.menuManageVO.submit();
 }
 
@@ -110,8 +110,8 @@ function initlMenuList() {
 
  ******************************************************** */
 function selectMenuListTmp() {
-	document.menuManageVO.req_RetrunPath.value = "/sym/mnu/mpm/EgovMenuList";
-    document.menuManageVO.action = "<c:url value='/sym/mnu/mpm/EgovMenuListSelectTmp.do'/>";
+	document.menuManageVO.req_RetrunPath.value = "/menu/EgovMenuList";
+    document.menuManageVO.action = "<c:url value='/menu/EgovMenuListSelectTmp.do'/>";
     document.menuManageVO.submit();
 }
 
@@ -193,7 +193,7 @@ function checkNumber(str) {
         	e.preventDefault();
             //var page = $(this).attr("href");
             var pagetitle = $(this).attr("title");
-            var page = "<c:url value='/sym/mnu/mpm/EgovMenuListSelectMvmnNew.do'/>";
+            var page = "<c:url value='/menu/EgovMenuListSelectMvmnNew.do'/>";
             var $dialog = $('<div style="overflow:hidden;padding: 0px 0px 0px 0px;"></div>')
             .html('<iframe style="border: 0px; " src="' + page + '" width="100%" height="100%"></iframe>')
             .dialog({
@@ -218,8 +218,8 @@ function checkNumber(str) {
 <!-- ********** 여기서 부터 본문 내용 *************** -->
 
 
-<form name="menuManageVO" action ="<c:url value='/sym/mnu/mpm/EgovMenuListInsert.do' />" method="post">
-<input type="hidden" name="req_RetrunPath" value="/sym/mnu/mpm/EgovMenuList">
+<form name="menuManageVO" action ="<c:url value='/menu/EgovMenuListInsert.do' />" method="post">
+<input type="hidden" name="req_RetrunPath" value="/menu/EgovMenuList">
 
 <div class="board">
 	<h1 style="background-position:left 3px"><spring:message code="comSymMnuMpm.menuList.pageTop.title" /></h1><!-- 메뉴 목록 -->
@@ -227,7 +227,7 @@ function checkNumber(str) {
 	<div class="search_box" title="<spring:message code="common.searchCondition.msg" />"><!-- 이 레이아웃은 하단 정보를 대한 검색 정보로 구성되어 있습니다. -->
 		<ul>
 			<li>
-				<span class="btn_b"><a href="<c:url value='/sym/mnu/mpm/EgovMenuListSelect.do'/>" onclick="initlMenuList(); return false;" title="<spring:message code="button.init" />"><spring:message code="button.init" /></a></span><!-- 초기화 -->
+				<span class="btn_b"><a href="<c:url value='/menu/EgovMenuListSelect.do'/>" onclick="initlMenuList(); return false;" title="<spring:message code="button.init" />"><spring:message code="button.init" /></a></span><!-- 초기화 -->
 				<input class="s_btn" type="submit" value='<spring:message code="button.save" />' title='<spring:message code="button.save" />' onclick="insertMenuList(); return false;" />
 				<span class="btn_b"><a href="#LINK" onclick="updateMenuList(); return false;" title='<spring:message code="button.update" />'><spring:message code="button.update" /></a></span>
 				<span class="btn_b"><a href="#LINK" onclick="deleteMenuList(); return false;" title='<spring:message code="button.delete" />'><spring:message code="button.delete" /></a></span>
@@ -237,17 +237,7 @@ function checkNumber(str) {
 </div>
 
 
-
 <div id="main" style="display:">
-
-<%-- <table width="717" cellpadding="8" class="table-search" border="0">
- <tr>
-  <td width="100%" class="title_left">
-   <h1><img src="<c:url value='/images/egovframework/com/cmm/icon/tit_icon.gif' />" width="16" height="16" hspace="3" alt="">&nbsp;메뉴 목록</h1></td>
- </tr>
-</table> --%>
-
-
 <table>
 	<colgroup>
 		<col style="width:240px" />
@@ -256,9 +246,8 @@ function checkNumber(str) {
   <tr>
    <td style="vertical-align:top">
 	<c:forEach var="result" items="${list_menulist}" varStatus="status" >
-	<input type="hidden" name="tmp_menuNmVal" value="${result.menuNo}|${result.upperMenuId}|${result.menuNm}|${result.progrmFileNm}|${result.menuNo}|${result.menuOrdr}|${result.menuNm}|${result.upperMenuId}|${result.menuDc}|${result.relateImagePath}|${result.relateImageNm}|${result.progrmFileNm}|">
+	<input type="hidden" name="tmp_menuNmVal" value="${result.menuNo}|${result.pMenuNo}|${result.menuNm}|${result.menuPath}|${result.menuNo}|${result.menuOrdr}|${result.menuNm}|${result.pMenuNo}|${result.menuDc}|${result.menuPath}|${result.isUse}|${result.target}|">
 	</c:forEach>
-	
 	<div class="tree" style="overflow:scroll; width:218px; height:383px; padding:5px; border:1px solid #ddd">
 		<script language="javascript" type="text/javaScript">
 		    var chk_Object = true;
@@ -291,22 +280,7 @@ function checkNumber(str) {
 		</script>
 	</div>
    </td>
-   <%-- <td width="*" class="title_left">
-	   <table border="0" cellspacing="0" cellpadding="0" align="left">
-		<tr>
-          <td width="90%"></td>
-          <td><span class="button"><a href="<c:url value='/sym/mnu/mpm/EgovMenuListSelect.do'/>" onclick="initlMenuList(); return false;">초기화</a></span></td>
-          <td width="2%"></td>
-          <td><span class="button"><input type="submit" value="<spring:message code="button.save" />" onclick="insertMenuList(); return false;"></span></td>
-          <td width="2%"></td>
-          <td><span class="button"><a href="#LINK" onclick="updateMenuList(); return false;"><spring:message code="button.update" /></a></span></td>
-          <td width="2%"></td>
-          <td><span class="button"><a href="#LINK" onclick="deleteMenuList(); return false;"><spring:message code="button.delete" /></a></span></td>
-		</tr>
-	   </table>
-   </td> --%>
    <td style="vertical-align:top">
-
 		<table class="wTable" >
 			<colgroup>
 				<col style="width:30%" />
@@ -333,8 +307,8 @@ function checkNumber(str) {
 		  <tr>
 		    <th><spring:message code="comSymMnuMpm.menuList.upperMenuId" /> <span class="pilsu">*</span></th><!-- 상위메뉴No -->
 		    <td class="left">
-		    <input name="upperMenuId" type="text" value=""  maxlength="10" title="<spring:message code="comSymMnuMpm.menuList.upperMenuId" />" style="width:190px"/>
-	        <a id="popupUpperMenuId" href="/sym/mnu/mpm/EgovMenuListSelectMvmn.do" target="_blank" title="<spring:message code="comSymMnuMpm.menuList.upperMenuId" />" style="selector-dummy:expression(this.hideFocus=false);"><img src="<c:url value='/images/egovframework/com/cmm/icon/search2.gif' />"
+		    <input name="pMenuId" type="text" value=""  maxlength="10" title="<spring:message code="comSymMnuMpm.menuList.upperMenuId" />" style="width:190px"/>
+	        <a id="popupUpperMenuId" href="/menu/EgovMenuListSelectMvmn.do" target="_blank" title="<spring:message code="comSymMnuMpm.menuList.upperMenuId" />" style="selector-dummy:expression(this.hideFocus=false);"><img src="<c:url value='/images/egovframework/com/cmm/icon/search2.gif' />"
 	         alt='' width="15" height="15" />(<spring:message code="comSymMnuMpm.menuList.mvmnMenuList" />)</a><!-- 메뉴선택 검색 -->
 		    </td>
 		  </tr>
@@ -384,4 +358,3 @@ function checkNumber(str) {
 </DIV>
 </body>
 </html>
-

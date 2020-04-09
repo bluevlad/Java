@@ -5,7 +5,7 @@ import java.util.List;
 import egovframework.com.cmm.annotation.IncludedInfo;
 import egovframework.com.sts.com.StatsVO;
 import egovframework.com.sts.sst.service.EgovScrinStatsService;
-import egovframework.com.sym.mnu.mpm.service.EgovMenuManageService;
+import egovframework.com.academy.menu.service.EgovMenuManageService;
 
 import javax.annotation.Resource;
 
