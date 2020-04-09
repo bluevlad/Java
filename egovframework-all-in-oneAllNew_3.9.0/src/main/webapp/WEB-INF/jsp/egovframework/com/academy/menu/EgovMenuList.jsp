@@ -40,7 +40,6 @@
 <title><spring:message code="comSymMnuMpm.menuList.title" /></title>
 <link href="<c:url value="/css/egovframework/com/com.css"/>" rel="stylesheet" type="text/css">
 <link href="<c:url value="/css/egovframework/com/button.css"/>" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="<c:url value="/validator.do" />"></script>
 <script type="text/javascript">
 var imgpath = "<c:url value='/images/egovframework/com/cmm/utl/'/>";
 </script>
@@ -48,8 +47,8 @@ var imgpath = "<c:url value='/images/egovframework/com/cmm/utl/'/>";
 <script src="<c:url value='/js/egovframework/com/cmm/jquery.js' />"></script>
 <script src="<c:url value='/js/egovframework/com/cmm/jqueryui.js' />"></script>
 
-<script language="javascript1.2" type="text/javaScript" src="<c:url value='/js/egovframework/com/sym/mnu/mpm/EgovMenuList.js' />"></script>
-<script language="javascript1.2" type="text/javaScript">
+<script type="text/javaScript" src="<c:url value='/js/egovframework/com/academy/MenuList.js' />"></script>
+<script type="text/javaScript">
 /* ********************************************************
  * 메뉴등록 처리 함수
  ******************************************************** */
@@ -94,13 +93,12 @@ function selectMenuList() {
  ******************************************************** */
 function initlMenuList() {
 	document.menuManageVO.menuNo.value="";
-	document.menuManageVO.menuOrdr.value="";
+	document.menuManageVO.pMenuNo.value="";
 	document.menuManageVO.menuNm.value="";
-	document.menuManageVO.upperMenuId.value="";
+	document.menuManageVO.menuOrdr.value="";
 	document.menuManageVO.menuDc.value="";
-	document.menuManageVO.relateImagePath.value="";
-	document.menuManageVO.relateImageNm.value="";
-	document.menuManageVO.progrmFileNm.value="";
+	document.menuManageVO.menuPath.value="";
+	document.menuManageVO.target.value="";
 	document.menuManageVO.menuNo.readOnly=false;
 	document.menuManageVO.tmp_CheckVal.value = "";
 }
@@ -120,14 +118,14 @@ function selectMenuListTmp() {
  ******************************************************** */
  function choiceNodes(nodeNum) {
 		var nodeValues = treeNodes[nodeNum].split("|");
-		document.menuManageVO.menuNo.value = nodeValues[4];
-		document.menuManageVO.menuOrdr.value = nodeValues[5];
-		document.menuManageVO.menuNm.value = nodeValues[6];
-		document.menuManageVO.upperMenuId.value = nodeValues[7];
-		document.menuManageVO.menuDc.value = nodeValues[8];
-		document.menuManageVO.relateImagePath.value = nodeValues[9];
-		document.menuManageVO.relateImageNm.value = nodeValues[10];
-		document.menuManageVO.progrmFileNm.value = nodeValues[11];
+		document.menuManageVO.menuNo.value = nodeValues[3];
+		document.menuManageVO.menuNm.value = nodeValues[4];
+		document.menuManageVO.pMenuNo.value = nodeValues[5];
+		document.menuManageVO.menuOrdr.value = nodeValues[6];
+		document.menuManageVO.menuPath.value = nodeValues[7];
+		document.menuManageVO.isUse.value = nodeValues[8];
+		document.menuManageVO.target.value = nodeValues[9];
+		document.menuManageVO.menuDc.value = nodeValues[10];
 		document.menuManageVO.menuNo.readOnly=true;
 		document.menuManageVO.tmp_CheckVal.value = "U";
 }
@@ -143,10 +141,9 @@ function fn_validatorMenuList() {
 	if(document.menuManageVO.menuOrdr.value == ""){alert("<spring:message code="comSymMnuMpm.menuList.validate.menuOrdr.notNull" />"); return false;} //메뉴순서는 Not Null 항목입니다.
 	if(!checkNumber(document.menuManageVO.menuOrdr.value)){alert("<spring:message code="comSymMnuMpm.menuList.validate.menuOrdr.onlyNumber" />"); return false;} //메뉴순서는 숫자만 입력 가능합니다.
 
-	if(document.menuManageVO.upperMenuId.value == ""){alert("<spring:message code="comSymMnuMpm.menuList.validate.upperMenuId.notNull" />"); return false;} //상위메뉴번호는 Not Null 항목입니다.
-	if(!checkNumber(document.menuManageVO.upperMenuId.value)){alert("<spring:message code="comSymMnuMpm.menuList.validate.upperMenuId.onlyNumber" />"); return false;} //상위메뉴번호는 숫자만 입력 가능합니다.
+	if(document.menuManageVO.pMenuNo.value == ""){alert("<spring:message code="comSymMnuMpm.menuList.validate.upperMenuId.notNull" />"); return false;} //상위메뉴번호는 Not Null 항목입니다.
+	if(!checkNumber(document.menuManageVO.pMenuNo.value)){alert("<spring:message code="comSymMnuMpm.menuList.validate.upperMenuId.onlyNumber" />"); return false;} //상위메뉴번호는 숫자만 입력 가능합니다.
 
-	if(document.menuManageVO.progrmFileNm.value == ""){alert("<spring:message code="comSymMnuMpm.menuList.validate.progrmFileNm.notNull" />"); return false;} //프로그램파일명은 Not Null 항목입니다.
 	if(document.menuManageVO.menuNm.value == ""){alert("<spring:message code="comSymMnuMpm.menuList.validate.menuNm.notNull" />"); return false;} //메뉴명은 Not Null 항목입니다.
 
     return true;
@@ -166,48 +163,8 @@ function checkNumber(str) {
     }
     return flag;
 }
-<c:if test="${!empty resultMsg}">alert("${resultMsg}");</c:if>
--->
+<%--<c:if test="${!empty resultMsg}">alert("${resultMsg}");</c:if>--%>
 </script>
-<script type="text/javascript">
-    $(document).ready(function () {
-    	// 파일검색 화면 호출 함수
-        $('#popupProgrmFileNm').click(function (e) {
-        	e.preventDefault();
-            //var page = $(this).attr("href");
-            var pagetitle = $(this).attr("title");
-            var page = "<c:url value='/sym/prm/EgovProgramListSearchNew.do'/>";
-            var $dialog = $('<div></div>')
-            .html('<iframe style="border: 0px; " src="' + page + '" width="100%" height="100%"></iframe>')
-            .dialog({
-            	autoOpen: false,
-                modal: true,
-                width: 550,
-                height: 650,
-                title: pagetitle
-        	});
-        	$dialog.dialog('open');
-    	});
-        // 메뉴이동 화면 호출 함수
-        $('#popupUpperMenuId').click(function (e) {
-        	e.preventDefault();
-            //var page = $(this).attr("href");
-            var pagetitle = $(this).attr("title");
-            var page = "<c:url value='/menu/EgovMenuListSelectMvmnNew.do'/>";
-            var $dialog = $('<div style="overflow:hidden;padding: 0px 0px 0px 0px;"></div>')
-            .html('<iframe style="border: 0px; " src="' + page + '" width="100%" height="100%"></iframe>')
-            .dialog({
-            	autoOpen: false,
-                modal: true,
-                width: 600,
-                height: 550,
-                title: pagetitle
-        	});
-        	$dialog.dialog('open');
-    	});
-	});
-</script>
-
 </head>
 <body>
 <noscript class="noScriptTitle"><spring:message code="common.noScriptTitle.msg" /></noscript>
@@ -218,7 +175,7 @@ function checkNumber(str) {
 <!-- ********** 여기서 부터 본문 내용 *************** -->
 
 
-<form name="menuManageVO" action ="<c:url value='/menu/EgovMenuListInsert.do' />" method="post">
+<form name="menuManageVO" action ="" method="post">
 <input type="hidden" name="req_RetrunPath" value="/menu/EgovMenuList">
 
 <div class="board">
@@ -246,10 +203,10 @@ function checkNumber(str) {
   <tr>
    <td style="vertical-align:top">
 	<c:forEach var="result" items="${list_menulist}" varStatus="status" >
-	<input type="hidden" name="tmp_menuNmVal" value="${result.menuNo}|${result.pMenuNo}|${result.menuNm}|${result.menuPath}|${result.menuNo}|${result.menuOrdr}|${result.menuNm}|${result.pMenuNo}|${result.menuDc}|${result.menuPath}|${result.isUse}|${result.target}|">
+	<input type="hidden" name="tmp_menuNmVal" value="${result.menuNo}|${result.pMenuNo}|[${result.menuNo}]${result.menuNm}|${result.menuNo}|${result.menuNm}|${result.pMenuNo}|${result.menuOrdr}|${result.menuPath}|${result.isUse}|${result.target}/${result.menuDc}|">
 	</c:forEach>
 	<div class="tree" style="overflow:scroll; width:218px; height:383px; padding:5px; border:1px solid #ddd">
-		<script language="javascript" type="text/javaScript">
+		<script type="text/javaScript">
 		    var chk_Object = true;
 		    var chk_browse = "";
 			if (eval(document.menuManageVO.req_RetrunPath)=="[object]") chk_browse = "IE";
@@ -287,55 +244,54 @@ function checkNumber(str) {
 				<col style="" />
 			</colgroup>
 		  <tr>
-		    <th><spring:message code="comSymMnuMpm.menuList.menuNo" /> <span class="pilsu">*</span></th><!-- 메뉴No -->
+		    <th><spring:message code="menu.menuList.menuNo" /> <span class="pilsu">*</span></th><!-- 메뉴No -->
 		    <td class="left">
-		      <input name="menuNo" type="text" value=""  maxlength="10" title="<spring:message code="comSymMnuMpm.menuList.menuNo" />" style="width:68px"/>
+		      <input name="menuNo" type="text" value=""  maxlength="10" title="<spring:message code="menu.menuList.menuNo" />" style="width:100px"/>
 		    </td>
 		  </tr>
 		  <tr>
-		    <th><spring:message code="comSymMnuMpm.menuList.menuOrdr" /> <span class="pilsu">*</span></th><!-- 메뉴순서 -->
+		    <th><spring:message code="menu.menuList.menuNm" /> <span class="pilsu">*</span></th><!-- 메뉴명 -->
 		    <td class="left">
-		      <input name="menuOrdr" type="text" value=""  maxlength="10" title="<spring:message code="comSymMnuMpm.menuList.menuOrdr" />" style="width:68px"/>
+		      <input name="menuNm" type="text"  value=""  maxlength="30"  title="<spring:message code="menu.menuList.menuNm" />" style="width:95%">
 		    </td>
 		  </tr>
 		  <tr>
-		    <th><spring:message code="comSymMnuMpm.menuList.menuNm" /> <span class="pilsu">*</span></th><!-- 메뉴명 -->
+		    <th><spring:message code="menu.menuList.pMenuNo" /> <span class="pilsu">*</span></th><!-- 상위메뉴No -->
 		    <td class="left">
-		      <input name="menuNm" type="text" size="30" value=""  maxlength="30" title="<spring:message code="comSymMnuMpm.menuList.menuNm" />">
+			    <input name="pMenuNo" type="text" value=""  maxlength="10" title="<spring:message code="menu.menuList.pMenuNo" />" style="width:100px"/>
 		    </td>
 		  </tr>
 		  <tr>
-		    <th><spring:message code="comSymMnuMpm.menuList.upperMenuId" /> <span class="pilsu">*</span></th><!-- 상위메뉴No -->
+		    <th><spring:message code="menu.menuList.menuOrdr" /> <span class="pilsu">*</span></th><!-- 메뉴순서 -->
 		    <td class="left">
-		    <input name="pMenuId" type="text" value=""  maxlength="10" title="<spring:message code="comSymMnuMpm.menuList.upperMenuId" />" style="width:190px"/>
-	        <a id="popupUpperMenuId" href="/menu/EgovMenuListSelectMvmn.do" target="_blank" title="<spring:message code="comSymMnuMpm.menuList.upperMenuId" />" style="selector-dummy:expression(this.hideFocus=false);"><img src="<c:url value='/images/egovframework/com/cmm/icon/search2.gif' />"
-	         alt='' width="15" height="15" />(<spring:message code="comSymMnuMpm.menuList.mvmnMenuList" />)</a><!-- 메뉴선택 검색 -->
+		      <input name="menuOrdr" type="text" value=""  maxlength="10" title="<spring:message code="menu.menuList.menuOrdr" />" style="width:50px"/>
 		    </td>
 		  </tr>
 		  <tr>
-		    <th><spring:message code="comSymMnuMpm.menuList.progrmFileNm" /> <span class="pilsu">*</span></th><!-- 파일명 -->
-		    <td class="left">
-	        <input name="progrmFileNm" type="text" size="30" value=""  maxlength="60" title="<spring:message code="comSymMnuMpm.menuList.progrmFileNm" />" style="width:190px"/>
-	        <a id="popupProgrmFileNm" href="/sym/prm/EgovProgramListSearch.do" target="_blank" title="<spring:message code="comSymMnuMpm.menuList.progrmFileNm" />" style="selector-dummy:expression(this.hideFocus=false);"><img src="<c:url value='/images/egovframework/com/cmm/icon/search2.gif' />"
-	         alt='' width="15" height="15" />(<spring:message code="comSymMnuMpm.menuList.searchFileNm" />)</a>
-		    </td>
-		  </tr>
-		  <tr>
-		    <th><spring:message code="comSymMnuMpm.menuList.relateImageNm" /> <span class="pilsu">*</span></th><!-- 관련이미지명 -->
-		    <td width="70%" nowrap>
-		      <input name="relateImageNm" type="text" size="30" value=""  maxlength="30" title="<spring:message code="comSymMnuMpm.menuList.relateImageNm" />">
-		    </td>
-		  </tr>
-		  <tr>
-		    <th><spring:message code="comSymMnuMpm.menuList.relateImagePath" /> <span class="pilsu">*</span></th><!-- 관련이미지경로 -->
+		    <th><spring:message code="menu.menuList.menuPath" /> <span class="pilsu">*</span></th><!-- 메뉴경로 -->
 		    <td>
-		      <input name="relateImagePath" type="text" size="30" value=""  maxlength="60" title="<spring:message code="comSymMnuMpm.menuList.relateImagePath" />">
+		      <input name="menuPath" type="text" value=""  maxlength="60" title="<spring:message code="menu.menuList.menuPath" />" style="width:95%">
 		    </td>
 		  </tr>
 		  <tr>
-		    <th><spring:message code="comSymMnuMpm.menuList.menuDc" /></th><!-- 메뉴설명 -->
+		    <th><spring:message code="menu.menuList.isUse" /> <span class="pilsu">*</span></th><!-- 사용여부 -->
+		    <td class="left">
+				<select name="isUse" title="<spring:message code="menu.menuList.isUse" />" style="width:50px">
+				<option value="Y" selected>Y</option><!-- Y -->
+				<option value="N" >N</option><!-- N- -->
+				</select>
+		    </td>
+		  </tr>
+		  <tr>
+		    <th><spring:message code="menu.menuList.target" /> <span class="pilsu">*</span></th><!-- 메뉴대상 -->
+		    <td width="70%" nowrap>
+		      <input name="target" type="text" value=""  maxlength="30" title="<spring:message code="menu.menuList.target" />" style="width:95%">
+		    </td>
+		  </tr>
+		  <tr>
+		    <th><spring:message code="menu.menuList.menuDc" /></th><!-- 메뉴설명 -->
 		    <td width="70%">
-		      &nbsp; <textarea name="menuDc" class="textarea"  cols="45" rows="8"  style="width:350px;" title="<spring:message code="comSymMnuMpm.menuList.menuDc" />"></textarea>
+		      &nbsp; <textarea name="menuDc" class="textarea" rows="8" style="width:95%" title="<spring:message code="menu.menuList.menuDc" />"></textarea>
 		    </td>
 		  </tr>
 		</table>

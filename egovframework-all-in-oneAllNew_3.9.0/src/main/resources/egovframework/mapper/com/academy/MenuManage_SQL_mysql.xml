@@ -4,25 +4,47 @@
 <mapper namespace="menuManageDAO">
 
 	<select id="selectMenuListT_D" parameterType="comDefaultVO" resultType="egovMap">
-            SELECT
-				MENU_NO AS menuNo, P_MENU_NO AS pMenuNo, MENU_NM AS menuNm, MENU_ORDR AS menuOrdr, 
-				MENU_DC AS menuDc, MENU_PATH AS menuPath, ISUSE AS isUse, TARGET AS target 
-			FROM acm_menu 
-			WHERE MENU_NO > 0 
-			ORDER BY MENU_ORDR
+		SELECT
+			MENU_NO AS menuNo, P_MENU_NO AS pMenuNo, MENU_NM AS menuNm, MENU_ORDR AS menuOrdr, 
+			MENU_DC AS menuDc, MENU_PATH AS menuPath, ISUSE AS isUse, TARGET AS target 
+		FROM acm_menu 
+		WHERE MENU_NO > 0 
+		ORDER BY MENU_ORDR
 	</select>
 
 	<update id="updateMenuManage_S">
-			UPDATE COMTNMENUINFO 
-			SET  MENU_ORDR         = #{menuOrdr}       
-            , MENU_NM           = #{menuNm}         
-            , UPPER_MENU_NO     = #{upperMenuId}    
-            , MENU_DC           = #{menuDc}         
-            , RELATE_IMAGE_PATH = #{relateImagePath}
-            , RELATE_IMAGE_NM   = #{relateImageNm}  
-            , PROGRM_FILE_NM    = #{progrmFileNm}   
-			WHERE MENU_NO=#{menuNo}
+		UPDATE acm_menu 
+		SET  MENU_ORDR = #{menuOrdr}       
+            , MENU_NM = #{menuNm}         
+            , P_MENU_NO = #{pMenuNo}    
+            , MENU_DC = #{menuDc}         
+            , MENU_PATH = #{menuPath}
+            , ISUSE = #{isUse}  
+            , TARGET = #{target}   
+			WHERE MENU_NO = #{menuNo}
 	</update>
+	
+	<insert id="insertMenuManage_S">
+		INSERT INTO acm_menu ( 
+			MENU_NO, MENU_ORDR, MENU_NM, P_MENU_NO, MENU_DC, MENU_PATH, ISUSE, TARGET 
+		) VALUES (
+			#{menuNo}, #{menuOrdr}, #{menuNm}, #{pMenuNo}, #{menuDc}, #{menuPath}, #{isUse}, #{target} 
+		)
+	</insert>
+
+	<delete id="deleteMenuManage_S">
+		DELETE FROM acm_menu              
+		WHERE MENU_NO=#{menuNo}                 
+	</delete> 
+	
+	<!-- 메뉴번호 존재여부 조회 -->
+	<select id="selectMenuNoByPk" parameterType="egovframework.com.academy.menu.service.MenuManageVO" resultType="int">
+		SELECT COUNT(MENU_NO) AS totcnt
+		FROM acm_menu
+		WHERE MENU_NO = #{menuNo}
+	</select>
+
+
 
 	<select id="selectMenuManageList_D" parameterType="comDefaultVO" resultType="egovMap">
 		
@@ -64,44 +86,6 @@
 				, PROGRM_FILE_NM AS progrmFileNm
 			FROM COMTNMENUINFO
 			WHERE MENU_NO = #{searchKeyword}
-		
-	</select>
-	
-	<insert id="insertMenuManage_S">
-		
-			INSERT INTO COMTNMENUINFO 
-				( MENU_NO
-            , MENU_ORDR
-            , MENU_NM
-            , UPPER_MENU_NO
-            , MENU_DC
-            , RELATE_IMAGE_PATH
-            , RELATE_IMAGE_NM
-            , PROGRM_FILE_NM )
-			VALUES (   #{menuNo}
-                  , #{menuOrdr}
-                  , #{menuNm}  
-                  , #{upperMenuId}
-                  , #{menuDc}
-                  , #{relateImagePath}
-                  , #{relateImageNm}
-                  , #{progrmFileNm} )
-		
-	</insert>
-
-	<delete id="deleteMenuManage_S">
-		                          
-			DELETE FROM COMTNMENUINFO              
-			WHERE MENU_NO=#{menuNo}                 
-		                                
-	</delete> 
-	
-	<!-- 메뉴번호 존재여부 조회 -->
-	<select id="selectMenuNoByPk" parameterType="egovframework.com.academy.menu.service.MenuManageVO" resultType="int">
-		
-		SELECT COUNT(MENU_NO) AS totcnt
-		  FROM COMTNMENUINFO
-		 WHERE MENU_NO = #{menuNo}
 		
 	</select>
 	
