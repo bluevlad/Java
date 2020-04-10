@@ -3,8 +3,8 @@ package egovframework.com.cop.bbs.service;
 import java.util.List;
 import java.util.Map;
 
-import egovframework.com.academy.bbs.service.Board;
-import egovframework.com.academy.bbs.service.BoardVO;
+import egovframework.com.academy.bbs.mng.service.Board;
+import egovframework.com.academy.bbs.mng.service.BoardVO;
 import egovframework.rte.fdl.cmmn.exception.FdlException;
 
 public interface EgovArticleService {

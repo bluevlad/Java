@@ -8,8 +8,8 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import egovframework.com.academy.bbs.service.Board;
-import egovframework.com.academy.bbs.service.BoardVO;
+import egovframework.com.academy.bbs.mng.service.Board;
+import egovframework.com.academy.bbs.mng.service.BoardVO;
 import egovframework.com.cmm.service.EgovFileMngService;
 import egovframework.com.cmm.service.FileVO;
 import egovframework.com.cop.bbs.service.EgovArticleService;

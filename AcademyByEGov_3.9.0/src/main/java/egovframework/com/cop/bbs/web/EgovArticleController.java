@@ -17,16 +17,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.servlet.ModelAndView;
 import org.springmodules.validation.commons.DefaultBeanValidator;
 
-import egovframework.com.academy.bbs.service.Board;
-import egovframework.com.academy.bbs.service.BoardMaster;
-import egovframework.com.academy.bbs.service.BoardMasterVO;
-import egovframework.com.academy.bbs.service.BoardVO;
-import egovframework.com.academy.bbs.service.EgovBBSMasterService;
+import egovframework.com.academy.bbs.mng.service.Board;
+import egovframework.com.academy.bbs.mng.service.BoardMaster;
+import egovframework.com.academy.bbs.mng.service.BoardMasterVO;
+import egovframework.com.academy.bbs.mng.service.BoardVO;
+import egovframework.com.academy.bbs.mng.service.EgovBBSMasterService;
 import egovframework.com.cmm.EgovMessageSource;
-import egovframework.com.cmm.EgovWebUtil;
 import egovframework.com.cmm.LoginVO;
 import egovframework.com.cmm.service.EgovFileMngService;
 import egovframework.com.cmm.service.EgovFileMngUtil;
@@ -35,12 +33,10 @@ import egovframework.com.cmm.util.EgovUserDetailsHelper;
 import egovframework.com.cmm.util.EgovXssChecker;
 import egovframework.com.cop.bbs.service.EgovArticleService;
 import egovframework.com.cop.bbs.service.EgovBBSSatisfactionService;
-import egovframework.com.cop.cmt.service.CommentVO;
 import egovframework.com.cop.cmt.service.EgovArticleCommentService;
 import egovframework.com.cop.tpl.service.EgovTemplateManageService;
-import egovframework.com.cop.tpl.service.TemplateInfVO;
-import egovframework.rte.fdl.property.EgovPropertyService;
 import egovframework.com.utl.fcc.service.EgovStringUtil;
+import egovframework.rte.fdl.property.EgovPropertyService;
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 
 /**
