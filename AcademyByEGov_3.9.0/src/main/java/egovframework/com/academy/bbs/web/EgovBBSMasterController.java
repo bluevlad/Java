@@ -160,7 +160,7 @@ public class EgovBBSMasterController {
 	    BindingResult bindingResult, ModelMap model) throws Exception {
     	
 		LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
-		Boolean isAuthenticated = EgovUserDetailsHelper.isAuthenticated();
+		boardMaster.setFrstRegisterId(user.getId());
 		
 		beanValidator.validate(boardMaster, bindingResult);
 		if (bindingResult.hasErrors()) {
@@ -174,20 +174,11 @@ public class EgovBBSMasterController {
 		    return "egovframework/com/academy/bbs/EgovBBSMasterRegist";
 		}
 		
+		Boolean isAuthenticated = EgovUserDetailsHelper.isAuthenticated();
 		if (isAuthenticated) {
-		    boardMaster.setFrstRegisterId(user == null ? "" : EgovStringUtil.isNullToString(user.getUniqId()));
-		    if((boardMasterVO == null ? "" : EgovStringUtil.isNullToString(boardMasterVO.getBlogAt())).equals("Y")){
-		    	boardMaster.setBlogAt("Y");
-		    }else{
-		    	boardMaster.setBlogAt("N");
-		    }
 		    egovBBSMasterService.insertBBSMasterInf(boardMaster);
 		}
-		if(boardMaster.getBlogAt().equals("Y")){
-			return "forward:/bbs/selectArticleBlogList.do";
-		}else{
-			return "forward:/bbs/selectBBSMasterInfs.do";
-		}
+		return "forward:/bbs/selectBBSMasterInfs.do";
 		
     }
     
@@ -224,14 +215,9 @@ public class EgovBBSMasterController {
      * @param model
      * @throws Exception
      */
-    @RequestMapping("/cop/bbs/updateBBSMasterView.do")
-    public String updateBBSMasterView(@RequestParam("bbsId") String bbsId ,
-            @ModelAttribute("searchVO") BoardMaster searchVO, ModelMap model)
-            throws Exception {
-
-
+    @RequestMapping("/bbs/updateBBSMasterView.do")
+    public String updateBBSMasterView(@RequestParam("bbsId") String bbsId, @ModelAttribute("searchVO") BoardMaster searchVO, ModelMap model) throws Exception {
         BoardMasterVO boardMasterVO = new BoardMasterVO();
-
         
         //게시판유형코드
         ComDefaultCodeVO vo = new ComDefaultCodeVO();
@@ -255,7 +241,7 @@ public class EgovBBSMasterController {
 			model.addAttribute("useSatisfaction", "true");
 		}
         
-        return "egovframework/com/cop/bbs/EgovBBSMasterUpdt";
+        return "egovframework/com/academy/bbs/EgovBBSMasterUpdt";
     }
     
 
@@ -268,13 +254,13 @@ public class EgovBBSMasterController {
      * @return
      * @throws Exception
      */
-    @RequestMapping("/cop/bbs/updateBBSMaster.do")
+    @RequestMapping("/bbs/updateBBSMaster.do")
     public String updateBBSMaster(@ModelAttribute("searchVO") BoardMasterVO boardMasterVO, @ModelAttribute("boardMaster") BoardMaster boardMaster,
 	    BindingResult bindingResult, ModelMap model) throws Exception {
 
 		LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
-		Boolean isAuthenticated = EgovUserDetailsHelper.isAuthenticated();
-	
+		boardMaster.setLastUpdusrId(user.getId());
+		
 		beanValidator.validate(boardMaster, bindingResult);
 		if (bindingResult.hasErrors()) {
 		    BoardMasterVO vo = egovBBSMasterService.selectBBSMasterInf(boardMasterVO);
@@ -286,15 +272,16 @@ public class EgovBBSMasterController {
 	        List<?> codeResult = cmmUseService.selectCmmCodeDetail(comVo);
 	        model.addAttribute("bbsTyCode", codeResult);
 		    
-		    return "egovframework/com/cop/bbs/EgovBBSMasterUpdt";
+		    return "egovframework/com/academy/bbs/EgovBBSMasterUpdt";
 		}
 	
+		Boolean isAuthenticated = EgovUserDetailsHelper.isAuthenticated();
 		if (isAuthenticated) {
 		    boardMaster.setLastUpdusrId(user == null ? "" : EgovStringUtil.isNullToString(user.getUniqId()));
 		    egovBBSMasterService.updateBBSMasterInf(boardMaster);
 		}
 	
-		return "forward:/cop/bbs/selectBBSMasterInfs.do";
+		return "forward:/bbs/selectBBSMasterInfs.do";
     }
 
     /**
@@ -306,7 +293,7 @@ public class EgovBBSMasterController {
      * @return
      * @throws Exception
      */
-    @RequestMapping("/cop/bbs/deleteBBSMaster.do")
+    @RequestMapping("/bbs/deleteBBSMaster.do")
     public String deleteBBSMaster(@ModelAttribute("searchVO") BoardMasterVO boardMasterVO, @ModelAttribute("boardMaster") BoardMaster boardMaster
 	    ) throws Exception {
 
@@ -318,7 +305,7 @@ public class EgovBBSMasterController {
 	    egovBBSMasterService.deleteBBSMasterInf(boardMaster);
 	}
 	// status.setComplete();
-	return "forward:/cop/bbs/selectBBSMasterInfs.do";
+	return "forward:/bbs/selectBBSMasterInfs.do";
     }
     
     /**
@@ -329,13 +316,13 @@ public class EgovBBSMasterController {
      * @return
      * @throws Exception
      */
-    @RequestMapping("/cop/bbs/selectBBSListPortlet.do")
+    @RequestMapping("/bbs/selectBBSListPortlet.do")
     public String selectBBSListPortlet(@ModelAttribute("searchVO") BoardMasterVO boardMasterVO, ModelMap model) throws Exception {
     	List<BoardMasterVO> result = egovBBSMasterService.selectBBSListPortlet(boardMasterVO);
     	
     	model.addAttribute("resultList", result);
     	
-    	return "egovframework/com/cop/bbs/EgovBBSListPortlet";
+    	return "egovframework/com/academy/bbs/EgovBBSListPortlet";
     }
     
 }

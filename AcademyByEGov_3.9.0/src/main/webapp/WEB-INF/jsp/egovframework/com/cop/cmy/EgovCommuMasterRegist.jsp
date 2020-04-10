@@ -31,7 +31,6 @@
 <title>${pageTitle} <spring:message code="title.create" /></title><!-- 커뮤니티 마스터 등록 -->
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
-<script type="text/javascript" src="<c:url value="/validator.do"/>"></script>
 <validator:javascript formName="commuMasterVO" staticJavascript="false" xhtml="true" cdata="false"/>
 <script type="text/javascript">
 /* ********************************************************

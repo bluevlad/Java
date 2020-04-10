@@ -28,7 +28,6 @@
 <title>${pageTitle } <spring:message code="title.update" /></title><!-- 커뮤니티 마스터 수정 -->
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
-<script type="text/javascript" src="<c:url value="/validator.do"/>"></script>
 <validator:javascript formName="commuMasterVO" staticJavascript="false" xhtml="true" cdata="false"/>
 <c:set var="updtYes"><spring:message code="comCopCmy.commuMasterVO.updt.yes" /></c:set>
 <script type="text/javascript">

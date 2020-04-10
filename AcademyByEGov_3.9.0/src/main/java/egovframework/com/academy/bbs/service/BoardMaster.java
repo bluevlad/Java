@@ -81,15 +81,6 @@ public class BoardMaster implements Serializable {
     /** 템플릿 명 */
     private String tmplatNm = "";
     
-    /** 커뮤니티 ID */
-    private String cmmntyId;
-    
-    /** 블로그 ID */
-    private String blogId;
-    
-    /** 블로그 사용 유무 */
-    private String blogAt;
-    
     //---------------------------------
     // 2009.06.26 : 2단계 기능 추가
     //---------------------------------
@@ -512,37 +503,6 @@ public class BoardMaster implements Serializable {
         this.stsfdgAt = stsfdgAt;
     }
     
-    /**
-     * cmmntyId attribute를 리턴한다.
-     * @return the cmmntyId
-     */
-    public String getCmmntyId() {
-    	return cmmntyId;
-    }
-    
-    /**
-     * cmmntyId attribute 값을 설정한다.
-     * @param cmmntyId the cmmntyId to set
-     */
-    public void setCmmntyId(String cmmntyId) {
-    	this.cmmntyId = cmmntyId;
-    }
-
-    public String getBlogId() {
-		return blogId;
-	}
-
-	public void setBlogId(String blogId) {
-		this.blogId = blogId;
-	}
-
-	public String getBlogAt() {
-		return blogAt;
-	}
-
-	public void setBlogAt(String blogAt) {
-		this.blogAt = blogAt;
-	}
 
 	/**
      * toString 메소드를 대치한다.

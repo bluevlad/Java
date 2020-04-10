@@ -108,9 +108,6 @@ public class BoardVO extends Board implements Serializable {
     /** 게시글 댓글갯수 */
     private String commentCo = "";
     
-    /** 볼드체 여부 */
-    private String sjBoldAt;
-    
 	/** 공지 여부 */
     private String noticeAt;
     
@@ -646,14 +643,6 @@ public class BoardVO extends Board implements Serializable {
         this.commentCo = commentCo;
     }
  
-    public String getSjBoldAt() {
-		return sjBoldAt;
-	}
-
-	public void setSjBoldAt(String sjBoldAt) {
-		this.sjBoldAt = sjBoldAt;
-	}
-
 	public String getNoticeAt() {
 		return noticeAt;
 	}

@@ -8,6 +8,7 @@
   * @ -------    --------    ---------------------------
   * @ 2009.02.01   박정규              최초 생성
   *   2016.06.13   김연호              표준프레임워크 v3.6 개선
+  *  2020.03.00	rainend		myProject 적용
   *  @author 공통서비스팀 
   *  @since 2009.02.01
   *  @version 1.0
@@ -36,7 +37,7 @@
 	if(confirm("<spring:message code="common.delete.msg" />")){	
 		// Delete하기 위한 키값을 셋팅
 		document.BBSMasterForm.bbsId.value = bbsId;	
-		document.BBSMasterForm.action = "<c:url value='/cop/bbs/deleteBBSMaster.do'/>";
+		document.BBSMasterForm.action = "<c:url value='/bbs/deleteBBSMaster.do'/>";
 		document.BBSMasterForm.submit();	
 	}	
 }	
@@ -46,7 +47,7 @@
 <!-- javascript warning tag  -->
 <noscript class="noScriptTitle"><spring:message code="common.noScriptTitle.msg" /></noscript>
 
-<form name="BBSMasterForm" action="<c:url value='/cop/bbs/updateBBSMasterView.do'/>" method="post">
+<form name="BBSMasterForm" action="<c:url value='/bbs/updateBBSMasterView.do'/>" method="post">
 <div class="wTableFrm">
 	<!-- 타이틀 -->
 	<h2>${pageTitle} <spring:message code="title.detail" /></h2><!-- 게시판 상세조회 -->
@@ -100,7 +101,7 @@
 			<tr>
 				<th><spring:message code="comCopBbs.boardMasterVO.detail.bbsAdres" /></th>
 				<td colspan="5" class="cnt">
-				<a href="<c:url value='/cop/bbs/selectArticleList.do?bbsId=${result.bbsId}' />">/cop/bbs/selectArticleList.do?bbsId=${result.bbsId }</a>	
+				<a href="<c:url value='/bbs/selectArticleList.do?bbsId=${result.bbsId}' />">/bbs/selectArticleList.do?bbsId=${result.bbsId }</a>	
 				</td>
 			</tr>
 		</c:if>
@@ -117,12 +118,11 @@
 	<!-- 하단 버튼 -->
 	<div class="btn">
 		<input type="submit" class="s_submit" value="<spring:message code="button.update" />" title="<spring:message code="title.update" /> <spring:message code="input.button" />" /><!-- 수정 -->
-		<span class="btn_s"><a href="<c:url value='/cop/bbs/selectBBSMasterInfs.do' /><c:if test='${result.cmmntyId != null}'>?cmmntyId=${result.cmmntyId}</c:if>"  title="<spring:message code="title.list" /> <spring:message code="input.button" />"><spring:message code="button.list" /></a></span><!-- 목록 -->
+		<span class="btn_s"><a href="<c:url value='/bbs/selectBBSMasterInfs.do' />"  title="<spring:message code="title.list" /> <spring:message code="input.button" />"><spring:message code="button.list" /></a></span><!-- 목록 -->
 	</div><div style="clear:both;"></div>
 	
 </div>
 
-<input name="cmmntyId" type="hidden" value="<c:out value="${result.cmmntyId}" />">
 <input name="bbsId" type="hidden" value="<c:out value="${result.bbsId}" />">
 <input name="cmd" type="hidden" value="">
 </form>

@@ -9,6 +9,7 @@
   * @ 2009.02.01   박정규              최초 생성
   * @ 2016.06.13   김연호              표준프레임워크 v3.6 개선
   * @ 2018.10.15    최두영             표준프레임워크 V3.8 개선
+  *  2020.03.00	rainend		myProject 적용
   *  @author 공통서비스팀 
   *  @since 2009.02.01
   *  @version 1.0
@@ -29,7 +30,6 @@
 <title>${pageTitle } <spring:message code="title.update" /></title><!-- 게시판 마스터 수정 -->
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
-<script type="text/javascript" src="<c:url value="/validator.do"/>"></script>
 <validator:javascript formName="boardMasterVO" staticJavascript="false" xhtml="true" cdata="false"/>
 <script type="text/javascript">
 /* ********************************************************
@@ -86,7 +86,7 @@ function fn_egov_inqire_bbslist() {
 <noscript class="noScriptTitle"><spring:message code="common.noScriptTitle.msg" /></noscript>
 
 <!-- 상단타이틀 -->
-<form:form commandName="boardMasterVO" action="${pageContext.request.contextPath}/cop/bbs/updateBBSMaster.do" method="post" onSubmit="fn_egov_updt_bbs(document.forms[0]); return false;">  
+<form:form commandName="boardMasterVO" action="${pageContext.request.contextPath}/bbs/updateBBSMaster.do" method="post" onSubmit="fn_egov_updt_bbs(document.forms[0]); return false;">  
 <div class="wTableFrm">
 	<h2>${pageTitle} <spring:message code="title.update" /></h2><!-- 게시판 마스터 수정 -->
 
@@ -199,14 +199,13 @@ function fn_egov_inqire_bbslist() {
 	<!-- 하단 버튼 -->
 	<div class="btn">
 		<input type="submit" class="s_submit" value="<spring:message code="button.update" />" title="<spring:message code="button.update" /> <spring:message code="input.button" />" /><!-- 수정 -->
-		<span class="btn_s"><a href="<c:url value='/cop/bbs/selectBBSMasterInfs.do' /><c:if test='${boardMasterVO.cmmntyId != null}'>?cmmntyId=${boardMasterVO.cmmntyId}</c:if>"  title="<spring:message code="button.list" /> <spring:message code="input.button" />"><spring:message code="button.list" /></a></span><!-- 목록 -->
+		<span class="btn_s"><a href="<c:url value='/bbs/selectBBSMasterInfs.do' />"  title="<spring:message code="button.list" /> <spring:message code="input.button" />"><spring:message code="button.list" /></a></span><!-- 목록 -->
 	</div><div style="clear:both;"></div>
 	 
 </div>
 
 <!-- validator 값 체크용 -->
 <input name="replyPosblAt" type="hidden" value="<c:out value='${boardMasterVO.replyPosblAt}'/>">
-<input name="cmmntyId" type="hidden" value="<c:out value='${boardMasterVO.cmmntyId}'/>">
 <input name="bbsId" type="hidden" value="<c:out value='${boardMasterVO.bbsId}'/>">
 </form:form>
 

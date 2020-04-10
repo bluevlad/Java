@@ -370,7 +370,6 @@ public class EgovArticleController {
 		    board.setAtchFileId(atchFileId);
 		    board.setFrstRegisterId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
 		    board.setBbsId(boardVO.getBbsId());
-		    board.setBlogId(boardVO.getBlogId());
 		    
 		    
 		    //익명등록 처리 
@@ -388,12 +387,7 @@ public class EgovArticleController {
 		    board.setNttCn(unscript(board.getNttCn()));	// XSS 방지
 		    egovArticleService.insertArticle(board);
 		}
-		//status.setComplete();
-		if(boardVO.getBlogAt().equals("Y")){
-			return "forward:/cop/bbs/selectArticleBlogList.do";
-		}else{
-			return "forward:/cop/bbs/selectArticleList.do";
-		}
+		return "forward:/cop/bbs/selectArticleList.do";
 		
     }
 
@@ -435,11 +429,7 @@ public class EgovArticleController {
 	
 		model.addAttribute("articleVO", articleVO);
 		
-		if(boardVO.getBlogAt().equals("chkBlog")){
-			return "egovframework/com/cop/bbs/EgovArticleBlogReply";
-		}else{
-			return "egovframework/com/cop/bbs/EgovArticleReply";
-		}
+		return "egovframework/com/cop/bbs/EgovArticleReply";
     }
 
     /**
@@ -571,11 +561,7 @@ public class EgovArticleController {
 		model.addAttribute("articleVO", bdvo);
 		model.addAttribute("boardMasterVO", bmvo);
 		
-		if(boardVO.getBlogAt().equals("chkBlog")){
-			return "egovframework/com/cop/bbs/EgovArticleBlogUpdt";
-		}else{
-			return "egovframework/com/cop/bbs/EgovArticleUpdt";
-		}
+		return "egovframework/com/cop/bbs/EgovArticleUpdt";
 		
     }
 
@@ -710,11 +696,7 @@ public class EgovArticleController {
 		    egovArticleService.deleteArticle(board);
 		}
 		
-		if(boardVO.getBlogAt().equals("chkBlog")){
-			return "forward:/cop/bbs/selectArticleBlogList.do";
-		}else{
-			return "forward:/cop/bbs/selectArticleList.do";
-		}
+		return "forward:/cop/bbs/selectArticleList.do";
     }
     
     /**

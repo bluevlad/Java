@@ -86,12 +86,6 @@ public class UserInfVO implements Serializable {
 	/** 사용여부 */
 	private String useAt = "Y";
 
-	/** 커뮤니티 아이디 */
-	private String cmmntyId = "";
-
-	/** 동호회 아이디 */
-	private String clubId = "";
-
 	/** 대상 중지 여부 (커뮤니티 또는 동호회) */
 	private String deletedAt = "N";
 
@@ -492,44 +486,6 @@ public class UserInfVO implements Serializable {
 	 */
 	public void setUseAt(String useAt) {
 		this.useAt = useAt;
-	}
-
-	/**
-	 * cmmntyId attribute를 리턴한다.
-	 *
-	 * @return the cmmntyId
-	 */
-	public String getCmmntyId() {
-		return cmmntyId;
-	}
-
-	/**
-	 * cmmntyId attribute 값을 설정한다.
-	 *
-	 * @param cmmntyId
-	 *            the cmmntyId to set
-	 */
-	public void setCmmntyId(String cmmntyId) {
-		this.cmmntyId = cmmntyId;
-	}
-
-	/**
-	 * clubId attribute를 리턴한다.
-	 *
-	 * @return the clubId
-	 */
-	public String getClubId() {
-		return clubId;
-	}
-
-	/**
-	 * clubId attribute 값을 설정한다.
-	 *
-	 * @param clubId
-	 *            the clubId to set
-	 */
-	public void setClubId(String clubId) {
-		this.clubId = clubId;
 	}
 
 	/**

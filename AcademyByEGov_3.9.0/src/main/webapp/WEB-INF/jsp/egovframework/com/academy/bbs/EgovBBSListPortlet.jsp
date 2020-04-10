@@ -24,7 +24,7 @@
 <ul>
 <c:forEach var="result" items="${resultList}" varStatus="status">
    	<li style="padding-top:5px">
-		<form name="blogForm" method="post"  action="<c:url value='/cop/bbs/selectBBSMasterDetail.do'/>" >
+		<form name="blogForm" method="post"  action="<c:url value='/bbs/selectBBSMasterDetail.do'/>" >
 		<input type="hidden" name="bbsId" value="<c:out value='${result.bbsId}'/>"/>
 		<input type="hidden" name="bbsNm" value="<c:out value='${result.bbsNm}'/>"/>
 		<input type="submit" value="<c:out value="${result.bbsNm}"/>"/>

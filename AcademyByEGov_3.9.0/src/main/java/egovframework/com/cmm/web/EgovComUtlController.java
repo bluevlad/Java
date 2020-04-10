@@ -81,13 +81,5 @@ public class EgovComUtlController {
     public String selectUtlJsonInquire()  throws Exception {
         return "egovframework/com/cmm/EgovModal";
     }
-    
-    /**
-	 * validato rule dynamic Javascript
-	 */
-	@RequestMapping("/validator.do")
-	public String validate(){
-		return "egovframework/com/cmm/validator";
-	}
 
 }

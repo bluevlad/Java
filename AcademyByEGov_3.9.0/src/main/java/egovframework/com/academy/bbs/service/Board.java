@@ -127,12 +127,6 @@ public class Board implements Serializable {
 	 */
 	private String sjBoldAt = "";
 	/**
-	 * 블로그 게시판 여부 
-	 */
-	private String blogAt = "";
-	/** 블로그 ID */
-    private String blogId = "";
-	/**
 	 * atchFileId attribute를 리턴한다.
 	 * @return the atchFileId
 	 */
@@ -548,22 +542,6 @@ public class Board implements Serializable {
 		this.sjBoldAt = sjBoldAt;
 	}
 	
-	public String getBlogAt() {
-		return blogAt;
-	}
-
-	public void setBlogAt(String blogAt) {
-		this.blogAt = blogAt;
-	}
-
-	public String getBlogId() {
-		return blogId;
-	}
-
-	public void setBlogId(String blogId) {
-		this.blogId = blogId;
-	}
-
 	/**
 	 * toString 메소드를 대치한다.
 	 */

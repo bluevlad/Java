@@ -29,7 +29,6 @@
 <link href="<c:url value='/css/egovframework/com/com.css' />" rel="stylesheet" type="text/css">
 <link href="<c:url value='/css/egovframework/com/button.css' />" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/showModalDialog.js'/>"></script>
-<script type="text/javascript" src="<c:url value="/validator.do"/>"></script>
 <validator:javascript formName="boardUseInf" staticJavascript="false" xhtml="true" cdata="false"/>
 <script type="text/javascript">
 	function fn_egov_select_bbsUseInfs(){

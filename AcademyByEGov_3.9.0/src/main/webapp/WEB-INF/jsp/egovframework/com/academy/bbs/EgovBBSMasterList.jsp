@@ -85,7 +85,7 @@ function fn_egov_inquire_bbsdetail(bbsId) {
 			<li>
 				<input class="s_input" name="searchWrd" type="text"  size="35" title="<spring:message code="title.search" /> <spring:message code="input.input" />" value='<c:out value="${searchVO.searchWrd}"/>'  maxlength="155" >
 				<input type="submit" class="s_btn" value="<spring:message code="button.inquire" />" title="<spring:message code="title.inquire" /> <spring:message code="input.button" />" /><!-- 조회 -->
-				<span class="btn_b"><a href="<c:url value='/bbs/insertBBSMasterView.do?cmmntyId=${searchVO.cmmntyId}' />"  title="<spring:message code="button.create" /> <spring:message code="input.button" />"><spring:message code="button.create" /></a></span><!-- 등록 -->
+				<span class="btn_b"><a href="<c:url value='/bbs/insertBBSMasterView.do' />"  title="<spring:message code="button.create" /> <spring:message code="input.button" />"><spring:message code="button.create" /></a></span><!-- 등록 -->
 			</li>
 		</ul>
 	</div>
@@ -134,15 +134,7 @@ function fn_egov_inquire_bbsdetail(bbsId) {
 		</ul>
 	</div>
 	
-	<!-- 등록버튼 -->
-	<!-- 
-	<div class="btn">
-		<span class="btn_s"><a href="<c:url value='/cop/bbs/insertBBSMasterView.do' />"  title="<spring:message code="button.create" /> <spring:message code="input.button" />"><spring:message code="button.create" /></a></span>
-	</div>
-	-->
-	
 </div>
-<input name="cmmntyId" type="hidden" value="<c:out value='${searchVO.cmmntyId}'/>">
 <input name="bbsId" type="hidden" value="">
 <input name="pageIndex" type="hidden" value="<c:out value='${searchVO.pageIndex}'/>">
 </form>

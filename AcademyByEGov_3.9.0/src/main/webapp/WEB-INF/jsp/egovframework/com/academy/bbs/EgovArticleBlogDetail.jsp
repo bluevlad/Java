@@ -51,7 +51,6 @@
 	
 </script>
 <!-- 댓글 작성 스크립트  -->
-<script type="text/javascript" src="<c:url value="/validator.do"/>"></script>
 <validator:javascript formName="articleCommentVO" staticJavascript="false" xhtml="true" cdata="false"/>
 <script type="text/javascript">
 function fn_egov_insert_commentList() {

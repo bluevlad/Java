@@ -88,7 +88,6 @@ function fn_egov_select_guestList(pageNo) {
 }
 </script>
 <!-- 댓글 작성 스크립트  -->
-<script type="text/javascript" src="<c:url value="/validator.do"/>"></script>
 <validator:javascript formName="articleVO" staticJavascript="false" xhtml="true" cdata="false"/>
 <script type="text/javascript">
 

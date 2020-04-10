@@ -163,14 +163,6 @@ public class EgovRlnmManageController {
 	}
 
 	/**
-	 * validato rule dynamic Javascript
-	 */
-	@RequestMapping("/sec/rnc/validator.do")
-	public String validate() {
-		return "egovframework/com/cmm/validator";
-	}
-
-	/**
 	 * JSP 호출작업만 처리하는 공통 함수
 	 */
 	@RequestMapping(value = "/sec/rnc/EgovPageLink.do")
