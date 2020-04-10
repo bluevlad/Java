@@ -16,6 +16,7 @@
   * @ 2011.10.27   서준식            사용자 입력 탭 순서 변경
   * @ 2017.07.21   장동한            로그인인증제한 작업
   * @ 2019.12.11   신용호            KISA 보안약점 조치 (크로스사이트 스크립트)
+  * @ 2020.03.00   rainend          학원관리 기반 변경
   *
   *  @author 공통서비스 개발팀 박지욱
   *  @since 2009.03.03
@@ -225,9 +226,9 @@ function fnShowLogin(stat) {
 		<img src="<c:url value='/images/egovframework/com/uat/uia/login_tit.png'/>" style="margin:30px 0 0px 60px" alt="login title image"  title="login title image">
 		<div class="login_type">
 			<ul id="ulLoginType">
-				<li><a href="javascript:fnLoginTypeSelect('typeGnr');" id="typeGnr" title=""><spring:message code="comUatUia.loginForm.GNR"/></a></li> <!-- 일반 -->
-				<li><a href="javascript:fnLoginTypeSelect('typeEnt');" id="typeEnt" title=""><spring:message code="comUatUia.loginForm.ENT"/></a></li> <!-- 기업 -->
-				<li><a href="javascript:fnLoginTypeSelect('typeUsr');" id="typeUsr" title=""><spring:message code="comUatUia.loginForm.USR"/></a></li> <!-- 업무 -->
+				<li><a href="javascript:fnLoginTypeSelect('typeGnr');" id="typeGnr" title="일반사용자"><spring:message code="comUatUia.loginForm.GNR"/></a></li> <!-- 일반 -->
+				<li><a href="javascript:alert('미사용');" id="typeEnt" title="미사용"><spring:message code="comUatUia.loginForm.ENT"/></a></li> <!-- 기업 -->
+				<li><a href="javascript:fnLoginTypeSelect('typeUsr');" id="typeUsr" title="관리자"><spring:message code="comUatUia.loginForm.USR"/></a></li> <!-- 업무 -->
 			</ul>
 		</div>
 	
