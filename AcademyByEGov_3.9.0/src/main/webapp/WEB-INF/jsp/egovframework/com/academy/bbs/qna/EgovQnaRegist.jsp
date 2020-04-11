@@ -8,7 +8,7 @@
   * @ -------    --------    ---------------------------
   * @ 2009.02.01   박정규              최초 생성
   *   2016.06.13   김연호              표준프레임워크 v3.6 개선
-  *
+  *  2020.03.00	rainend		myProject 적용
   *  @author 공통서비스팀 
   *  @since 2009.02.01
   *  @version 1.0
@@ -31,17 +31,14 @@
 <title>${pageTitle} <spring:message code="title.create" /></title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
-<script type="text/javascript" src="<c:url value="/validator.do"/>"></script>
 <validator:javascript formName="qnaVO" staticJavascript="false" xhtml="true" cdata="false"/>
 <script type="text/javascript">
 /* ********************************************************
  * 초기화
  ******************************************************** */
 function fn_egov_init(){
-
 	// 첫 입력란에 포커스
 	document.getElementById("qnaVO").qestnSj.focus();
-
 }
 /* ********************************************************
  * 저장처리화면
@@ -64,7 +61,7 @@ function fn_egov_regist_qna(form){
 <!-- javascript warning tag  -->
 <noscript class="noScriptTitle"><spring:message code="common.noScriptTitle.msg" /></noscript>
 
-<form:form commandName="qnaVO" action="${pageContext.request.contextPath}/uss/olh/qna/insertQna.do" method="post" onSubmit="fn_egov_regist_qna(document.forms[0]); return false;"> 
+<form:form commandName="qnaVO" action="${pageContext.request.contextPath}/qna/insertQna.do" method="post" onSubmit="fn_egov_regist_qna(document.forms[0]); return false;"> 
 <div class="wTableFrm">
 	<!-- 타이틀 -->
 	<h2>${pageTitle} <spring:message code="title.create" /></h2>
@@ -143,7 +140,7 @@ function fn_egov_regist_qna(form){
 	<!-- 하단 버튼 -->
 	<div class="btn">
 		<input type="submit" class="s_submit" value="<spring:message code="button.create" />" title="<spring:message code="button.create" /> <spring:message code="input.button" />" />
-		<span class="btn_s"><a href="<c:url value='/uss/olh/qna/selectQnaList.do' />"  title="<spring:message code="button.list" />  <spring:message code="input.button" />"><spring:message code="button.list" /></a></span>
+		<span class="btn_s"><a href="<c:url value='/qna/selectQnaList.do' />"  title="<spring:message code="button.list" />  <spring:message code="input.button" />"><spring:message code="button.list" /></a></span>
 	</div><div style="clear:both;"></div>
 	
 </div>

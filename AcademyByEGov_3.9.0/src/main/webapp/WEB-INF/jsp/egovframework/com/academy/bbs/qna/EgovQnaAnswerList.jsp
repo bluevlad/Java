@@ -8,6 +8,7 @@
   * @ -------    --------    ---------------------------
   * @ 2009.02.01   박정규              최초 생성
   *   2016.06.13   김연호              표준프레임워크 v3.6 개선
+  *  2020.03.00	rainend		myProject 적용
   *  @author 공통서비스팀
   *  @since 2009.02.01
   *  @version 1.0
@@ -42,7 +43,7 @@ function fn_egov_init(){
  ******************************************************** */
 function fn_egov_select_linkPage(pageNo){
 	document.qnaForm.pageIndex.value = pageNo;
-	document.qnaForm.action = "<c:url value='/uss/olh/qna/selectQnaAnswerList.do'/>";
+	document.qnaForm.action = "<c:url value='/qna/selectQnaAnswerList.do'/>";
    	document.qnaForm.submit();
 }
 /*********************************************************
@@ -58,7 +59,7 @@ function fn_egov_search_qna(){
 function fn_egov_inquire_qnadetail(qaId) {
 	// 사이트 키값(siteId) 셋팅.
 	document.qnaForm.qaId.value = qaId;
-  	document.qnaForm.action = "<c:url value='/uss/olh/qna/selectQnaAnswerDetail.do'/>";
+  	document.qnaForm.action = "<c:url value='/qna/selectQnaAnswerDetail.do'/>";
   	document.qnaForm.submit();
 }
 </script>
@@ -67,7 +68,7 @@ function fn_egov_inquire_qnadetail(qaId) {
 <!-- javascript warning tag  -->
 <noscript class="noScriptTitle"><spring:message code="common.noScriptTitle.msg" /></noscript>
 
-<form name="qnaForm" action="<c:url value='/uss/olh/qna/selectQnaAnswerList.do'/>" method="post" onSubmit="fn_egov_search_qna(); return false;"> 
+<form name="qnaForm" action="<c:url value='/qna/selectQnaAnswerList.do'/>" method="post" onSubmit="fn_egov_search_qna(); return false;"> 
 <div class="board">
 	<h1>${pageTitle} <spring:message code="title.list" /></h1>
 	<!-- 하단 버튼 -->
@@ -117,7 +118,7 @@ function fn_egov_inquire_qnadetail(qaId) {
 	<c:forEach items="${resultList}" var="resultInfo" varStatus="status">
 	<tr>
 		<td><c:out value="${(searchVO.pageIndex-1) * searchVO.pageSize + status.count}"/></td>
-		<td class="left"><a href="<c:url value='/uss/olh/qna/selectQnaAnswerDetail.do?qaId=${resultInfo.qaId}'/>" onClick="fn_egov_inquire_qnadetail('<c:out value="${resultInfo.qaId}"/>');return false;"><c:out value='${fn:substring(resultInfo.qestnSj, 0, 40)}'/></a></td>
+		<td class="left"><a href="<c:url value='/qna/selectQnaAnswerDetail.do?qaId=${resultInfo.qaId}'/>" onClick="fn_egov_inquire_qnadetail('<c:out value="${resultInfo.qaId}"/>');return false;"><c:out value='${fn:substring(resultInfo.qestnSj, 0, 40)}'/></a></td>
 		<td><c:out value='${resultInfo.wrterNm}'/></td>
 		<td><c:out value='${resultInfo.qnaProcessSttusCodeNm}'/></td>
 		<td><c:out value='${resultInfo.inqireCo}'/></td>
@@ -133,7 +134,6 @@ function fn_egov_inquire_qnadetail(qaId) {
 		<ui:pagination paginationInfo="${paginationInfo}" type="image" jsFunction="fn_egov_select_linkPage"/>
 		</ul>
 	</div>
-	
 	
 </div>
 

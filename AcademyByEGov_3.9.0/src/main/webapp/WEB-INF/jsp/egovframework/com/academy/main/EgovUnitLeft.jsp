@@ -23,12 +23,6 @@ link:hover { color: #000000; text-decoration: none; }
 		<ul class="2depth">
 			<li><a href="/menu/EgovMenuListSelect.do" target="_content" class="link"> 1090. 메뉴리스트관리<!-- 메뉴리스트관리 --></a></li>
 		</ul>
-		<ul class="2depth">
-			<li><a href="/uss/olh/faq/selectFaqList.do" target="_content" class="link"> 540. FAQ관리<!-- FAQ관리 --></a></li>
-		</ul>
-		<ul class="2depth">
-			<li><a href="/uss/olh/qna/selectQnaList.do" target="_content" class="link"> 550. Q&A관리<!-- Q&amp;A관리 --></a></li>
-		</ul>
 	<ul class="lnb_title">
 		<li><strong class="left_title_strong"><strong class="top_title_strong">보안</strong></strong><!-- 보안 --></li>
 	</ul>

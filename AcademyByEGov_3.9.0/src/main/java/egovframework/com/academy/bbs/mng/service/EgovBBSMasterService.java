@@ -3,6 +3,8 @@ package egovframework.com.academy.bbs.mng.service;
 import java.util.List;
 import java.util.Map;
 
+import egovframework.com.academy.bbs.service.BoardMasterVO;
+
 public interface EgovBBSMasterService {
 
 	Map<String, Object> selectNotUsedBdMstrList(BoardMasterVO boardMasterVO);

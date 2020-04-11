@@ -128,7 +128,8 @@ public class EgovQnaController {
 	 */
 	@SuppressWarnings("deprecation")
 	@RequestMapping("/qna/selectQnaDetail.do")
-	public String selectQnaDetail(@RequestParam("qaId") String qaId, QnaVO qnaVO, @ModelAttribute("searchVO") QnaDefaultVO searchVO, ModelMap model) throws Exception {
+	public String selectQnaDetail(@RequestParam("qaId") String qaId, QnaVO qnaVO, 
+							@ModelAttribute("searchVO") QnaDefaultVO searchVO, ModelMap model) throws Exception {
 
 		qnaVO.setQaId(qaId);
 		
@@ -192,8 +193,8 @@ public class EgovQnaController {
 	 */
 	@SuppressWarnings("deprecation")
 	@RequestMapping("/qna/insertQna.do")
-	public String insertQna(@ModelAttribute("searchVO") QnaVO searchVO, @ModelAttribute("qnaVO") QnaVO qnaVO, BindingResult bindingResult,
-			ModelMap model) throws Exception {
+	public String insertQna(@ModelAttribute("searchVO") QnaVO searchVO, @ModelAttribute("qnaVO") QnaVO qnaVO, 
+							BindingResult bindingResult, ModelMap model) throws Exception {
 
 		beanValidator.validate(qnaVO, bindingResult);
 
@@ -255,11 +256,8 @@ public class EgovQnaController {
 	 */
 	@SuppressWarnings("deprecation")
 	@RequestMapping("/qna/updateQna.do")
-	public String updateQna(
-    		HttpServletRequest request,
-			@ModelAttribute("searchVO") QnaVO searchVO,
-			@ModelAttribute("qnaVO") QnaVO qnaVO, 
-			BindingResult bindingResult) throws Exception {
+	public String updateQna(HttpServletRequest request, @ModelAttribute("searchVO") QnaVO searchVO, @ModelAttribute("qnaVO") QnaVO qnaVO, 
+							BindingResult bindingResult) throws Exception {
 
 		// Validation
 		beanValidator.validate(qnaVO, bindingResult);
@@ -309,10 +307,7 @@ public class EgovQnaController {
 	 * @throws Exception
 	 */
 	@RequestMapping("/qna/deleteQna.do")
-	public String deleteQna(
-    		HttpServletRequest request,
-			QnaVO qnaVO, 
-			@ModelAttribute("searchVO") QnaVO searchVO) throws Exception {
+	public String deleteQna(HttpServletRequest request, 	QnaVO qnaVO, @ModelAttribute("searchVO") QnaVO searchVO) throws Exception {
 
     	//--------------------------------------------------------------------------------------------
     	// @ XSS 사용자권한체크 START

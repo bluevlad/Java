@@ -9,7 +9,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import egovframework.com.academy.bbs.mng.service.BoardMaster;
-import egovframework.com.academy.bbs.mng.service.BoardMasterVO;
+import egovframework.com.academy.bbs.service.BoardMasterVO;
 import egovframework.com.cop.bbs.service.impl.BBSAddedOptionsDAO;
 import egovframework.com.cop.cmt.service.Comment;
 import egovframework.com.cop.cmt.service.CommentVO;

@@ -8,7 +8,7 @@
   * @ -------    --------    ---------------------------
   * @ 2009.02.01   박정규              최초 생성
   *   2016.06.13   김연호              표준프레임워크 v3.6 개선
-  *
+  *  2020.03.00	rainend		myProject 적용
   *  @author 공통서비스팀 
   *  @since 2009.02.01
   *  @version 1.0
@@ -31,9 +31,7 @@
 <title>${pageTitle} <spring:message code="title.create" /></title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
-<%-- <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/fms/EgovMultiFile.js'/>" ></script> --%>
 <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/fms/EgovMultiFiles.js'/>" ></script>
-<script type="text/javascript" src="<c:url value="/validator.do"/>"></script>
 <validator:javascript formName="faqVO" staticJavascript="false" xhtml="true" cdata="false"/>
 <script type="text/javascript">
 
@@ -73,7 +71,7 @@ function fn_egov_regist_faq(form){
 <!-- javascript warning tag  -->
 <noscript class="noScriptTitle"><spring:message code="common.noScriptTitle.msg" /></noscript>
 
-<form:form commandName="faqVO" action="${pageContext.request.contextPath}/uss/olh/faq/insertFaq.do" method="post" onSubmit="fn_egov_regist_faq(document.forms[0]); return false;" enctype="multipart/form-data"> 
+<form:form commandName="faqVO" action="${pageContext.request.contextPath}/faq/insertFaq.do" method="post" onSubmit="fn_egov_regist_faq(document.forms[0]); return false;" enctype="multipart/form-data"> 
 <div class="wTableFrm">
 	<!-- 타이틀 -->
 	<h2>${pageTitle} <spring:message code="title.create" /></h2>
@@ -138,7 +136,7 @@ function fn_egov_regist_faq(form){
 	<!-- 하단 버튼 -->
 	<div class="btn">
 		<input type="submit" class="s_submit" value="<spring:message code="button.create" />" title="<spring:message code="button.create" /> <spring:message code="input.button" />" />
-		<span class="btn_s"><a href="<c:url value='/uss/olh/faq/selectFaqList.do' />"  title="<spring:message code="button.list" />  <spring:message code="input.button" />"><spring:message code="button.list" /></a></span>
+		<span class="btn_s"><a href="<c:url value='/faq/selectFaqList.do' />"  title="<spring:message code="button.list" />  <spring:message code="input.button" />"><spring:message code="button.list" /></a></span>
 	</div><div style="clear:both;"></div>
 	
 </div>

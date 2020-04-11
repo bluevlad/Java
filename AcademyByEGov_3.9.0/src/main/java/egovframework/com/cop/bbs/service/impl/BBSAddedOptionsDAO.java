@@ -1,7 +1,7 @@
 package egovframework.com.cop.bbs.service.impl;
 
 import egovframework.com.academy.bbs.mng.service.BoardMaster;
-import egovframework.com.academy.bbs.mng.service.BoardMasterVO;
+import egovframework.com.academy.bbs.service.BoardMasterVO;
 import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 import org.springframework.stereotype.Repository;

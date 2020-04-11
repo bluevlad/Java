@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import egovframework.com.academy.bbs.mng.service.BoardMaster;
-import egovframework.com.academy.bbs.mng.service.BoardMasterVO;
+import egovframework.com.academy.bbs.service.BoardMasterVO;
 import egovframework.com.cop.bbs.service.EgovBBSSatisfactionService;
 import egovframework.com.cop.bbs.service.Satisfaction;
 import egovframework.com.cop.bbs.service.SatisfactionVO;

@@ -8,6 +8,7 @@
   * @ -------    --------    ---------------------------
   * @ 2009.02.01   박정규              최초 생성
   *   2016.06.13   김연호              표준프레임워크 v3.6 개선
+  *  2020.03.00	rainend		myProject 적용
   *  @author 공통서비스팀
   *  @since 2009.02.01
   *  @version 1.0
@@ -42,7 +43,7 @@ function fn_egov_init(){
  ******************************************************** */
 function fn_egov_select_linkPage(pageNo){
 	document.qnaForm.pageIndex.value = pageNo;
-	document.qnaForm.action = "<c:url value='/uss/olh/qna/selectQnaList.do'/>";
+	document.qnaForm.action = "<c:url value='/qna/selectQnaList.do'/>";
    	document.qnaForm.submit();
 }
 /*********************************************************
@@ -58,7 +59,7 @@ function fn_egov_search_qna(){
 function fn_egov_inquire_qnadetail(qaId) {
 	// 사이트 키값(siteId) 셋팅.
 	document.qnaForm.qaId.value = qaId;
-  	document.qnaForm.action = "<c:url value='/uss/olh/qna/selectQnaDetail.do'/>";
+  	document.qnaForm.action = "<c:url value='/qna/selectQnaDetail.do'/>";
   	document.qnaForm.submit();
 }
 </script>
@@ -67,8 +68,9 @@ function fn_egov_inquire_qnadetail(qaId) {
 <!-- javascript warning tag  -->
 <noscript class="noScriptTitle"><spring:message code="common.noScriptTitle.msg" /></noscript>
 
-<form name="qnaForm" action="<c:url value='/uss/olh/qna/selectQnaList.do'/>" method="post" onSubmit="fn_egov_search_qna(); return false;"> 
 <div class="board">
+
+	<form name="qnaForm" action="<c:url value='/qna/selectQnaList.do'/>" method="post" onSubmit="fn_egov_search_qna(); return false;"> 
 	<h1>${pageTitle} <spring:message code="title.list" /></h1>
 	<!-- 하단 버튼 -->
 	<div class="search_box" title="<spring:message code="common.searchCondition.msg" />">
@@ -83,7 +85,7 @@ function fn_egov_inquire_qnadetail(qaId) {
 			<li>
 				<input class="s_input" name="searchWrd" type="text"  size="35" title="<spring:message code="title.search" /> <spring:message code="input.input" />" value='<c:out value="${searchVO.searchWrd}"/>'  maxlength="155" >
 				<input type="submit" class="s_btn" value="<spring:message code="button.inquire" />" title="<spring:message code="title.inquire" /> <spring:message code="input.button" />" />
-				<span class="btn_b"><a href="<c:url value='/uss/olh/qna/insertQnaView.do' />"  title="<spring:message code="button.create" /> <spring:message code="input.button" />"><spring:message code="button.create" /></a></span>
+				<span class="btn_b"><a href="<c:url value='/qna/insertQnaView.do' />"  title="<spring:message code="button.create" /> <spring:message code="input.button" />"><spring:message code="button.create" /></a></span>
 			</li>
 		</ul>
 	</div>
@@ -120,7 +122,7 @@ function fn_egov_inquire_qnadetail(qaId) {
 	<tr>
 		<td><c:out value="${(searchVO.pageIndex-1) * searchVO.pageSize + status.count}"/></td>
 		<td>
-			<form name="subForm" method="post" action="<c:url value='/uss/olh/qna/selectQnaDetail.do'/>">
+			<form name="subForm" method="post" action="<c:url value='/qna/selectQnaDetail.do'/>">
 			    <input name="qaId" type="hidden" value="<c:out value="${resultInfo.qaId}"/>">
 			    <input name="pageIndex" type="hidden" value="<c:out value='${searchVO.pageIndex}'/>"/>
 			    <span class="link"><input type="submit" value="<c:out value='${fn:substring(resultInfo.qestnSj, 0, 40)}'/>" style="border:0px solid #e0e0e0;"></span>

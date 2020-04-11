@@ -1,8 +1,10 @@
-package egovframework.com.academy.bbs.mng.service;
+package egovframework.com.academy.bbs.service;
 
 import java.io.Serializable;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import egovframework.com.academy.bbs.mng.service.BoardMaster;
 
 /**
  * 게시판 속성 정보를 관리하기 위한 VO  클래스

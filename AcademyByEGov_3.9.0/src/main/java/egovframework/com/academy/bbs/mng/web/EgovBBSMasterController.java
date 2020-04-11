@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springmodules.validation.commons.DefaultBeanValidator;
 
 import egovframework.com.academy.bbs.mng.service.BoardMaster;
-import egovframework.com.academy.bbs.mng.service.BoardMasterVO;
 import egovframework.com.academy.bbs.mng.service.EgovBBSMasterService;
+import egovframework.com.academy.bbs.service.BoardMasterVO;
 import egovframework.com.cmm.ComDefaultCodeVO;
 import egovframework.com.cmm.EgovComponentChecker;
 import egovframework.com.cmm.EgovMessageSource;

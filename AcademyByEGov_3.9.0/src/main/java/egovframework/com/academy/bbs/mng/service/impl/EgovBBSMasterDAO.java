@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import egovframework.com.academy.bbs.mng.service.BoardMaster;
-import egovframework.com.academy.bbs.mng.service.BoardMasterVO;
+import egovframework.com.academy.bbs.service.BoardMasterVO;
 import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 @Repository("EgovBBSMasterDAO")

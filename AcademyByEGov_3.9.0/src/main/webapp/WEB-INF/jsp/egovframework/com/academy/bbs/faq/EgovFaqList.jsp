@@ -8,6 +8,7 @@
   * @ -------    --------    ---------------------------
   * @ 2009.02.01   박정규              최초 생성
   *   2016.06.13   김연호              표준프레임워크 v3.6 개선
+  *  2020.03.00	rainend		myProject 적용
   *  @author 공통서비스팀
   *  @since 2009.02.01
   *  @version 1.0
@@ -42,7 +43,7 @@ function fn_egov_init(){
  ******************************************************** */
 function fn_egov_select_linkPage(pageNo){
 	document.faqForm.pageIndex.value = pageNo;
-	document.faqForm.action = "<c:url value='/uss/olh/faq/selectFaqList.do'/>";
+	document.faqForm.action = "<c:url value='/faq/selectFaqList.do'/>";
    	document.faqForm.submit();
 }
 /*********************************************************
@@ -58,7 +59,7 @@ function fn_egov_search_faq(){
 function fn_egov_inquire_faqdetail(faqId) {
 	// 사이트 키값(siteId) 셋팅.
 	document.faqForm.faqId.value = faqId;
-  	document.faqForm.action = "<c:url value='/uss/olh/faq/selectFaqDetail.do'/>";
+  	document.faqForm.action = "<c:url value='/faq/selectFaqDetail.do'/>";
   	document.faqForm.submit();
 }
 </script>
@@ -67,7 +68,7 @@ function fn_egov_inquire_faqdetail(faqId) {
 <!-- javascript warning tag  -->
 <noscript class="noScriptTitle"><spring:message code="common.noScriptTitle.msg" /></noscript>
 
-<form name="faqForm" action="<c:url value='/uss/olh/faq/selectFaqList.do'/>" method="post" onSubmit="fn_egov_search_faq(); return false;"> 
+<form name="faqForm" action="<c:url value='/faq/selectFaqList.do'/>" method="post" onSubmit="fn_egov_search_faq(); return false;"> 
 <div class="board">
 	<h1>${pageTitle} <spring:message code="title.list" /></h1>
 	<!-- 하단 버튼 -->
@@ -82,7 +83,7 @@ function fn_egov_inquire_faqdetail(faqId) {
 			<li>
 				<input class="s_input" name="searchWrd" type="text"  size="35" title="<spring:message code="title.search" /> <spring:message code="input.input" />" value='<c:out value="${searchVO.searchWrd}"/>'  maxlength="155" >
 				<input type="submit" class="s_btn" value="<spring:message code="button.inquire" />" title="<spring:message code="title.inquire" /> <spring:message code="input.button" />" />
-				<span class="btn_b"><a href="<c:url value='/uss/olh/faq/insertFaqView.do' />"  title="<spring:message code="button.create" /> <spring:message code="input.button" />"><spring:message code="button.create" /></a></span>
+				<span class="btn_b"><a href="<c:url value='/faq/insertFaqView.do' />"  title="<spring:message code="button.create" /> <spring:message code="input.button" />"><spring:message code="button.create" /></a></span>
 			</li>
 		</ul>
 	</div>
@@ -113,7 +114,7 @@ function fn_egov_inquire_faqdetail(faqId) {
 	<c:forEach items="${resultList}" var="resultInfo" varStatus="status">
 	<tr>
 		<td><c:out value="${(searchVO.pageIndex-1) * searchVO.pageSize + status.count}"/></td>
-		<td class="left"><a href="<c:url value='/uss/olh/faq/selectFaqDetail.do?faqId=${resultInfo.faqId}'/>" onClick="fn_egov_inquire_faqdetail('<c:out value="${resultInfo.faqId}"/>');return false;"><c:out value='${fn:substring(resultInfo.qestnSj, 0, 40)}'/></a></td>
+		<td class="left"><a href="<c:url value='/faq/selectFaqDetail.do?faqId=${resultInfo.faqId}'/>" onClick="fn_egov_inquire_faqdetail('<c:out value="${resultInfo.faqId}"/>');return false;"><c:out value='${fn:substring(resultInfo.qestnSj, 0, 40)}'/></a></td>
 		<td><c:out value='${resultInfo.inqireCo}'/></td>
 		<td><c:out value='${resultInfo.frstRegisterPnttm}'/></td>
 	</tr>

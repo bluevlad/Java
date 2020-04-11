@@ -21,9 +21,9 @@ import org.springmodules.validation.commons.DefaultBeanValidator;
 
 import egovframework.com.academy.bbs.mng.service.Board;
 import egovframework.com.academy.bbs.mng.service.BoardMaster;
-import egovframework.com.academy.bbs.mng.service.BoardMasterVO;
-import egovframework.com.academy.bbs.mng.service.BoardVO;
 import egovframework.com.academy.bbs.mng.service.EgovBBSMasterService;
+import egovframework.com.academy.bbs.service.BoardMasterVO;
+import egovframework.com.academy.bbs.service.BoardVO;
 import egovframework.com.cmm.EgovMessageSource;
 import egovframework.com.cmm.LoginVO;
 import egovframework.com.cmm.service.EgovFileMngService;

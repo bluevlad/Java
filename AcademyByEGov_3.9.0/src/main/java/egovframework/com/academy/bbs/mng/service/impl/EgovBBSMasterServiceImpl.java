@@ -9,8 +9,8 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import egovframework.com.academy.bbs.mng.service.BoardMaster;
-import egovframework.com.academy.bbs.mng.service.BoardMasterVO;
 import egovframework.com.academy.bbs.mng.service.EgovBBSMasterService;
+import egovframework.com.academy.bbs.service.BoardMasterVO;
 import egovframework.com.cmm.EgovComponentChecker;
 import egovframework.com.cop.bbs.service.impl.BBSAddedOptionsDAO;
 import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
