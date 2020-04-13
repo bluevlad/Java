@@ -12,7 +12,7 @@
   * @  수정일         수정자                   수정내용
   * @ -------    --------    ---------------------------
   * @ 2009.03.03    조재영          최초 생성
-  *
+  *  2020.03.00	rainend		myProject 적용
   *  @author 공통서비스 개발팀 박지욱
   *  @since 2009.03.23
   *  @version 1.0
@@ -28,8 +28,7 @@
 <base target="_self" >
 <link rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />" type="text/css">
 <link href="<c:url value='/css/egovframework/com/button.css' />" rel="stylesheet"  type="text/css">
-<script type="text/javaScript" language="javascript">
-<!--
+<script type="text/javaScript">
 function fnCheckId(){
 	if(fnCheckNotKorean(document.checkForm.checkId.value) && fnCheck(document.checkForm.checkId.value)){
 		document.checkForm.submit();
@@ -102,12 +101,10 @@ function fnCheck(str){
    		return true;
 	}
 }
-
--->
 </script>
 </head>
 <body>
-    <form name="checkForm" action ="<c:url value='/uss/umt/EgovIdDplctCnfirm.do'/>">
+    <form name="checkForm" action ="<c:url value='/member/EgovIdDplctCnfirm.do'/>">
 
     <table border="0" cellspacing="0" cellpadding="0" width="300">
         <tr><td height="20" colspan="2"></td></tr>

@@ -8,7 +8,7 @@
  * @ -------    --------    ---------------------------
  * @ 2009.02.01    lee.m.j      최초 생성
  *   2016.06.13    장동한         표준프레임워크 v3.6 개선
- *
+ *  2020.03.00	rainend		myProject 적용
  *  @author lee.m.j
  *  @since 2009.03.11
  *  @version 1.0
@@ -32,21 +32,19 @@
 <title>${pageTitle} <spring:message code="title.create" /></title><!-- 부서관리 등록 -->
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
-<%-- <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/fms/EgovMultiFile.js'/>" ></script> --%>
 <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/fms/EgovMultiFiles.js'/>" ></script>
-<script type="text/javascript" src="<c:url value="/validator.do"/>"></script>
 <validator:javascript formName="deptManage" staticJavascript="false" xhtml="true" cdata="false"/>
-<script type="text/javaScript" language="javascript">
+<script type="text/javaScript">
 
 function fncSelectDeptManageList() {
     var varFrom = document.getElementById("deptManage");
-    varFrom.action = "<c:url value='/uss/umt/dpt/selectDeptManageList.do'/>";
+    varFrom.action = "<c:url value='/dpt/selectDeptManageList.do'/>";
     varFrom.submit();
 }
 
 function fncDeptManageInsert() {
 	var varFrom = document.getElementById("deptManage");
-	varFrom.action = "<c:url value='/uss/umt/dpt/addDeptManage.do'/>";
+	varFrom.action = "<c:url value='/dpt/addDeptManage.do'/>";
 
 	if(confirm("<spring:message code="common.save.msg" />")){	
 		if (!validateDeptManage(varFrom)) {
@@ -62,7 +60,7 @@ function fncDeptManageInsert() {
 <body>
 <!-- javascript warning tag  -->
 <noscript class="noScriptTitle"><spring:message code="common.noScriptTitle.msg" /></noscript>
-<form:form commandName="deptManage" method="post" action="${pageContext.request.contextPath}/uss/umt/dpt/addDeptManage.do' />" onSubmit="fncDeptManageInsert(); return false;" enctype="multipart/form-data">
+<form:form commandName="deptManage" method="post" action="${pageContext.request.contextPath}/dpt/addDeptManage.do' />" onSubmit="fncDeptManageInsert(); return false;" enctype="multipart/form-data">
 <div class="wTableFrm">
 	<!-- 타이틀 -->
 	<h2>${pageTitle} <spring:message code="title.create" /></h2>
@@ -110,7 +108,7 @@ function fncDeptManageInsert() {
 
 	<!-- 하단 버튼 -->
 	<div class="btn">
-		<span class="btn_s"><a href="<c:url value='/uss/umt/dpt/selectDeptManageList.do'/>"  title="<spring:message code="button.list" />  <spring:message code="input.button" />"><spring:message code="button.list" /></a></span>
+		<span class="btn_s"><a href="<c:url value='/dpt/selectDeptManageList.do'/>"  title="<spring:message code="button.list" />  <spring:message code="input.button" />"><spring:message code="button.list" /></a></span>
 		<input type="submit" class="s_submit" value="<spring:message code="button.create" />" title="<spring:message code="button.create" /> <spring:message code="input.button" />" />
 	</div><div style="clear:both;"></div>
 	
@@ -122,7 +120,6 @@ function fncDeptManageInsert() {
 <input type="hidden" name="searchKeyword" value="<c:out value='${deptManageVO.searchKeyword}'/>" >
 <input type="hidden" name="pageIndex" value="<c:out value='${deptManageVO.pageIndex}'/>" >
 </form:form>
-
 
 </body>
 </html>

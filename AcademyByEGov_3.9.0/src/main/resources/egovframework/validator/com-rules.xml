@@ -49,16 +49,15 @@
 		3. password3 : 연속된 문자나 순차적인 문자 4개이상 사용금지
 		4. password4 : 반복문자나 숫자 연속 4개이상 사용금지 -->
 		<validator name="password1"
-			classname="egovframework.rte.ptl.mvc.validation.RteFieldChecks"
-			method="validatePassword1"
-			methodParams="java.lang.Object,
+					classname="egovframework.rte.ptl.mvc.validation.RteFieldChecks"
+					method="validatePassword1"
+					methodParams="java.lang.Object,
                        org.apache.commons.validator.ValidatorAction,
                        org.apache.commons.validator.Field,
                        org.springframework.validation.Errors"
-
 			depends="" msg="errors.password1">
 			<javascript><![CDATA[
-           function validatePassword1(form) {
+	           function validatePassword1(form) {
                 var bValid = true;
                 var focusField = null;
                 var i = 0;
@@ -281,6 +280,7 @@
            ]]>
 			</javascript>
 		</validator>
+		
 		<validator name="minInteger"
 			classname="egovframework.rte.ptl.mvc.validation.RteFieldChecks"
 			method="validateMinInteger"
@@ -351,6 +351,7 @@
           ]]>
 			</javascript>
 		</validator>
+		
 		<validator name="english"
 			classname="egovframework.rte.ptl.mvc.validation.RteFieldChecks"
 			method="validateEnglish"

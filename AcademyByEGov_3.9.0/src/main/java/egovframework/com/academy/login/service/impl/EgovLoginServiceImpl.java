@@ -81,9 +81,9 @@ public class EgovLoginServiceImpl extends EgovAbstractServiceImpl implements Ego
     @Override
 	public LoginVO actionLogin(LoginVO vo) throws Exception {
 
-    	// 1. 입력한 비밀번호를 암호화한다. -- 차후 사용 2020.03
-//		String enpassword = EgovFileScrty.encryptPassword(vo.getPassword(), vo.getId());
-//    	vo.setPassword(enpassword);
+    	// 1. 입력한 비밀번호를 암호화한다.
+		String enpassword = EgovFileScrty.encryptPassword(vo.getPassword(), vo.getId());
+    	vo.setPassword(enpassword);
 
     	// 2. 아이디와 암호화된 비밀번호가 DB와 일치하는지 확인한다.
     	LoginVO loginVO = loginDAO.actionLogin(vo);

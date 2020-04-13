@@ -8,7 +8,7 @@
   * @ -------    --------    ---------------------------
   * @ 2009.04.02    조재영          최초 생성
   * @ 2016.07.26    장동한          표준프레임워크 v3.6 개선
-  *
+  *  2020.03.00	rainend		myProject 적용
   *  @author 공통서비스 개발팀 조재영
   *  @since 2009.04.02
   *  @version 1.0
@@ -31,11 +31,10 @@
 <title>${pageTitle} <spring:message code="title.create" /></title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
-<script type="text/javascript" src="<c:url value="/validator.do"/>"></script>
 <validator:javascript formName="passwordChgVO" staticJavascript="false" xhtml="true" cdata="false"/>
-<script type="text/javaScript" language="javascript" defer="defer">
+<script type="text/javaScript" defer="defer">
 function fnListPage(){
-    document.passwordChgVO.action = "<c:url value='/uss/umt/EgovUserManage.do'/>";
+    document.passwordChgVO.action = "<c:url value='/member/EgovUserManage.do'/>";
     document.passwordChgVO.submit();
 }
 function fnUpdate(form){
@@ -54,7 +53,7 @@ function fnUpdate(form){
 </script>
 </head>
 <body>
-<form name="passwordChgVO" method="post"  action="<c:url value="${'/uss/umt/EgovUserPasswordUpdt.do'}"/>" onsubmit="fnUpdate(document.forms[0]); return false;">
+<form name="passwordChgVO" method="post"  action="<c:url value="${'/member/EgovUserPasswordUpdt.do'}"/>" onsubmit="fnUpdate(document.forms[0]); return false;">
 	<!-- 상세정보 사용자 삭제시 prameter 전달용 input -->
 	<input name="checkedIdForDel" type="hidden" />
 	<!-- 검색조건 유지 -->
@@ -90,6 +89,7 @@ function fnUpdate(form){
 		</tr>
 		
 		<!-- 기존 비밀번호 -->
+		<!-- 
 		<c:set var="title"><spring:message code="comUssUmt.userManagePasswordUpdt.oldPass" /></c:set>
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
@@ -97,6 +97,7 @@ function fnUpdate(form){
 				<input name="oldPassword" id="oldPassword" type="password" size="20" value=""  maxlength="100" >
 			</td>
 		</tr>
+		 -->
 		<!-- 비밀번호 -->
 		<c:set var="title"><spring:message code="comUssUmt.userManagePasswordUpdt.pass" /></c:set>
 		<tr>
@@ -120,8 +121,7 @@ function fnUpdate(form){
 	<div class="btn">
 	<input type="submit" class="s_submit" value="<spring:message code="button.update" />" title="<spring:message code="button.update" /> <spring:message code="input.button" />" />
 
-	<span class="btn_s"><a href="<c:url value='/uss/umt/EgovUserManage.do' />"  title="<spring:message code="button.list" /> <spring:message code="input.button" />"><spring:message code="button.list" /></a></span>
-	<button class="btn_s2" onClick="document.passwordChgVO.reset();return false;" title="<spring:message code="button.reset" /> <spring:message code="input.button" />"><spring:message code="button.reset" /></button>
+	<span class="btn_s"><a href="<c:url value='/member/EgovUserManage.do' />"  title="<spring:message code="button.list" /> <spring:message code="input.button" />"><spring:message code="button.list" /></a></span>
 	</div><div style="clear:both;"></div>
 	
 </div>

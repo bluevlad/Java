@@ -10,7 +10,7 @@
   * @ 2015.06.16	조정국		  password 중복필드 정리
   * @ 2016.07.26    장동한          표준프레임워크 v3.6 개선
   * @ 2017.07.21  장동한 			로그인인증제한 작업
-  *
+  *  2020.03.00	rainend		myProject 적용
   *  @author 공통서비스 개발팀 조재영
   *  @since 2009.03.02
   *  @version 1.0
@@ -33,34 +33,24 @@
 <title>${pageTitle} <spring:message code="title.update" /></title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
-<script type="text/javascript" src="<c:url value="/validator.do"/>"></script>
 <validator:javascript formName="userManageVO" staticJavascript="false" xhtml="true" cdata="false"/>
 <script type="text/javascript" src="<c:url value='/js/egovframework/com/sym/ccm/zip/EgovZipPopup.js' />" ></script>
 
-<script type="text/javaScript" language="javascript" defer="defer">
+<script type="text/javaScript" defer="defer">
 function fnListPage(){
-    document.userManageVO.action = "<c:url value='/uss/umt/EgovUserManage.do'/>";
+    document.userManageVO.action = "<c:url value='/member/EgovUserManage.do'/>";
     document.userManageVO.submit();
 }
 function fnDeleteUser(checkedIds) {
 	if(confirm("<spring:message code="common.delete.msg" />")){
 	    document.userManageVO.checkedIdForDel.value=checkedIds;
-	    document.userManageVO.action = "<c:url value='/uss/umt/EgovUserDelete.do'/>";
+	    document.userManageVO.action = "<c:url value='/member/EgovUserDelete.do'/>";
 	    document.userManageVO.submit();
 	}
 }
 function fnPasswordMove(){
-	document.userManageVO.action = "<c:url value='/uss/umt/EgovUserPasswordUpdtView.do'/>";
+	document.userManageVO.action = "<c:url value='/member/EgovUserPasswordUpdtView.do'/>";
     document.userManageVO.submit();
-}
-
-
-function fnLockIncorrect(){
-	if(confirm("<spring:message code="comUssUmt.common.lockAtConfirm" />")){
-	    document.userManageVO.action = "<c:url value='/uss/umt/EgovUserLockIncorrect.do'/>";
-	    document.userManageVO.selectedId.value=document.userManageVO.uniqId.value;
-	    document.userManageVO.submit();
-	}
 }
 
 function fnUpdate(form){
@@ -73,33 +63,13 @@ function fnUpdate(form){
 	    }
 	}
 }
-function fn_egov_inqire_cert() {
-	var url = "<c:url value='/uat/uia/EgovGpkiRegist.do' />";
-	var popupwidth = '500';
-	var popupheight = '400';
-	var title = '인증서';
-
-	Top = (window.screen.height - popupheight) / 3;
-	Left = (window.screen.width - popupwidth) / 2;
-	if (Top < 0) Top = 0;
-	if (Left < 0) Left = 0;
-	Future = "fullscreen=no,toolbar=no,location=no,directories=no,status=no,menubar=no,	scrollbars=no,resizable=no,left=" + Left + ",top=" + Top + ",width=" + popupwidth + ",height=" + popupheight;
-	PopUpWindow = window.open(url, title, Future)
-	PopUpWindow.focus();
-}
-
-function fn_egov_dn_info_setting(dn) {
-	var frm = document.userManageVO;
-
-	frm.subDn.value = dn;
-}
-
 </script>
 </head>
 <body>
 <!-- content start -->
-<form:form commandName="userManageVO" action="${pageContext.request.contextPath}/uss/umt/EgovUserSelectUpdt.do" name="userManageVO" method="post" onSubmit="fnUpdate(document.forms[0]); return false;"> 
+<form:form commandName="userManageVO" action="${pageContext.request.contextPath}/member/EgovUserSelectUpdt.do" name="userManageVO" method="post" onSubmit="fnUpdate(document.forms[0]); return false;"> 
 <div class="wTableFrm">
+
 	<!-- 상세정보 사용자 삭제시 prameter 전달용 input -->
 	<input name="checkedIdForDel" type="hidden" />
 	<!-- 검색조건 유지 -->
@@ -147,39 +117,6 @@ function fn_egov_dn_info_setting(dn) {
 				<div><form:errors path="emplyrNm" cssClass="error" /></div> 
 			</td>
 		</tr>
-		<!-- 비밀번호힌트 -->
-		<c:set var="title"><spring:message code="comUssUmt.deptUserManageRegist.passHit"/></c:set>
-		<tr>
-			<th><label for="passwordHint">${title}</label> <span class="pilsu">*</span></th>
-			<td class="left">
-				<form:select path="passwordHint" id="passwordHint" title="${title} ${inputSelect}">
-					<form:option value="" label="${inputSelect}"/>
-					<form:options items="${passwordHint_result}" itemValue="code" itemLabel="codeNm"/>
-				</form:select>
-				<div><form:errors path="passwordHint" cssClass="error"/></div>
-			</td>
-		</tr>
-		<!-- 비밀번호정답 -->
-		<c:set var="title"><spring:message code="comUssUmt.deptUserManageRegist.passOk"/></c:set>
-		<tr>
-			<th><label for="passwordCnsr">${title}</label> <span class="pilsu">*</span></th>
-			<td class="left">
-				<form:input path="passwordCnsr" id="passwordCnsr" title="${title} ${inputTxt}" cssClass="txaIpUmt" size="50" maxlength="100" />
-				<div><form:errors path="passwordCnsr" cssClass="error"/></div>
-			</td>
-		</tr>
-		<!-- 소속기관코드 -->
-		<c:set var="title"><spring:message code="comUssUmt.deptUserManageRegist.insttCode"/></c:set>
-		<tr>
-			<th><label for="insttCode">${title}</label></th>
-			<td class="left">
-                    <form:select path="insttCode" id="insttCode" title="${title} ${inputSelect}">
-                       <form:option value="" label="${inputSelect}"/>
-                       <form:options items="${insttCode_result}" itemValue="code" itemLabel="codeNm"/>
-                    </form:select>
-                    <div><form:errors path="insttCode" cssClass="error"/></div>
-			</td>
-		</tr>
 		<!-- 조직아이디 -->
 		<c:set var="title"><spring:message code="comUssUmt.deptUserManageRegist.orgnztId"/></c:set>
 		<tr>
@@ -210,17 +147,6 @@ function fn_egov_dn_info_setting(dn) {
                     <div><form:errors path="emplNo" cssClass="error" /></div>
 			</td>
 		</tr>
-		<!-- 성별구분코드 -->
-		<c:set var="title"><spring:message code="comUssUmt.deptUserManageRegist.saxTypeCode"/></c:set>
-		<tr>
-			<th><label for="sexdstnCode">${title}</label></th>
-			<td class="left">
-				<form:select path="sexdstnCode" id="sexdstnCode" title="${title} ${inputSelect}">
-					<form:option value="" label="${inputSelect}"/>
-					<form:options items="${sexdstnCode_result}" itemValue="code" itemLabel="codeNm"/>
-				</form:select>
-			</td>
-		</tr>
 		<!-- 생일 -->
 		<c:set var="title"><spring:message code="comUssUmt.deptUserManageRegist.brth"/></c:set>
 		<tr>
@@ -228,37 +154,6 @@ function fn_egov_dn_info_setting(dn) {
 			<td class="left">
 				<form:input path="brth" id="brth"  title="${title} ${inputTxt}" size="20" maxlength="8" />
                 <div><form:errors path="brth" cssClass="error" /></div>
-			</td>
-		</tr>
-		<!-- 집전화번호 -->
-		<c:set var="title"><spring:message code="comUssUmt.deptUserManageRegist.tel"/></c:set>
-		<tr>
-			<th><label for="areaNo">${title}</label> <span class="pilsu">*</span></th>
-			<td class="left">
-                    <form:input path="areaNo" id="areaNo" title="${title} ${inputSelect}" size="5" maxlength="5" style="width:40px;"/>
-                    - <form:input path="homemiddleTelno" id="homemiddleTelno" size="5" maxlength="5" style="width:40px;"/>
-                    - <form:input path="homeendTelno" id="homeendTelno"  size="5" maxlength="5" style="width:40px;"/>
-                    <div><form:errors path="areaNo" cssClass="error" /></div>
-                    <div><form:errors path="homemiddleTelno" cssClass="error" /></div>
-                    <div><form:errors path="homeendTelno" cssClass="error" /></div>
-			</td>
-		</tr>
-		<!-- 사무실전화번호 -->
-		<c:set var="title"><spring:message code="comUssUmt.deptUserManageRegist.areaNo"/></c:set>
-		<tr>
-			<th><label for="offmTelno">${title}</label></th>
-			<td class="left">
-                    <form:input path="offmTelno" id="offmTelno" title="${title} ${inputTxt}" cssClass="txaIpUmt" size="20"  maxlength="15" />
-                    <div><form:errors path="offmTelno" cssClass="error" /></div>
-			</td>
-		</tr>
-		<!-- 팩스번호 -->
-		<c:set var="title"><spring:message code="comUssUmt.deptUserManageRegist.offmTelno"/></c:set>
-		<tr>
-			<th><label for="fxnum">${title}</label></th>
-			<td class="left">
-                    <form:input path="fxnum" id="fxnum" title="${title} ${inputTxt}" cssClass="txaIpUmt" size="20"  maxlength="15" />
-                    <div><form:errors path="fxnum" cssClass="error" /></div>
 			</td>
 		</tr>
 		<!-- 헨드폰번호 -->
@@ -320,41 +215,6 @@ function fn_egov_dn_info_setting(dn) {
                     <div><form:errors path="groupId" cssClass="error"/></div>
 			</td>
 		</tr>
-		<!-- 일반회원상태코드 -->
-		<c:set var="title"><spring:message code="comUssUmt.deptUserManageRegist.status"/></c:set>
-		<tr>
-			<th><label for="emplyrSttusCode">${title}</label> <span class="pilsu">*</span></th>
-			<td class="left">
-                    <form:select path="emplyrSttusCode" id="emplyrSttusCode" title="${title} ${inputSelect}">
-                        <form:option value="" label="${inputSelect}"/>
-                        <form:options items="${emplyrSttusCode_result}" itemValue="code" itemLabel="codeNm"/>
-                    </form:select>
-                    <div><form:errors path="emplyrSttusCode" cssClass="error"/></div>
-			</td>
-		</tr>
-		<!-- 로그인인증제한여부 -->
-		<c:set var="title"><spring:message code="comUssUmt.common.lockAt"/></c:set>
-		<tr>
-			<th><label for="lockAt">${title}</label></th>
-			<td class="left">
-			<c:if test="${userManageVO.lockAt eq 'Y'}">예</c:if>
-			<c:if test="${userManageVO.lockAt == null || userManageVO.lockAt eq '' || userManageVO.lockAt eq 'N'}">아니오</c:if>
-			</td>
-		</tr>
-		
-		<!-- 사용자DN -->
-		<!-- 
-		<c:set var="title"><spring:message code="comUssUmt.deptUserManageRegist.subDn"/></c:set>
-		<tr>
-			<th>${title} <span class="pilsu">*</span></th>
-			<td class="left">
-                    <form:input path="subDn" id="subDn" title="${title} ${inputTxt}" size="40" maxlength="400" style="width:80%;" />
-                    <button id="btnSubdn" class="btn_s2" onClick="fn_egov_inqire_cert(); return false;" title="<spring:message code="button.delete" /> <spring:message code="input.button" />"><spring:message code="comUssUmt.deptUserManageRegistBtn.Search" /></button>
-                    <div><form:errors path="subDn" cssClass="error" /></div>
-			</td>
-		</tr>
-		 -->
-		 <form:hidden path="subDn" />
 	</tbody>
 	</table>			
 
@@ -363,13 +223,14 @@ function fn_egov_dn_info_setting(dn) {
 	<div class="btn">
 		<input type="submit" class="s_submit" value="<spring:message code="button.save" />" title="<spring:message code="button.save" /> <spring:message code="input.button" />" />
 		<button class="btn_s2" onClick="fnDeleteUser('<c:out value='${mberManageVO.userTy}'/>:<c:out value='${mberManageVO.uniqId}'/>'); return false;" title="<spring:message code="button.delete" /> <spring:message code="input.button" />"><spring:message code="button.delete" /></button>
-		<span class="btn_s"><a href="<c:url value='/uss/umt/EgovUserManage.do' />"  title="<spring:message code="button.list" /> <spring:message code="input.button" />"><spring:message code="button.list" /></a></span>
+		<span class="btn_s"><a href="<c:url value='/member/EgovUserManage.do' />"  title="<spring:message code="button.list" /> <spring:message code="input.button" />"><spring:message code="button.list" /></a></span>
 		<button class="btn_s2" onClick="fnPasswordMove(); return false;" title="<spring:message code="comUssUmt.userManageModifyBtn.passwordChange" /> <spring:message code="input.button" />"><spring:message code="comUssUmt.userManageModifyBtn.passwordChange" /></button>
-		<button class="btn_s2" onClick="fnLockIncorrect(); return false;" title="<spring:message code="comUssUmt.common.lockAtBtn" /> <spring:message code="input.button" />"><spring:message code="comUssUmt.common.lockAtBtn" /></button>
 		<button class="btn_s2" onClick="document.userManageVO.reset(); return false;" title="<spring:message code="button.reset" /> <spring:message code="input.button" />"><spring:message code="button.reset" /></button>
-	</div><div style="clear:both;"></div>
+	</div>
+	<div style="clear:both;"></div>
 
 </div>
+
 </form:form>
 <!-- content end -->
 

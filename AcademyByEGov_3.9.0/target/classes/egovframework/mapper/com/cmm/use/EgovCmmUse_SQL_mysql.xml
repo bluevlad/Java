@@ -11,48 +11,28 @@
 	</resultMap>
 
 	<select id="selectCmmCodeDetail" parameterType="ComDefaultCodeVO" resultMap="CmmCodeDetail">
-		 
-			SELECT 
-			CODE_ID, CODE, CODE_NM, CODE_DC
-			FROM 
-			COMTCCMMNDETAILCODE
-			WHERE
-			USE_AT = 'Y'
-			AND CODE_ID = #{codeId}
-		
+		SELECT CODE_ID, CODE, CODE_NM, CODE_DC
+		FROM ACM_CODE_DETAIL
+		WHERE USE_AT = 'Y'
+		AND CODE_ID = #{codeId}
 	</select>
 
     <select id="selectOgrnztIdDetail" parameterType="ComDefaultCodeVO" resultMap="CmmCodeDetail">
-             
-            SELECT 
-                #{tableNm}     CODE_ID, 
-                ORGNZT_ID     CODE, 
-                ORGNZT_NM     CODE_NM, 
-                ORGNZT_DC     CODE_DC
-            FROM 
-                COMTNORGNZTINFO
-            WHERE 1=1
-            
-            <if test='haveDetailCondition == "Y"'>AND
-                ORGNZT_ID  LIKE  #{detailConditionValue}
-            </if>
+		SELECT #{tableNm} CODE_ID, ORGNZT_ID CODE, ORGNZT_NM CODE_NM, ORGNZT_DC CODE_DC
+        FROM acm_org_mst
+        WHERE 1=1
+        <if test='haveDetailCondition == "Y"'>
+        AND ORGNZT_ID LIKE #{detailConditionValue}
+        </if>
     </select>
     
     <select id="selectGroupIdDetail" parameterType="ComDefaultCodeVO" resultMap="CmmCodeDetail">
-             
-            SELECT 
-                #{tableNm}     CODE_ID, 
-                GROUP_ID     CODE, 
-                GROUP_NM     CODE_NM, 
-                GROUP_DC     CODE_DC
-            FROM 
-                COMTNAUTHORGROUPINFO
-            WHERE 1=1
-            
-            <if test='haveDetailCondition == "Y"'>AND
-                GROUP_ID  LIKE  #{detailConditionValue}
-            </if>
+		SELECT #{tableNm} CODE_ID, GROUP_ID CODE, GROUP_NM CODE_NM, GROUP_DC CODE_DC
+        FROM acm_auth_group
+        WHERE 1=1
+        <if test='haveDetailCondition == "Y"'>
+        AND GROUP_ID LIKE #{detailConditionValue}
+       </if>
     </select>
-    
 
 </mapper>

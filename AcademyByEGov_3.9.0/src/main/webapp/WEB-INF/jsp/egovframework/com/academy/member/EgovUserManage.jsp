@@ -10,7 +10,7 @@
   * @ 2009.03.02    조재영          최초 생성
   *   2011.09.07    서준식          네비게이션명 변경 (사용자 관리 -> 업무사용자관리)
   *   2016.06.13    장동한          표준프레임워크 v3.6 개선
-  *
+  *  2020.03.00	rainend		myProject 적용
   *  @author 공통서비스 개발팀 조재영
   *  @since 2009.03.02
   *  @version 1.0
@@ -31,60 +31,7 @@
 <title>${pageTitle} <spring:message code="title.list" /></title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
-<script type="text/javaScript" language="javascript" defer="defer">
-function fnCheckAll() {
-    var checkField = document.listForm.checkField;
-    if(document.listForm.checkAll.checked) {
-        if(checkField) {
-            if(checkField.length > 1) {
-                for(var i=0; i < checkField.length; i++) {
-                    checkField[i].checked = true;
-                }
-            } else {
-                checkField.checked = true;
-            }
-        }
-    } else {
-        if(checkField) {
-            if(checkField.length > 1) {
-                for(var j=0; j < checkField.length; j++) {
-                    checkField[j].checked = false;
-                }
-            } else {
-                checkField.checked = false;
-            }
-        }
-    }
-}
-
-function fnDeleteUser() {
-    var checkField = document.listForm.checkField;
-    var id = document.listForm.checkId;
-    var checkedIds = "";
-    var checkedCount = 0;
-    if(checkField) {
-        if(checkField.length > 1) {
-            for(var i=0; i < checkField.length; i++) {
-                if(checkField[i].checked) {
-                    checkedIds += ((checkedCount==0? "" : ",") + id[i].value);
-                    checkedCount++;
-                }
-            }
-        } else {
-            if(checkField.checked) {
-                checkedIds = id.value;
-            }
-        }
-    }
-    if(checkedIds.length > 0) {
-    	//alert(checkedIds);
-        if(confirm("<spring:message code="common.delete.msg" />")){
-        	document.listForm.checkedIdForDel.value=checkedIds;
-            document.listForm.action = "<c:url value='/uss/umt/EgovUserDelete.do'/>";
-            document.listForm.submit();
-        }
-    }
-}
+<script type="text/javaScript" defer="defer">
 function fnSelectUser(id) {
     document.listForm.selectedId.value = id;
     array = id.split(":");
@@ -94,30 +41,23 @@ function fnSelectUser(id) {
         userId = array[1];
     }
    	document.listForm.selectedId.value = userId;
-    document.listForm.action = "<c:url value='/uss/umt/EgovUserSelectUpdtView.do'/>";
+    document.listForm.action = "<c:url value='/member/EgovUserSelectUpdtView.do'/>";
     document.listForm.submit();
 
 }
 function fnAddUserView() {
-    document.listForm.action = "<c:url value='/uss/umt/EgovUserInsertView.do'/>";
+    document.listForm.action = "<c:url value='/member/EgovUserInsertView.do'/>";
     document.listForm.submit();
 }
 function fnLinkPage(pageNo){
     document.listForm.pageIndex.value = pageNo;
-    document.listForm.action = "<c:url value='/uss/umt/EgovUserManage.do'/>";
+    document.listForm.action = "<c:url value='/member/EgovUserManage.do'/>";
     document.listForm.submit();
 }
 function fnSearch(){
 	document.listForm.pageIndex.value = 1;
-	document.listForm.action = "<c:url value='/uss/umt/EgovUserManage.do'/>";
+	document.listForm.action = "<c:url value='/member/EgovUserManage.do'/>";
     document.listForm.submit();
-}
-function fnViewCheck(){
-    if(insert_msg.style.visibility == 'hidden'){
-    	insert_msg.style.visibility = 'visible';
-    }else{
-    	insert_msg.style.visibility = 'hidden';
-    }
 }
 <c:if test="${!empty resultMsg}">alert("<spring:message code="${resultMsg}" />");</c:if>
 </script>
@@ -126,7 +66,7 @@ function fnViewCheck(){
 <!-- javascript warning tag  -->
 <noscript class="noScriptTitle"><spring:message code="common.noScriptTitle.msg" /></noscript>
 
-<form name="listForm" action="<c:url value='/uss/umt/EgovUserManage.do'/>" method="post"> 
+<form name="listForm" action="<c:url value='/member/EgovUserManage.do'/>" method="post"> 
 <div class="board">
 	<h1>${pageTitle} <spring:message code="title.list" /></h1>
 	
@@ -152,8 +92,7 @@ function fnViewCheck(){
 			<li>
 				<input class="s_input" name="searchKeyword" type="text"  size="35" title="<spring:message code="title.search" /> <spring:message code="input.input" />" value='<c:out value="${userSearchVO.searchKeyword}"/>'  maxlength="255" >
 				<input type="submit" class="s_btn" value="<spring:message code="button.inquire" />" title="<spring:message code="title.inquire" /> <spring:message code="input.button" />" />
-				<input type="button" class="s_btn" onClick="fnDeleteUser(); return false;" value="<spring:message code="title.delete" />" title="<spring:message code="title.delete" /> <spring:message code="input.button" />" />
-				<span class="btn_b"><a href="<c:url value='/uss/umt/EgovUserInsertView.do'/>" onClick="fnAddUserView(); return false;"  title="<spring:message code="button.create" /> <spring:message code="input.button" />"><spring:message code="button.create" /></a></span>
+				<span class="btn_b"><a href="<c:url value='/member/EgovUserInsertView.do'/>" onClick="fnAddUserView(); return false;"  title="<spring:message code="button.create" /> <spring:message code="input.button" />"><spring:message code="button.create" /></a></span>
 			</li>
 		</ul>
 	</div>
@@ -162,21 +101,17 @@ function fnViewCheck(){
 	<table class="board_list" summary="<spring:message code="common.summary.list" arguments="${pageTitle}" />">
 	<caption>${pageTitle} <spring:message code="title.list" /></caption>
 	<colgroup>
-		<col style="width: 5%;">
-		<col style="width: 3%;">
-		
-		<col style="width: 15%;">
-		<col style="width: 15%;">
-		<col style="width: 20%;">
-		<col style="width: 13%;">
-		<col style="width: 10%;">
-		<col style="width: ;">
+		<col style="width:5%;">
+		<col style="width:15%;">
+		<col style="width:15%;">
+		<col style="width:30%;">
+		<col style="width:15%;">
+		<col style="width:10%;">
+		<col style="width:;">
 	</colgroup>
 	<thead>
 	<tr>
 		<th><spring:message code="table.num" /></th><!-- 번호 -->
-		<th><input type="checkbox" name="checkAll" class="check2" onclick="javascript:fncCheckAll()" title="<spring:message code="input.selectAll.title" />"></th><!-- 전체선택 -->
-		
 		<th class="board_th_link"><spring:message code="comUssUmt.userManageList.id" /></th><!--아이디 -->
 		<th><spring:message code="comUssUmt.userManageList.name" /></th><!-- 사용자이름 -->
 		<th><spring:message code="comUssUmt.userManageList.email" /></th><!-- 사용자이메일 -->
@@ -195,14 +130,10 @@ function fnViewCheck(){
 	<c:forEach var="result" items="${resultList}" varStatus="status">
 	<tr>
 	    <td><c:out value="${status.count}"/></td>
-	    <td>
-	        <input name="checkField" title="checkField <c:out value="${status.count}"/>" type="checkbox"/>
-	        <input name="checkId" type="hidden" value="<c:out value='${result.userTy}'/>:<c:out value='${result.uniqId}'/>"/>
-	    </td>
-	    <td><a href="<c:url value='/uss/umt/EgovMberSelectUpdtView.do'/>?selectedId=<c:out value="${result.uniqId}"/>"  onclick="javascript:fnSelectUser('<c:out value="${result.userTy}"/>:<c:out value="${result.uniqId}"/>'); return false;"><c:out value="${result.userId}"/></a></td>
+	    <td><a href="<c:url value='/member/EgovMberSelectUpdtView.do'/>?selectedId=<c:out value="${result.uniqId}"/>"  onclick="javascript:fnSelectUser('<c:out value="${result.userTy}"/>:<c:out value="${result.uniqId}"/>'); return false;"><c:out value="${result.userId}"/></a></td>
 	    <td><c:out value="${result.userNm}"/></td>
 	    <td><c:out value="${result.emailAdres}"/></td>
-	    <td><c:out value="${result.areaNo}"/>)<c:out value="${result.middleTelno}"/>-<c:out value="${result.endTelno}"/></td>
+	    <td><c:out value="${result.moblphonNo}"/></td>
 	    <td><c:out value="${fn:substring(result.sbscrbDe,0,10)}"/></td>
 	    <td>
           <c:forEach var="emplyrSttusCode_result" items="${emplyrSttusCode_result}" varStatus="status">
@@ -224,8 +155,6 @@ function fnViewCheck(){
 	<input name="pageIndex" type="hidden" value="<c:out value='${userSearchVO.pageIndex}'/>"/>
 </div>
 </form>
-	
-
 
 </body>
 </html>

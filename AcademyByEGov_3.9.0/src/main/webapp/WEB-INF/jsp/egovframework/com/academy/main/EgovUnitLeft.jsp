@@ -23,6 +23,9 @@ link:hover { color: #000000; text-decoration: none; }
 		<ul class="2depth">
 			<li><a href="/menu/EgovMenuListSelect.do" target="_content" class="link"> 1090. 메뉴리스트관리<!-- 메뉴리스트관리 --></a></li>
 		</ul>
+		<ul class="2depth">
+			<li><a href="/member/EgovUserManage.do" target="_content" class="link"> 460. 업무사용자관리<!-- 업무사용자관리 --></a></li>
+		</ul>
 	<ul class="lnb_title">
 		<li><strong class="left_title_strong"><strong class="top_title_strong">보안</strong></strong><!-- 보안 --></li>
 	</ul>
@@ -85,12 +88,6 @@ link:hover { color: #000000; text-decoration: none; }
 				<strong class="left_title_strong"><strong class="top_title_strong">사용자지원</strong></strong><!-- 사용자지원 -->
 			</li>
 	</ul>
-		<ul class="2depth">
-			<li><a href="/uss/umt/EgovUserManage.do" target="_content" class="link"> 460. 업무사용자관리<!-- 업무사용자관리 --></a></li>
-		</ul>
-		<ul class="2depth">
-			<li><a href="/uss/umt/dpt/selectDeptManageListView.do" target="_content" class="link"> 461. 부서관리<!-- 부서관리 --></a></li>
-		</ul>
 		<ul class="2depth">
 			<li><a href="/uss/olp/qmc/EgovQustnrManageList.do" target="_content" class="link"> 590. 설문관리<!-- 설문관리 --></a></li>
 		</ul>

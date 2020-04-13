@@ -9,7 +9,7 @@
  * @ 2009.02.01    lee.m.j      최초 생성
  * @ 2015.06.16	   조정국		   	0건 조회 표시 메시지 버그수정
  *   2016.06.13    장동한         표준프레임워크 v3.6 개선
- *
+ *  2020.03.00	rainend		myProject 적용
  *  @author lee.m.j
  *  @since 2009.03.21
  *  @version 1.0
@@ -33,17 +33,17 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
 
-<script type="text/javaScript" language="javascript" defer="defer">
+<script type="text/javaScript" defer="defer">
 function fncSelectDeptManageList(pageNo){
     document.listForm.searchCondition.value = "1";
     document.listForm.pageIndex.value = pageNo;
-    document.listForm.action = "<c:url value='/uss/umt/dpt/selectDeptManageList.do'/>";
+    document.listForm.action = "<c:url value='/dpt/selectDeptManageList.do'/>";
     document.listForm.submit();
 }
 
 function fncSelectDeptManage(bannerId) {
     document.listForm.bannerId.value = bannerId;
-    document.listForm.action = "<c:url value='/uss/umt/dpt/getDeptManage.do'/>";
+    document.listForm.action = "<c:url value='/dpt/getDeptManage.do'/>";
     document.listForm.submit();
 }
 
@@ -51,14 +51,14 @@ function fncAddDeptManageInsert() {
 	if(document.listForm.pageIndex.value == "") {
 		document.listForm.pageIndex.value = 1;
 	}
-    document.listForm.action = "<c:url value='/uss/umt/dpt/addViewDeptManage.do'/>";
+    document.listForm.action = "<c:url value='/dpt/addViewDeptManage.do'/>";
     document.listForm.submit();
 }
 
 function linkPage(pageNo){
     document.listForm.searchCondition.value = "1";
     document.listForm.pageIndex.value = pageNo;
-    document.listForm.action = "<c:url value='/uss/umt/dpt/selectDeptManageList.do'/>";
+    document.listForm.action = "<c:url value='/dpt/selectDeptManageList.do'/>";
     document.listForm.submit();
 }
 
@@ -88,7 +88,7 @@ function press() {
 			<li>
 				<input class="s_input" name="searchKeyword" type="text"  size="35" title="<spring:message code="title.search" /> <spring:message code="input.input" />" value='<c:out value="${deptManageVO.searchKeyword}"/>'  maxlength="155" >
 				<input type="submit" class="s_btn" value="<spring:message code="button.inquire" />" title="<spring:message code="title.inquire" /> <spring:message code="input.button" />" /><!-- 조회 -->
-				<span class="btn_b"><a href="<c:url value='/uss/umt/dpt/addViewDeptManage.do'/>" onClick="fncAddDeptManageInsert(); return false;"  title="<spring:message code="button.create" /> <spring:message code="input.button" />"><spring:message code="button.create" /></a></span><!-- 등록 -->
+				<span class="btn_b"><a href="<c:url value='/dpt/addViewDeptManage.do'/>" onClick="fncAddDeptManageInsert(); return false;"  title="<spring:message code="button.create" /> <spring:message code="input.button" />"><spring:message code="button.create" /></a></span><!-- 등록 -->
 			</li>
 		</ul>
 	</div>
@@ -116,8 +116,8 @@ function press() {
 	</c:if>
 	<c:forEach var="deptManage" items="${deptManageList}" varStatus="status">
 	<tr>
-		<td><a href="<c:url value='/uss/umt/dpt/getDeptManage.do'/>?pageIndex=${deptManageVO.pageIndex}&searchKeyword=${deptManageVO.searchKeyword}&orgnztId=${deptManage.orgnztId}"><c:out value="${deptManage.orgnztId}"/></a></td>
-		<td class="left"><a href="<c:url value='/uss/umt/dpt/getDeptManage.do'/>?pageIndex=${deptManageVO.pageIndex}&searchKeyword=${deptManageVO.searchKeyword}&orgnztId=${deptManage.orgnztId}"><c:out value="${deptManage.orgnztNm}"/></a></td>
+		<td><a href="<c:url value='/dpt/getDeptManage.do'/>?pageIndex=${deptManageVO.pageIndex}&searchKeyword=${deptManageVO.searchKeyword}&orgnztId=${deptManage.orgnztId}"><c:out value="${deptManage.orgnztId}"/></a></td>
+		<td class="left"><a href="<c:url value='/dpt/getDeptManage.do'/>?pageIndex=${deptManageVO.pageIndex}&searchKeyword=${deptManageVO.searchKeyword}&orgnztId=${deptManage.orgnztId}"><c:out value="${deptManage.orgnztNm}"/></a></td>
 		<td class="left"><c:out value="${deptManage.orgnztDc}"/></td>
 	</tr>
 	</c:forEach>
@@ -136,7 +136,6 @@ function press() {
 <input name="pageIndex" type="hidden" value="<c:out value='${deptManageVO.pageIndex}'/>">
 <input type="hidden" name="searchCondition" value="1">
 </form>
-
 
 </body>
 </html>

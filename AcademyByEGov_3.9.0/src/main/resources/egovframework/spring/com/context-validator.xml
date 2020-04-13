@@ -11,9 +11,12 @@
 		<property name="validationConfigLocations">
 			<list>
 				<!-- 공통기술 -->
+				<!-- 운영자 요청시 적용 2020.03  -->
+				<!-- 
 				<value>classpath:/egovframework/validator/com-rules.xml</value>
 		        <value>classpath:/egovframework/validator/validator-rules.xml</value>
 		        <value>classpath:/egovframework/validator/**/*.xml</value>
+				 -->
 			</list>
 		</property>
 	</bean>

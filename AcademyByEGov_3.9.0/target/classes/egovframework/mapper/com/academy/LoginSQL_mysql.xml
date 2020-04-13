@@ -87,18 +87,13 @@
 	
 	<!-- 일반 로그인 -->
 	<select id="actionLogin" resultMap="login">
-			SELECT emplyr_id AS id
-			     , user_nm AS name
-			     , password AS password
-			     , ihidnum AS ihidNum
-			     , email_adres AS email
-			     , 'USR' AS userSe
-			     , orgnzt_id AS orgnztId
-			     , esntl_id AS uniqId
-			  FROM COMTNEMPLYRINFO
-			 WHERE emplyr_id = #{id}
-			   AND password = #{password}
-			   AND emplyr_sttus_code = 'P'
+		SELECT 
+				emplyr_id AS id, user_nm AS name, password AS password, ihidnum AS ihidNum
+			     , email_adres AS email, 'USR' AS userSe, orgnzt_id AS orgnztId, esntl_id AS uniqId
+		FROM acm_member_mst
+		WHERE emplyr_id = #{id}
+		AND password = #{password}
+		AND emplyr_sttus_code = 'P'
 	</select>
 	
 	<!-- 인증서 로그인 -->
