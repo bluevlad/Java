@@ -1,4 +1,4 @@
-# Academy Manager System with EGovFamework 3.9.0
+# Academy Manager System with EGovFramework 3.9.0
 
 compatible with java8.
 
