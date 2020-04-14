@@ -5,8 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import egovframework.com.academy.code.service.CodeSub;
 import egovframework.com.cmm.ComDefaultCodeVO;
-import egovframework.com.cmm.service.CmmnDetailCode;
 import egovframework.com.cmm.service.EgovCmmUseService;
 
 import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
@@ -43,7 +43,7 @@ public class EgovCmmUseServiceImpl extends EgovAbstractServiceImpl implements Eg
      * @return
      * @throws Exception
      */
-    public List<CmmnDetailCode> selectCmmCodeDetail(ComDefaultCodeVO vo) throws Exception {
+    public List<CodeSub> selectCmmCodeDetail(ComDefaultCodeVO vo) throws Exception {
     	return cmmUseDAO.selectCmmCodeDetail(vo);
     }
 
@@ -54,9 +54,9 @@ public class EgovCmmUseServiceImpl extends EgovAbstractServiceImpl implements Eg
      * @return
      * @throws Exception
      */
-    public Map<String, List<CmmnDetailCode>> selectCmmCodeDetails(List<?> voList) throws Exception {
+    public Map<String, List<CodeSub>> selectCmmCodeDetails(List<?> voList) throws Exception {
 		ComDefaultCodeVO vo;
-		Map<String, List<CmmnDetailCode>> map = new HashMap<String, List<CmmnDetailCode>>();
+		Map<String, List<CodeSub>> map = new HashMap<String, List<CodeSub>>();
 
 		Iterator<?> iter = voList.iterator();
 		while (iter.hasNext()) {
@@ -74,7 +74,7 @@ public class EgovCmmUseServiceImpl extends EgovAbstractServiceImpl implements Eg
      * @return 조직정보 List
      * @throws Exception
      */
-    public List<CmmnDetailCode> selectOgrnztIdDetail(ComDefaultCodeVO vo) throws Exception {
+    public List<CodeSub> selectOgrnztIdDetail(ComDefaultCodeVO vo) throws Exception {
     	return cmmUseDAO.selectOgrnztIdDetail(vo);
     }
 
@@ -85,7 +85,7 @@ public class EgovCmmUseServiceImpl extends EgovAbstractServiceImpl implements Eg
      * @return 그룹정보 List
      * @throws Exception
      */
-    public List<CmmnDetailCode> selectGroupIdDetail(ComDefaultCodeVO vo) throws Exception {
+    public List<CodeSub> selectGroupIdDetail(ComDefaultCodeVO vo) throws Exception {
     	return cmmUseDAO.selectGroupIdDetail(vo);
     }
 }

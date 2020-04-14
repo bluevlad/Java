@@ -24,7 +24,10 @@ link:hover { color: #000000; text-decoration: none; }
 			<li><a href="/menu/EgovMenuListSelect.do" target="_content" class="link"> 1090. 메뉴리스트관리<!-- 메뉴리스트관리 --></a></li>
 		</ul>
 		<ul class="2depth">
-			<li><a href="/member/EgovUserManage.do" target="_content" class="link"> 460. 업무사용자관리<!-- 업무사용자관리 --></a></li>
+			<li><a href="/code/SelectCodeList.do" target="_content" class="link"> 980. 공통코드<!-- 공통코드 --></a></li>
+		</ul>
+		<ul class="2depth">
+			<li><a href="/code/SelectCodeSubList.do" target="_content" class="link"> 970. 공통상세코드<!-- 공통상세코드 --></a></li>
 		</ul>
 	<ul class="lnb_title">
 		<li><strong class="left_title_strong"><strong class="top_title_strong">보안</strong></strong><!-- 보안 --></li>
@@ -37,9 +40,6 @@ link:hover { color: #000000; text-decoration: none; }
 		</ul>
 		<ul class="2depth">
 			<li><a href="/sec/gmt/EgovGroupList.do" target="_content" class="link"> 80. 그룹관리<!-- 그룹관리 --></a></li>
-		</ul>
-		<ul class="2depth">
-			<li><a href="/sec/rmt/EgovRoleList.do" target="_content" class="link"> 90. 롤관리<!-- 롤관리 --></a></li>
 		</ul>
 	<ul class="lnb_title">
 		<li><strong class="left_title_strong"><strong class="top_title_strong">통계/리포팅</strong></strong><!-- 통계/리포팅 --></li>
@@ -151,15 +151,6 @@ link:hover { color: #000000; text-decoration: none; }
 	<ul class="lnb_title">
 			<li><strong class="left_title_strong"><strong class="top_title_strong">시스템관리</strong></strong><!-- 시스템관리 --></li>
 	</ul>			
-		<ul class="2depth">
-			<li><a href="/sym/ccm/ccc/SelectCcmCmmnClCodeList.do" target="_content" class="link"> 960. 공통분류코드<!-- 공통분류코드 --></a></li>
-		</ul>
-		<ul class="2depth">
-			<li><a href="/sym/ccm/cde/SelectCcmCmmnDetailCodeList.do" target="_content" class="link"> 970. 공통상세코드<!-- 공통상세코드 --></a></li>
-		</ul>
-		<ul class="2depth">
-			<li><a href="/sym/ccm/cca/SelectCcmCmmnCodeList.do" target="_content" class="link"> 980. 공통코드<!-- 공통코드 --></a></li>
-		</ul>
 		<ul class="2depth">
 		<li><a href="/sym/log/lgm/SelectSysLogList.do" target="_content" class="link"> 1030. 로그관리<!-- 로그관리 --></a></li>
 		</ul>
