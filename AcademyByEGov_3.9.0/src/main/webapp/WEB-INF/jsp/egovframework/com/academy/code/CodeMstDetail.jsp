@@ -29,26 +29,22 @@
 <title>${pageTitle } <spring:message code="title.update" /></title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
-<validator:javascript formName="CodeMst" staticJavascript="false" xhtml="true" cdata="false"/>
+<validator:javascript formName="CodeMstVO" staticJavascript="false" xhtml="true" cdata="false"/>
 <script type="text/javascript">
 /* ********************************************************
  * 초기화
  ******************************************************** */
 function fn_egov_init(){
 	// 첫 입력란에 포커스..
-	document.getElementById("CodeMst").codeNm.focus();
+	document.getElementById("CodeMstVO").codeNm.focus();
 }
 /* ********************************************************
  * 저장처리화면
  ******************************************************** */
 function fn_egov_updt_code(form){
-	if (!validateCodeMst(form)) {		 			
-		return false;		
-	} else {
-		if(confirm("<spring:message code="common.update.msg" />")){	
-			form.submit();	
-		}					
-	}	
+	if(confirm("<spring:message code="common.update.msg" />")){	
+		form.submit();	
+	}					
 }
 /* ********************************************************
  * 목록 으로 가기
@@ -62,7 +58,7 @@ function fn_egov_inqire_code() {
 <body onLoad="fn_egov_init();">
 
 <!-- 상단타이틀 -->
-<form:form commandName="CodeMst" action="${pageContext.request.contextPath}/code/SelectCodeDeatil.do" method="post" onSubmit="fn_egov_updt_code(document.forms[0]); return false;">  
+<form:form commandName="CodeMstVO" action="${pageContext.request.contextPath}/code/updateCode.do" method="post" onSubmit="fn_egov_updt_code(document.forms[0]); return false;">  
 <div class="wTableFrm">
 	<h2>${pageTitle} <spring:message code="title.update" /></h2>
 
@@ -79,7 +75,7 @@ function fn_egov_inqire_code() {
 		<c:set var="inputNo"><spring:message code="input.no" /></c:set>
 		
 		<!-- 분류코드 -->
-		<c:set var="title"><spring:message code="comSymCcmCcc.cmmnClCodeVO.clCode"/> </c:set>
+		<c:set var="title"><spring:message code="comSymCcmCca.CodeVO.codeId"/> </c:set>
 		<tr>
 			<th><label for="codeId">${title} <span class="pilsu">*</span></label></th>
 			<td class="left">
@@ -88,17 +84,17 @@ function fn_egov_inqire_code() {
 			</td>
 		</tr>
 		<!-- 분류코드명 -->
-		<c:set var="title"><spring:message code="comSymCcmCcc.cmmnClCodeVO.clCodeNm"/> </c:set>
+		<c:set var="title"><spring:message code="comSymCcmCca.CodeVO.codeNm"/> </c:set>
 		<tr>
 			<th><label for="codeNm">${title} <span class="pilsu">*</span></label></th>
 			<td class="left">
 			    <form:input path="codeNm" title="${title} ${inputTxt}" size="70" maxlength="70" />
-   				<div><form:errors path="codeNm" cssClass="error" /></div>     
+   				<div><form:errors path="codeNm" cssClass="error" /></div>
 			</td>
 		</tr>
 		
 		<!-- 분류코드설명 -->
-		<c:set var="title"><spring:message code="comSymCcmCcc.cmmnClCodeVO.clCodeDc"/> </c:set>
+		<c:set var="title"><spring:message code="comSymCcmCca.CodeVO.codeDc"/> </c:set>
 		<tr>
 			<th><label for="codeDc">${title } <span class="pilsu">*</span></label></th>
 			<td class="nopd">
@@ -108,7 +104,7 @@ function fn_egov_inqire_code() {
 		</tr>
 		
 		<!-- 사용여부 -->
-		<c:set var="title"><spring:message code="comSymCcmCcc.cmmnClCodeVO.useAt"/> </c:set>
+		<c:set var="title"><spring:message code="comSymCcmCca.CodeVO.useAt"/> </c:set>
 		<tr>
 			<th><label for="useAt">${title } <span class="pilsu">*</span></label></th>
 			<td class="left">

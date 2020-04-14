@@ -6,7 +6,7 @@
 <form-validation>
 
     <formset>
-        <form name="CodeMst">
+        <form name="CodeMstVO">
 			<field property="codeId" depends="required, maxlength">
         		<arg0 key="comSymCcmCca.CodeVO.codeId" resource="true"/><!-- 코드ID -->
         		<arg1 key="6" resource="true"/>
@@ -16,7 +16,7 @@
 				</var>
 			</field> 
 			<field property="codeNm" depends="required, maxlength">
-        		<arg0 key="comSymCcmCca.CodeVO.codeIdNm" resource="true"/><!-- 코드ID명 -->
+        		<arg0 key="comSymCcmCca.CodeVO.codeNm" resource="true"/><!-- 코드ID명 -->
         		<arg1 key="60" resource="true"/>
 				<var>
 				<var-name>maxlength</var-name>
@@ -24,7 +24,7 @@
 				</var>
 			</field> 
 			<field property="codeDc" depends="required, maxlength">
-        		<arg0 key="comSymCcmCca.CodeVO.codeIdDc" resource="true"/><!-- 코드ID설명 -->
+        		<arg0 key="comSymCcmCca.CodeVO.codeDc" resource="true"/><!-- 코드ID설명 -->
         		<arg1 key="200" resource="true"/>
 				<var>
 				<var-name>maxlength</var-name>
@@ -35,8 +35,6 @@
         		<arg0 key="comSymCcmCca.CodeVO.useAt" resource="true"/><!-- 사용여부 -->
 			</field> 
 		</form>
-		
-
     </formset>
 
 </form-validation>
