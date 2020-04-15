@@ -107,7 +107,7 @@ function fn_egov_search_code(){
 	<tr>
 		<td><c:out value="${(searchVO.pageIndex-1) * searchVO.pageSize + status.count}"/></td>
 		<td><a href="<c:url value='/code/SelectCodeDetail.do'/>?codeId=${resultInfo.codeId}"><c:out value='${resultInfo.codeId}'/></a></td>
-		<td><a href="<c:url value='/code/SelectCodeDetail.do'/>?codeId=${resultInfo.codeId}"><c:out value='${fn:substring(resultInfo.codeNm, 0, 40)}'/></a></td>
+		<td><a href="<c:url value='/code/SelectCodeDetail.do'/>?codeId=${resultInfo.codeId}"><c:out value='${fn:substring(resultInfo.codeIdNm, 0, 40)}'/></a></td>
 		<td><c:out value='${resultInfo.useAt}'/></td>
 	</tr>
 	</c:forEach>

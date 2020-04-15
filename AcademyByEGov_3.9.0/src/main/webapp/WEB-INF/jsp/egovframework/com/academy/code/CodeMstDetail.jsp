@@ -75,7 +75,7 @@ function fn_egov_inqire_code() {
 		<c:set var="inputNo"><spring:message code="input.no" /></c:set>
 		
 		<!-- 분류코드 -->
-		<c:set var="title"><spring:message code="comSymCcmCca.CodeVO.codeId"/> </c:set>
+		<c:set var="title"><spring:message code="comAcademy.CodeVO.codeId"/> </c:set>
 		<tr>
 			<th><label for="codeId">${title} <span class="pilsu">*</span></label></th>
 			<td class="left">
@@ -84,27 +84,27 @@ function fn_egov_inqire_code() {
 			</td>
 		</tr>
 		<!-- 분류코드명 -->
-		<c:set var="title"><spring:message code="comSymCcmCca.CodeVO.codeNm"/> </c:set>
+		<c:set var="title"><spring:message code="comAcademy.CodeVO.codeIdNm"/> </c:set>
 		<tr>
-			<th><label for="codeNm">${title} <span class="pilsu">*</span></label></th>
+			<th><label for="codeIdNm">${title} <span class="pilsu">*</span></label></th>
 			<td class="left">
-			    <form:input path="codeNm" title="${title} ${inputTxt}" size="70" maxlength="70" />
-   				<div><form:errors path="codeNm" cssClass="error" /></div>
+			    <form:input path="codeIdNm" title="${title} ${inputTxt}" size="70" maxlength="70" />
+   				<div><form:errors path="codeIdNm" cssClass="error" /></div>
 			</td>
 		</tr>
 		
 		<!-- 분류코드설명 -->
-		<c:set var="title"><spring:message code="comSymCcmCca.CodeVO.codeDc"/> </c:set>
+		<c:set var="title"><spring:message code="comAcademy.CodeVO.codeIdDc"/> </c:set>
 		<tr>
-			<th><label for="codeDc">${title } <span class="pilsu">*</span></label></th>
+			<th><label for="codeIdDc">${title } <span class="pilsu">*</span></label></th>
 			<td class="nopd">
-				<form:textarea path="codeDc" title="${title} ${inputTxt}" cols="300" rows="20" />   
-				<div><form:errors path="codeDc" cssClass="error" /></div>  
+				<form:textarea path="codeIdDc" title="${title} ${inputTxt}" cols="300" rows="20" />   
+				<div><form:errors path="codeIdDc" cssClass="error" /></div>  
 			</td>
 		</tr>
 		
 		<!-- 사용여부 -->
-		<c:set var="title"><spring:message code="comSymCcmCca.CodeVO.useAt"/> </c:set>
+		<c:set var="title"><spring:message code="comAcademy.CodeVO.useAt"/> </c:set>
 		<tr>
 			<th><label for="useAt">${title } <span class="pilsu">*</span></label></th>
 			<td class="left">
