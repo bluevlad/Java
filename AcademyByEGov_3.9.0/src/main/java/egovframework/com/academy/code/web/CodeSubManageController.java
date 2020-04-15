@@ -15,10 +15,7 @@ import org.springmodules.validation.commons.DefaultBeanValidator;
 
 import egovframework.com.academy.code.service.CodeMst;
 import egovframework.com.academy.code.service.CodeMstVO;
-import egovframework.com.academy.code.service.CodeSub;
-import egovframework.com.academy.code.service.CodeSubVO;
 import egovframework.com.academy.code.service.CodeManageService;
-import egovframework.com.academy.code.service.CodeSubManageService;
 import egovframework.com.cmm.EgovMessageSource;
 import egovframework.com.cmm.LoginVO;
 import egovframework.com.cmm.annotation.IncludedInfo;
@@ -50,9 +47,6 @@ import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 @Controller
 public class CodeSubManageController {
 
-	@Resource(name = "CodeSubManageService")
-   private CodeSubManageService codeSubManageService;
-
 	@Resource(name = "CodeManageService")
    private CodeManageService codeManageService;
 
@@ -77,7 +71,7 @@ public class CodeSubManageController {
 	     */
 		@IncludedInfo(name="공통상세코드", listUrl="/code/SelectCodeSubList.do", order = 970 ,gid = 60)
 	    @RequestMapping(value="/code/SelectCodeSubList.do")
-		public String selectlCodeSubList (@ModelAttribute("loginVO") LoginVO loginVO, @ModelAttribute("searchVO") CodeSubVO searchVO, 
+		public String selectlCodeSubList (@ModelAttribute("loginVO") LoginVO loginVO, @ModelAttribute("searchVO") CodeMstVO searchVO, 
 								ModelMap model) throws Exception {
 			
 	    	/** EgovPropertyService.sample */
@@ -94,10 +88,10 @@ public class CodeSubManageController {
 			searchVO.setLastIndex(paginationInfo.getLastRecordIndex());
 			searchVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
 
-	        List<?> CmmnCodeList = codeSubManageService.selectCodeSubList(searchVO);
+	        List<?> CmmnCodeList = codeManageService.selectCodeSubList(searchVO);
 	        model.addAttribute("resultList", CmmnCodeList);
 
-	        int totCnt = codeSubManageService.selectCodeSubListTotCnt(searchVO);
+	        int totCnt = codeManageService.selectCodeSubListTotCnt(searchVO);
 			paginationInfo.setTotalRecordCount(totCnt);
 	        model.addAttribute("paginationInfo", paginationInfo);
 
@@ -113,8 +107,8 @@ public class CodeSubManageController {
 		 * @throws Exception
 		 */
 		@RequestMapping(value="/code/SelectCodeSubDetail.do")
-	 	public String selectCodeSubDetail (@ModelAttribute("loginVO") LoginVO loginVO, CodeSubVO CodeSubVO, ModelMap model)	throws Exception {
-	    	CodeSub vo = codeSubManageService.selectCodeSubDetail(CodeSubVO);
+	 	public String selectCodeSubDetail (@ModelAttribute("loginVO") LoginVO loginVO, CodeMstVO CodeMstVO, ModelMap model)	throws Exception {
+	    	CodeMst vo = codeManageService.selectCodeSubDetail(CodeMstVO);
 			model.addAttribute("result", vo);
 
 			return "egovframework/com/academy/code/CodeSubDetail";
@@ -129,14 +123,14 @@ public class CodeSubManageController {
 		 * @throws Exception
 		 */
 		@RequestMapping("/code/CodeSubRegist.do")
-		public String CodeSubRegist(@ModelAttribute("loginVO") LoginVO loginVO, @ModelAttribute("CodeVO") CodeMstVO CodeVO,
-				@ModelAttribute("CodeSubVO") CodeSubVO CodeDetailVO, ModelMap model) throws Exception {
+		public String CodeSubRegist(@ModelAttribute("loginVO") LoginVO loginVO, 
+							@ModelAttribute("CodeMstVO") CodeMstVO CodeMstVO, ModelMap model) throws Exception {
 			
         	CodeMstVO searchCodeVO = new CodeMstVO();
         	searchCodeVO.setRecordCountPerPage(999999);
             searchCodeVO.setFirstIndex(0);
         	searchCodeVO.setSearchCondition("clCode");
-            searchCodeVO.setSearchKeyword(CodeVO.getCodeId());
+            searchCodeVO.setSearchKeyword(CodeMstVO.getCodeId());
             
 	        List<?> CodeList = codeManageService.selectCodeList(searchCodeVO);
 	        model.addAttribute("codeList", CodeList);
@@ -155,7 +149,7 @@ public class CodeSubManageController {
 	     * @throws Exception
 	     */
 	    @RequestMapping("/code/insertCodeSub.do")
-	    public String insertCodeSub(@ModelAttribute("CodeSubVO") CodeSubVO CodeSubVO,
+	    public String insertCodeSub(@ModelAttribute("CodeMstVO") CodeMstVO CodeMstVO,
 	    		BindingResult bindingResult, ModelMap model) throws Exception {
 
 	    	LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
@@ -171,9 +165,9 @@ public class CodeSubManageController {
 			    return "egovframework/com/academy/code/CodeSubRegist";
 			}
 			
-			if(CodeSubVO.getCodeId() != null){
+			if(CodeMstVO.getCodeId() != null){
 				
-				CodeSub vo = codeSubManageService.selectCodeSubDetail(CodeSubVO);
+				CodeMst vo = codeManageService.selectCodeSubDetail(CodeMstVO);
 				if(vo != null){
 					model.addAttribute("message", egovMessageSource.getMessage("comSymCcmCde.validate.codeCheck"));
 					
@@ -184,8 +178,8 @@ public class CodeSubManageController {
 				}
 			}
 		
-	    	CodeSubVO.setFrstRegisterId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
-	    	codeSubManageService.insertCodeSub(CodeSubVO);
+			CodeMstVO.setFrstRegisterId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
+	    	codeManageService.insertCodeSub(CodeMstVO);
 		
 			return "forward:/code/SelectCodeSubList.do";
 	    }
@@ -199,21 +193,21 @@ public class CodeSubManageController {
 	     * @throws Exception
 	     */
 	    @RequestMapping("/code/updateCodeSub.do")
-	    public String updateCodeSub(@ModelAttribute("CodeSubVO") CodeSubVO CodeSubVO, ModelMap model, BindingResult bindingResult ) throws Exception {
+	    public String updateCodeSub(@ModelAttribute("CodeSubVO") CodeMstVO CodeMstVO, ModelMap model, BindingResult bindingResult ) throws Exception {
 	    	
 	    	LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
 	    	
-	    	beanValidator.validate(CodeSubVO, bindingResult);
+	    	beanValidator.validate(CodeMstVO, bindingResult);
 	    	
 	    	if (bindingResult.hasErrors()){
-	    	CodeSub result = codeSubManageService.selectCodeSubDetail(CodeSubVO);
+	    		CodeMst result = codeManageService.selectCodeSubDetail(CodeMstVO);
 	    	model.addAttribute("CodeDetailVO", result);
 	    	
 	    	return "egovframework/com/academy/code/CodeSubDetail";
 	    	}
 	    	
-	    	CodeSubVO.setLastUpdusrId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
-	    	codeSubManageService.updateCodeSub(CodeSubVO);
+	    	CodeMstVO.setLastUpdusrId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
+	    	codeManageService.updateCodeSub(CodeMstVO);
 	    	
 	        return "forward:/code/SelectCodeSubList.do";
 	    }
@@ -227,8 +221,8 @@ public class CodeSubManageController {
 		 * @throws Exception
 		 */
 	    @RequestMapping(value="/sym/ccm/cde/deleteCodeSub.do")
-		public String deleteCodeSub (@ModelAttribute("loginVO") LoginVO loginVO, CodeSubVO CodeSubVO	, ModelMap model) throws Exception {
-	    	codeSubManageService.deleteCodeSub(CodeSubVO);
+		public String deleteCodeSub (@ModelAttribute("loginVO") LoginVO loginVO, CodeMstVO CodeMstVO	, ModelMap model) throws Exception {
+	    	codeManageService.deleteCodeSub(CodeMstVO);
 	    	
 	        return "forward:/code/SelectCodeSubList.do";
 		}
