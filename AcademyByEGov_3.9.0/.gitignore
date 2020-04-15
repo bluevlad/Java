@@ -1,1 +1,7 @@
-/.settings/
+/.settings
+/.classpath
+/.gitignore
+/.project
+*/target/*
+*/eclipse-worksapce/*
+*/.vscode/*
