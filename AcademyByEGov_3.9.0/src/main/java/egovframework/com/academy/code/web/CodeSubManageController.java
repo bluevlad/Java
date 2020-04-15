@@ -107,9 +107,9 @@ public class CodeSubManageController {
 		 * @throws Exception
 		 */
 		@RequestMapping(value="/code/SelectCodeSubDetail.do")
-	 	public String selectCodeSubDetail (@ModelAttribute("loginVO") LoginVO loginVO, CodeMstVO CodeMstVO, ModelMap model)	throws Exception {
+	 	public String selectCodeSubDetail (@ModelAttribute("loginVO") LoginVO loginVO, @ModelAttribute("CodeMstVO") CodeMstVO CodeMstVO, ModelMap model)	throws Exception {
 	    	CodeMst vo = codeManageService.selectCodeSubDetail(CodeMstVO);
-			model.addAttribute("result", vo);
+			model.addAttribute("CodeMstVO", vo);
 
 			return "egovframework/com/academy/code/CodeSubDetail";
 		}
@@ -129,8 +129,6 @@ public class CodeSubManageController {
         	CodeMstVO searchCodeVO = new CodeMstVO();
         	searchCodeVO.setRecordCountPerPage(999999);
             searchCodeVO.setFirstIndex(0);
-        	searchCodeVO.setSearchCondition("clCode");
-            searchCodeVO.setSearchKeyword(CodeMstVO.getCodeId());
             
 	        List<?> CodeList = codeManageService.selectCodeList(searchCodeVO);
 	        model.addAttribute("codeList", CodeList);
@@ -193,7 +191,7 @@ public class CodeSubManageController {
 	     * @throws Exception
 	     */
 	    @RequestMapping("/code/updateCodeSub.do")
-	    public String updateCodeSub(@ModelAttribute("CodeSubVO") CodeMstVO CodeMstVO, ModelMap model, BindingResult bindingResult ) throws Exception {
+	    public String updateCodeSub(@ModelAttribute("CodeMstVO") CodeMstVO CodeMstVO, ModelMap model, BindingResult bindingResult ) throws Exception {
 	    	
 	    	LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
 	    	
@@ -201,9 +199,9 @@ public class CodeSubManageController {
 	    	
 	    	if (bindingResult.hasErrors()){
 	    		CodeMst result = codeManageService.selectCodeSubDetail(CodeMstVO);
-	    	model.addAttribute("CodeDetailVO", result);
+	    		model.addAttribute("CodeMstVO", result);
 	    	
-	    	return "egovframework/com/academy/code/CodeSubDetail";
+	    		return "egovframework/com/academy/code/CodeSubDetail";
 	    	}
 	    	
 	    	CodeMstVO.setLastUpdusrId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
@@ -220,7 +218,7 @@ public class CodeSubManageController {
 		 * @return "forward:/code/deleteCodeSub.do"
 		 * @throws Exception
 		 */
-	    @RequestMapping(value="/sym/ccm/cde/deleteCodeSub.do")
+	    @RequestMapping(value="/code/deleteCodeSub.do")
 		public String deleteCodeSub (@ModelAttribute("loginVO") LoginVO loginVO, CodeMstVO CodeMstVO	, ModelMap model) throws Exception {
 	    	codeManageService.deleteCodeSub(CodeMstVO);
 	    	
