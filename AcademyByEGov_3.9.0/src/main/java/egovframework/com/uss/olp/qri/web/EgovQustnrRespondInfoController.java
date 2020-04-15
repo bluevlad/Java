@@ -3,7 +3,7 @@ package egovframework.com.uss.olp.qri.web;
 import java.util.List;
 import java.util.Map;
 
-import egovframework.com.academy.code.service.CodeSub;
+import egovframework.com.academy.code.service.CodeMst;
 import egovframework.com.cmm.ComDefaultCodeVO;
 import egovframework.com.cmm.ComDefaultVO;
 import egovframework.com.cmm.EgovMessageSource;
@@ -275,7 +275,7 @@ public class EgovQustnrRespondInfoController {
      	//성별코드조회
     	ComDefaultCodeVO voComCode = new ComDefaultCodeVO();
     	voComCode.setCodeId("COM014");
-    	List<CodeSub> listComCode = cmmUseService.selectCmmCodeDetail(voComCode);
+    	List<CodeMst> listComCode = cmmUseService.selectCmmCodeDetail(voComCode);
     	model.addAttribute("comCode014", listComCode);
 
     	//직업코드조회

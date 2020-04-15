@@ -2,7 +2,7 @@ package egovframework.com.cmm.service.impl;
 
 import java.util.List;
 
-import egovframework.com.academy.code.service.CodeSub;
+import egovframework.com.academy.code.service.CodeMst;
 import egovframework.com.cmm.ComDefaultCodeVO;
 
 import org.springframework.stereotype.Repository;
@@ -33,8 +33,8 @@ public class CmmUseDAO extends EgovComAbstractDAO {
      * @throws Exception
      */
     @SuppressWarnings("unchecked")
-    public List<CodeSub> selectCmmCodeDetail(ComDefaultCodeVO vo) throws Exception {
-	return (List<CodeSub>) list("CmmUseDAO.selectCmmCodeDetail", vo);
+    public List<CodeMst> selectCmmCodeDetail(ComDefaultCodeVO vo) throws Exception {
+	return (List<CodeMst>) list("CmmUseDAO.selectCmmCodeDetail", vo);
     }
 
     /**
@@ -45,8 +45,8 @@ public class CmmUseDAO extends EgovComAbstractDAO {
      * @throws Exception
      */
     @SuppressWarnings("unchecked")
-    public List<CodeSub> selectOgrnztIdDetail(ComDefaultCodeVO vo) throws Exception {
-	return (List<CodeSub>) list("CmmUseDAO.selectOgrnztIdDetail", vo);
+    public List<CodeMst> selectOgrnztIdDetail(ComDefaultCodeVO vo) throws Exception {
+	return (List<CodeMst>) list("CmmUseDAO.selectOgrnztIdDetail", vo);
     }
 
     /**
@@ -56,7 +56,7 @@ public class CmmUseDAO extends EgovComAbstractDAO {
      * @throws Exception
      */
     @SuppressWarnings("unchecked")
-    public List<CodeSub> selectGroupIdDetail(ComDefaultCodeVO vo) throws Exception {
-	return (List<CodeSub>) list("CmmUseDAO.selectGroupIdDetail", vo);
+    public List<CodeMst> selectGroupIdDetail(ComDefaultCodeVO vo) throws Exception {
+	return (List<CodeMst>) list("CmmUseDAO.selectGroupIdDetail", vo);
     }
 }

@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import egovframework.com.academy.code.service.CodeSub;
+import egovframework.com.academy.code.service.CodeMst;
 import egovframework.com.cmm.ComDefaultCodeVO;
 import egovframework.com.cmm.service.EgovCmmUseService;
 
@@ -43,7 +43,7 @@ public class EgovCmmUseServiceImpl extends EgovAbstractServiceImpl implements Eg
      * @return
      * @throws Exception
      */
-    public List<CodeSub> selectCmmCodeDetail(ComDefaultCodeVO vo) throws Exception {
+    public List<CodeMst> selectCmmCodeDetail(ComDefaultCodeVO vo) throws Exception {
     	return cmmUseDAO.selectCmmCodeDetail(vo);
     }
 
@@ -54,9 +54,9 @@ public class EgovCmmUseServiceImpl extends EgovAbstractServiceImpl implements Eg
      * @return
      * @throws Exception
      */
-    public Map<String, List<CodeSub>> selectCmmCodeDetails(List<?> voList) throws Exception {
+    public Map<String, List<CodeMst>> selectCmmCodeDetails(List<?> voList) throws Exception {
 		ComDefaultCodeVO vo;
-		Map<String, List<CodeSub>> map = new HashMap<String, List<CodeSub>>();
+		Map<String, List<CodeMst>> map = new HashMap<String, List<CodeMst>>();
 
 		Iterator<?> iter = voList.iterator();
 		while (iter.hasNext()) {
@@ -74,7 +74,7 @@ public class EgovCmmUseServiceImpl extends EgovAbstractServiceImpl implements Eg
      * @return 조직정보 List
      * @throws Exception
      */
-    public List<CodeSub> selectOgrnztIdDetail(ComDefaultCodeVO vo) throws Exception {
+    public List<CodeMst> selectOgrnztIdDetail(ComDefaultCodeVO vo) throws Exception {
     	return cmmUseDAO.selectOgrnztIdDetail(vo);
     }
 
@@ -85,7 +85,7 @@ public class EgovCmmUseServiceImpl extends EgovAbstractServiceImpl implements Eg
      * @return 그룹정보 List
      * @throws Exception
      */
-    public List<CodeSub> selectGroupIdDetail(ComDefaultCodeVO vo) throws Exception {
+    public List<CodeMst> selectGroupIdDetail(ComDefaultCodeVO vo) throws Exception {
     	return cmmUseDAO.selectGroupIdDetail(vo);
     }
 }
