@@ -30,44 +30,36 @@
 <title>${pageTitle} <spring:message code="title.create" /></title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
-<script type="text/javascript" src="<c:url value="/validator.do"/>"></script>
-<validator:javascript formName="CodeDetailVO" staticJavascript="false" xhtml="true" cdata="false"/>
+<validator:javascript formName="CodeMstVO" staticJavascript="false" xhtml="true" cdata="false"/>
 <script type="text/javascript">
 /* ********************************************************
  * 초기화
  ******************************************************** */
 function fn_egov_init(){
-
 	// 첫 입력란에 포커스
-	document.getElementById("CodeDetailVO").clCode.focus();
-
+	document.getElementById("CodeMstVO").Code.focus();
 }
 /* ********************************************************
  * 목록 으로 가기
  ******************************************************** */
 function fn_egov_list_code(){
-	location.href = "<c:url value='/sym/ccm/cde/SelectCcmCmmnDetailCodeList.do' />";
+	location.href = "<c:url value='/code/SelectCodeSubList.do' />";
 }
 /* ********************************************************
  * 저장처리화면
  ******************************************************** */
 function fn_egov_regist_code(form){
-	//input item Client-Side validate
-	if (!validateCodeDetailVO(form)) {	
-		return false;
-	} else {
-		if(confirm("<spring:message code="common.regist.msg" />")){	
-			form.action="<c:url value='/sym/ccm/cde/RegistCcmCmmnDetailCode.do'/>";
-			form.submit();	
-		}
-	} 
+	if(confirm("<spring:message code="common.regist.msg" />")){	
+		form.action="<c:url value='/code/insertCodeSub.do'/>";
+		form.submit();	
+	}
 }
 /* ********************************************************
  * CodeId 가져오기
  ******************************************************** */
 function fn_egov_get_CodeId(form){
 	
-	form.action="<c:url value='/sym/ccm/cde/RegistCcmCmmnDetailCodeView.do'/>";
+	form.action="<c:url value='/code/SelectCodeList.do'/>";
 	form.submit();
 }
 
@@ -85,7 +77,7 @@ function fncShowMessg(){
 </head>
 <body onLoad="fn_egov_init(); fncShowMessg();">
 
-<form:form commandName="CodeDetailVO" method="post" onSubmit="fn_egov_regist_code(document.forms[0]); return false;"> 
+<form:form commandName="CodeMstVO" method="post" onSubmit="fn_egov_regist_code(document.forms[0]); return false;"> 
 <div class="wTableFrm">
 	<!-- 타이틀 -->
 	<h2>${pageTitle} <spring:message code="title.create" /></h2>
@@ -103,18 +95,13 @@ function fncShowMessg(){
 		<c:set var="inputYes"><spring:message code="input.yes" /></c:set>
 		<c:set var="inputNo"><spring:message code="input.no" /></c:set>
 		<!-- 코드ID -->
-		<c:set var="title"><spring:message code="comSymCcmCde.CodeDetailVO.codeId"/> </c:set>
+		<c:set var="title"><spring:message code="comAcademy.CodeVO.codeId"/> </c:set>
 		<tr>
 			<th><label for="codeId">${title} <span class="pilsu">*</span></label></th>
 			<td class="left">
-			    <form:select path="clCode" title="${title} ${inputSelect}" onChange="fn_egov_get_CodeId(CodeDetailVO);">
-			    			<form:option value="" label="${inputSelect}"/>
- 							<form:options items="${clCodeList}"  itemValue="clCode" itemLabel="clCodeNm"/>
-			    </form:select>
-			    
 			    <form:select path="codeId" title="${title} ${inputSelect}" >
-			    			<form:option value="" label="${inputSelect}"/>
- 							<form:options items="${codeList}"  itemValue="codeId" itemLabel="codeIdNm"/>
+					<form:option value="" label="${inputSelect}"/>
+					<form:options items="${codeList}"  itemValue="codeId" itemLabel="codeIdNm"/>
 			    </form:select>
    				<div><form:errors path="codeId" cssClass="error" /></div>     
 			    
@@ -122,7 +109,7 @@ function fncShowMessg(){
 		</tr>
 				
 		<!-- 상세코드 -->
-		<c:set var="title"><spring:message code="comSymCcmCde.CodeDetailVO.code"/> </c:set>
+		<c:set var="title"><spring:message code="comAcademy.CodeVO.code"/> </c:set>
 		<tr>
 			<th><label for="code">${title} <span class="pilsu">*</span></label></th>
 			<td class="left">
@@ -132,7 +119,7 @@ function fncShowMessg(){
 		</tr>
 
 		<!-- 상세코드명 -->
-		<c:set var="title"><spring:message code="comSymCcmCde.CodeDetailVO.codeNm"/> </c:set>
+		<c:set var="title"><spring:message code="comAcademy.CodeVO.codeNm"/> </c:set>
 		<tr>
 			<th><label for="codeNm">${title} <span class="pilsu">*</span></label></th>
 			<td class="left">
@@ -142,7 +129,7 @@ function fncShowMessg(){
 		</tr>
 		
 		<!-- 상세코드설명 -->
-		<c:set var="title"><spring:message code="comSymCcmCde.CodeDetailVO.codeDc"/> </c:set>
+		<c:set var="title"><spring:message code="comAcademy.CodeVO.codeDc"/> </c:set>
 		<tr>
 			<th><label for="codeDc">${title } <span class="pilsu">*</span></label></th>
 			<td class="nopd">
@@ -152,7 +139,7 @@ function fncShowMessg(){
 		</tr>
 		
 		<!-- 사용여부 -->
-		<c:set var="title"><spring:message code="comSymCcmCde.CodeDetailVO.useAt"/> </c:set>
+		<c:set var="title"><spring:message code="comAcademy.CodeVO.useAt"/> </c:set>
 		<tr>
 			<th>${title } <span class="pilsu">*</span></th>
 			<td class="left">
@@ -170,12 +157,11 @@ function fncShowMessg(){
 	<!-- 하단 버튼 -->
 	<div class="btn">
 		<input type="submit" class="s_submit" value="<spring:message code="button.create" />" title="<spring:message code="button.create" /> <spring:message code="input.button" />" />
-		<span class="btn_s"><a href="<c:url value='/sym/ccm/cde/SelectCcmCmmnDetailCodeList.do' />" title="<spring:message code="button.list" />  <spring:message code="input.button" />"><spring:message code="button.list" /></a></span>
+		<span class="btn_s"><a href="<c:url value='/code/SelectCodeSubList.do' />" title="<spring:message code="button.list" />  <spring:message code="input.button" />"><spring:message code="button.list" /></a></span>
 	</div><div style="clear:both;"></div>
 	
 </div>
 
-<%-- <input name="cmd" type="hidden" value="<c:out value='save'/>"> --%>
 </form:form>
 
 </body>

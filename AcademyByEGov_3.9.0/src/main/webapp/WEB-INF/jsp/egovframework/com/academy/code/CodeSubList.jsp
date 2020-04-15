@@ -34,39 +34,39 @@
  ******************************************************** */
 function fn_egov_init(){
 	// 첫 입력란에 포커스..
-	document.CcmDeCodeForm.searchCondition.focus();
+	document.CodeMstForm.searchCondition.focus();
 }
 
 /*********************************************************
  * 페이징 처리 함수
  ******************************************************** */
 function fn_egov_select_linkPage(pageNo){
-	document.CcmDeCodeForm.pageIndex.value = pageNo;
-	document.CcmDeCodeForm.action = "<c:url value='/sym/ccm/cde/SelectCcmCmmnDetailCodeList.do'/>";
-   	document.CcmDeCodeForm.submit();
+	document.CodeMstForm.pageIndex.value = pageNo;
+	document.CodeMstForm.action = "<c:url value='/code/SelectCodeSubList.do'/>";
+   	document.CodeMstForm.submit();
 }
 /*********************************************************
  * 조회 처리 함수
  ******************************************************** */
 function fn_egov_search_code(){
-	document.CcmDeCodeForm.pageIndex.value = 1;
-	document.CcmDeCodeForm.submit();
+	document.CodeMstForm.pageIndex.value = 1;
+	document.CodeMstForm.submit();
 }
 /* ********************************************************
  * 상세회면 처리 함수
  ******************************************************** */
 function fn_egov_inquire_codedetail(codeId, code) {
 	// 사이트 키값(siteId) 셋팅.
-	document.CcmDeCodeForm.codeId.value = codeId;
-	document.CcmDeCodeForm.code.value = code;
-  	document.CcmDeCodeForm.action = "<c:url value='/sym/ccm/cde/SelectCcmCmmnDetailCodeDetail.do'/>";
-  	document.CcmDeCodeForm.submit();
+	document.CodeMstForm.codeId.value = codeId;
+	document.CodeMstForm.code.value = code;
+  	document.CodeMstForm.action = "<c:url value='/code/SelectCodeSubDetail.do'/>";
+  	document.CodeMstForm.submit();
 }
 </script>
 </head>
 <body onload="fn_egov_init()">
 
-<form name="CodeMstForm" action="<c:url value='/sym/ccm/cde/SelectCcmCmmnDetailCodeList.do'/>" method="post" onSubmit="fn_egov_search_code(); return false;"> 
+<form name="CodeMstForm" action="<c:url value='/code/SelectCodeSubList.do'/>" method="post" onSubmit="fn_egov_search_code(); return false;"> 
 <div class="board">
 	<h1>${pageTitle} <spring:message code="title.list" /></h1>
 	
@@ -86,7 +86,7 @@ function fn_egov_inquire_codedetail(codeId, code) {
 			<li>
 				<input class="s_input" name="searchKeyword" type="text"  size="35" title="<spring:message code="title.search" /> <spring:message code="input.input" />" value='<c:out value="${searchVO.searchKeyword}"/>'  maxlength="155" >
 				<input type="submit" class="s_btn" value="<spring:message code="button.inquire" />" title="<spring:message code="title.inquire" /> <spring:message code="input.button" />" />
-				<span class="btn_b"><a href="<c:url value='/sym/ccm/cde/RegistCcmCmmnDetailCodeView.do' />"  title="<spring:message code="button.create" /> <spring:message code="input.button" />"><spring:message code="button.create" /></a></span>
+				<span class="btn_b"><a href="<c:url value='/code/CodeSubRegist.do' />"  title="<spring:message code="button.create" /> <spring:message code="input.button" />"><spring:message code="button.create" /></a></span>
 			</li>
 		</ul>
 	</div>
@@ -120,8 +120,8 @@ function fn_egov_inquire_codedetail(codeId, code) {
 	<tr>
 		<td><c:out value="${(searchVO.pageIndex-1) * searchVO.pageSize + status.count}"/></td>
 		<td><c:out value='${resultInfo.codeId}'/></td>
-		<td><c:out value='${resultInfo.code}'/></td>
-		<td><a href="<c:url value='/sym/ccm/cde/SelectCcmCmmnDetailCodeDetail.do'/>?codeId=${resultInfo.codeId}&amp;code=${resultInfo.code}" onClick="fn_egov_inquire_codedetail('<c:out value="${resultInfo.codeId}"/>','<c:out value="${resultInfo.code}"/>');return false;"><c:out value='${fn:substring(resultInfo.codeNm, 0, 40)}'/></a></td>
+		<td><a href="<c:url value='/code/SelectCodeSubDetail.do'/>?codeId=${resultInfo.codeId}&amp;code=${resultInfo.code}" onClick="fn_egov_inquire_codedetail('<c:out value="${resultInfo.codeId}"/>','<c:out value="${resultInfo.code}"/>');return false;"><c:out value='${resultInfo.code}'/></a></td>
+		<td><a href="<c:url value='/code/SelectCodeSubDetail.do'/>?codeId=${resultInfo.codeId}&amp;code=${resultInfo.code}" onClick="fn_egov_inquire_codedetail('<c:out value="${resultInfo.codeId}"/>','<c:out value="${resultInfo.code}"/>');return false;"><c:out value='${fn:substring(resultInfo.codeNm, 0, 40)}'/></a></td>
 		<td><c:out value='${resultInfo.useAt}'/></td>
 	</tr>
 	</c:forEach>

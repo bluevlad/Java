@@ -29,43 +29,36 @@
 <title>${pageTitle} <spring:message code="title.update" /></title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
-<script type="text/javascript" src="<c:url value="/validator.do"/>"></script>
-<validator:javascript formName="CodeDetailVO" staticJavascript="false" xhtml="true" cdata="false"/>
+<validator:javascript formName="CodeMstVO" staticJavascript="false" xhtml="true" cdata="false"/>
 <script type="text/javascript">
 /* ********************************************************
  * 초기화
  ******************************************************** */
 function fn_egov_init(){
 	// 첫 입력란에 포커스..
-	document.getElementById("CodeDetailVO").codeNm.focus();
+	document.getElementById("CodeMstVO").codeNm.focus();
 }
 /* ********************************************************
  * 저장처리화면
  ******************************************************** */
 function fn_egov_updt_code(form){
-	//input item Client-Side validate
-	if (!validateCodeDetailVO(form)) {		 			
-		return false;		
-	} else {
-		if(confirm("<spring:message code="common.update.msg" />")){	
-			form.submit();	
-		}					
-	}	
+	if(confirm("<spring:message code="common.update.msg" />")){	
+		form.submit();	
+	}					
 }
 /* ********************************************************
  * 목록 으로 가기
  ******************************************************** */
 function fn_egov_inqire_code() {
-	document.CcmDeCodeForm.action = "<c:url value='/sym/ccm/cde/SelectCcmCmmnDetailCodeList.do'/>";
+	document.CcmDeCodeForm.action = "<c:url value='/code/SelectCodeSubList.do'/>";
 	document.CcmDeCodeForm.submit();	
 }
 </script>
 </head>
 <body onLoad="fn_egov_init();">
 
-
 <!-- 상단타이틀 -->
-<form:form commandName="CodeDetailVO" action="${pageContext.request.contextPath}/sym/ccm/cde/UpdateCcmCmmnDetailCode.do" method="post" onSubmit="fn_egov_updt_code(document.forms[0]); return false;">  
+<form:form commandName="CodeMstVO" action="${pageContext.request.contextPath}/code/updateCodeSub.do" method="post" onSubmit="fn_egov_updt_code(document.forms[0]); return false;">  
 <div class="wTableFrm">
 	<h2>${pageTitle} <spring:message code="title.update" /></h2>
 
@@ -83,7 +76,7 @@ function fn_egov_inqire_code() {
 		<c:set var="inputNo"><spring:message code="input.no" /></c:set>
 		
 		<!-- 코드ID -->
-		<c:set var="title"><spring:message code="comSymCcmCde.CodeDetailVO.codeId"/> </c:set>
+		<c:set var="title"><spring:message code="comAcademy.CodeVO.codeId"/> </c:set>
 		<tr>
 			<th><label for="codeId">${title} <span class="pilsu">*</span></label></th>
 			<td class="left">
@@ -94,7 +87,7 @@ function fn_egov_inqire_code() {
 		</tr>
 		
 		<!-- 상세코드 -->
-		<c:set var="title"><spring:message code="comSymCcmCde.CodeDetailVO.code"/> </c:set>
+		<c:set var="title"><spring:message code="comAcademy.CodeVO.code"/> </c:set>
 		<tr>
 			<th><label for="code">${title} <span class="pilsu">*</span></label></th>
 			<td class="left">
@@ -104,7 +97,7 @@ function fn_egov_inqire_code() {
 		</tr>
 		
 		<!-- 상세코드명 -->
-		<c:set var="title"><spring:message code="comSymCcmCde.CodeDetailVO.codeNm"/> </c:set>
+		<c:set var="title"><spring:message code="comAcademy.CodeVO.codeNm"/> </c:set>
 		<tr>
 			<th><label for="codeNm">${title} <span class="pilsu">*</span></label></th>
 			<td class="left">
@@ -114,7 +107,7 @@ function fn_egov_inqire_code() {
 		</tr>
 		
 		<!-- 상세코드설명 -->
-		<c:set var="title"><spring:message code="comSymCcmCde.CodeDetailVO.codeDc"/> </c:set>
+		<c:set var="title"><spring:message code="comAcademy.CodeVO.codeDc"/> </c:set>
 		<tr>
 			<th><label for="codeDc">${title } <span class="pilsu">*</span></label></th>
 			<td class="nopd">
@@ -124,7 +117,7 @@ function fn_egov_inqire_code() {
 		</tr>
 		
 		<!-- 사용여부 -->
-		<c:set var="title"><spring:message code="comSymCcmCde.CodeDetailVO.useAt"/> </c:set>
+		<c:set var="title"><spring:message code="comAcademy.CodeVO.useAt"/> </c:set>
 		<tr>
 			<th><label for="useAt">${title } <span class="pilsu">*</span></label></th>
 			<td class="left">
@@ -142,7 +135,7 @@ function fn_egov_inqire_code() {
 	<!-- 하단 버튼 -->
 	<div class="btn">
 		<input type="submit" class="s_submit" value="<spring:message code="button.update" />" title="<spring:message code="button.update" /> <spring:message code="input.button" />" />
-		<a href="<c:url value='/sym/ccm/cde/SelectCcmCmmnDetailCodeList.do' />" class="btn_s" title="<spring:message code="button.list" /> <spring:message code="input.button" />"><spring:message code="button.list" /></a>
+		<a href="<c:url value='/code/SelectCodeSubList.do' />" class="btn_s" title="<spring:message code="button.list" /> <spring:message code="input.button" />"><spring:message code="button.list" /></a>
 	</div><div style="clear:both;"></div>
 	
 </div>
