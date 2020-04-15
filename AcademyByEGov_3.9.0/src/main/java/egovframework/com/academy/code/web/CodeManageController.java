@@ -107,9 +107,9 @@ public class CodeManageController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/code/SelectCodeDetail.do")
-	public String selectCodeDetail(@ModelAttribute("searchVO") CodeMstVO CodeVO, ModelMap model) throws Exception {
+	public String selectCodeDetail(@ModelAttribute("searchVO") CodeMstVO searchVO, @ModelAttribute("CodeMstVO") CodeMstVO CodeMstVO, ModelMap model) throws Exception {
 		
-		CodeMst vo = codeManageService.selectCodeDetail(CodeVO);
+		CodeMst vo = codeManageService.selectCodeDetail(searchVO);
 		
 		model.addAttribute("CodeMstVO", vo);
 
@@ -125,11 +125,11 @@ public class CodeManageController {
 	 * @throws Exception
 	 */
 	@RequestMapping("/code/CodeRegist.do")
-	public String CodeRegist(@ModelAttribute("CodeMst") CodeMst CodeVO, ModelMap model) throws Exception {
+	public String CodeRegist(@ModelAttribute("searchVO") CodeMstVO searchVO, @ModelAttribute("CodeMstVO") CodeMstVO CodeMstVO, ModelMap model) throws Exception {
 		
-		CodeMstVO searchVO = new CodeMstVO();
-		searchVO.setFirstIndex(0);
-        List<?> CodeList = codeManageService.selectCodeList(searchVO);
+		CodeMstVO vo = new CodeMstVO();
+		vo.setFirstIndex(0);
+        List<?> CodeList = codeManageService.selectCodeList(vo);
         
         model.addAttribute("CodeList", CodeList);
 
@@ -193,22 +193,22 @@ public class CodeManageController {
      * @throws Exception
      */
     @RequestMapping("/code/updateCode.do")
-    public String updateCode(@ModelAttribute("searchVO") CodeMstVO cmmnCode, @ModelAttribute("CodeMst") CodeMst CodeVO,
+    public String updateCode(@ModelAttribute("searchVO") CodeMstVO CodeMstVO, @ModelAttribute("CodeMst") CodeMst CodeMst,
 	    BindingResult bindingResult, ModelMap model) throws Exception {
 
 		LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
 	
-		beanValidator.validate(CodeVO, bindingResult);
+		beanValidator.validate(CodeMstVO, bindingResult);
 		if (bindingResult.hasErrors()) {
 	
-			CodeMst result = codeManageService.selectCodeDetail(cmmnCode);
-		    model.addAttribute("CodeVO", result);
+			CodeMst result = codeManageService.selectCodeDetail(CodeMstVO);
+		    model.addAttribute("CodeMstVO", result);
 	
 		    return "egovframework/com/academy/code/CodeMstDetail";
 		}
 	
-		CodeVO.setLastUpdusrId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
-		codeManageService.updateCode(CodeVO);
+		CodeMst.setLastUpdusrId((user == null || user.getUniqId() == null) ? "" : user.getUniqId());
+		codeManageService.updateCode(CodeMst);
 
 		return "forward:/code/SelectCodeList.do";
     }
