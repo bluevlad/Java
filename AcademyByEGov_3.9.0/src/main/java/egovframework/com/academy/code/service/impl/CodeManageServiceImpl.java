@@ -42,7 +42,6 @@ public class CodeManageServiceImpl extends EgovAbstractServiceImpl implements Co
 	public List<?> selectCodeList(CodeMstVO searchVO) throws Exception {
 		return codeManageDAO.selectCodeList(searchVO);
 	}
-    
 	/**
 	 * 공통코드 총 갯수를 조회한다.
 	 */
@@ -50,7 +49,6 @@ public class CodeManageServiceImpl extends EgovAbstractServiceImpl implements Co
 	public int selectCodeListTotCnt(CodeMstVO searchVO) throws Exception {
         return codeManageDAO.selectCodeListTotCnt(searchVO);
 	}
-
 	/**
 	 * 공통코드 상세항목을 조회한다.
 	 */
@@ -58,7 +56,6 @@ public class CodeManageServiceImpl extends EgovAbstractServiceImpl implements Co
 	public CodeMst selectCodeDetail(CodeMst Code) throws Exception{
 		return codeManageDAO.selectCodeDetail(Code);
 	}
-
 	/**
 	 * 공통코드를 수정한다.
 	 */
@@ -66,7 +63,6 @@ public class CodeManageServiceImpl extends EgovAbstractServiceImpl implements Co
 	public void updateCode(CodeMst Code) throws Exception {
 		codeManageDAO.updateCode(Code);
 	}
-
 	/**
 	 * 공통코드를 등록한다.
 	 */
@@ -75,13 +71,57 @@ public class CodeManageServiceImpl extends EgovAbstractServiceImpl implements Co
 		codeManageDAO.insertCode(Code);
 		
 	}
-
 	/**
 	 * 공통코드를 삭제한다.
 	 */
 	@Override
 	public void deleteCode(CodeMst Code) throws Exception {
 		codeManageDAO.deleteCode(Code);
+	}
+	
+	/**
+	 * 공통상세코드 목록을 조회한다.
+	 */
+	@Override
+	public List<?> selectCodeSubList(CodeMstVO Code) throws Exception {
+        return codeManageDAO.selectCodeSubList(Code);
+	}
+	/**
+	 * 공통상세코드 총 갯수를 조회한다.
+	 */
+	@Override
+	public int selectCodeSubListTotCnt(CodeMstVO Code) throws Exception {
+        return codeManageDAO.selectCodeSubListTotCnt(Code);
+	}
+	/**
+	 * 공통상세코드 상세항목을 조회한다.
+	 * @throws Exception 
+	 */
+	@Override
+	public CodeMst selectCodeSubDetail(CodeMst Code) throws Exception {
+		return codeManageDAO.selectCodeSubDetail(Code);
+	}
+	/**
+	 * 공통상세코드를 등록한다.
+	 */
+	@Override
+	public void insertCodeSub(CodeMst Code) throws Exception {
+		codeManageDAO.insertCodeSub(Code);
+	}
+	/**
+	 * 공통상세코드를 수정한다.
+	 */
+	@Override
+	public void updateCodeSub(CodeMst Code) throws Exception {
+		codeManageDAO.updateCodeSub(Code);
+	}
+	/**
+	 * 공통상세코드를 삭제한다.
+	 * @throws Exception 
+	 */
+	@Override
+	public void deleteCodeSub(CodeMst Code) throws Exception {
+		codeManageDAO.deleteCodeSub(Code);
 	}
 
 }

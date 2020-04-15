@@ -26,9 +26,15 @@ public class CodeMst implements Serializable {
 	/** 코드ID */
 	private String codeId = "";
 	/** 코드ID명 */
-	private String codeNm = "";
+	private String codeIdNm = "";
 	/** 코드ID설명 */
-	private String codeDc = "";
+	private String codeIdDc = "";
+    /** 상세코드 */
+	private String code = "";
+	/** 상세코드명 */
+    private String codeNm = "";
+    /** 상세코드설명 */
+    private String codeDc = "";
 	/** 사용여부 */
     private String useAt = "";
     /** 최초등록자ID */
@@ -49,6 +55,50 @@ public class CodeMst implements Serializable {
 	 */
 	public void setCodeId(String codeId) {
 		this.codeId = codeId;
+	}
+	
+	/**
+	 * codeIdNm attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getCodeIdNm() {
+		return codeIdNm;
+	}
+	/**
+	 * codeIdNm attribute 값을 설정한다.
+	 * @param codeIdNm String
+	 */
+	public void setCodeIdNm(String codeIdNm) {
+		this.codeIdNm = codeIdNm;
+	}
+
+	/**
+	 * codeIdDc attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getCodeIdDc() {
+		return codeIdDc;
+	}
+	/**
+	 * codeIdDc attribute 값을 설정한다.
+	 * @param codeIdDc String
+	 */
+	public void setCodeIdDc(String codeIdDc) {
+		this.codeIdDc = codeIdDc;
+	}
+	/**
+	 * code attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getCode() {
+		return code;
+	}
+	/**
+	 * codeId attribute 값을 설정한다.
+	 * @param codeId String
+	 */
+	public void setCode(String code) {
+		this.code = code;
 	}
 	
 	/**

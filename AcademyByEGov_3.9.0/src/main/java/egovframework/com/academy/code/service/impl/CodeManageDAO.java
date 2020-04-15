@@ -83,5 +83,63 @@ public class CodeManageDAO extends EgovComAbstractDAO {
 	public void deleteCode(CodeMst Code) {
 		delete("CodeManage.deleteCode", Code);
 	}
+    
+    /**
+	 * 공통상세코드 목록을 조회한다.
+     * @param searchVO
+     * @return List(공통상세코드 목록)
+     * @throws Exception
+     */
+    public List<?> selectCodeSubList(CodeMstVO searchVO) throws Exception {
+        return list("CodeManage.selectCodeSubList", searchVO);
+    }
+
+    /**
+	 * 공통상세코드 총 갯수를 조회한다.
+     * @param searchVO
+     * @return int(공통상세코드 총 갯수)
+     */
+    public int selectCodeSubListTotCnt(CodeMstVO searchVO) throws Exception {
+        return (Integer)selectOne("CodeManage.selectCodeSubListTotCnt", searchVO);
+    }
+
+	/**
+	 * 공통상세코드 상세항목을 조회한다.
+	 * @param CodeDetailVO
+	 * @return CodeDetailVO(공통상세코드)
+	 */
+	public CodeMst selectCodeSubDetail(CodeMst Code) throws Exception{
+		return (CodeMst) selectOne("CodeManage.selectCodeSubDetail", Code);
+	}
+
+	/**
+	 * 공통상세코드를 등록한다.
+	 * @param CodeDetailVO
+	 * @throws Exception
+	 */
+	public void insertCodeSub(CodeMst Code) throws Exception{
+		insert("CodeManage.insertCodeSub", Code);
+		
+	}
+
+	/**
+	 * 공통상세코드를 수정한다.
+	 * @param CodeDetailVO
+	 * @throws Exception
+	 */
+	public void updateCodeSub(CodeMst Code) throws Exception{
+		insert("CodeManage.updateCodeSub", Code);
+		
+	}
+	
+	/**
+	 * 공통상세코드를 삭제한다.
+	 * @param CodeDetailVO
+	 * @throws Exception
+	 */
+	public void deleteCodeSub(CodeMst Code) throws Exception{
+		delete("CodeManage.deleteCodeSub", Code);
+		
+	}
 
 }
