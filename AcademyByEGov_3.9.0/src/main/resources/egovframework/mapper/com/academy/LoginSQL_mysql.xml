@@ -32,6 +32,19 @@
 		<result property="password" column="password"/>
 	</resultMap>
 	
+	<!-- 일반 로그인 -->
+	<select id="actionLogin" resultMap="login">
+		SELECT 
+				emplyr_id AS id, user_nm AS name, password AS password, ihidnum AS ihidNum
+			     , email_adres AS email, 'USR' AS userSe, orgnzt_id AS orgnztId, esntl_id AS uniqId
+		FROM acm_member_mst
+		WHERE emplyr_id = #{id}
+		AND password = #{password}
+		AND emplyr_sttus_code = 'P'
+	</select>
+
+
+	
 	<!-- SSO용 ESNTL_ID를 이용한 로그인(2011.8.26) -->
 	<select id="ssoLoginByEsntlId" resultMap="login">
 		<!-- 일반회원 -->
@@ -82,18 +95,6 @@
 			   AND emplyr_sttus_code = 'P'
 			
 		</if>
-	</select>
-	
-	
-	<!-- 일반 로그인 -->
-	<select id="actionLogin" resultMap="login">
-		SELECT 
-				emplyr_id AS id, user_nm AS name, password AS password, ihidnum AS ihidNum
-			     , email_adres AS email, 'USR' AS userSe, orgnzt_id AS orgnztId, esntl_id AS uniqId
-		FROM acm_member_mst
-		WHERE emplyr_id = #{id}
-		AND password = #{password}
-		AND emplyr_sttus_code = 'P'
 	</select>
 	
 	<!-- 인증서 로그인 -->
