@@ -5,3 +5,5 @@
 */target/*
 */eclipse-worksapce/*
 */.vscode/*
+/target/
+/eclipse-worksapce/
