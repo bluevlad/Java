@@ -36,6 +36,7 @@ import egovframework.rte.fdl.property.EgovPropertyService;
  *   2011.09.07  서준식          사용자 구분 오류 수정
  *   2015.06.19  조정국          미인증사용자에 대한 보안처리
  *   2018.10.12  이정은          메인페이지 통합(업무, 기업, 일반)
+ *   2020.04.00  rainend		myProject 적용
  * </pre>
  */
 
