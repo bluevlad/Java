@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+	수정일      수정자                          수정내용
+  =========     =======    =================================================
+  2011.9.2   	정진오     	 	FRST_REGIST_PNTTM컬럼에 FRST_REGISTER_PNTTM Alias 추가
+								IndvdlSchdulManage.selectIndvdlSchdulManageRetrieve에 SCHDUL_CHARGER_NAME 추가(주별, 일별 목록 조회시 필요)
+  2011.9.7		이기하			DeptSchdulManage.insertDeptSchdulManage에 schdulChargerName -> schdulChargerId 컬럼변경
+  								DeptSchdulManage.updateDeptSchdulManage에 schdulChargerName -> schdulChargerId 컬럼변경
+  2011.10.05    서준식               보안 취약점 점검사항 반영 $->#변경
+  2018.10.15  	이정은               메인페이지/일정관리조회 - 오늘날짜 일정 안나오는 오류 처리
+ *   2020.04.00  rainend		myProject 적용
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ScehduleManage">
+
+	<resultMap id="ScheduleMap" type="egovframework.com.academy.schedule.service.ScheduleVO">
+		<result property="scdId" column="SCD_ID"/>
+		<result property="scdSe" column="SCD_SE"/>
+		<result property="scdDeptId" column="SCD_DEPT_ID"/>
+		<result property="scdDeptName" column="SCD_DEPT_NAME"/>
+
+		<result property="scdKindCode" column="SCD_KIND_CODE"/>
+		<result property="scdBgnde" column="SCD_BGNDE"/>
+		<result property="scdEndde" column="SCD_ENDDE"/>
+		<result property="scdNm" column="SCD_NM"/>
+		<result property="scdDesc" column="SCD_DESC"/>
+		<result property="scdPlace" column="SCD_PLACE"/>
+		<result property="scdIpcrCode" column="SCD_IPCR_CODE"/>
+		<result property="scdChargerId" column="SCD_CHARGER_ID"/>
+		<result property="scdChargerName" column="SCD_CHARGER_NAME"/>
+
+		<result property="atchFileId" column="ATCH_FILE_ID"/>
+		<result property="reptitSeCode" column="REPTIT_SE_CODE"/>
+		<result property="frstRegisterPnttm" column="FRST_REGIST_PNTTM"/>
+		<result property="frstRegisterId" column="FRST_REGISTER_ID"/>
+		<result property="lastUpdusrPnttm" column="LAST_UPDT_PNTTM"/>
+		<result property="lastUpdusrId" column="LAST_UPDUSR_ID"/>
+	</resultMap>
+
+	<!-- 개인일정정보::목록조회_게시물정보 -->
+	<select id="selectScheduleList" parameterType="comDefaultVO" resultType="egovMap">
+		SELECT
+			A.SCD_ID, A.SCD_SE, A.SCD_DEPT_ID, A.SCD_KIND_CODE,
+			A.SCD_BGNDE, A.SCD_ENDDE, A.SCD_NM, A.SCD_DESC, A.SCD_PLACE,
+			A.SCD_IPCR_CODE, A.SCD_CHARGER_ID, A.ATCH_FILE_ID,
+			A.FRST_REGIST_PNTTM FRST_REGISTER_PNTTM,
+			A.FRST_REGISTER_ID, A.LAST_UPDT_PNTTM, A.LAST_UPDUSR_ID, A.REPTIT_SE_CODE
+		FROM acm_schedule_mst A
+		WHERE 1=1
+		<if test='searchKeyword != null and searchKeyword != ""'>
+	 		<if test='searchCondition == "SCHDUL_SE"'>
+	 	AND SCD_SE LIKE CONCAT ('%', #{searchKeyword},'%')
+	 		</if>
+		</if>
+		ORDER BY A.FRST_REGIST_PNTTM DESC
+		LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+	</select>
+
+	<!-- 개인일정정보::목록조회_게시물 총갯수  -->
+	<select id="selectScheduleListCnt" parameterType="comDefaultVO" resultType="int">
+		SELECT COUNT(*) totcnt
+		FROM acm_schedule_mst
+		WHERE 1=1
+	 	<if test='searchKeyword != null and searchKeyword != ""'>
+ 			<if test='searchCondition == "SCHDUL_SE"'>
+ 		AND SCD_SE LIKE CONCAT ('%', #{searchKeyword},'%')
+ 			</if>
+		</if>
+	</select>
+
+	<!-- 메인페이지/일정관리조회 -->
+	<select id="selectSceduleMain" parameterType="java.util.Map" resultType="egovMap">
+		<![CDATA[
+		SELECT
+			DATE_FORMAT(sysdate(),'%Y-%m-%d') TO_DAY,
+			A.SCD_ID, A.SCD_SE, A.SCD_DEPT_ID, A.SCD_KIND_CODEE, A.SCD_BGNDE, A.SCD_ENDDE,
+			A.SCD_NM, A.SCD_DESC, A.SCD_PLACE, A.SCD_IPCR_CODE, A.SCD_CHARGER_ID,
+			A.ATCH_FILE_ID,
+			DATE_FORMAT(A.FRST_REGIST_PNTTM,'%Y-%m-%d') FRST_REGISTER_PNTTM,
+			A.FRST_REGISTER_ID, A.LAST_UPDT_PNTTM, A.LAST_UPDUSR_ID, A.REPTIT_SE_CODE
+		FROM acm_schedule_mst A
+		WHERE 1=1
+		AND A.SCD_KIND_CODE = '2'
+		AND (A.SCD_CHARGER_ID = #{uniqId} OR A.FRST_REGISTER_ID = #{uniqId})
+		AND (
+		 ( SUBSTRING(A.SCD_BGNDE,1,8) >= DATE_FORMAT(sysdate(),'%Y%m%d') AND SUBSTRING(A.SCD_BGNDE,1,8) <= DATE_FORMAT(sysdate(),'%Y%m%d'))
+		OR
+		 ( SUBSTRING(A.SCD_ENDDE,1,8) > DATE_FORMAT(sysdate(),'%Y%m%d') AND SUBSTRING(A.SCD_BGNDE,1,8) <= DATE_FORMAT(sysdate(),'%Y%m%d'))
+		)
+		ORDER BY A.FRST_REGIST_PNTTM DESC
+		LIMIT 0, 4
+		]]>
+	</select>
+
+	<!-- 개인일정정보::목록조회 -->
+	<select id="selectScheduleRetrieve" parameterType="java.util.Map" resultType="egovMap">
+		SELECT
+			A.SCD_ID, A.SCD_SE, A.SCD_DEPT_ID, A.SCD_KIND_CODE, A.SCD_BGNDE, A.SCD_ENDDE,
+			A.SCD_NM, A.SCD_DESC, A.SCD_PLACE, A.SCD_IPCR_CODE, A.SCD_CHARGER_ID,
+			(SELECT USER_NM FROM acm_member_mst WHERE EMPLYR_ID = A.SCD_CHARGER_ID) SCD_CHARGER_NAME,
+			A.ATCH_FILE_ID,
+			A.FRST_REGIST_PNTTM FRST_REGISTER_PNTTM, A.FRST_REGISTER_ID, A.LAST_UPDT_PNTTM, A.LAST_UPDUSR_ID, 	A.REPTIT_SE_CODE
+		FROM acm_schedule_mst A
+		WHERE 1=1
+		AND A.SCD_KIND_CODE = '2'
+	 	<if test='searchMode != null and searchMode != ""'>
+	 		<if test='searchMode == "MONTH"'>
+		 		<if test='searchMonth != null and searchMonth != ""'>
+		<![CDATA[ AND (#{searchMonth} BETWEEN SUBSTRING(A.SCD_BGNDE, 1, 6)  AND SUBSTRING(A.SCD_ENDDE, 1, 6) ) ]]>
+				</if>
+	 		</if>
+	 		<if test='searchMode == "WEEK"'>
+		<![CDATA[
+		AND (
+		 ( SUBSTRING(A.SCD_BGNDE,1,8) >= #{scdBgnde} AND SUBSTRING(A.SCD_BGNDE,1,8) <= #{scdEndde})
+		OR
+		 ( SUBSTRING(A.SCD_ENDDE,1,8) > #{scdBgnde} AND SUBSTRING(A.SCD_BGNDE,1,8) <= #{scdEndde})
+		)
+		]]>
+	 		</if>
+			<if test='searchMode == "DAILY"'>
+		<![CDATA[ AND (#{searchDay} BETWEEN SUBSTRING(A.SCD_BGNDE, 1, 8)  AND SUBSTRING(A.SCD_ENDDE, 1, 8) ) ]]>
+	 		</if>
+		</if>
+		<if test='searchKeyword != null and searchKeyword != ""'>
+	 		<if test='searchCondition == "SCHDUL_SE"'>
+	 	AND SCD_SE LIKE CONCAT ('%', #{searchKeyword},'%')
+	 		</if>
+		</if>
+		order by A.SCD_BGNDE , (1+(SUBSTRING(A.SCD_ENDDE,1, 8) - SUBSTRING(A.SCD_BGNDE, 1, 8))) desc
+	</select>
+
+	<!-- 개인일정정보::상세보기 -->
+	<select id="selectScheduleDetail" resultMap="ScheduleMap">
+		SELECT
+			A.SCD_ID, A.SCD_SE, A.SCD_DEPT_ID,
+			(SELECT ORGNZT_NM FROM acm_org_mst WHERE ORGNZT_ID = A.SCD_DEPT_ID) SCD_DEPT_NAME,
+			A.SCD_KIND_CODE, A.SCD_BGNDE, A.SCD_ENDDE, A.SCD_NM, 	A.SCD_DESC,
+			A.SCD_PLACE, A.SCD_IPCR_CODE, A.SCD_CHARGER_ID,
+			(SELECT USER_NM FROM acm_member_mst WHERE EMPLYR_ID = A.SCD_CHARGER_ID) SCD_CHARGER_NAME,
+			A.ATCH_FILE_ID, A.REPTIT_SE_CODE, 
+			A.FRST_REGIST_PNTTM, A.FRST_REGISTER_ID, A.LAST_UPDT_PNTTM, A.LAST_UPDUSR_ID
+		FROM acm_schedule_mst A
+		WHERE 1=1
+		AND SCD_ID = #{scdId}
+	</select>
+
+	<!-- 개인일정정보::입력  -->
+	<insert id="insertSchedule">
+		INSERT INTO acm_schedule_mst (
+			SCD_ID, SCD_SE, SCD_DEPT_ID, SCD_KIND_CODE, 	SCD_BGNDE, SCD_ENDDE,
+			SCD_NM, SCD_DESC, SCD_PLACE, SCD_IPCR_CODE, SCD_CHARGER_ID, ATCH_FILE_ID,
+			REPTIT_SE_CODE, FRST_REGIST_PNTTM, FRST_REGISTER_ID, 	LAST_UPDT_PNTTM, LAST_UPDUSR_ID
+		) VALUES (
+			#{scdId}, #{scdSe}, #{scdDeptId}, #{scdKindCode}, #{scdBgnde}, #{scdEndde},
+			#{scdNm}, #{scdDesc}, #{scdPlace}, #{scdIpcrCode}, #{scdChargerId}, #{atchFileId},
+			#{reptitSeCode}, sysdate(), #{frstRegisterId}, sysdate(), #{lastUpdusrId}
+		)
+	</insert>
+
+	<!-- 개인일정정보::수정  -->
+	<update id="updateSchedule">
+		UPDATE acm_schedule_mst
+		SET
+			SCD_SE=#{scdSe},
+			SCD_DEPT_ID=#{scdDeptId},
+			SCD_KIND_CODE=#{scdKindCode},
+			SCD_BGNDE=#{scdBgnde},
+			SCD_ENDDE=#{scdEndde},
+			SCD_NM=#{scdNm},
+			SCD_DESC=#{scdDesc},
+			SCD_IPCR_CODE=#{scdIpcrCode},
+			SCD_CHARGER_ID=#{scdChargerId},
+			ATCH_FILE_ID=#{atchFileId},
+			REPTIT_SE_CODE=#{reptitSeCode},
+			LAST_UPDT_PNTTM = sysdate(),
+			LAST_UPDUSR_ID = #{lastUpdusrId}
+		WHERE SCD_ID = #{scdId}
+	</update>
+
+	<!-- 개인일정정보::삭제  -->
+	<delete id="deleteSchedule">
+		DELETE FROM acm_schedule_mst WHERE SCD_ID = #{scdId}
+	</delete>
+
+</mapper>
