@@ -26,18 +26,18 @@ import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 * </pre>
 */
 
-@Repository("CodeManageDAO")
+@Repository("codeManageDAO")
 public class CodeManageDAO extends EgovComAbstractDAO {
 
-	   /**
-		 * 공통코드 목록을 조회한다.
-	     * @param searchVO
-	     * @return List(공통코드 목록)
-	     * @throws Exception
-	     */
-		public List<?> selectCodeList(CodeMstVO searchVO) throws Exception{
-			 return list("CodeManage.selectCodeList", searchVO);
-		}
+	/**
+	 * 공통코드 목록을 조회한다.
+     * @param searchVO
+     * @return List(공통코드 목록)
+     * @throws Exception
+     */
+	public List<?> selectCodeList(CodeMstVO searchVO) throws Exception{
+		 return selectList("CodeManage.selectCodeList", searchVO);
+	}
 
    /**
 	 * 공통코드 총 갯수를 조회한다.

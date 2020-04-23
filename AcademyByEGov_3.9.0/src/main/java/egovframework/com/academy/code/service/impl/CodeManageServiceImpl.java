@@ -32,7 +32,7 @@ import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
 @Service("CodeManageService")
 public class CodeManageServiceImpl extends EgovAbstractServiceImpl implements CodeManageService{
 
-    @Resource(name="CodeManageDAO")
+    @Resource(name="codeManageDAO")
     private CodeManageDAO codeManageDAO;
 
 	/**
