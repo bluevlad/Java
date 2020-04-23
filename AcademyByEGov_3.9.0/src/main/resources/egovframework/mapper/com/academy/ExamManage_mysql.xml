@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+	수정일          수정자                          수정내용
+  ===========      ========    =================
+ *  2020.04.00			rainend				시험/과목 관리
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ExamManage">
+
+	<select id="selectExamList" parameterType="egovframework.com.academy.exam.service.ExamVO" 
+										resultType="egovframework.com.academy.exam.service.ExamVO">
+		SELECT EXAM_CD examCd, EXAM_NM examNm, ISUSE isUse
+		FROM exam_mst
+		WHERE 1=1
+        <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchKeyword)">
+	        <if test="searchCondition == 0">
+        AND EXAM_CD LIKE #{searchKeyword}
+    	    </if>
+        	<if test="searchCondition == 1">
+        AND EXAM_NM LIKE '%' #{searchKeyword} '%'
+        	</if>
+        </if>
+		 LIMIT  #{recordCountPerPage} OFFSET #{firstIndex}
+	</select>
+
+	<select id="selectExamListTotCnt" parameterType="egovframework.com.academy.exam.service.ExamVO" resultType="int">
+		SELECT COUNT(*) totcnt
+		FROM exam_mst
+		WHERE 1=1
+        <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchKeyword)">
+	        <if test="searchCondition == 0">
+        AND EXAM_CD LIKE #{searchKeyword}
+    	    </if>
+        	<if test="searchCondition == 1">
+        AND EXAM_NM LIKE '%' #{searchKeyword} '%'
+        	</if>
+        </if>
+	</select>
+
+	<select id="selectExamDetail" parameterType="egovframework.com.academy.exam.service.ExamVO" 
+										resultType="egovframework.com.academy.exam.service.ExamVO">
+        SELECT EXAM_CD examCd, EXAM_NM examNm, ISUSE isUse
+		FROM exam_mst
+		WHERE EXAM_CD = #{examCd}
+	</select>
+
+	<insert id="insertExam">
+		INSERT INTO exam_mst (
+			EXAM_NM, ISUSE
+		) VALUES (
+			#{examNm}, #{isUse}
+		)
+	</insert>
+
+	<update id="updateExam">
+		UPDATE exam_mst
+		SET 
+			EXAM_NM = #{examNm},
+			ISUSE = #{isUse}
+		WHERE EXAM_CD = #{examCd}
+	</update>
+
+
+	<select id="selectSubjectList"  parameterType="egovframework.com.academy.exam.service.ExamVO" 
+										resultType="egovframework.com.academy.exam.service.ExamVO">
+		SELECT SBJ_CD sbjCd, SBJ_NM sbjNm, ISUSE isUse
+		FROM exam_subject
+		WHERE 1=1
+        <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchKeyword)">
+	        <if test="searchCondition == 0">
+        AND SBJ_CD LIKE #{searchKeyword}
+    	    </if>
+        	<if test="searchCondition == 1">
+        AND SBJ_NM LIKE '%' #{searchKeyword} '%'
+        	</if>
+        </if>
+		 LIMIT  #{recordCountPerPage} OFFSET #{firstIndex}
+	</select>
+
+	<select id="selectSubjectListTotCnt" parameterType="egovframework.com.academy.exam.service.ExamVO" resultType="int">
+		SELECT COUNT(*) totcnt
+		FROM exam_subject
+		WHERE 1=1
+        <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchKeyword)">
+	        <if test="searchCondition == 0">
+        AND SBJ_CD LIKE #{searchKeyword}
+    	    </if>
+        	<if test="searchCondition == 1">
+        AND SBJ_NM LIKE '%' #{searchKeyword} '%'
+        	</if>
+        </if>
+	</select>
+
+	<select id="selectSubjectDetail"  parameterType="egovframework.com.academy.exam.service.ExamVO" 
+										resultType="egovframework.com.academy.exam.service.ExamVO">
+        SELECT SBJ_CD sbjCd, SBJ_NM sbjNm, ISUSE isUse
+		FROM exam_subject
+		WHERE SBJ_CD = #{sbjCd}
+	</select>
+
+	<insert id="insertSubject">
+		INSERT INTO exam_subject (
+			SBJ_CD, SBJ_NM, ISUSE
+		) VALUES (
+			#{sbjCd}, #{sbjNm}, #{isUse}
+		)
+	</insert>
+
+	<update id="updateSubject">
+		UPDATE exam_subject
+		SET 
+			SBJ_NM = #{sbjNm},
+			ISUSE = #{isUse}
+		WHERE EXAM_CD = #{sbjCd}
+	</update>
+
+</mapper>
