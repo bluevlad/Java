@@ -110,7 +110,6 @@ public class CodeManageController {
 	public String selectCodeDetail(@ModelAttribute("searchVO") CodeMstVO searchVO, @ModelAttribute("CodeMstVO") CodeMstVO CodeMstVO, ModelMap model) throws Exception {
 		
 		CodeMst vo = codeManageService.selectCodeDetail(searchVO);
-		
 		model.addAttribute("CodeMstVO", vo);
 
 		return "egovframework/com/academy/code/CodeMstDetail";
