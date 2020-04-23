@@ -5,7 +5,7 @@
 <html lang="ko">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>eGovFrame 공통 컴포넌트</title>
+<title>Left Menu</title>
 <link href="<c:url value='/css/egovframework/com/cmm/main.css' />" rel="stylesheet" type="text/css">
 <style type="text/css">
 link { color: #666666; text-decoration: none; }
@@ -14,29 +14,22 @@ link:hover { color: #000000; text-decoration: none; }
 </head>
 <body>
 <div id="lnb">
-<c:set var="isMai" value="false"/>
-<c:set var="isUat" value="false"/>
-<c:set var="isSec" value="false"/>
-<c:set var="isSts" value="false"/>
-<c:set var="isCop" value="false"/>
-<c:set var="isUss" value="false"/>
-<c:set var="isSym" value="false"/>
-<c:set var="isSsi" value="false"/>
-<c:set var="isDam" value="false"/>
-<c:set var="isCom" value="false"/>
-<c:set var="isExt" value="false"/>
-<ul class="lnb_title">
+	<ul class="lnb_title">
 	<c:forEach var="result" items="${resultList}" varStatus="status">
-		<c:if test="${result.menuOrdr == '1'}">
+		<c:choose>
+			<c:when test="${result.menuOrdr == '1'}">
 			<li>
 				<strong class="left_title_strong"><strong class="top_title_strong"><c:out value="${result.menuNm}"/></strong></strong><!-- 포털(예제) 메인화면 -->
 			</li>
-		</c:if>
+			</c:when>
+			<c:otherwise>
 		<ul class="2depth">
-		<li><a href="${pageContext.request.contextPath}<c:out value="${result.menuPath}"/>" target="_content" class="link"> <c:out value="${result.menuNm}"/></a></li>
+			<li><a href="${pageContext.request.contextPath}<c:out value="${result.menuPath}"/>" target="_content" class="link"> <c:out value="${result.menuNm}"/></a></li>
 		</ul>
+			</c:otherwise>
+		</c:choose>
 	</c:forEach>
-</ul>
+	</ul>
 </div>
 
 </body>
