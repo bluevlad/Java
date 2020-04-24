@@ -10,47 +10,47 @@ public interface ExamManageService {
 	 * @param searchVO
 	 * @return List - 시험 목록
 	 */
-	List<?> selectExamList(ExamVO searchVO) throws Exception;
+	List<?> selectExamList(ExamVO ExamVO) throws Exception;
 
 	/**
 	 * 시험 총 갯수를 조회한다.
 	 * @param searchVO
 	 * @return int - 시험 카운트 수
 	 */
-	int selectExamListTotCnt(ExamVO searchVO) throws Exception;
+	int selectExamListTotCnt(ExamVO ExamVO) throws Exception;
 	
 	/**
 	 * 시험 상세정보를 조회한다.
 	 * @param ExamMst
 	 * @return ExamMst
 	 */
-	ExamMst selectExamDetail(ExamMst examMst) throws Exception;
+	ExamVO selectExamDetail(ExamVO ExamVO) throws Exception;
 
 	/**
 	 * 시험정보를 신규로 등록한다.
 	 * @param examMst
 	 */
-	void insertExam(ExamMst examMst) throws Exception;
+	void insertExam(ExamVO ExamVO) throws Exception;
 
 	/**
 	 * 기 등록된 시험정보를 수정한다.
 	 * @param ExamVO
 	 */
-	void updateExam(ExamMst examMst) throws Exception;
+	void updateExam(ExamVO ExamVO) throws Exception;
 	
 	/**
 	 * 과목 목록을 조회한다.
 	 * @param examSearchVO
 	 * @return List - 과목 목록
 	 */
-	public List<ExamVO> selectSubjectList(ExamVO examSearchVO) throws Exception;
+	public List<ExamVO> selectSubjectList(ExamVO ExamVO) throws Exception;
 
 	/**
 	 * 과목 총 갯수를 조회한다.
 	 * @param examSearchVO
 	 * @return int - 과목 카운트 수
 	 */
-	public int selectSubjectListTotCnt(ExamVO examSearchVO) throws Exception;
+	public int selectSubjectListTotCnt(ExamVO ExamVO) throws Exception;
 	
 	/**
 	 * 과목 상세정보를 조회한다.

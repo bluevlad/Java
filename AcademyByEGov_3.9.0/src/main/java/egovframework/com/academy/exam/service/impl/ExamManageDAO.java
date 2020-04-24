@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import egovframework.com.academy.exam.service.ExamMst;
 import egovframework.com.academy.exam.service.ExamVO;
 import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
@@ -30,8 +29,8 @@ public class ExamManageDAO extends EgovComAbstractDAO{
      * @param searchVO 검색조건
      * @return List 시험 목록정보
      */
-    public List<?> selectExamList(ExamVO searchVO) throws Exception{
-		return selectList("ExamManage.selectExamList", searchVO);
+    public List<?> selectExamList(ExamVO ExamVO) throws Exception{
+		return selectList("ExamManage.selectExamList", ExamVO);
     }
 
     /**
@@ -46,38 +45,38 @@ public class ExamManageDAO extends EgovComAbstractDAO{
      * @param examCd 상세조회대상 시험코드
      * @return ExamVO 시험  상세정보
      */
-    public ExamMst selectExamDetail(ExamMst examMst){
-        return selectOne("ExamManage.selectExamDetail", examMst);
+    public ExamVO selectExamDetail(ExamVO ExamVO){
+        return selectOne("ExamManage.selectExamDetail", ExamVO);
     }
 
     /**
      * @param ExamVO 시험정보 등록
      */
-    public void insertExam(ExamMst examMst) throws Exception{
-        insert("ExamManage.insertExam", examMst);
+    public void insertExam(ExamVO ExamVO) throws Exception{
+        insert("ExamManage.insertExam", ExamVO);
     }
 
     /**
      * @param ExamVO 시험정보 수정(삭제)
      */
-    public void updateExam(ExamMst examMst) throws Exception{
-        update("ExamManage.updateExam", examMst);
+    public void updateExam(ExamVO ExamVO) throws Exception{
+        update("ExamManage.updateExam", ExamVO);
     }
 
     /**
      * @param examSearchVO 검색조건
      * @return List 과목 목록정보
      */
-    public List<ExamVO> selectSubjectList(ExamVO examSearchVO) throws Exception{
-		return selectList("ExamManage.selectSubjectList", examSearchVO);
+    public List<ExamVO> selectSubjectList(ExamVO ExamVO) throws Exception{
+		return selectList("ExamManage.selectSubjectList", ExamVO);
     }
 
     /**
      * @param examSearchVO 검색조건
      * @return int 과목 총갯수
      */
-    public int selectSubjectListTotCnt(ExamVO examSearchVO) {
-        return (Integer)selectOne("ExamManage.selectSubjectListTotCnt", examSearchVO);
+    public int selectSubjectListTotCnt(ExamVO ExamVO) {
+        return (Integer)selectOne("ExamManage.selectSubjectListTotCnt", ExamVO);
     }
 
     /**

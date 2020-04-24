@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import egovframework.com.academy.exam.service.ExamManageService;
-import egovframework.com.academy.exam.service.ExamMst;
 import egovframework.com.academy.exam.service.ExamVO;
 import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
 
@@ -37,8 +36,8 @@ public class ExamManageServiceImpl extends EgovAbstractServiceImpl implements Ex
 	 * @throws Exception
 	 */
 	@Override
-	public List<?> selectExamList(ExamVO searchVO) throws Exception {
-		return examManageDAO.selectExamList(searchVO);
+	public List<?> selectExamList(ExamVO ExamVO) throws Exception {
+		return examManageDAO.selectExamList(ExamVO);
 	}
 
 	/**
@@ -47,8 +46,8 @@ public class ExamManageServiceImpl extends EgovAbstractServiceImpl implements Ex
 	 * @throws Exception
 	 */
 	@Override
-	public int selectExamListTotCnt(ExamVO searchVO) throws Exception {
-		return examManageDAO.selectExamListTotCnt(searchVO);
+	public int selectExamListTotCnt(ExamVO ExamVO) throws Exception {
+		return examManageDAO.selectExamListTotCnt(ExamVO);
 	}
 
 	/**
@@ -57,8 +56,8 @@ public class ExamManageServiceImpl extends EgovAbstractServiceImpl implements Ex
 	 * @throws Exception
 	 */
 	@Override
-	public ExamMst selectExamDetail(ExamMst examMst) throws Exception {
-		return examManageDAO.selectExamDetail(examMst);
+	public ExamVO selectExamDetail(ExamVO ExamVO) throws Exception {
+		return examManageDAO.selectExamDetail(ExamVO);
 	}
 
 	/**
@@ -66,8 +65,8 @@ public class ExamManageServiceImpl extends EgovAbstractServiceImpl implements Ex
 	 * @throws Exception
 	 */
 	@Override
-	public void insertExam(ExamMst examMst) throws Exception {
-		examManageDAO.insertExam(examMst);
+	public void insertExam(ExamVO ExamVO) throws Exception {
+		examManageDAO.insertExam(ExamVO);
 	}
 
 	/**
@@ -76,8 +75,8 @@ public class ExamManageServiceImpl extends EgovAbstractServiceImpl implements Ex
 	 * @throws Exception
 	 */
 	@Override
-	public void updateExam(ExamMst examMst) throws Exception {
-		examManageDAO.updateExam(examMst);
+	public void updateExam(ExamVO ExamVO) throws Exception {
+		examManageDAO.updateExam(ExamVO);
 	}
 
 	/**
@@ -85,8 +84,8 @@ public class ExamManageServiceImpl extends EgovAbstractServiceImpl implements Ex
 	 * @return List<ExamVO> 과목 목록정보
 	 * @throws Exception
 	 */
-	public List<ExamVO> selectSubjectList(ExamVO subjectSearchVO) throws Exception {
-		return examManageDAO.selectSubjectList(subjectSearchVO);
+	public List<ExamVO> selectSubjectList(ExamVO ExamVO) throws Exception {
+		return examManageDAO.selectSubjectList(ExamVO);
 	}
 
 	/**
@@ -94,8 +93,8 @@ public class ExamManageServiceImpl extends EgovAbstractServiceImpl implements Ex
 	 * @return 총시험 갯수(int)
 	 * @throws Exception
 	 */
-	public int selectSubjectListTotCnt(ExamVO subjectSearchVO) throws Exception {
-		return examManageDAO.selectSubjectListTotCnt(subjectSearchVO);
+	public int selectSubjectListTotCnt(ExamVO ExamVO) throws Exception {
+		return examManageDAO.selectSubjectListTotCnt(ExamVO);
 	}
 
 	/**
