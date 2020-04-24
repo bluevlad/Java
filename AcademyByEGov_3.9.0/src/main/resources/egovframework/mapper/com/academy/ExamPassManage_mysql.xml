@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+	수정일          수정자                          수정내용
+  ===========      ========    =================
+ *  2020.04.00			rainend				시험/과목 정답 관리
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ExamPassManage">
+
+	<select id="selectExamPassList" parameterType="egovframework.com.academy.exam.service.ExamVO" 
+										resultType="egovframework.com.academy.exam.service.ExamVO">
+		SELECT a.exam_cd, a.exam_nm, a.ISUSE, b.SBJ_CD, b.ITEM_NO, b.PASS_ANS, c.SBJ_NM
+		FROM exam_mst a LEFT OUTER JOIN exam_pass_mst b
+		on a.EXAM_CD = b.exam_cd
+		LEFT OUTER JOIN exam_subject c
+		ON b.sbj_cd = c.sbj_cd
+        <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchKeyword)">
+        AND a.EXAM_NM LIKE '%' #{searchKeyword} '%'
+        </if>
+		LIMIT  #{recordCountPerPage} OFFSET #{firstIndex}
+	</select>
+
+	<select id="selectExamPassListTotCnt" parameterType="egovframework.com.academy.exam.service.ExamVO" resultType="int">
+		SELECT COUNT(*) totcnt
+		FROM exam_mst a LEFT OUTER JOIN exam_pass_mst b
+		on a.EXAM_CD = b.exam_cd
+		LEFT OUTER JOIN exam_subject c
+		ON b.sbj_cd = c.sbj_cd
+        <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchKeyword)">
+        AND a.EXAM_NM LIKE '%' #{searchKeyword} '%'
+        </if>
+	</select>
+
+	<select id="selectExamPassDetail" parameterType="egovframework.com.academy.exam.service.ExamVO" 
+										resultType="egovframework.com.academy.exam.service.ExamVO">
+		SELECT a.exam_cd, a.exam_nm, a.ISUSE, b.SBJ_CD, b.ITEM_NO, b.PASS_ANS, c.SBJ_NM
+		FROM exam_mst a LEFT OUTER JOIN exam_pass_mst b
+		on a.EXAM_CD = b.exam_cd
+		LEFT OUTER JOIN exam_subject c
+		ON b.sbj_cd = c.sbj_cd
+		WHERE a.EXAM_CD = #{examCd}
+	</select>
+
+	<insert id="insertExamPass">
+		INSERT INTO exam_pass_mst (
+			EXAM_NM, SBJ_CD, ITEM_NO, PASS_ANS
+		) VALUES (
+			#{examNm}, #{isUse}, #{itemNo}, #{passAns}
+		)
+	</insert>
+
+	<delete id="deleteExamPass">
+		DELETE exam_pass_mst
+		WHERE EXAM_CD = #{examCd}
+	</delete>
+
+</mapper>

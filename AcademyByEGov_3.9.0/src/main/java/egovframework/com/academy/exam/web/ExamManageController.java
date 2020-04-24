@@ -68,7 +68,7 @@ public class ExamManageController {
 		paginationInfo.setTotalRecordCount(totCnt);
 		model.addAttribute("paginationInfo", paginationInfo);
 		
-		return "egovframework/com/academy/exam/ExamList";
+		return "egovframework/com/academy/exam/ExamMstList";
 	}
 
 	/**
@@ -81,7 +81,7 @@ public class ExamManageController {
 
 		model.addAttribute("ExamVO", examManageService.selectExamDetail(ExamVO));
 		
-		return "egovframework/com/academy/exam/ExamDetail";
+		return "egovframework/com/academy/exam/ExamMstDetail";
 	}
 
 	/**
@@ -92,7 +92,7 @@ public class ExamManageController {
 	public String ExamRegist(@ModelAttribute("ExamVO") ExamVO ExamVO, ModelMap model) throws Exception {
 
 		model.addAttribute("ExamVO", ExamVO);
-		return "egovframework/com/academy/exam/ExamRegist";
+		return "egovframework/com/academy/exam/ExamMstRegist";
 	}
 
 	/**
@@ -104,7 +104,7 @@ public class ExamManageController {
 	public String insertExam(@ModelAttribute("ExamVO") ExamVO ExamVO, BindingResult bindingResult,  ModelMap model) throws Exception {
 
 		if (bindingResult.hasErrors()) {
-			return "egovframework/com/academy/exam/ExamRegist";
+			return "egovframework/com/academy/exam/ExamMstRegist";
 		} else {
 			examManageService.insertExam(ExamVO);
 			model.addAttribute("message", egovMessageSource.getMessage("success.common.insert"));
@@ -121,7 +121,7 @@ public class ExamManageController {
 	public String updateExam(@ModelAttribute("ExamVO") ExamVO ExamVO, BindingResult bindingResult, ModelMap model) throws Exception {
 
 		if (bindingResult.hasErrors()) {
-			return "egovframework/com/academy/exam/ExamDetail";
+			return "egovframework/com/academy/exam/ExamMstDetail";
 		} else {
 			examManageService.updateExam(ExamVO);
 			model.addAttribute("message", egovMessageSource.getMessage("success.common.update"));

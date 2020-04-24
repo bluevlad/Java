@@ -15,7 +15,7 @@
         <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchKeyword)">
         AND EXAM_NM LIKE '%' #{searchKeyword} '%'
         </if>
-		 LIMIT  #{recordCountPerPage} OFFSET #{firstIndex}
+		 LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
 	</select>
 
 	<select id="selectExamListTotCnt" parameterType="egovframework.com.academy.exam.service.ExamVO" resultType="int">
