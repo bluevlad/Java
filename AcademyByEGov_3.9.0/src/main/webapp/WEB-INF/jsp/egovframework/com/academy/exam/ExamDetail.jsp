@@ -65,16 +65,9 @@ function fnUpdate() {
 		<c:set var="inputNo"><spring:message code="input.no" /></c:set>
 		
 		<!-- 시험코드 -->
-		<c:set var="title"><spring:message code="exam.examManageList.ExamCd"/> </c:set>
-		<tr>
-			<th><label for="examCd">${title} <span class="pilsu">*</span></label></th>
-			<td class="left">
-			    <form:input path="examCd" title="${title} ${inputTxt}" style="width:100px;" readonly="true" />
-   				<div><form:errors path="examCd" cssClass="error" /></div>     
-			</td>
-		</tr>
+	    <form:hidden path="examCd" title="${title} ${inputTxt}" style="width:100px;" readonly="true" />
 		<!-- 시험명 -->
-		<c:set var="title"><spring:message code="exam.examManageList.ExamNm" /></c:set>
+		<c:set var="title"><spring:message code="exam.ExamNm" /></c:set>
 		<tr>
 			<th><label for="examNm">${title}</label> <span class="pilsu">*</span></th>
 			<td class="left">
@@ -83,7 +76,7 @@ function fnUpdate() {
 			</td>
 		</tr>
 		<!-- 사용여부 -->
-		<c:set var="title"><spring:message code="comUssUmt.deptManageRegist.deptName" /></c:set>
+		<c:set var="title"><spring:message code="exam.isUse" /></c:set>
 		<tr>
 			<th><label for="isUse">${title}</label> <span class="pilsu">*</span></th>
 			<td class="left">

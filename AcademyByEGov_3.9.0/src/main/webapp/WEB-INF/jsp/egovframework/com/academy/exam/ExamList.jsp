@@ -33,20 +33,6 @@ function fnSelectList(pageNo){
     document.listForm.submit();
 }
 
-function fnSelectDetail(examCd) {
-    document.listForm.examCd.value = examCd;
-    document.listForm.action = "<c:url value='/exam/Detail.do'/>";
-    document.listForm.submit();
-}
-
-function fnAdd() {
-	if(document.listForm.pageIndex.value == "") {
-		document.listForm.pageIndex.value = 1;
-	}
-    document.listForm.action = "<c:url value='/exam/Regist.do'/>";
-    document.listForm.submit();
-}
-
 function linkPage(pageNo){
     document.listForm.searchCondition.value = "1";
     document.listForm.pageIndex.value = pageNo;
@@ -70,12 +56,12 @@ function press() {
 	<!-- 검색영역 -->
 	<div class="search_box" title="<spring:message code="common.searchCondition.msg" />">
 		<ul>
-			<li><div style="line-height:4px;">&nbsp;</div><div><spring:message code="exam.examManage.searchKeywordText" /> : </div></li><!-- 부서명 -->
+			<li><div style="line-height:4px;">&nbsp;</div><div><spring:message code="exam.exam.searchKeywordText" /> : </div></li><!-- 시험명 -->
 			<!-- 검색키워드 및 조회버튼 -->
 			<li>
 				<input class="s_input" name="searchKeyword" type="text"  size="35" title="<spring:message code="title.search" /> <spring:message code="input.input" />" value='<c:out value="${ExamVO.searchKeyword}"/>'  maxlength="155" >
 				<input type="submit" class="s_btn" value="<spring:message code="button.inquire" />" title="<spring:message code="title.inquire" /> <spring:message code="input.button" />" /><!-- 조회 -->
-				<span class="btn_b"><a href="<c:url value='/exam/Regist.do'/>" onClick="fnAdd(); return false;"  title="<spring:message code="button.create" /> <spring:message code="input.button" />"><spring:message code="button.create" /></a></span><!-- 등록 -->
+				<span class="btn_b"><a href="<c:url value='/exam/Regist.do'/>" title="<spring:message code="button.create" /> <spring:message code="input.button" />"><spring:message code="button.create" /></a></span><!-- 등록 -->
 			</li>
 		</ul>
 	</div>
@@ -91,22 +77,22 @@ function press() {
 	<thead>
 	<tr>
 		<th><spring:message code="table.num" /></th><!-- 번호 -->
-		<th class="board_th_link"><spring:message code="exam.examManageList.ExamCd" /></th><!-- 시험코드 -->
-		<th class="board_th_link"><spring:message code="exam.examManageList.ExamNm" /></th><!-- 시험명 -->
-		<th><spring:message code="exam.examManageList.isUse" /></th><!--사용여부 -->
+		<th class="board_th_link"><spring:message code="exam.ExamCd" /></th><!-- 시험코드 -->
+		<th class="board_th_link"><spring:message code="exam.ExamNm" /></th><!-- 시험명 -->
+		<th><spring:message code="exam.isUse" /></th><!--사용여부 -->
 	</tr>
 	</thead>
 	<tbody class="ov">
-	<c:if test="${fn:length(resultList) == 0}">
+	<c:if test="${fn:length(examList) == 0}">
 	<tr>
 		<td colspan="3"><spring:message code="common.nodata.msg" /></td>
 	</tr>
 	</c:if>
-	<c:forEach var="examList" items="${resultList}" varStatus="status">
+	<c:forEach var="examList" items="${examList}" varStatus="status">
 	<tr>
-		<td><c:out value="${(searchVO.pageIndex-1) * searchVO.pageSize + status.count}"/></td>
-		<td><a href="<c:url value='/exam/Detail.do'/>?pageIndex=${searchVO.pageIndex}&searchKeyword=${searchVO.searchKeyword}&examCd=${examList.examCd}"><c:out value="${examList.examCd}"/></a></td>
-		<td class="left"><a href="<c:url value='/exam/Detail.do'/>?pageIndex=${searchVO.pageIndex}&searchKeyword=${searchVO.searchKeyword}&examCd=${examList.examCd}"><c:out value="${examList.examNm}"/></a></td>
+		<td><c:out value="${(ExamVO.pageIndex-1) * ExamVO.pageSize + status.count}"/></td>
+		<td><a href="<c:url value='/exam/Detail.do'/>?pageIndex=${ExamVO.pageIndex}&searchKeyword=${ExamVO.searchKeyword}&examCd=${examList.examCd}"><c:out value="${examList.examCd}"/></a></td>
+		<td class="left"><a href="<c:url value='/exam/Detail.do'/>?pageIndex=${ExamVO.pageIndex}&searchKeyword=${ExamVO.searchKeyword}&examCd=${examList.examCd}"><c:out value="${examList.examNm}"/></a></td>
 		<td><c:out value="${examList.isUse}"/></td>
 	</tr>
 	</c:forEach>
@@ -114,7 +100,7 @@ function press() {
 	</table>
 	
 	<!-- paging navigation -->
-	<c:if test="${!empty searchVO.pageIndex }">
+	<c:if test="${!empty ExamVO.pageIndex }">
 	<div class="pagination">
 		<ul><ui:pagination paginationInfo="${paginationInfo}" type="image" jsFunction="linkPage"/></ul>
 	</div>
@@ -122,7 +108,6 @@ function press() {
 	
 </div><!-- end div board -->
 
-<input name="examCd" type="hidden" value="">
 <input name="pageIndex" type="hidden" value="<c:out value='${ExamVO.pageIndex}'/>">
 </form>
 

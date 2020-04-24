@@ -64,7 +64,7 @@ function fnInsert() {
 		<c:set var="inputYes"><spring:message code="input.yes" /></c:set>
 		<c:set var="inputNo"><spring:message code="input.no" /></c:set>
 		<!-- 시험명 -->
-		<c:set var="title"><spring:message code="exam.examManageList.ExamNm" /></c:set>
+		<c:set var="title"><spring:message code="exam.ExamNm" /></c:set>
 		<tr>
 			<th><label for="examNm">${title}</label><span class="pilsu">*</span></th>
 			<td class="left">
@@ -73,11 +73,11 @@ function fnInsert() {
 			</td>
 		</tr>
 		<!-- 사용여부 -->
-		<c:set var="title"><spring:message code="exam.examManageList.isUse"/></c:set>
+		<c:set var="title"><spring:message code="exam.isUse"/></c:set>
 		<tr>
 			<th><label for="isUse">${title}</label></th>
 			<td class="left">
-				<form:select path="isUse" id="isUse" title="${title} ${inputSelect}">
+				<form:select path="isUse" id="isUse" title="${title} ${inputTxt}">
                 	<!--<option value="" label="${inputSelect}"/>-->
                     <form:option value="Y" label=" ${inputYes}"/>
                     <form:option value="N" label="${inputNo}"/>

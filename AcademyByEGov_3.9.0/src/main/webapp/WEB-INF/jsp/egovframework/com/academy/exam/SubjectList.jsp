@@ -1,23 +1,15 @@
 <%
 /**
- * @Class Name : EgovDeptManageList.java
- * @Description : EgovDeptManageList jsp
+ * @Class Name : ExamList.java
  * @Modification Information
  * @
- * @  수정일                    수정자                수정내용
+ * @  수정일     수정자         수정내용
  * @ ---------     --------    ---------------------------
- * @ 2009.02.01    lee.m.j      최초 생성
- * @ 2015.06.16	   조정국		   	0건 조회 표시 메시지 버그수정
- *   2016.06.13    장동한         표준프레임워크 v3.6 개선
- *  2020.03.00	rainend		myProject 적용
- *  @author lee.m.j
- *  @since 2009.03.21
+ *  2020.04.00	rainend		시험리스트
+ *  @author rainend
  *  @version 1.0
  *  @see
- *
- *  Copyright (C) 2009 by MOPAS  All right reserved.
  */
-
 %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -25,7 +17,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<c:set var="pageTitle"><spring:message code="comUssUmt.deptManage.title"/></c:set>
+<c:set var="pageTitle"><spring:message code="exam.examManage.title"/></c:set>
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,38 +26,37 @@
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
 
 <script type="text/javaScript" defer="defer">
-function fncSelectDeptManageList(pageNo){
+function fnList(pageNo){
     document.listForm.searchCondition.value = "1";
     document.listForm.pageIndex.value = pageNo;
-    document.listForm.action = "<c:url value='/dpt/selectDeptManageList.do'/>";
+    document.listForm.action = "<c:url value='/subject/List.do'/>";
     document.listForm.submit();
 }
 
-function fncSelectDeptManage(bannerId) {
-    document.listForm.bannerId.value = bannerId;
-    document.listForm.action = "<c:url value='/dpt/getDeptManage.do'/>";
+function fnDetail(sbjCd) {
+    document.listForm.sbjCd.value = sbjCd;
+    document.listForm.action = "<c:url value='/subject/Detail.do'/>";
     document.listForm.submit();
 }
 
-function fncAddDeptManageInsert() {
+function fnAdd() {
 	if(document.listForm.pageIndex.value == "") {
 		document.listForm.pageIndex.value = 1;
 	}
-    document.listForm.action = "<c:url value='/dpt/addViewDeptManage.do'/>";
+    document.listForm.action = "<c:url value='/subject/Regist.do'/>";
     document.listForm.submit();
 }
 
 function linkPage(pageNo){
     document.listForm.searchCondition.value = "1";
     document.listForm.pageIndex.value = pageNo;
-    document.listForm.action = "<c:url value='/dpt/selectDeptManageList.do'/>";
+    document.listForm.action = "<c:url value='/subject/List.do'/>";
     document.listForm.submit();
 }
 
 function press() {
-
     if (event.keyCode==13) {
-    	fncSelectDeptManageList('1');
+    	fnList('1');
     }
 }
 </script>
@@ -74,21 +65,18 @@ function press() {
 
 <body>
 
-<!-- javascript warning tag  -->
-<noscript class="noScriptTitle"><spring:message code="common.noScriptTitle.msg" /></noscript>
-
 <form name="listForm" method="post"> 
 <div class="board">
 	<h1>${pageTitle} <spring:message code="title.list" /></h1>
 	<!-- 검색영역 -->
 	<div class="search_box" title="<spring:message code="common.searchCondition.msg" />">
 		<ul>
-			<li><div style="line-height:4px;">&nbsp;</div><div><spring:message code="comUssUmt.deptManageSearchCondition.searchKeywordText" /> : </div></li><!-- 부서명 -->
+			<li><div style="line-height:4px;">&nbsp;</div><div><spring:message code="exam.subject.searchKeywordText" /> : </div></li><!-- 과목명 -->
 			<!-- 검색키워드 및 조회버튼 -->
 			<li>
-				<input class="s_input" name="searchKeyword" type="text"  size="35" title="<spring:message code="title.search" /> <spring:message code="input.input" />" value='<c:out value="${deptManageVO.searchKeyword}"/>'  maxlength="155" >
+				<input class="s_input" name="searchKeyword" type="text"  size="35" title="<spring:message code="title.search" /> <spring:message code="input.input" />" value='<c:out value="${ExamVO.searchKeyword}"/>'  maxlength="155" >
 				<input type="submit" class="s_btn" value="<spring:message code="button.inquire" />" title="<spring:message code="title.inquire" /> <spring:message code="input.button" />" /><!-- 조회 -->
-				<span class="btn_b"><a href="<c:url value='/dpt/addViewDeptManage.do'/>" onClick="fncAddDeptManageInsert(); return false;"  title="<spring:message code="button.create" /> <spring:message code="input.button" />"><spring:message code="button.create" /></a></span><!-- 등록 -->
+				<span class="btn_b"><a href="<c:url value='/subject/List.do'/>" onClick="fnAdd(); return false;"  title="<spring:message code="button.create" /> <spring:message code="input.button" />"><spring:message code="button.create" /></a></span><!-- 등록 -->
 			</li>
 		</ul>
 	</div>
@@ -103,29 +91,31 @@ function press() {
 	</colgroup>
 	<thead>
 	<tr>
-		<th class="board_th_link"><spring:message code="comUssUmt.deptManageList.deptId" /></th><!-- 부서 ID -->
-		<th class="board_th_link"><spring:message code="comUssUmt.deptManageList.deptName" /></th><!-- 부서 명 -->
-		<th><spring:message code="comUssUmt.deptManageList.deptDc" /></th><!--설명 -->
+		<th><spring:message code="table.num" /></th><!-- 번호 -->
+		<th class="board_th_link"><spring:message code="exam.SubjectCd" /></th><!-- 과목코드 -->
+		<th class="board_th_link"><spring:message code="exam.SubjectNm" /></th><!-- 과목명 -->
+		<th><spring:message code="exam.isUse" /></th><!--사용여부 -->
 	</tr>
 	</thead>
 	<tbody class="ov">
-	<c:if test="${fn:length(deptManageList) == 0}">
+	<c:if test="${fn:length(subjectList) == 0}">
 	<tr>
 		<td colspan="3"><spring:message code="common.nodata.msg" /></td>
 	</tr>
 	</c:if>
-	<c:forEach var="deptManage" items="${deptManageList}" varStatus="status">
+	<c:forEach var="subjectList" items="${subjectList}" varStatus="status">
 	<tr>
-		<td><a href="<c:url value='/dpt/getDeptManage.do'/>?pageIndex=${deptManageVO.pageIndex}&searchKeyword=${deptManageVO.searchKeyword}&orgnztId=${deptManage.orgnztId}"><c:out value="${deptManage.orgnztId}"/></a></td>
-		<td class="left"><a href="<c:url value='/dpt/getDeptManage.do'/>?pageIndex=${deptManageVO.pageIndex}&searchKeyword=${deptManageVO.searchKeyword}&orgnztId=${deptManage.orgnztId}"><c:out value="${deptManage.orgnztNm}"/></a></td>
-		<td class="left"><c:out value="${deptManage.orgnztDc}"/></td>
+		<td><c:out value="${(ExamVO.pageIndex-1) * ExamVO.pageSize + status.count}"/></td>
+		<td><a href="<c:url value='/subject/Detail.do'/>?pageIndex=${ExamVO.pageIndex}&searchKeyword=${ExamVO.searchKeyword}&sbjCD=${subjectList.sbjCd}"><c:out value="${subjectList.sbjCd}"/></a></td>
+		<td><a href="<c:url value='/subject/Detail.do'/>?pageIndex=${ExamVO.pageIndex}&searchKeyword=${ExamVO.searchKeyword}&sbjCd=${subjectList.sbjCd}"><c:out value="${subjectList.sbjNm}"/></a></td>
+		<td><c:out value="${subjectList.isUse}"/></td>
 	</tr>
 	</c:forEach>
 	</tbody>
 	</table>
 	
 	<!-- paging navigation -->
-	<c:if test="${!empty deptManageVO.pageIndex }">
+	<c:if test="${!empty ExamVO.pageIndex }">
 	<div class="pagination">
 		<ul><ui:pagination paginationInfo="${paginationInfo}" type="image" jsFunction="linkPage"/></ul>
 	</div>
@@ -133,8 +123,7 @@ function press() {
 	
 </div><!-- end div board -->
 
-<input name="pageIndex" type="hidden" value="<c:out value='${deptManageVO.pageIndex}'/>">
-<input type="hidden" name="searchCondition" value="1">
+<input name="pageIndex" type="hidden" value="<c:out value='${ExamVO.pageIndex}'/>">
 </form>
 
 </body>
