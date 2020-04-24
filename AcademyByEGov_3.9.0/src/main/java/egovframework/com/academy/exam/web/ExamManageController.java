@@ -1,7 +1,5 @@
 package egovframework.com.academy.exam.web;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
@@ -11,7 +9,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import egovframework.com.academy.exam.service.ExamManageService;
-import egovframework.com.academy.exam.service.ExamMst;
 import egovframework.com.academy.exam.service.ExamVO;
 import egovframework.com.cmm.EgovMessageSource;
 import egovframework.rte.fdl.property.EgovPropertyService;
@@ -50,25 +47,24 @@ public class ExamManageController {
 	 * @exception Exception
 	 */
 	@RequestMapping(value = "/exam/List.do")
-	public String ExamList(@ModelAttribute("searchVO") ExamVO searchVO, ModelMap model) throws Exception {
+	public String ExamList(@ModelAttribute("ExamVO") ExamVO ExamVO, ModelMap model) throws Exception {
 
-		searchVO.setPageUnit(propertyService.getInt("pageUnit"));
-		searchVO.setPageSize(propertyService.getInt("pageSize"));
+		ExamVO.setPageUnit(propertyService.getInt("pageUnit"));
+		ExamVO.setPageSize(propertyService.getInt("pageSize"));
 
 		/** paging */
 		PaginationInfo paginationInfo = new PaginationInfo();
-		paginationInfo.setCurrentPageNo(searchVO.getPageIndex());
-		paginationInfo.setRecordCountPerPage(searchVO.getPageUnit());
-		paginationInfo.setPageSize(searchVO.getPageSize());
+		paginationInfo.setCurrentPageNo(ExamVO.getPageIndex());
+		paginationInfo.setRecordCountPerPage(ExamVO.getPageUnit());
+		paginationInfo.setPageSize(ExamVO.getPageSize());
 
-		searchVO.setFirstIndex(paginationInfo.getFirstRecordIndex());
-		searchVO.setLastIndex(paginationInfo.getLastRecordIndex());
-		searchVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
+		ExamVO.setFirstIndex(paginationInfo.getFirstRecordIndex());
+		ExamVO.setLastIndex(paginationInfo.getLastRecordIndex());
+		ExamVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
 
-		List<?> examList = examManageService.selectExamList(searchVO);
-		model.addAttribute("resultList", examList);
+		model.addAttribute("examList", examManageService.selectExamList(ExamVO));
 
-		int totCnt = examManageService.selectExamListTotCnt(searchVO);
+		int totCnt = examManageService.selectExamListTotCnt(ExamVO);
 		paginationInfo.setTotalRecordCount(totCnt);
 		model.addAttribute("paginationInfo", paginationInfo);
 		
@@ -81,10 +77,9 @@ public class ExamManageController {
 	 * @return String - 리턴 Url
 	 */
 	@RequestMapping(value = "/exam/Detail.do")
-	public String ExamDetail(@ModelAttribute("searchVO") ExamVO searchVO, @ModelAttribute("ExamVO") ExamVO ExamVO, ModelMap model) throws Exception {
+	public String ExamDetail(@ModelAttribute("ExamVO") ExamVO ExamVO, ModelMap model) throws Exception {
 
-		ExamMst vo = examManageService.selectExamDetail(searchVO);
-		model.addAttribute("ExamVO", vo);
+		model.addAttribute("ExamVO", examManageService.selectExamDetail(ExamVO));
 		
 		return "egovframework/com/academy/exam/ExamDetail";
 	}
@@ -106,13 +101,12 @@ public class ExamManageController {
 	 * @return String - 리턴 Url
 	 */
 	@RequestMapping(value = "/exam/insert.do")
-	public String insertExam(@ModelAttribute("searchVO") ExamVO examVO, @ModelAttribute("ExamMst") ExamMst ExamMst, 
-									BindingResult bindingResult,  ModelMap model) throws Exception {
+	public String insertExam(@ModelAttribute("ExamVO") ExamVO ExamVO, BindingResult bindingResult,  ModelMap model) throws Exception {
 
 		if (bindingResult.hasErrors()) {
 			return "egovframework/com/academy/exam/ExamRegist";
 		} else {
-			examManageService.insertExam(ExamMst);
+			examManageService.insertExam(ExamVO);
 			model.addAttribute("message", egovMessageSource.getMessage("success.common.insert"));
 			return "forward:/exam/List.do";
 		}
@@ -124,12 +118,12 @@ public class ExamManageController {
 	 * @return String - 리턴 Url
 	 */
 	@RequestMapping(value = "/exam/update.do")
-	public String updateExam(@ModelAttribute("ExamVO") ExamVO examVO, BindingResult bindingResult, ModelMap model) throws Exception {
+	public String updateExam(@ModelAttribute("ExamVO") ExamVO ExamVO, BindingResult bindingResult, ModelMap model) throws Exception {
 
 		if (bindingResult.hasErrors()) {
 			return "egovframework/com/academy/exam/ExamDetail";
 		} else {
-			examManageService.updateExam(examVO);
+			examManageService.updateExam(ExamVO);
 			model.addAttribute("message", egovMessageSource.getMessage("success.common.update"));
 			return "forward:/exam/List.do";
 		}
@@ -141,24 +135,23 @@ public class ExamManageController {
 	 * @exception Exception
 	 */
 	@RequestMapping(value = "/subject/List.do")
-	public String SubjectList(@ModelAttribute("ExamVO") ExamVO examVO, ModelMap model) throws Exception {
+	public String SubjectList(@ModelAttribute("ExamVO") ExamVO ExamVO, ModelMap model) throws Exception {
 
 		/** paging */
 		PaginationInfo paginationInfo = new PaginationInfo();
-		paginationInfo.setCurrentPageNo(examVO.getPageIndex());
-		paginationInfo.setRecordCountPerPage(examVO.getPageUnit());
-		paginationInfo.setPageSize(examVO.getPageSize());
+		paginationInfo.setCurrentPageNo(ExamVO.getPageIndex());
+		paginationInfo.setRecordCountPerPage(ExamVO.getPageUnit());
+		paginationInfo.setPageSize(ExamVO.getPageSize());
 
-		examVO.setFirstIndex(paginationInfo.getFirstRecordIndex());
-		examVO.setLastIndex(paginationInfo.getLastRecordIndex());
-		examVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
+		ExamVO.setFirstIndex(paginationInfo.getFirstRecordIndex());
+		ExamVO.setLastIndex(paginationInfo.getLastRecordIndex());
+		ExamVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
 
-		model.addAttribute("deptManageList", examManageService.selectSubjectList(examVO));
+		model.addAttribute("subjectList", examManageService.selectSubjectList(ExamVO));
 
-		int totCnt = examManageService.selectSubjectListTotCnt(examVO);
+		int totCnt = examManageService.selectSubjectListTotCnt(ExamVO);
 		paginationInfo.setTotalRecordCount(totCnt);
 		model.addAttribute("paginationInfo", paginationInfo);
-		model.addAttribute("message", egovMessageSource.getMessage("success.common.select"));
 		
 		return "egovframework/com/academy/exam/SubjectList";
 	}
@@ -170,10 +163,9 @@ public class ExamManageController {
 	 */
 
 	@RequestMapping(value = "/subject/Detail.do")
-	public String SubjectDetail(@ModelAttribute("ExamVO") ExamVO examVO, ModelMap model) throws Exception {
+	public String SubjectDetail(@ModelAttribute("ExamVO") ExamVO ExamVO, ModelMap model) throws Exception {
 
-		model.addAttribute("result", examManageService.selectSubjectDetail(examVO));
-		model.addAttribute("message", egovMessageSource.getMessage("success.common.select"));
+		model.addAttribute("subjectManage", examManageService.selectSubjectDetail(ExamVO));
 		
 		return "egovframework/com/academy/exam/SubjectDetail";
 	}
@@ -185,6 +177,7 @@ public class ExamManageController {
 	@RequestMapping(value = "/subject/Regist.do")
 	public String SubjectRegist(@ModelAttribute("ExamVO") ExamVO ExamVO, ModelMap model) throws Exception {
 
+		model.addAttribute("subjectManage", ExamVO);
 		return "egovframework/com/academy/exam/SubjectRegist";
 	}
 
@@ -194,12 +187,12 @@ public class ExamManageController {
 	 * @return String - 리턴 Url
 	 */
 	@RequestMapping(value = "/subject/insert.do")
-	public String insertSubject(@ModelAttribute("ExamVO") ExamVO examVO, BindingResult bindingResult,  ModelMap model) throws Exception {
+	public String insertSubject(@ModelAttribute("ExamVO") ExamVO ExamVO, BindingResult bindingResult,  ModelMap model) throws Exception {
 
 		if (bindingResult.hasErrors()) {
 			return "egovframework/com/academy/exam/SubjectRegist";
 		} else {
-			examManageService.insertSubject(examVO);
+			examManageService.insertSubject(ExamVO);
 			model.addAttribute("message", egovMessageSource.getMessage("success.common.insert"));
 			return "forward:/subject/List.do";
 		}
@@ -211,12 +204,12 @@ public class ExamManageController {
 	 * @return String - 리턴 Url
 	 */
 	@RequestMapping(value = "/subject/update.do")
-	public String updateSubject(@ModelAttribute("ExamVO") ExamVO examVO, BindingResult bindingResult, ModelMap model) throws Exception {
+	public String updateSubject(@ModelAttribute("ExamVO") ExamVO ExamVO, BindingResult bindingResult, ModelMap model) throws Exception {
 
 		if (bindingResult.hasErrors()) {
 			return "egovframework/com/academy/exam/SubjectDetail";
 		} else {
-			examManageService.updateSubject(examVO);
+			examManageService.updateSubject(ExamVO);
 			model.addAttribute("message", egovMessageSource.getMessage("success.common.update"));
 			return "forward:/subject/List.do";
 		}
