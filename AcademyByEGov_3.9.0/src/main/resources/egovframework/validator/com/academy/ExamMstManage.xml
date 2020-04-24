@@ -6,20 +6,25 @@
 <form-validation>
 
     <formset>
-        <form name="ExamVO">
-			<field property="examCd" depends="required">
-        		<arg0 key="exam.examManageList.ExamCd" resource="true"/><!-- 시험코드 -->
-			</field> 
+        <form name="ExamMst">
 			<field property="examNm" depends="required, maxlength">
-        		<arg0 key="exam.examManageList.ExamNm" resource="true"/><!-- 시험명 -->
-        		<arg1 key="60" resource="true"/>
+        		<arg0 key="exam.ExamNm" resource="true"/><!-- 시험명 -->
+        		<arg1 key="100" resource="true"/>
 				<var>
 					<var-name>maxlength</var-name>
-					<var-value>60</var-value>
+					<var-value>100</var-value>
+				</var>
+			</field> 
+			<field property="subjectNm" depends="required, maxlength">
+        		<arg0 key="exam.SubjectNm" resource="true"/><!-- 과목명 -->
+        		<arg1 key="100" resource="true"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>100</var-value>
 				</var>
 			</field> 
 			<field property="isUse" depends="required">
-        		<arg0 key="exam.examManageList.isUse" resource="true"/><!-- 사용여부 -->
+        		<arg0 key="exam.isUse" resource="true"/><!-- 사용여부 -->
 			</field> 
 		</form>
     </formset>
