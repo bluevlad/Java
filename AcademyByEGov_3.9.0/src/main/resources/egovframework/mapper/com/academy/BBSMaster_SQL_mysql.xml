@@ -53,13 +53,13 @@
 				DATE_FORMAT(a.FRST_REGIST_PNTTM, '%Y-%m-%d') as FRST_REGIST_PNTTM,
 				d.USER_NM AS FRST_REGISTER_NM
 			FROM
-				ACM_BBS_MST a
+				bbs_mst a
 			LEFT OUTER JOIN 
 				(SELECT CODE_ID, CODE, CODE_NM FROM 
-					acm_code_sub WHERE CODE_ID = 'COM101' AND USE_AT='Y') b
+					code_sub WHERE CODE_ID = 'COM101' AND USE_AT='Y') b
 				ON a.BBS_TY_CODE = b.CODE
 			LEFT OUTER JOIN
-				(SELECT EMPLYR_ID, USER_NM FROM acm_member_mst) d
+				(SELECT EMPLYR_ID, USER_NM FROM member_mst) d
 				ON a.FRST_REGISTER_ID = d.EMPLYR_ID
 			WHERE 1=1
 			<if test="searchCnd == 0">AND
@@ -76,13 +76,13 @@
 			SELECT 
 				COUNT(a.BBS_ID)
 			FROM
-				ACM_BBS_MST a
+				bbs_mst a
 			LEFT OUTER JOIN 
 				(SELECT CODE_ID, CODE, CODE_NM FROM 
-					acm_code_sub WHERE CODE_ID = 'COM101' AND USE_AT='Y') b
+					code_sub WHERE CODE_ID = 'COM101' AND USE_AT='Y') b
 				ON a.BBS_TY_CODE = b.CODE
 			LEFT OUTER JOIN
-				(SELECT EMPLYR_ID, USER_NM FROM acm_member_mst) d
+				(SELECT EMPLYR_ID, USER_NM FROM member_mst) d
 				ON a.FRST_REGISTER_ID = d.EMPLYR_ID
 			WHERE 1=1
 			<if test="searchCnd == 0">AND
@@ -104,9 +104,9 @@
 					AND TRGET_ID IN (#{uniqId}, 'SYSTEM_DEFAULT_BOARD')
 				) as AUTH_FLAG
 			FROM
-				ACM_BBS_MST a
+				bbs_mst a
 			LEFT OUTER JOIN 
-				(SELECT CODE_ID, CODE, CODE_NM FROM acm_code_sub WHERE CODE_ID = 'COM101' AND USE_AT='Y') b
+				(SELECT CODE_ID, CODE, CODE_NM FROM code_sub WHERE CODE_ID = 'COM101' AND USE_AT='Y') b
 				ON a.BBS_TY_CODE = b.CODE
 			LEFT OUTER JOIN COMTNTMPLATINFO d
 				ON a.TMPLAT_ID = d.TMPLAT_ID				
@@ -118,7 +118,7 @@
 
 	<insert id="insertBBSMaster" parameterType="egovframework.com.academy.bbs.service.BoardMasterVO">
 		
-			INSERT INTO ACM_BBS_MST
+			INSERT INTO bbs_mst
 			(BBS_ID, BBS_TY_CODE, BBS_NM, BBS_INTRCN, 
 			 REPLY_POSBL_AT, FILE_ATCH_POSBL_AT, ATCH_POSBL_FILE_NUMBER,
 			 TMPLAT_ID, USE_AT, FRST_REGISTER_ID, FRST_REGIST_PNTTM )
@@ -132,7 +132,7 @@
 	
  	<update id="updateBBSMaster" parameterType="egovframework.com.academy.bbs.service.BoardMasterVO">
  		
-			UPDATE ACM_BBS_MST SET 
+			UPDATE bbs_mst SET 
 				BBS_NM = #{bbsNm},
 				BBS_INTRCN = #{bbsIntrcn}, 
 				BBS_TY_CODE = #{bbsTyCode},
@@ -148,7 +148,7 @@
 
  	<update id="deleteBBSMaster" parameterType="egovframework.com.academy.bbs.service.BoardMasterVO">
  		
-			UPDATE ACM_BBS_MST SET 
+			UPDATE bbs_mst SET 
 				USE_AT = 'N',
 				LAST_UPDUSR_ID = #{lastUpdusrId},
 				LAST_UPDT_PNTTM = SYSDATE()
@@ -161,7 +161,7 @@
 			SELECT 
 				BBS_ID, BBS_TY_CODE, BBS_NM, FRST_REGIST_PNTTM
 			FROM
-				ACM_BBS_MST
+				bbs_mst
 			WHERE USE_AT = 'Y' 
 			ORDER BY FRST_REGIST_PNTTM DESC
 		

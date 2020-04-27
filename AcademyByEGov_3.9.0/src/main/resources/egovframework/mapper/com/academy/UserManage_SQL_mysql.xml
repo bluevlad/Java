@@ -11,7 +11,7 @@
         			ESNTL_ID uniqId, 'USR03' userTy, EMPLYR_ID userId, USER_NM userNm, EMAIL_ADRES emailAdres, 
         			AREA_NO areaNo, HOUSE_MIDDLE_TELNO middleTelno, HOUSE_END_TELNO endTelno, 
         			MBTLNUM moblphonNo, GROUP_ID groupId, EMPLYR_STTUS_CODE sttus, SBSCRB_DE sbscrbDe
-				FROM ACM_MEMBER_MST
+				FROM member_mst
 		) A 
         WHERE 1=1
 	    <if test='sbscrbSttus != null and sbscrbSttus neq "0" and sbscrbSttus neq ""'>
@@ -36,7 +36,7 @@
         			ESNTL_ID uniqId, 'USR03' userTy, EMPLYR_ID userId, USER_NM userNm, EMAIL_ADRES emailAdres, 
         			AREA_NO areaNo, HOUSE_MIDDLE_TELNO middleTelno, HOUSE_END_TELNO endTelno, 
         			MBTLNUM moblphonNo, GROUP_ID groupId, EMPLYR_STTUS_CODE sttus, SBSCRB_DE sbscrbDe
-				FROM ACM_MEMBER_MST
+				FROM member_mst
             ) A
 		WHERE 1=1
 	    <if test='sbscrbSttus != null and sbscrbSttus neq "0" and sbscrbSttus neq ""'>
@@ -60,12 +60,12 @@
             FXNUM fxnum, HOUSE_ADRES homeadres, DETAIL_ADRES detailAdres, ZIP zip, OFFM_TELNO offmTelno, MBTLNUM moblphonNo,
             EMAIL_ADRES emailAdres, OFCPS_NM ofcpsNm, GROUP_ID groupId, ORGNZT_ID orgnztId, PSTINST_CODE insttCode,
             EMPLYR_STTUS_CODE emplyrSttusCode, SBSCRB_DE sbscrbDe, CRTFC_DN_VALUE subDn, LOCK_AT lockAt
-        FROM ACM_MEMBER_MST
+        FROM member_mst
         WHERE ESNTL_ID=#{uniqId}
     </select>
     
     <insert id="insertUser_S">
-		INSERT INTO ACM_MEMBER_MST(   
+		INSERT INTO member_mst(   
 			ESNTL_ID, EMPLYR_ID, USER_NM, PASSWORD, EMPL_NO, SEXDSTN_CODE,
 			BRTHDY, HOUSE_ADRES, DETAIL_ADRES, ZIP,
 			MBTLNUM, EMAIL_ADRES, OFCPS_NM, GROUP_ID, ORGNZT_ID, EMPLYR_STTUS_CODE, SBSCRB_DE, CRTFC_DN_VALUE
@@ -78,12 +78,12 @@
     
     <select id="checkIdDplct_S" resultType="int">
 		SELECT COUNT(EMPLYR_ID) usedCnt
-        FROM ACM_MEMBER_MST
+        FROM member_mst
         WHERE EMPLYR_ID = #{checkId}
     </select>
     
     <update id="updateUser_S">
-		UPDATE ACM_MEMBER_MST 
+		UPDATE member_mst 
 		SET 
 			EMPLYR_ID = #{emplyrId},
 			USER_NM = #{emplyrNm},
@@ -103,19 +103,19 @@
     </update>
     
     <delete id="deleteUser_S">
-		DELETE FROM ACM_MEMBER_MST 
+		DELETE FROM member_mst 
         WHERE ESNTL_ID=#{delId}
     </delete>
     
     <update id="updatePassword_S">
-		UPDATE ACM_MEMBER_MST 
+		UPDATE member_mst 
         SET PASSWORD   =  #{password}
         WHERE  ESNTL_ID  = #{uniqId}
     </update>
     
     <select id="selectPassword_S" resultType="egovframework.com.academy.member.service.UserManageVO">
 		SELECT PASSWORD password
-        FROM    ACM_MEMBER_MST
+        FROM    member_mst
         WHERE   ESNTL_ID=#{uniqId}
     </select>
 

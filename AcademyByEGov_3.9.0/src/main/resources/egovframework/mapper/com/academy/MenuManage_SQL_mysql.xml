@@ -7,13 +7,13 @@
 		SELECT
 			MENU_NO AS menuNo, P_MENU_NO AS pMenuNo, MENU_NM AS menuNm, MENU_ORDR AS menuOrdr, 
 			MENU_DC AS menuDc, MENU_PATH AS menuPath, ISUSE AS isUse, TARGET AS target 
-		FROM acm_menu 
+		FROM menu_mst 
 		WHERE MENU_NO > 0 
 		ORDER BY MENU_ORDR
 	</select>
 
 	<update id="updateMenuManage_S">
-		UPDATE acm_menu 
+		UPDATE menu_mst 
 		SET  MENU_ORDR = #{menuOrdr}       
             , MENU_NM = #{menuNm}         
             , P_MENU_NO = #{pMenuNo}    
@@ -25,7 +25,7 @@
 	</update>
 	
 	<insert id="insertMenuManage_S">
-		INSERT INTO acm_menu ( 
+		INSERT INTO menu_mst ( 
 			MENU_NO, MENU_ORDR, MENU_NM, P_MENU_NO, MENU_DC, MENU_PATH, ISUSE, TARGET 
 		) VALUES (
 			#{menuNo}, #{menuOrdr}, #{menuNm}, #{pMenuNo}, #{menuDc}, #{menuPath}, #{isUse}, #{target} 
@@ -33,14 +33,14 @@
 	</insert>
 
 	<delete id="deleteMenuManage_S">
-		DELETE FROM acm_menu              
+		DELETE FROM menu_mst              
 		WHERE MENU_NO=#{menuNo}                 
 	</delete> 
 	
 	<!-- 메뉴번호 존재여부 조회 -->
 	<select id="selectMenuNoByPk" parameterType="egovframework.com.academy.menu.service.MenuManageVO" resultType="int">
 		SELECT COUNT(MENU_NO) AS totcnt
-		FROM acm_menu
+		FROM menu_mst
 		WHERE MENU_NO = #{menuNo}
 	</select>
 

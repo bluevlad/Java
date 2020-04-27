@@ -37,7 +37,7 @@
 		SELECT 
 				emplyr_id AS id, user_nm AS name, password AS password, ihidnum AS ihidNum
 			     , email_adres AS email, 'USR' AS userSe, orgnzt_id AS orgnztId, esntl_id AS uniqId
-		FROM acm_member_mst
+		FROM member_mst
 		WHERE emplyr_id = #{id}
 		AND password = #{password}
 		AND emplyr_sttus_code = 'P'
@@ -46,7 +46,7 @@
 	<!-- 아이디 찾기 -->
 	<select id="searchId" resultMap="id">
 		SELECT emplyr_id AS id
-		FROM acm_member_mst
+		FROM member_mst
 		WHERE user_nm = #{name}
 		AND email_adres = #{email}
 		AND emplyr_sttus_code = 'P'
@@ -55,7 +55,7 @@
 	<!-- 비밀번호 찾기 -->
 	<select id="searchPassword" resultMap="password">
 		SELECT password AS password
-		FROM acm_member_mst
+		FROM member_mst
 		WHERE emplyr_id = #{id}
 		AND user_nm = #{name}
 		AND email_adres = #{email}
@@ -66,7 +66,7 @@
 	
 	<!-- 변경된 비밀번호를 저장 -->
 	<update id="updatePassword">
-		UPDATE acm_member_mst
+		UPDATE member_mst
 		SET password = #{password}
 		WHERE emplyr_id = #{id}
 	</update>

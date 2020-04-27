@@ -11,7 +11,7 @@
 
     <select id="selectDeptManageList" resultMap="deptManageVO">
 		SELECT ORGNZT_ID, ORGNZT_NM, ORGNZT_DC
-        FROM ACM_ORG_MST
+        FROM org_mst
         WHERE 1=1
 		<if test="searchCondition == 1">
 		AND ORGNZT_NM LIKE CONCAT('%' , #{searchKeyword}, '%')
@@ -24,7 +24,7 @@
 
     <select id="selectDeptManageListTotCnt" resultType="int">
 		SELECT COUNT(*) totcnt
-        FROM ACM_ORG_MST
+        FROM org_mst
         WHERE 1=1
         <if test="searchCondition == 1">
         AND ORGNZT_NM LIKE CONCAT('%' , #{searchKeyword}, '%')
@@ -33,12 +33,12 @@
     
     <select id="selectDeptManage" resultMap="deptManageVO">
 		SELECT ORGNZT_ID, ORGNZT_NM, ORGNZT_DC
-		FROM ACM_ORG_MST
+		FROM org_mst
         WHERE ORGNZT_ID = #{orgnztId}
     </select>
 
     <insert id="insertDeptManage">
-		INSERT INTO ACM_ORG_MST (
+		INSERT INTO org_mst (
 			ORGNZT_ID, ORGNZT_NM, ORGNZT_DC
 		) VALUES (
 			#{orgnztId}, #{orgnztNm}, #{orgnztDc}
@@ -46,7 +46,7 @@
     </insert>     
 
     <update id="updateDeptManage">
-		UPDATE ACM_ORG_MST
+		UPDATE org_mst
         SET 
         	ORGNZT_NM = #{orgnztNm},
             ORGNZT_DC = #{orgnztDc}  
@@ -54,7 +54,7 @@
     </update>    
     
     <delete id="deleteDeptManage">
-		DELETE FROM ACM_ORG_MST
+		DELETE FROM org_mst
         WHERE ORGNZT_ID = #{orgnztId}    
     </delete>  
 

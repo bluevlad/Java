@@ -29,7 +29,7 @@
 												resultType="egovframework.com.academy.menu.service.MenuManageVO">
 		SELECT
 			MENU_NO AS menuNo, MENU_ORDR AS menuOrdr, MENU_NM AS menuNm, P_MENU_NO AS pMenuNo, MENU_PATH AS menuPath
-			FROM acm_menu
+			FROM menu_mst
 			where MENU_ORDR > 0
 			ORDER BY MENU_NO, MENU_ORDR
 	</select>

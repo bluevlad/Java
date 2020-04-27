@@ -59,7 +59,7 @@
 			     , 'COM012' AS STATS_SE
 			     , 'USR03' 	AS DETAIL_STATS_SE
 			     , COUNT(a.EMPLYR_ID) AS USER_CO
-			  FROM acm_member_mst a
+			  FROM member_mst a
 			 WHERE NOT EXISTS (SELECT b.OCCRRNC_DE 
 			                     FROM COMTSUSERSUMMARY b
 			                    WHERE b.OCCRRNC_DE = DATE_FORMAT(ADDDATE(SYSDATE(), -1), '%Y%m%d')
@@ -117,7 +117,7 @@
 					     , 'COM013' AS STATS_SE
 					     , 'A' 	AS DETAIL_STATS_SE
 					     , COUNT(a.EMPLYR_ID) AS USER_CO
-					  FROM acm_member_mst a
+					  FROM member_mst a
 					 WHERE NOT EXISTS (SELECT b.OCCRRNC_DE 
 					                     FROM COMTSUSERSUMMARY b
 					                    WHERE b.OCCRRNC_DE = DATE_FORMAT(ADDDATE(SYSDATE(), -1), '%Y%m%d')
@@ -180,7 +180,7 @@
 					     , 'COM013' AS STATS_SE
 					     , 'D' 	AS DETAIL_STATS_SE
 					     , COUNT(a.EMPLYR_ID) AS USER_CO
-					  FROM acm_member_mst a
+					  FROM member_mst a
 					 WHERE NOT EXISTS (SELECT b.OCCRRNC_DE 
 					                     FROM COMTSUSERSUMMARY b
 					                    WHERE b.OCCRRNC_DE = DATE_FORMAT(ADDDATE(SYSDATE(), -1), '%Y%m%d')
@@ -243,7 +243,7 @@
 					     , 'COM013' AS STATS_SE
 					     , 'P' 	AS DETAIL_STATS_SE
 					     , COUNT(a.EMPLYR_ID) AS USER_CO
-					  FROM acm_member_mst a
+					  FROM member_mst a
 					 WHERE NOT EXISTS (SELECT b.OCCRRNC_DE 
 					                     FROM COMTSUSERSUMMARY b
 					                    WHERE b.OCCRRNC_DE = DATE_FORMAT(ADDDATE(SYSDATE(), -1), '%Y%m%d')
@@ -288,7 +288,7 @@
 					     , 'COM014' AS STATS_SE
 					     , 'F' 	AS DETAIL_STATS_SE
 					     , COUNT(a.EMPLYR_ID) AS USER_CO
-					  FROM acm_member_mst a
+					  FROM member_mst a
 					 WHERE NOT EXISTS (SELECT b.OCCRRNC_DE 
 					                     FROM COMTSUSERSUMMARY b
 					                    WHERE b.OCCRRNC_DE = DATE_FORMAT(ADDDATE(SYSDATE(), -1), '%Y%m%d')
@@ -333,7 +333,7 @@
 					     , 'COM014' AS STATS_SE
 					     , 'M' 	AS DETAIL_STATS_SE
 					     , COUNT(a.EMPLYR_ID) AS USER_CO
-					  FROM acm_member_mst a
+					  FROM member_mst a
 					 WHERE NOT EXISTS (SELECT b.OCCRRNC_DE 
 					                     FROM COMTSUSERSUMMARY b
 					                    WHERE b.OCCRRNC_DE = DATE_FORMAT(ADDDATE(SYSDATE(), -1), '%Y%m%d')

@@ -12,14 +12,14 @@
 
 	<select id="selectCmmCodeDetail" parameterType="ComDefaultCodeVO" resultMap="CodeMst">
 		SELECT CODE_ID, CODE, CODE_NM, CODE_DC
-		FROM acm_code_sub
+		FROM code_sub
 		WHERE USE_AT = 'Y'
 		AND CODE_ID = #{codeId}
 	</select>
 
     <select id="selectOgrnztIdDetail" parameterType="ComDefaultCodeVO" resultMap="CodeMst">
 		SELECT #{tableNm} CODE_ID, ORGNZT_ID CODE, ORGNZT_NM CODE_NM, ORGNZT_DC CODE_DC
-        FROM acm_org_mst
+        FROM org_mst
         WHERE 1=1
         <if test='haveDetailCondition == "Y"'>
         AND ORGNZT_ID LIKE #{detailConditionValue}
@@ -28,7 +28,7 @@
     
     <select id="selectGroupIdDetail" parameterType="ComDefaultCodeVO" resultMap="CodeMst">
 		SELECT #{tableNm} CODE_ID, GROUP_ID CODE, GROUP_NM CODE_NM, GROUP_DC CODE_DC
-        FROM acm_auth_group
+        FROM auth_group
         WHERE 1=1
         <if test='haveDetailCondition == "Y"'>
         AND GROUP_ID LIKE #{detailConditionValue}

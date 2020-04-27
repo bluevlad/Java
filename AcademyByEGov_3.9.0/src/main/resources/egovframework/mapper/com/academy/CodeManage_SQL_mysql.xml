@@ -11,7 +11,7 @@
 	<select id="selectCodeList" parameterType="egovframework.com.academy.code.service.CodeMstVO" 
 										resultType="egovframework.com.academy.code.service.CodeMstVO">
 		SELECT A.CODE_ID codeId, A.CODE_ID_NM codeIdNm, A.USE_AT useAt
-		 FROM acm_code_mst A
+		 FROM code_mst A
 		WHERE 1=1
 		<if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isEquals(searchCondition,'1')">
 		AND A.CODE_ID LIKE CONCAT ('%', #{searchKeyword},'%')
@@ -27,7 +27,7 @@
 
 	<select id="selectCodeListTotCnt" parameterType="egovframework.com.academy.code.service.CodeMstVO" resultType="int">
 		SELECT COUNT(*) totcnt
-		FROM acm_code_mst
+		FROM code_mst
 		<if test="searchCondition == 1">
 		AND CODE_ID LIKE CONCAT ('%', #{searchKeyword},'%')
 		</if>
@@ -39,12 +39,12 @@
 	<select id="selectCodeDetail" parameterType="egovframework.com.academy.code.service.CodeMstVO" 
 											resultType="egovframework.com.academy.code.service.CodeMstVO">
         SELECT A.CODE_ID codeId, A.CODE_ID_NM codeIdNm, A.CODE_ID_DC codeIdDc, A.USE_AT useAt
-		FROM acm_code_mst A
+		FROM code_mst A
 		WHERE A.CODE_ID = #{codeId}
 	</select>
 
 	<insert id="insertCode">
-		INSERT INTO acm_code_mst (
+		INSERT INTO code_mst (
 			CODE_ID, CODE_ID_NM, CODE_ID_DC, USE_AT, FRST_REGIST_PNTTM, FRST_REGISTER_ID, LAST_UPDT_PNTTM, LAST_UPDUSR_ID
 		) VALUES (
 			#{codeId}, #{codeIdNm}, #{codeIdDc}, #{useAt}, now(), #{frstRegisterId}, now(), #{frstRegisterId}
@@ -52,7 +52,7 @@
 	</insert>
 
 	<update id="updateCode">
-		UPDATE acm_code_mst
+		UPDATE code_mst
 		SET 
 			CODE_ID_NM = #{codeIdNm}
 			, CODE_ID_DC = #{codeIdDc}
@@ -63,7 +63,7 @@
 	</update>
 
 	<delete id="deleteCode">
-		UPDATE acm_code_mst
+		UPDATE code_mst
         SET USE_AT = 'N'
         WHERE CODE_ID = #{codeId}
 	</delete>
@@ -71,7 +71,7 @@
 	<select id="selectCodeSubList" parameterType="egovframework.com.academy.code.service.CodeMstVO"  
 										resultType="egovframework.com.academy.code.service.CodeMstVO">
 		SELECT B.CODE_ID, A.CODE, A.CODE_NM, A.USE_AT
-		FROM acm_code_sub A, acm_code_mst B
+		FROM code_sub A, code_mst B
 		WHERE B.USE_AT = 'Y'
 		AND A.CODE_ID = B.CODE_ID
 		<if test="searchCondition == 1">
@@ -88,7 +88,7 @@
 
 	<select id="selectCodeSubListTotCnt" parameterType="egovframework.com.academy.code.service.CodeMstVO" resultType="int">
 		SELECT COUNT(*) totcnt
-		FROM acm_code_sub A, acm_code_mst B
+		FROM code_sub A, code_mst B
 		WHERE B.USE_AT = 'Y'
 		AND A.CODE_ID = B.CODE_ID
 		<if test="searchCondition == 1">
@@ -105,7 +105,7 @@
 	<select id="selectCodeSubDetail" parameterType="egovframework.com.academy.code.service.CodeMst" 
 												resultType="egovframework.com.academy.code.service.CodeMst">
 		SELECT B.CODE_ID codeId, B.CODE_ID_NM codeIdNm, A.CODE code, A.CODE_NM codeNm, A.CODE_DC codeDc, A.USE_AT useAt
-		FROM acm_code_sub A, acm_code_mst B
+		FROM code_sub A, code_mst B
         WHERE B.USE_AT = 'Y'
         AND A.CODE_ID = B.CODE_ID
 		AND A.CODE_ID = #{codeId}
@@ -113,7 +113,7 @@
 	</select>
 
 	<insert id="insertCodeSub">
-		INSERT INTO acm_code_sub (
+		INSERT INTO code_sub (
 			CODE_ID, CODE, CODE_NM, CODE_DC, USE_AT, FRST_REGIST_PNTTM, FRST_REGISTER_ID, LAST_UPDT_PNTTM, LAST_UPDUSR_ID
         ) VALUES (
          	#{codeId}, #{code}, #{codeNm}, #{codeDc}, #{useAt}, now(), #{frstRegisterId}, now(), #{frstRegisterId}
@@ -121,7 +121,7 @@
 	</insert>
 
 	<update id="updateCodeSub">
-		UPDATE  acm_code_sub
+		UPDATE  code_sub
         SET 
         	CODE_NM = #{codeNm}
         	, CODE_DC = #{codeDc}
@@ -133,7 +133,7 @@
 	</update>
 
 	<delete id="deleteCodeSub">
-		UPDATE acm_code_sub
+		UPDATE code_sub
         SET USE_AT = 'N'
         WHERE CODE_ID = #{codeId}
         AND CODE = #{code}

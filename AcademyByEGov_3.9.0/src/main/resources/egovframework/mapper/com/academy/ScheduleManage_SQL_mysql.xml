@@ -45,7 +45,7 @@
 			A.SCD_IPCR_CODE, A.SCD_CHARGER_ID, A.ATCH_FILE_ID,
 			A.FRST_REGIST_PNTTM FRST_REGISTER_PNTTM,
 			A.FRST_REGISTER_ID, A.LAST_UPDT_PNTTM, A.LAST_UPDUSR_ID, A.REPTIT_SE_CODE
-		FROM acm_schedule_mst A
+		FROM schedule_mst A
 		WHERE 1=1
 		<if test='searchKeyword != null and searchKeyword != ""'>
 	 		<if test='searchCondition == "SCHDUL_SE"'>
@@ -59,7 +59,7 @@
 	<!-- 개인일정정보::목록조회_게시물 총갯수  -->
 	<select id="selectScheduleListCnt" parameterType="comDefaultVO" resultType="int">
 		SELECT COUNT(*) totcnt
-		FROM acm_schedule_mst
+		FROM schedule_mst
 		WHERE 1=1
 	 	<if test='searchKeyword != null and searchKeyword != ""'>
  			<if test='searchCondition == "SCHDUL_SE"'>
@@ -78,7 +78,7 @@
 			A.ATCH_FILE_ID,
 			DATE_FORMAT(A.FRST_REGIST_PNTTM,'%Y-%m-%d') FRST_REGISTER_PNTTM,
 			A.FRST_REGISTER_ID, A.LAST_UPDT_PNTTM, A.LAST_UPDUSR_ID, A.REPTIT_SE_CODE
-		FROM acm_schedule_mst A
+		FROM schedule_mst A
 		WHERE 1=1
 		AND A.SCD_KIND_CODE = '2'
 		AND (A.SCD_CHARGER_ID = #{uniqId} OR A.FRST_REGISTER_ID = #{uniqId})
@@ -97,10 +97,10 @@
 		SELECT
 			A.SCD_ID, A.SCD_SE, A.SCD_DEPT_ID, A.SCD_KIND_CODE, A.SCD_BGNDE, A.SCD_ENDDE,
 			A.SCD_NM, A.SCD_DESC, A.SCD_PLACE, A.SCD_IPCR_CODE, A.SCD_CHARGER_ID,
-			(SELECT USER_NM FROM acm_member_mst WHERE EMPLYR_ID = A.SCD_CHARGER_ID) SCD_CHARGER_NAME,
+			(SELECT USER_NM FROM member_mst WHERE EMPLYR_ID = A.SCD_CHARGER_ID) SCD_CHARGER_NAME,
 			A.ATCH_FILE_ID,
 			A.FRST_REGIST_PNTTM FRST_REGISTER_PNTTM, A.FRST_REGISTER_ID, A.LAST_UPDT_PNTTM, A.LAST_UPDUSR_ID, 	A.REPTIT_SE_CODE
-		FROM acm_schedule_mst A
+		FROM schedule_mst A
 		WHERE 1=1
 		AND A.SCD_KIND_CODE = '2'
 	 	<if test='searchMode != null and searchMode != ""'>
@@ -134,20 +134,20 @@
 	<select id="selectScheduleDetail" resultMap="ScheduleMap">
 		SELECT
 			A.SCD_ID, A.SCD_SE, A.SCD_DEPT_ID,
-			(SELECT ORGNZT_NM FROM acm_org_mst WHERE ORGNZT_ID = A.SCD_DEPT_ID) SCD_DEPT_NAME,
+			(SELECT ORGNZT_NM FROM org_mst WHERE ORGNZT_ID = A.SCD_DEPT_ID) SCD_DEPT_NAME,
 			A.SCD_KIND_CODE, A.SCD_BGNDE, A.SCD_ENDDE, A.SCD_NM, 	A.SCD_DESC,
 			A.SCD_PLACE, A.SCD_IPCR_CODE, A.SCD_CHARGER_ID,
-			(SELECT USER_NM FROM acm_member_mst WHERE EMPLYR_ID = A.SCD_CHARGER_ID) SCD_CHARGER_NAME,
+			(SELECT USER_NM FROM member_mst WHERE EMPLYR_ID = A.SCD_CHARGER_ID) SCD_CHARGER_NAME,
 			A.ATCH_FILE_ID, A.REPTIT_SE_CODE, 
 			A.FRST_REGIST_PNTTM, A.FRST_REGISTER_ID, A.LAST_UPDT_PNTTM, A.LAST_UPDUSR_ID
-		FROM acm_schedule_mst A
+		FROM schedule_mst A
 		WHERE 1=1
 		AND SCD_ID = #{scdId}
 	</select>
 
 	<!-- 개인일정정보::입력  -->
 	<insert id="insertSchedule">
-		INSERT INTO acm_schedule_mst (
+		INSERT INTO schedule_mst (
 			SCD_ID, SCD_SE, SCD_DEPT_ID, SCD_KIND_CODE, 	SCD_BGNDE, SCD_ENDDE,
 			SCD_NM, SCD_DESC, SCD_PLACE, SCD_IPCR_CODE, SCD_CHARGER_ID, ATCH_FILE_ID,
 			REPTIT_SE_CODE, FRST_REGIST_PNTTM, FRST_REGISTER_ID, 	LAST_UPDT_PNTTM, LAST_UPDUSR_ID
@@ -160,7 +160,7 @@
 
 	<!-- 개인일정정보::수정  -->
 	<update id="updateSchedule">
-		UPDATE acm_schedule_mst
+		UPDATE schedule_mst
 		SET
 			SCD_SE=#{scdSe},
 			SCD_DEPT_ID=#{scdDeptId},
@@ -180,7 +180,7 @@
 
 	<!-- 개인일정정보::삭제  -->
 	<delete id="deleteSchedule">
-		DELETE FROM acm_schedule_mst WHERE SCD_ID = #{scdId}
+		DELETE FROM schedule_mst WHERE SCD_ID = #{scdId}
 	</delete>
 
 </mapper>
