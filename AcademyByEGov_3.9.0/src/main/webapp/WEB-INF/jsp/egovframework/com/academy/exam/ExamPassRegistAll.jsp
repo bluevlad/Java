@@ -37,6 +37,8 @@ function fnList() {
 function fnInsert() {
 	var varFrom = document.getElementById("ExamVO");
 	varFrom.action = "<c:url value='/exam/pass/insertAll.do'/>";
+    var AnsArr = varFrom.AnsArr1.value + varFrom.AnsArr2.value + varFrom.AnsArr3.value + varFrom.AnsArr4.value;
+	varFrom.AnsArr.value = AnsArr;
 	if(confirm("<spring:message code="common.save.msg" />")){	
 		varFrom.submit();
 	}
@@ -46,7 +48,7 @@ function fnInsert() {
 
 <body>
 
-<form:form commandName="ExamVO" method="post" action="${pageContext.request.contextPath}/exam/pass/insert.do' />" onSubmit="fnInsert(); return false;">
+<form:form commandName="ExamVO" method="post" action="${pageContext.request.contextPath}/exam/pass/insertAll.do' />" onSubmit="fnInsert(); return false;">
 <div class="wTableFrm">
 	<!-- 타이틀 -->
 	<h2>${pageTitle} <spring:message code="title.create" /></h2>
@@ -87,38 +89,36 @@ function fnInsert() {
 		</tr>
 	</tbody>
 	</table>
-	<br>
 	<!-- 목록영역 -->
 	<table class="board_list" summary="<spring:message code="common.summary.list" arguments="${pageTitle}" />">
-	<caption>${pageTitle} <spring:message code="title.list" /></caption>
-	<colgroup>
-		<col style="width: 20%;">
-		<col style="width: 20%">
-		<col style="width: 20%;">
-		<col style="width: 20%;">
-		<col style="width: 20%;">
-	</colgroup>
-	<thead>
-	<tr>
-		<th><spring:message code="table.num" /></th><!-- 번호 -->
-		<th><spring:message code="exam.item1" /></th><!-- 시험코드 -->
-		<th><spring:message code="exam.item2" /></th><!-- 시험코드 -->
-		<th><spring:message code="exam.item3" /></th><!-- 시험코드 -->
-		<th><spring:message code="exam.item4" /></th><!-- 시험코드 -->
-	</tr>
-	</thead>
-	<tbody class="ov">
-	<c:forEach var="i" begin="1" end="20">
-	<tr>
-		<td><c:out value="${i}"/></td>
-		<td><input type="radio" name="itemNo${i}" id="itemNo${i}" value="1" title="${title} ${inputSelect}"/></td>
-		<td><input type="radio" name="itemNo${i}" id="itemNo${i}" value="2" title="${title} ${inputSelect}"/></td>
-		<td><input type="radio" name="itemNo${i}" id="itemNo${i}" value="3" title="${title} ${inputSelect}"/></td>
-		<td><input type="radio" name="itemNo${i}" id="itemNo${i}" value="4" title="${title} ${inputSelect}"/></td>
-	</tr>
-	</c:forEach>
-	</tbody>
+		<caption>${pageTitle} <spring:message code="title.list" /></caption>
+		<colgroup>
+			<col style="width: 20%;">
+			<col style="width: 20%">
+			<col style="width: 20%;">
+			<col style="width: 20%;">
+			<col style="width: 20%;">
+		</colgroup>
+		<thead>
+		<tr>
+			<th><spring:message code="table.num" /></th><!-- 번호 -->
+			<th><spring:message code="exam.item1" /></th><!-- 시험코드 -->
+			<th><spring:message code="exam.item2" /></th><!-- 시험코드 -->
+			<th><spring:message code="exam.item3" /></th><!-- 시험코드 -->
+			<th><spring:message code="exam.item4" /></th><!-- 시험코드 -->
+		</tr>
+		</thead>
+		<tbody class="ov">
+		<tr>
+			<td><c:out value="${i}"/></td>
+			<td><input type="text" name="AnsArr1" id="AnsArr1" value="${Arr1}" title="${title} ${inputTxt}"/></td>
+			<td><input type="text" name="AnsArr2" id="AnsArr2" value="${Arr2}" title="${title} ${inputTxt}"/></td>
+			<td><input type="text" name="AnsArr3" id="AnsArr3" value="${Arr3}" title="${title} ${inputTxt}"/></td>
+			<td><input type="text" name="AnsArr4" id="AnsArr4" value="${Arr4}" title="${title} ${inputTxt}"/></td>
+		</tr>
+		</tbody>
 	</table>
+	<input type="hidden" name="AnsArr" id="AnsArr" value=""/>
 
 	<!-- 하단 버튼 -->
 	<div class="btn">
