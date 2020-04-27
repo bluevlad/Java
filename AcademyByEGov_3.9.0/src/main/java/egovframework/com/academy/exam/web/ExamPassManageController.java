@@ -99,6 +99,20 @@ public class ExamPassManageController {
 	}
 
 	/**
+	 * 시험 답안지 정보를 조회한다.
+	 * @param ExamVO
+	 * @return String - 리턴 Url
+	 */
+	@RequestMapping(value = "/exam/pass/DetailAll.do")
+	public String ExamDetailAll(@ModelAttribute("ExamVO") ExamVO ExamVO, ModelMap model) throws Exception {
+		
+		ExamVO.setExamNm(examManageService.selectSubjectDetail(ExamVO).getSbjNm());
+		model.addAttribute("passList", examPassManageService.selectExamPassDetail(ExamVO));
+		
+		return "egovframework/com/academy/exam/ExamPassDetailAll";
+	}
+
+	/**
 	 * 시험 답안지등록 화면으로 이동한다.
 	 * @return String - 리턴 Url
 	 */
@@ -112,6 +126,22 @@ public class ExamPassManageController {
 		
 		model.addAttribute("ExamVO", ExamVO);
 		return "egovframework/com/academy/exam/ExamPassRegist";
+	}
+
+	/**
+	 * 시험 답안지등록 화면으로 이동한다.
+	 * @return String - 리턴 Url
+	 */
+	@RequestMapping(value = "/exam/pass/RegistAll.do")
+	public String ExamRegistAll(@ModelAttribute("ExamVO") ExamVO ExamVO, ModelMap model) throws Exception {
+
+		ExamVO.setFirstIndex(0);
+		ExamVO.setRecordCountPerPage(100);
+		model.addAttribute("examList", examManageService.selectExamList(ExamVO));
+		model.addAttribute("subjectList", examManageService.selectSubjectList(ExamVO));
+		
+		model.addAttribute("ExamVO", ExamVO);
+		return "egovframework/com/academy/exam/ExamPassRegistAll";
 	}
 
 	/**
@@ -141,6 +171,71 @@ public class ExamPassManageController {
 	       			ExamVO.setItemNo(CommonUtil.parseInt(sKey.substring(6, 8)));
 	       			ExamVO.setAns(request.getParameter(sKey));
 	    			examPassManageService.insertExamPass(ExamVO);
+	       		}
+	       	}
+			
+			model.addAttribute("message", egovMessageSource.getMessage("success.common.insert"));
+			return "forward:/exam/pass/List.do";
+		}
+	}
+
+	/**
+	 * 시험 답안지정보를 신규로 등록한다.
+	 * @param ExamVO
+	 * @return String - 리턴 Url
+	 */
+	@RequestMapping(value = "/exam/pass/insertAll.do")
+	public String insertExamAll(@ModelAttribute("ExamVO") ExamVO ExamVO, BindingResult bindingResult, 
+			@RequestParam Map<?, ?> commandMap, HttpServletRequest request, 	ModelMap model) throws Exception {
+
+		if (bindingResult.hasErrors()) {
+			return "egovframework/com/academy/exam/ExamPassRegistAll";
+		} else {
+			String sKey ="";
+	       	for(Object key:commandMap.keySet()){
+	       		sKey = key.toString();
+	       		if(sKey.equals("AnsArr")){
+	       			String ans = request.getParameter(sKey);
+	       			int j = 1;
+	    	       	for(int i=0; i< ans.length(); i++) {
+		       			ExamVO.setItemNo(i+1);
+		       			ExamVO.setPassAns(ans.substring(i, j));
+		    			examPassManageService.insertExamPass(ExamVO);
+		    			j++;
+	    	       	}
+	       		}
+	       	}
+			
+			model.addAttribute("message", egovMessageSource.getMessage("success.common.insert"));
+			return "forward:/exam/pass/List.do";
+		}
+	}
+
+	/**
+	 * 시험 답안지정보를 신규로 등록한다.
+	 * @param ExamVO
+	 * @return String - 리턴 Url
+	 */
+	@RequestMapping(value = "/exam/pass/updateAll.do")
+	public String updateExamAll(@ModelAttribute("ExamVO") ExamVO ExamVO, BindingResult bindingResult, 
+			@RequestParam Map<?, ?> commandMap, HttpServletRequest request, 	ModelMap model) throws Exception {
+
+		if (bindingResult.hasErrors()) {
+			return "egovframework/com/academy/exam/ExamPassRegistAll";
+		} else {
+			examPassManageService.deleteExamPass(ExamVO);
+			String sKey ="";
+	       	for(Object key:commandMap.keySet()){
+	       		sKey = key.toString();
+	       		if(sKey.equals("AnsArr")){
+	       			String ans = request.getParameter(sKey);
+	       			int j = 1;
+	    	       	for(int i=0; i< ans.length(); i++) {
+		       			ExamVO.setItemNo(i+1);
+		       			ExamVO.setPassAns(ans.substring(i, j));
+		    			examPassManageService.insertExamPass(ExamVO);
+		    			j++;
+	    	       	}
 	       		}
 	       	}
 			
