@@ -56,7 +56,7 @@ public class ExamPassManageServiceImpl extends EgovAbstractServiceImpl implement
 	 * @throws Exception
 	 */
 	@Override
-	public ExamVO selectExamPassDetail(ExamVO ExamVO) throws Exception {
+	public List<ExamVO> selectExamPassDetail(ExamVO ExamVO) throws Exception {
 		return examPassManageDAO.selectExamPassDetail(ExamVO);
 	}
 

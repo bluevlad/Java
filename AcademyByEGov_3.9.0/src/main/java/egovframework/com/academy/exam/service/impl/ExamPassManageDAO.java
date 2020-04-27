@@ -45,8 +45,8 @@ public class ExamPassManageDAO extends EgovComAbstractDAO{
      * @param examCd 상세조회대상 시험코드
      * @return ExamVO시험별 답안지 정보
      */
-    public ExamVO selectExamPassDetail(ExamVO ExamVO){
-        return selectOne("ExamPassManage.selectExamPassDetail", ExamVO);
+    public List<ExamVO> selectExamPassDetail(ExamVO ExamVO){
+        return selectList("ExamPassManage.selectExamPassDetail", ExamVO);
     }
 
     /**

@@ -67,6 +67,10 @@ public class ExamVO implements Serializable {
     private String YN;
     /** 사용 여부 */
     private String isUse;
+    /** 과목수 */
+    private int sbjCnt;
+    /** 문제수 */
+    private int itemCnt;
 
 	/**
 	 * searchCondition attribute 를 리턴한다.
@@ -395,6 +399,36 @@ public class ExamVO implements Serializable {
 	 */
 	public void setIsUse(String isUse) {
 		this.isUse = isUse;
+	}
+	
+	/**
+	 * sbjCnt attribute 를 리턴한다.
+	 * @return int
+	 */
+	public int getSbjCnt() {
+		return sbjCnt;
+	}
+	/**
+	 * sbjCnt attribute 값을 설정한다.
+	 * @param sbjCnt String
+	 */
+	public void setSbjCnt(int sbjCnt) {
+		this.sbjCnt = sbjCnt;
+	}
+	
+	/**
+	 * itemCnt attribute 를 리턴한다.
+	 * @return int
+	 */
+	public int getItemCnt() {
+		return itemCnt;
+	}
+	/**
+	 * sbjCnt attribute 값을 설정한다.
+	 * @param itemCnt String
+	 */
+	public void setItemCnt(int itemCnt) {
+		this.itemCnt = itemCnt;
 	}
 
 }

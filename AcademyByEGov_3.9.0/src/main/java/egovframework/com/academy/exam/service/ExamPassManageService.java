@@ -24,7 +24,7 @@ public interface ExamPassManageService {
 	 * @param ExamMst
 	 * @return ExamMst
 	 */
-	ExamVO selectExamPassDetail(ExamVO ExamVO) throws Exception;
+	List<ExamVO> selectExamPassDetail(ExamVO ExamVO) throws Exception;
 
 	/**
 	 * 시험정보를 신규로 등록한다.
