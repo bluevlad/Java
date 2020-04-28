@@ -26,7 +26,7 @@ import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 public class ExamRstDAO extends EgovComAbstractDAO{
 
     /**
-     * @param searchVO 검색조건
+     * @param ExamVO 검색조건
      * @return List 시험 목록정보
      */
     public List<?> selectExamRstList(ExamVO ExamVO) throws Exception{
@@ -34,7 +34,7 @@ public class ExamRstDAO extends EgovComAbstractDAO{
     }
 
     /**
-     * @param searchVO 검색조건
+     * @param ExamVO 검색조건
      * @return int 시험 총갯수
      */
     public int selectExamRstListTotCnt(ExamVO ExamVO) {
@@ -65,6 +65,63 @@ public class ExamRstDAO extends EgovComAbstractDAO{
     }
 
     /**
+     * @param ExamVO 검색조건
+     * @return List 시험 응시 과목목록정보
+     */
+    public List<?> selectExamRstSbjList(ExamVO ExamVO) throws Exception{
+		return selectList("ExamPass.selectExamRstSbjList", ExamVO);
+    }
+
+    /**
+     * @param ExamVO 검색조건
+     * @return int 시험 응시과목 총갯수
+     */
+    public int selectExamRstSbjListTotCnt(ExamVO ExamVO) {
+        return (Integer)selectOne("ExamPass.selectExamRstSbjListTotCnt", ExamVO);
+    }
+
+    /**
+     * @param examCd 상세조회대상 시험코드
+     * @param userId 상세조회대상 사용자아이디
+     * @param sbjCd 상세조회대상 과목코드
+     * @return ExamVO 시험 과목 선택 정보
+     */
+    public ExamVO selectExamRstSbjDetail(ExamVO ExamVO){
+        return selectOne("ExamPass.selectExamRstDetail", ExamVO);
+    }
+
+    /**
+     * @param ExamVO 시험 응시과목 정보 등록
+     */
+    public void insertExamRstSbj(ExamVO ExamVO) throws Exception{
+        insert("ExamPass.insertExamRstSbj", ExamVO);
+    }
+
+    /**
+     * @param ExamVO 시험 응시과목 점수 등록
+     */
+    public void updateExamRstSbj(ExamVO ExamVO) throws Exception{
+        update("ExamPass.updateExamRstSbj", ExamVO);
+    }
+
+    /**
+     * @param ExamVO 시험 응시과목 정보삭제
+     */
+    public void deleteExamRstSbj(ExamVO ExamVO) throws Exception{
+        delete("ExamPass.deleteExamRstSbj", ExamVO);
+    }
+
+    /**
+     * @param examCd 상세조회대상 시험코드
+     * @param userId 상세조회대상 사용자아이디
+     * @param sbjCd 상세조회대상 과목코드
+     * @return List 시험 응시과목 채점정보
+     */
+    public List<ExamVO> selectExamRstDetList(ExamVO ExamVO) throws Exception{
+		return selectList("ExamPass.selectExamRstDetList", ExamVO);
+    }
+
+    /**
      * @param ExamVO 시험 채점정보 등록
      */
     public void insertExamRstDet(ExamVO ExamVO) throws Exception{
@@ -76,6 +133,14 @@ public class ExamRstDAO extends EgovComAbstractDAO{
      */
     public void deleteExamRstDet(ExamVO ExamVO) throws Exception{
         delete("ExamPass.deleteExamRstDet", ExamVO);
+    }
+
+    /**
+     * @param ExamVO 검색조건
+     * @return String 답안정답여부
+     */
+    public String selectExamRstDetYN(ExamVO ExamVO) {
+        return (String)selectOne("ExamPass.selectExamRstDetYN", ExamVO);
     }
 
 }

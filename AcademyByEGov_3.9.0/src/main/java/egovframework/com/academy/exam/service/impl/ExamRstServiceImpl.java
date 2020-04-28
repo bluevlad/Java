@@ -79,6 +79,78 @@ public class ExamRstServiceImpl extends EgovAbstractServiceImpl implements ExamR
 	public void deleteExamRst(ExamVO ExamVO) throws Exception {
 		examRstDAO.deleteExamRst(ExamVO);
 	}
+	/**
+	 * @param ExamVO 검색조건
+	 * @return List<?> 시시험 응시 과목목록정보
+	 * @throws Exception
+	 */
+	@Override
+	public List<?> selectExamRstSbjList(ExamVO ExamVO) throws Exception {
+		return examRstDAO.selectExamRstSbjList(ExamVO);
+	}
+
+	/**
+	 * @param ExamVO 검색조건
+	 * @return 시험 응시과목 총갯수
+	 * @throws Exception
+	 */
+	@Override
+	public int selectExamRstSbjListTotCnt(ExamVO ExamVO) throws Exception {
+		return examRstDAO.selectExamRstSbjListTotCnt(ExamVO);
+	}
+
+	/**
+     * @param examCd 상세조회대상 시험코드
+     * @param userId 상세조회대상 사용자아이디
+     * @param sbjCd 상세조회대상 과목코드
+     * @return ExamVO 시험 과목 선택 정보
+	 * @throws Exception
+	 */
+	@Override
+	public ExamVO selectExamRstSbjDetail(ExamVO ExamVO) throws Exception {
+		return examRstDAO.selectExamRstSbjDetail(ExamVO);
+	}
+
+	/**
+	 * @param ExamVO 시험 응시과목 정보 등록
+	 * @throws Exception
+	 */
+	@Override
+	public void insertExamRstSbj(ExamVO ExamVO) throws Exception {
+		examRstDAO.insertExamRstSbj(ExamVO);
+	}
+
+	/**
+	 * ExamVO 시험정보
+	 * @param ExamVO 시험 응시과목 점수 등록
+	 * @throws Exception
+	 */
+	@Override
+	public void updateExamRstSbj(ExamVO ExamVO) throws Exception {
+		examRstDAO.updateExamRstSbj(ExamVO);
+	}
+
+	/**
+	 * ExamVO 시험정보
+	 * @param ExamVO 시험 응시과목 정보삭제
+	 * @throws Exception
+	 */
+	@Override
+	public void deleteExamRstSbj(ExamVO ExamVO) throws Exception {
+		examRstDAO.deleteExamRstSbj(ExamVO);
+	}
+
+	/**
+     * @param examCd 상세조회대상 시험코드
+     * @param userId 상세조회대상 사용자아이디
+     * @param sbjCd 상세조회대상 과목코드
+     * @return List 시시험 응시과목 채점정보
+	 * @throws Exception
+	 */
+	@Override
+	public List<ExamVO> selectExamRstDetList(ExamVO ExamVO) throws Exception {
+		return examRstDAO.selectExamRstDetList(ExamVO);
+	}
 
 	/**
 	 * @param ExamVO 시험 응시정보 등록
@@ -86,7 +158,7 @@ public class ExamRstServiceImpl extends EgovAbstractServiceImpl implements ExamR
 	 */
 	@Override
 	public void insertExamRstDet(ExamVO ExamVO) throws Exception {
-		examRstDAO.insertExamRst(ExamVO);
+		examRstDAO.insertExamRstDet(ExamVO);
 	}
 
 	/**
@@ -96,7 +168,17 @@ public class ExamRstServiceImpl extends EgovAbstractServiceImpl implements ExamR
 	 */
 	@Override
 	public void deleteExamRstDet(ExamVO ExamVO) throws Exception {
-		examRstDAO.deleteExamRst(ExamVO);
+		examRstDAO.deleteExamRstDet(ExamVO);
+	}
+
+	/**
+	 * @param examSearchVO 검색조건
+	 * @return 총시험 갯수(int)
+	 * @throws Exception
+	 */
+	@Override
+	public String selectExamRstDetYN(ExamVO ExamVO) throws Exception {
+		return examRstDAO.selectExamRstDetYN(ExamVO);
 	}
 
 }

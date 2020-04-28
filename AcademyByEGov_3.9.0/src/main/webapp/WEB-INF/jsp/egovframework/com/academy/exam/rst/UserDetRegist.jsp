@@ -19,7 +19,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="validator" uri="http://www.springmodules.org/tags/commons-validator" %>
-<c:set var="pageTitle"><spring:message code="exam.passManage.title"/></c:set>
+<c:set var="pageTitle"><spring:message code="exam.rstManage.title"/></c:set>
 <!DOCTYPE html>
 <html>
 <head>
@@ -30,13 +30,13 @@
 <script type="text/javaScript">
 function fnList() {
     var varFrom = document.getElementById("ExamVO");
-    varFrom.action = "<c:url value='/exam/pass/List.do'/>";
+    varFrom.action = "<c:url value='/exam/det/List.do'/>";
     varFrom.submit();
 }
 
 function fnInsert() {
 	var varFrom = document.getElementById("ExamVO");
-	varFrom.action = "<c:url value='/exam/pass/insertAll.do'/>";
+	varFrom.action = "<c:url value='/exam/det/insert.do'/>";
     var AnsArr = varFrom.AnsArr1.value + varFrom.AnsArr2.value + varFrom.AnsArr3.value + varFrom.AnsArr4.value;
 	varFrom.AnsArr.value = AnsArr;
 	if(confirm("<spring:message code="common.save.msg" />")){	
@@ -48,7 +48,7 @@ function fnInsert() {
 
 <body>
 
-<form:form commandName="ExamVO" method="post" action="${pageContext.request.contextPath}/exam/pass/insertAll.do' />" onSubmit="fnInsert(); return false;">
+<form:form commandName="ExamVO" method="post" action="${pageContext.request.contextPath}/exam/det/insert.do' />" onSubmit="fnInsert(); return false;">
 <div class="wTableFrm">
 	<!-- 타이틀 -->
 	<h2>${pageTitle} <spring:message code="title.create" /></h2>
@@ -87,8 +87,18 @@ function fnInsert() {
                     <div><form:errors path="sbjCd" cssClass="error"/></div>
 			</td>
 		</tr>
+		<!-- 사용자 -->
+		<c:set var="title"><spring:message code="exam.rst.userId" /></c:set>
+		<tr>
+			<th><label for="examNm">${title}</label><span class="pilsu">*</span></th>
+			<td class="left">
+				<form:input path="userId" title="${title} ${inputTxt}" style="width:100px" />
+				<div><form:errors path="userId" cssClass="error" /></div> 
+			</td>
+		</tr>
 	</tbody>
 	</table>
+	<br>
 	<!-- 목록영역 -->
 	<table class="board_list" summary="<spring:message code="common.summary.list" arguments="${pageTitle}" />">
 		<caption>${pageTitle} <spring:message code="title.list" /></caption>
@@ -122,7 +132,7 @@ function fnInsert() {
 
 	<!-- 하단 버튼 -->
 	<div class="btn">
-		<span class="btn_s"><a href="<c:url value='/exam/pass/List.do'/>"  title="<spring:message code="button.list" />  <spring:message code="input.button" />"><spring:message code="button.list" /></a></span>
+		<span class="btn_s"><a href="<c:url value='/exam/det/List.do'/>"  title="<spring:message code="button.list" />  <spring:message code="input.button" />"><spring:message code="button.list" /></a></span>
 		<input type="submit" class="s_submit" value="<spring:message code="button.create" />" title="<spring:message code="button.create" /> <spring:message code="input.button" />" />
 	</div><div style="clear:both;"></div>
 	

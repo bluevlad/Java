@@ -19,7 +19,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="validator" uri="http://www.springmodules.org/tags/commons-validator" %>
-<c:set var="pageTitle"><spring:message code="exam.examManage.title"/></c:set>
+<c:set var="pageTitle"><spring:message code="exam.rstManage.title"/></c:set>
 <!DOCTYPE html>
 <html>
 <head>
@@ -30,13 +30,13 @@
 <script type="text/javaScript">
 function fnList() {
     var varFrom = document.getElementById("ExamVO");
-    varFrom.action = "<c:url value='/exam/pass/List.do'/>";
+    varFrom.action = "<c:url value='/exam/det/List.do'/>";
     varFrom.submit();
 }
 
 function fnUpdate() {
     var varFrom = document.getElementById("ExamVO");
-    varFrom.action = "<c:url value='/exam/pass/updateAll.do'/>";
+    varFrom.action = "<c:url value='/exam/det/update.do'/>";
     var AnsArr = varFrom.AnsArr1.value + varFrom.AnsArr2.value + varFrom.AnsArr3.value + varFrom.AnsArr4.value;
 	varFrom.AnsArr.value = AnsArr;
     if(confirm("<spring:message code="common.save.msg" />")){
@@ -47,7 +47,7 @@ function fnUpdate() {
 </head>
 
 <body>
-<form:form commandName="ExamVO" method="post" action="${pageContext.request.contextPath}/exam/pass/updateAll.do' />" onSubmit="fnUpdate(); return false;">
+<form:form commandName="ExamVO" method="post" action="${pageContext.request.contextPath}/exam/det/update.do' />" onSubmit="fnUpdate(); return false;">
 <div class="wTableFrm">
 	<!-- 타이틀 -->
 	<h2>${pageTitle} <spring:message code="title.create" /></h2>
@@ -67,13 +67,37 @@ function fnUpdate() {
 		<c:set var="inputNo"><spring:message code="input.no" /></c:set>
 		
 		<!-- 시험코드 -->
-	    <form:hidden path="examCd" title="${title} ${inputTxt}" style="width:100px;" readonly="true" />
-	    <form:hidden path="sbjCd" title="${title} ${inputTxt}" style="width:100px;" readonly="true" />
-		<!-- 시험명 -->
-		<c:set var="title"><spring:message code="exam.ExamNm" /></c:set>
+		<c:set var="title"><spring:message code="exam.ExamNm"/></c:set>
 		<tr>
-			<th><label for="examNm">${title}</label> <span class="pilsu">*</span></th>
-			<td class="left">${ExamVO.examNm}	</td>
+			<th><label for="examCd">${title}</label></th>
+			<td class="left">
+                  <form:select path="examCd" id="examCd" title="${title} ${inputSelect}">
+                       <form:option value="" label="${inputSelect}"/>
+                       <form:options items="${examList}" itemValue="examCd" itemLabel="examNm"/>
+                    </form:select>
+                    <div><form:errors path="examCd" cssClass="error"/></div>
+			</td>
+		</tr>
+		<!-- 과목코드 -->
+		<c:set var="title"><spring:message code="exam.SubjectNm"/></c:set>
+		<tr>
+			<th><label for="sbjCd">${title}</label></th>
+			<td class="left">
+                <form:select path="sbjCd" id="examCd" title="${title} ${inputSelect}">
+                	<form:option value="" label="${inputSelect}"/>
+                    <form:options items="${subjectList}" itemValue="sbjCd" itemLabel="sbjNm"/>
+				</form:select>
+                    <div><form:errors path="sbjCd" cssClass="error"/></div>
+			</td>
+		</tr>
+		<!-- 사용자 -->
+		<c:set var="title"><spring:message code="exam.rst.userId" /></c:set>
+		<tr>
+			<th><label for="examNm">${title}</label><span class="pilsu">*</span></th>
+			<td class="left">
+				<form:input path="userId" title="${title} ${inputTxt}" style="width:100px" readonly="true"/>
+				<div><form:errors path="userId" cssClass="error" /></div> 
+			</td>
 		</tr>
 	</tbody>
 	</table>
@@ -101,11 +125,11 @@ function fnUpdate() {
 		<c:set var="Arr2" value=""/>
 		<c:set var="Arr3" value=""/>
 		<c:set var="Arr4" value=""/>
-		<c:forEach var="passList" items="${passList}">
-			<c:if test="${passList.itemNo <= 5 }"><c:set var="Arr1" value="${Arr1}${passList.passAns}"/></c:if>
-			<c:if test="${passList.itemNo > 5 && passList.itemNo <= 10 }"><c:set var="Arr2" value="${Arr2}${passList.passAns}"/></c:if>
-			<c:if test="${passList.itemNo > 10 && passList.itemNo <= 15 }"><c:set var="Arr3" value="${Arr3}${passList.passAns}"/></c:if>
-			<c:if test="${passList.itemNo > 15 && passList.itemNo <= 20 }"><c:set var="Arr4" value="${Arr4}${passList.passAns}"/></c:if>
+		<c:forEach var="detList" items="${detList}">
+			<c:if test="${detList.itemNo <= 5 }"><c:set var="Arr1" value="${Arr1}${detList.ans}"/></c:if>
+			<c:if test="${detList.itemNo > 5 && detList.itemNo <= 10 }"><c:set var="Arr2" value="${Arr2}${detList.ans}"/></c:if>
+			<c:if test="${detList.itemNo > 10 && detList.itemNo <= 15 }"><c:set var="Arr3" value="${Arr3}${detList.ans}"/></c:if>
+			<c:if test="${detList.itemNo > 15 && detList.itemNo <= 20 }"><c:set var="Arr4" value="${Arr4}${detList.ans}"/></c:if>
 		</c:forEach>
 		<tbody class="ov">
 		<tr>
@@ -121,7 +145,7 @@ function fnUpdate() {
 
 	<!-- 하단 버튼 -->
 	<div class="btn">
-		<span class="btn_s"><a href="<c:url value='/exam/pass/List.do'/>"  title="<spring:message code="button.list" />  <spring:message code="input.button" />"><spring:message code="button.list" /></a></span><!-- 목록 -->
+		<span class="btn_s"><a href="<c:url value='/exam/det/List.do'/>"  title="<spring:message code="button.list" />  <spring:message code="input.button" />"><spring:message code="button.list" /></a></span><!-- 목록 -->
 		<input type="submit" class="s_submit" value="<spring:message code="button.save" />" title="<spring:message code="button.save" /> <spring:message code="input.button" />" /><!-- 저장 -->
 	</div>
 	<div style="clear:both;"></div>
