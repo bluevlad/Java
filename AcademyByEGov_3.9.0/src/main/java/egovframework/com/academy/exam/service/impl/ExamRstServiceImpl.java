@@ -6,7 +6,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import egovframework.com.academy.exam.service.ExamPassService;
+import egovframework.com.academy.exam.service.ExamRstService;
 import egovframework.com.academy.exam.service.ExamVO;
 import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
 
@@ -24,11 +24,11 @@ import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
  *   2020.04.27  		rainend          답안지 채점
  * </pre>
  */
-@Service("examPassService")
-public class ExamPassServiceImpl extends EgovAbstractServiceImpl implements ExamPassService {
+@Service("examRstService")
+public class ExamRstServiceImpl extends EgovAbstractServiceImpl implements ExamRstService {
 
-	@Resource(name="examPassDAO")
-	private ExamPassDAO examPassDAO;
+	@Resource(name="examRstDAO")
+	private ExamRstDAO examRstDAO;
 
 	/**
 	 * @param searchVO 검색조건
@@ -37,7 +37,7 @@ public class ExamPassServiceImpl extends EgovAbstractServiceImpl implements Exam
 	 */
 	@Override
 	public List<?> selectExamRstList(ExamVO ExamVO) throws Exception {
-		return examPassDAO.selectExamRstList(ExamVO);
+		return examRstDAO.selectExamRstList(ExamVO);
 	}
 
 	/**
@@ -47,7 +47,18 @@ public class ExamPassServiceImpl extends EgovAbstractServiceImpl implements Exam
 	 */
 	@Override
 	public int selectExamRstListTotCnt(ExamVO ExamVO) throws Exception {
-		return examPassDAO.selectExamRstListTotCnt(ExamVO);
+		return examRstDAO.selectExamRstListTotCnt(ExamVO);
+	}
+
+	/**
+     * @param examCd 상세조회대상 시험코드
+     * @param userId 상세조회대상 사용자아이디
+	 * @return ExamVO 시험 상세정보
+	 * @throws Exception
+	 */
+	@Override
+	public ExamVO selectExamRstDetail(ExamVO ExamVO) throws Exception {
+		return examRstDAO.selectExamRstDetail(ExamVO);
 	}
 
 	/**
@@ -56,7 +67,7 @@ public class ExamPassServiceImpl extends EgovAbstractServiceImpl implements Exam
 	 */
 	@Override
 	public void insertExamRst(ExamVO ExamVO) throws Exception {
-		examPassDAO.insertExamRst(ExamVO);
+		examRstDAO.insertExamRst(ExamVO);
 	}
 
 	/**
@@ -66,7 +77,7 @@ public class ExamPassServiceImpl extends EgovAbstractServiceImpl implements Exam
 	 */
 	@Override
 	public void deleteExamRst(ExamVO ExamVO) throws Exception {
-		examPassDAO.deleteExamRst(ExamVO);
+		examRstDAO.deleteExamRst(ExamVO);
 	}
 
 	/**
@@ -75,7 +86,7 @@ public class ExamPassServiceImpl extends EgovAbstractServiceImpl implements Exam
 	 */
 	@Override
 	public void insertExamRstDet(ExamVO ExamVO) throws Exception {
-		examPassDAO.insertExamRst(ExamVO);
+		examRstDAO.insertExamRst(ExamVO);
 	}
 
 	/**
@@ -85,7 +96,7 @@ public class ExamPassServiceImpl extends EgovAbstractServiceImpl implements Exam
 	 */
 	@Override
 	public void deleteExamRstDet(ExamVO ExamVO) throws Exception {
-		examPassDAO.deleteExamRst(ExamVO);
+		examRstDAO.deleteExamRst(ExamVO);
 	}
 
 }

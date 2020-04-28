@@ -5,8 +5,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -16,11 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import egovframework.com.academy.exam.service.ExamManageService;
 import egovframework.com.academy.exam.service.ExamPassManageService;
-import egovframework.com.academy.exam.service.ExamPassService;
+import egovframework.com.academy.exam.service.ExamRstService;
 import egovframework.com.academy.exam.service.ExamVO;
-import egovframework.com.api.util.CommonUtil;
 import egovframework.com.cmm.EgovMessageSource;
-import egovframework.com.uss.olp.qri.web.EgovQustnrRespondInfoController;
 import egovframework.rte.fdl.property.EgovPropertyService;
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 
@@ -39,12 +35,10 @@ import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
  */
 
 @Controller
-public class ExamPassController {
+public class ExamRstController {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(EgovQustnrRespondInfoController.class);
-
-	@Resource(name = "examPassService")
-	private ExamPassService examPassService;
+	@Resource(name = "examRstService")
+	private ExamRstService examRstService;
 
 	@Resource(name = "examManageService")
 	private ExamManageService examManageService;
@@ -61,7 +55,7 @@ public class ExamPassController {
     protected EgovPropertyService propertyService;
 
 	/**
-	 * 시험 목록화면 이동
+	 * 시험 응시자 목록화면 이동
 	 * @return String
 	 * @exception Exception
 	 */
@@ -81,9 +75,9 @@ public class ExamPassController {
 		ExamVO.setLastIndex(paginationInfo.getLastRecordIndex());
 		ExamVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
 
-		model.addAttribute("examList", examPassService.selectExamRstList(ExamVO));
+		model.addAttribute("examList", examRstService.selectExamRstList(ExamVO));
 
-		int totCnt = examPassService.selectExamRstListTotCnt(ExamVO);
+		int totCnt = examRstService.selectExamRstListTotCnt(ExamVO);
 		paginationInfo.setTotalRecordCount(totCnt);
 		model.addAttribute("paginationInfo", paginationInfo);
 		
@@ -91,20 +85,24 @@ public class ExamPassController {
 	}
 
 	/**
-	 * 시험 답안지 정보를 조회한다.
+	 * 시험 응시자 정보를 조회한다.
 	 * @param ExamVO
 	 * @return String - 리턴 Url
 	 */
 	@RequestMapping(value = "/exam/rst/Detail.do")
 	public String ExamDetail(@ModelAttribute("ExamVO") ExamVO ExamVO, ModelMap model) throws Exception {
 
-		model.addAttribute("ExamVO", examPassManageService.selectExamPassDetail(ExamVO));
+		ExamVO.setFirstIndex(0);
+		ExamVO.setRecordCountPerPage(100);
+		model.addAttribute("examList", examManageService.selectExamList(ExamVO));
 		
-		return "egovframework/com/academy/exam/ExamPass/Detail";
+		model.addAttribute("ExamVO", examRstService.selectExamRstDetail(ExamVO));
+		
+		return "egovframework/com/academy/exam/rst/UserRstDetail";
 	}
 
 	/**
-	 * 시험 답안지등록 화면으로 이동한다.
+	 * 시험 응시자등록 화면으로 이동한다.
 	 * @return String - 리턴 Url
 	 */
 	@RequestMapping(value = "/exam/rst/Regist.do")
@@ -119,7 +117,7 @@ public class ExamPassController {
 	}
 
 	/**
-	 * 시험 답안지정보를 신규로 등록한다.
+	 * 시험 응시자 정보를 신규로 등록한다.
 	 * @param ExamVO
 	 * @return String - 리턴 Url
 	 */
@@ -130,79 +128,14 @@ public class ExamPassController {
 		if (bindingResult.hasErrors()) {
 			return "egovframework/com/academy/exam/rst/UserRstRegist";
 		} else {
-			examPassService.insertExamRst(ExamVO);
+			examRstService.insertExamRst(ExamVO);
 			model.addAttribute("message", egovMessageSource.getMessage("success.common.insert"));
 			return "forward:/exam/rst/List.do";
 		}
 	}
 
 	/**
-	 * 시험 답안지정보를 신규로 등록한다.
-	 * @param ExamVO
-	 * @return String - 리턴 Url
-	 */
-	@RequestMapping(value = "/exam/rst/insertAll.do")
-	public String insertExamAll(@ModelAttribute("ExamVO") ExamVO ExamVO, BindingResult bindingResult, 
-			@RequestParam Map<?, ?> commandMap, HttpServletRequest request, 	ModelMap model) throws Exception {
-
-		if (bindingResult.hasErrors()) {
-			return "egovframework/com/academy/exam/ExamPassRegistAll";
-		} else {
-			String sKey ="";
-	       	for(Object key:commandMap.keySet()){
-	       		sKey = key.toString();
-	       		if(sKey.equals("AnsArr")){
-	       			String ans = request.getParameter(sKey);
-	       			int j = 1;
-	    	       	for(int i=0; i< ans.length(); i++) {
-		       			ExamVO.setItemNo(i+1);
-		       			ExamVO.setPassAns(ans.substring(i, j));
-		    			examPassManageService.insertExamPass(ExamVO);
-		    			j++;
-	    	       	}
-	       		}
-	       	}
-			
-			model.addAttribute("message", egovMessageSource.getMessage("success.common.insert"));
-			return "forward:/exam/pass/List.do";
-		}
-	}
-
-	/**
-	 * 시험 답안지정보를 신규로 등록한다.
-	 * @param ExamVO
-	 * @return String - 리턴 Url
-	 */
-	@RequestMapping(value = "/exam/rst/updateAll.do")
-	public String updateExamAll(@ModelAttribute("ExamVO") ExamVO ExamVO, BindingResult bindingResult, 
-			@RequestParam Map<?, ?> commandMap, HttpServletRequest request, 	ModelMap model) throws Exception {
-
-		if (bindingResult.hasErrors()) {
-			return "egovframework/com/academy/exam/ExamPassRegistAll";
-		} else {
-			examPassManageService.deleteExamPass(ExamVO);
-			String sKey ="";
-	       	for(Object key:commandMap.keySet()){
-	       		sKey = key.toString();
-	       		if(sKey.equals("AnsArr")){
-	       			String ans = request.getParameter(sKey);
-	       			int j = 1;
-	    	       	for(int i=0; i< ans.length(); i++) {
-		       			ExamVO.setItemNo(i+1);
-		       			ExamVO.setPassAns(ans.substring(i, j));
-		    			examPassManageService.insertExamPass(ExamVO);
-		    			j++;
-	    	       	}
-	       		}
-	       	}
-			
-			model.addAttribute("message", egovMessageSource.getMessage("success.common.insert"));
-			return "forward:/exam/pass/List.do";
-		}
-	}
-
-	/**
-	 * 기 등록된 시험 답안지정보를 삭제한다.
+	 * 기 등록된 시험 응시자 정보를 삭제한다.
 	 * @param ExamVO
 	 * @return String - 리턴 Url
 	 */
@@ -210,11 +143,11 @@ public class ExamPassController {
 	public String deleteExam(@ModelAttribute("ExamVO") ExamVO ExamVO, BindingResult bindingResult, ModelMap model) throws Exception {
 
 		if (bindingResult.hasErrors()) {
-			return "egovframework/com/academy/exam/ExamPassDetail";
+			return "egovframework/com/academy/exam/rst/USerRstDetail";
 		} else {
-			examPassManageService.deleteExamPass(ExamVO);
+			examRstService.deleteExamRst(ExamVO);
 			model.addAttribute("message", egovMessageSource.getMessage("success.common.delete"));
-			return "forward:/exam/pass/List.do";
+			return "forward:/exam/rst/List.do";
 		}
 	}
 

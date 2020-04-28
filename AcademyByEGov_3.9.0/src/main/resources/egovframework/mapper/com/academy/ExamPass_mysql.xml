@@ -30,6 +30,14 @@
         </if>
 	</select>
 
+	<select id="selectExamRstDetail" parameterType="egovframework.com.academy.exam.service.ExamVO" 
+										resultType="egovframework.com.academy.exam.service.ExamVO">
+        SELECT EXAM_CD examCd, USER_ID userId, REG_DT regDt, REG_ID regId
+		FROM exam_rst_mst
+		WHERE EXAM_CD = #{examCd}
+		AND USER_ID = #{userId}
+	</select>
+
 	<insert id="insertExamRst">
 		INSERT INTO exam_rst_mst (
 			EXAM_CD, USER_ID, REG_DT, REG_ID

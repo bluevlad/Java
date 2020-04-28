@@ -63,7 +63,7 @@ function fnInsert() {
 		<c:set var="inputYes"><spring:message code="input.yes" /></c:set>
 		<c:set var="inputNo"><spring:message code="input.no" /></c:set>
 		<!-- 시험코드 -->
-		<c:set var="title"><spring:message code="exam.ExamNm"/></c:set>
+		<c:set var="title"><spring:message code="exam.ExamCd"/></c:set>
 		<tr>
 			<th><label for="examCd">${title}</label></th>
 			<td class="left">

@@ -6,6 +6,7 @@
  * @  수정일     수정자         수정내용
  * @ ---------     --------    ---------------------------
  *  2020.04.00	rainend		시험리스트
+ *   2020.04.27  		rainend          답안지 채점
  *  @author rainend
  *  @version 1.0
  *  @see
@@ -19,7 +20,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="validator" uri="http://www.springmodules.org/tags/commons-validator" %>
-<c:set var="pageTitle"><spring:message code="exam.examManage.title"/></c:set>
+<c:set var="pageTitle"><spring:message code="exam.rstManage.title"/></c:set>
 <!DOCTYPE html>
 <html>
 <head>
@@ -30,13 +31,13 @@
 <script type="text/javaScript">
 function fnList() {
     var varFrom = document.getElementById("ExamVO");
-    varFrom.action = "<c:url value='/exam/List.do'/>";
+    varFrom.action = "<c:url value='/exam/rst/List.do'/>";
     varFrom.submit();
 }
 
 function fnUpdate() {
     var varFrom = document.getElementById("ExamVO");
-    varFrom.action = "<c:url value='/exam/update.do'/>";
+    varFrom.action = "<c:url value='/exam/rst/delete.do'/>";
     if(confirm("<spring:message code="common.save.msg" />")){
 		varFrom.submit();
     }
@@ -45,7 +46,7 @@ function fnUpdate() {
 </head>
 
 <body>
-<form:form commandName="ExamVO" method="post" action="${pageContext.request.contextPath}/exam/update.do' />" onSubmit="fnUpdate(); return false;">
+<form:form commandName="ExamVO" method="post" action="${pageContext.request.contextPath}/exam/rst/update.do' />" onSubmit="fnUpdate(); return false;">
 <div class="wTableFrm">
 	<!-- 타이틀 -->
 	<h2>${pageTitle} <spring:message code="title.create" /></h2>
@@ -65,26 +66,24 @@ function fnUpdate() {
 		<c:set var="inputNo"><spring:message code="input.no" /></c:set>
 		
 		<!-- 시험코드 -->
-	    <form:hidden path="examCd" title="${title} ${inputTxt}" style="width:100px;" readonly="true" />
-		<!-- 시험명 -->
-		<c:set var="title"><spring:message code="exam.ExamNm" /></c:set>
+		<c:set var="title"><spring:message code="exam.ExamCd"/></c:set>
 		<tr>
-			<th><label for="examNm">${title}</label> <span class="pilsu">*</span></th>
+			<th><label for="examCd">${title}</label></th>
 			<td class="left">
-				<form:input path="examNm" title="${title} ${inputTxt}" style="width:90%;" />
-				<div><form:errors path="examNm" cssClass="error" /></div> 
+                <form:select path="examCd" id="examCd" title="${title} ${inputSelect}">
+                	<form:option value="" label="${inputSelect}"/>
+                    <form:options items="${examList}" itemValue="examCd" itemLabel="examNm"/>
+                </form:select>
+				<div><form:errors path="examCd" cssClass="error"/></div>
 			</td>
 		</tr>
-		<!-- 사용여부 -->
-		<c:set var="title"><spring:message code="exam.isUse" /></c:set>
+		<!-- 사용자 -->
+		<c:set var="title"><spring:message code="exam.rst.userId" /></c:set>
 		<tr>
-			<th><label for="isUse">${title}</label> <span class="pilsu">*</span></th>
+			<th><label for="userId">${title}</label><span class="pilsu">*</span></th>
 			<td class="left">
-				<form:select path="isUse" title="${title} ${inputTxt}" cssClass="txt" style="width:80px;">
-                    <form:option value="Y" label=" ${inputYes}"/>
-                    <form:option value="N" label="${inputNo}"/>
-                </form:select>
-				<div><form:errors path="isUse" cssClass="error" /></div>       
+				<form:input path="userId" title="${title} ${inputTxt}" style="width:100px" />
+				<div><form:errors path="userId" cssClass="error" /></div> 
 			</td>
 		</tr>
 	</tbody>
@@ -92,8 +91,8 @@ function fnUpdate() {
 
 	<!-- 하단 버튼 -->
 	<div class="btn">
-		<span class="btn_s"><a href="<c:url value='/exam/List.do'/>"  title="<spring:message code="button.list" />  <spring:message code="input.button" />"><spring:message code="button.list" /></a></span><!-- 목록 -->
-		<input type="submit" class="s_submit" value="<spring:message code="button.save" />" title="<spring:message code="button.save" /> <spring:message code="input.button" />" /><!-- 저장 -->
+		<span class="btn_s"><a href="<c:url value='/exam/rst/List.do'/>"  title="<spring:message code="button.list" />  <spring:message code="input.button" />"><spring:message code="button.list" /></a></span><!-- 목록 -->
+		<input type="submit" class="s_submit" value="<spring:message code="button.delete" />" title="<spring:message code="button.delete" /> <spring:message code="input.button" />" /><!-- 저장 -->
 	</div>
 	<div style="clear:both;"></div>
 

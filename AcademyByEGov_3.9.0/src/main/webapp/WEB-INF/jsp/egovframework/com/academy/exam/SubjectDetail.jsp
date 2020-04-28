@@ -23,7 +23,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>${pageTitle} <spring:message code="title.create" /></title><!-- 부서관리 등록 -->
+<title>${pageTitle} <spring:message code="title.create" /></title><!-- 과목관리 등록 -->
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
 <validator:javascript formName="subjectManage" staticJavascript="false" xhtml="true" cdata="false"/>
@@ -62,9 +62,9 @@ function fnUpdate() {
 	<tbody>
 		<!-- 입력 -->
 		<c:set var="inputTxt"><spring:message code="input.input" /></c:set>
-		<!-- 부서ID -->
+		<!-- 과목코드 -->
 				<form:hidden path="sbjCd" title="${title} ${inputTxt}" size="40" maxlength="50" />
-		<!-- 부서명 -->
+		<!-- 과목명 -->
 		<c:set var="title"><spring:message code="exam.SubjectNm" /></c:set>
 		<tr>
 			<th><label for="sbjNm">${title}</label> <span class="pilsu">*</span></th>

@@ -22,8 +22,8 @@ import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
  *   2020.04.27  		rainend          답안지 채점
  * </pre>
  */
-@Repository("examPassDAO")
-public class ExamPassDAO extends EgovComAbstractDAO{
+@Repository("examRstDAO")
+public class ExamRstDAO extends EgovComAbstractDAO{
 
     /**
      * @param searchVO 검색조건
@@ -39,6 +39,15 @@ public class ExamPassDAO extends EgovComAbstractDAO{
      */
     public int selectExamRstListTotCnt(ExamVO ExamVO) {
         return (Integer)selectOne("ExamPass.selectExamRstListTotCnt", ExamVO);
+    }
+
+    /**
+     * @param examCd 상세조회대상 시험코드
+     * @param userId 상세조회대상 사용자아이디
+     * @return ExamVO 시험  상세정보
+     */
+    public ExamVO selectExamRstDetail(ExamVO ExamVO){
+        return selectOne("ExamPass.selectExamRstDetail", ExamVO);
     }
 
     /**
