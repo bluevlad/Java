@@ -8,6 +8,28 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="ExamPass">
 
+	<select id="selectExamRstList" parameterType="egovframework.com.academy.exam.service.ExamVO" 
+										resultType="egovframework.com.academy.exam.service.ExamVO">
+		SELECT a.exam_cd, b.exam_nm, a.user_id, c.USER_NM, a.reg_dt, a.reg_id
+		FROM exam_rst_mst a, exam_mst b, member_mst c
+		WHERE a.exam_cd = b.exam_cd
+		AND a.user_id = c.EMPLYR_ID
+        <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchKeyword)">
+        AND c.USER_NM LIKE '%' #{searchKeyword} '%'
+        </if>
+		 LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+	</select>
+
+	<select id="selectExamRstListTotCnt" parameterType="egovframework.com.academy.exam.service.ExamVO" resultType="int">
+		SELECT COUNT(*) totcnt
+		FROM exam_rst_mst a, exam_mst b, member_mst c
+		WHERE a.exam_cd = b.exam_cd
+		AND a.user_id = c.EMPLYR_ID
+        <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchKeyword)">
+        AND c.USER_NM LIKE '%' #{searchKeyword} '%'
+        </if>
+	</select>
+
 	<insert id="insertExamRst">
 		INSERT INTO exam_rst_mst (
 			EXAM_CD, USER_ID, REG_DT, REG_ID
