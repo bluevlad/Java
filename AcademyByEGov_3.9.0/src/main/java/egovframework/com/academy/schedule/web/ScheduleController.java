@@ -58,7 +58,7 @@ import egovframework.rte.fdl.property.EgovPropertyService;
 @Controller
 public class ScheduleController {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ScheduleController.class);
+//	private static final Logger LOGGER = LoggerFactory.getLogger(ScheduleController.class);
 
 	@Autowired
 	private DefaultBeanValidator beanValidator;
@@ -686,7 +686,6 @@ public class ScheduleController {
 		String sLocationUrl = "egovframework/com/academy/schedule/Regist";
 
 		String sCmd = commandMap.get("cmd") == null ? "" : (String)commandMap.get("cmd");
-		LOGGER.info("cmd => {}", sCmd);
 
         if(sCmd.equals("save")){
     		//서버  validate 체크
