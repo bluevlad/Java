@@ -3,7 +3,6 @@ package egovframework.com.academy.exam.service;
 import java.util.List;
 
 public interface ExamManageService {
-
 	
 	/**
 	 * 시험 목록을 조회한다.

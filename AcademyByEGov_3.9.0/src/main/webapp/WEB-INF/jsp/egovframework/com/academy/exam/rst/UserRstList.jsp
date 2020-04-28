@@ -6,6 +6,7 @@
  * @  수정일     수정자         수정내용
  * @ ---------     --------    ---------------------------
  *  2020.04.00	rainend		시험리스트
+ *   2020.04.27  		rainend          답안지 채점
  *  @author rainend
  *  @version 1.0
  *  @see
@@ -17,11 +18,11 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<c:set var="pageTitle"><spring:message code="exam.examManage.title"/></c:set>
+<c:set var="pageTitle"><spring:message code="exam.rstManage.title"/></c:set>
 <!DOCTYPE html>
 <html>
 <head>
-<title>${pageTitle} <spring:message code="title.list" /></title><!-- 부서관리 목록 -->
+<title>${pageTitle} <spring:message code="title.list" /></title><!-- 응시자관리 목록 -->
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
 
@@ -29,14 +30,14 @@
 function fnSelectList(pageNo){
     document.listForm.searchCondition.value = "1";
     document.listForm.pageIndex.value = pageNo;
-    document.listForm.action = "<c:url value='/exam/List.do'/>";
+    document.listForm.action = "<c:url value='/exam/rst/List.do'/>";
     document.listForm.submit();
 }
 
 function linkPage(pageNo){
     document.listForm.searchCondition.value = "1";
     document.listForm.pageIndex.value = pageNo;
-    document.listForm.action = "<c:url value='/exam/List.do'/>";
+    document.listForm.action = "<c:url value='/exam/rst/List.do'/>";
     document.listForm.submit();
 }
 
@@ -56,12 +57,12 @@ function press() {
 	<!-- 검색영역 -->
 	<div class="search_box" title="<spring:message code="common.searchCondition.msg" />">
 		<ul>
-			<li><div style="line-height:4px;">&nbsp;</div><div><spring:message code="exam.exam.searchKeywordText" /> : </div></li><!-- 시험명 -->
+			<li><div style="line-height:4px;">&nbsp;</div><div><spring:message code="exam.rst.searchKeywordText" /> : </div></li><!-- 응시자명 -->
 			<!-- 검색키워드 및 조회버튼 -->
 			<li>
 				<input class="s_input" name="searchKeyword" type="text"  size="35" title="<spring:message code="title.search" /> <spring:message code="input.input" />" value='<c:out value="${ExamVO.searchKeyword}"/>'  maxlength="155" >
 				<input type="submit" class="s_btn" value="<spring:message code="button.inquire" />" title="<spring:message code="title.inquire" /> <spring:message code="input.button" />" /><!-- 조회 -->
-				<span class="btn_b"><a href="<c:url value='/exam/Regist.do'/>" title="<spring:message code="button.create" /> <spring:message code="input.button" />"><spring:message code="button.create" /></a></span><!-- 등록 -->
+				<span class="btn_b"><a href="<c:url value='/exam/rst/Regist.do'/>" title="<spring:message code="button.create" /> <spring:message code="input.button" />"><spring:message code="button.create" /></a></span><!-- 등록 -->
 			</li>
 		</ul>
 	</div>
@@ -79,21 +80,23 @@ function press() {
 		<th><spring:message code="table.num" /></th><!-- 번호 -->
 		<th class="board_th_link"><spring:message code="exam.ExamCd" /></th><!-- 시험코드 -->
 		<th class="board_th_link"><spring:message code="exam.ExamNm" /></th><!-- 시험명 -->
-		<th><spring:message code="exam.isUse" /></th><!--사용여부 -->
+		<th class="board_th_link"><spring:message code="exam.rst.userId" /></th><!-- 응시자아이디 -->
+		<th class="board_th_link"><spring:message code="exam.rst.userNm" /></th><!-- 응시자명 -->
 	</tr>
 	</thead>
 	<tbody class="ov">
 	<c:if test="${fn:length(examList) == 0}">
 	<tr>
-		<td colspan="3"><spring:message code="common.nodata.msg" /></td>
+		<td colspan="5"><spring:message code="common.nodata.msg" /></td>
 	</tr>
 	</c:if>
 	<c:forEach var="examList" items="${examList}" varStatus="status">
 	<tr>
 		<td><c:out value="${(ExamVO.pageIndex-1) * ExamVO.pageSize + status.count}"/></td>
-		<td><a href="<c:url value='/exam/Detail.do'/>?pageIndex=${ExamVO.pageIndex}&searchKeyword=${ExamVO.searchKeyword}&examCd=${examList.examCd}"><c:out value="${examList.examCd}"/></a></td>
-		<td class="left"><a href="<c:url value='/exam/Detail.do'/>?pageIndex=${ExamVO.pageIndex}&searchKeyword=${ExamVO.searchKeyword}&examCd=${examList.examCd}"><c:out value="${examList.examNm}"/></a></td>
-		<td><c:out value="${examList.isUse}"/></td>
+		<td><c:out value="${examList.examCd}"/></td>
+		<td><c:out value="${examList.examNm}"/></td>
+		<td><a href="<c:url value='/exam/rst/Detail.do'/>?pageIndex=${ExamVO.pageIndex}&searchKeyword=${ExamVO.searchKeyword}&examCd=${examList.examCd}&userId=${examList.userId}"><c:out value="${examList.userId}"/></a></td>
+		<td><a href="<c:url value='/exam/rst/Detail.do'/>?pageIndex=${ExamVO.pageIndex}&searchKeyword=${ExamVO.searchKeyword}&examCd=${examList.examCd}&userId=${examList.userId}"><c:out value="${examList.userNm}"/></a></td>
 	</tr>
 	</c:forEach>
 	</tbody>

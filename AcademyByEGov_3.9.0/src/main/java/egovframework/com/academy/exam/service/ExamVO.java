@@ -55,6 +55,8 @@ public class ExamVO implements Serializable {
     private String passAns;
 	/** 사용자아이디 */
     private String userId;
+	/** 사용자아이디 */
+    private String userNm;
     /** 등록일시 */
     private String regDt;
     /** 등록자ID */
@@ -309,6 +311,21 @@ public class ExamVO implements Serializable {
 	 */
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	/**
+	 * userNm attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getUserNm() {
+		return userNm;
+	}
+	/**
+	 * userNm attribute 값을 설정한다.
+	 * @param userId String
+	 */
+	public void setUserNm(String userNm) {
+		this.userNm = userNm;
 	}
 
 	/**

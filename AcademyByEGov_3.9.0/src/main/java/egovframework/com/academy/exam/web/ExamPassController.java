@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import egovframework.com.academy.exam.service.ExamManageService;
 import egovframework.com.academy.exam.service.ExamPassManageService;
+import egovframework.com.academy.exam.service.ExamPassService;
 import egovframework.com.academy.exam.service.ExamVO;
 import egovframework.com.api.util.CommonUtil;
 import egovframework.com.cmm.EgovMessageSource;
@@ -41,6 +42,9 @@ import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 public class ExamPassController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EgovQustnrRespondInfoController.class);
+
+	@Resource(name = "examPassService")
+	private ExamPassService examPassService;
 
 	@Resource(name = "examManageService")
 	private ExamManageService examManageService;
@@ -77,13 +81,13 @@ public class ExamPassController {
 		ExamVO.setLastIndex(paginationInfo.getLastRecordIndex());
 		ExamVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
 
-		model.addAttribute("examList", examPassManageService.selectExamPassList(ExamVO));
+		model.addAttribute("examList", examPassService.selectExamRstList(ExamVO));
 
-		int totCnt = examPassManageService.selectExamPassListTotCnt(ExamVO);
+		int totCnt = examPassService.selectExamRstListTotCnt(ExamVO);
 		paginationInfo.setTotalRecordCount(totCnt);
 		model.addAttribute("paginationInfo", paginationInfo);
 		
-		return "egovframework/com/academy/exam/ExamPassList";
+		return "egovframework/com/academy/exam/rst/UserRstList";
 	}
 
 	/**
@@ -100,20 +104,6 @@ public class ExamPassController {
 	}
 
 	/**
-	 * 시험 답안지 정보를 조회한다.
-	 * @param ExamVO
-	 * @return String - 리턴 Url
-	 */
-	@RequestMapping(value = "/exam/rst/DetailAll.do")
-	public String ExamDetailAll(@ModelAttribute("ExamVO") ExamVO ExamVO, ModelMap model) throws Exception {
-		
-		ExamVO.setExamNm(examManageService.selectSubjectDetail(ExamVO).getSbjNm());
-		model.addAttribute("passList", examPassManageService.selectExamPassDetail(ExamVO));
-		
-		return "egovframework/com/academy/exam/ExamPassDetailAll";
-	}
-
-	/**
 	 * 시험 답안지등록 화면으로 이동한다.
 	 * @return String - 리턴 Url
 	 */
@@ -123,26 +113,9 @@ public class ExamPassController {
 		ExamVO.setFirstIndex(0);
 		ExamVO.setRecordCountPerPage(100);
 		model.addAttribute("examList", examManageService.selectExamList(ExamVO));
-		model.addAttribute("subjectList", examManageService.selectSubjectList(ExamVO));
 		
 		model.addAttribute("ExamVO", ExamVO);
-		return "egovframework/com/academy/exam/ExamPassRegist";
-	}
-
-	/**
-	 * 시험 답안지등록 화면으로 이동한다.
-	 * @return String - 리턴 Url
-	 */
-	@RequestMapping(value = "/exam/rst/RegistAll.do")
-	public String ExamRegistAll(@ModelAttribute("ExamVO") ExamVO ExamVO, ModelMap model) throws Exception {
-
-		ExamVO.setFirstIndex(0);
-		ExamVO.setRecordCountPerPage(100);
-		model.addAttribute("examList", examManageService.selectExamList(ExamVO));
-		model.addAttribute("subjectList", examManageService.selectSubjectList(ExamVO));
-		
-		model.addAttribute("ExamVO", ExamVO);
-		return "egovframework/com/academy/exam/ExamPassRegistAll";
+		return "egovframework/com/academy/exam/rst/UserRstRegist";
 	}
 
 	/**
@@ -154,29 +127,12 @@ public class ExamPassController {
 	public String insertExam(@ModelAttribute("ExamVO") ExamVO ExamVO, BindingResult bindingResult, 
 			@RequestParam Map<?, ?> commandMap, HttpServletRequest request, 	ModelMap model) throws Exception {
 
-		LOGGER.debug("commandMap" + commandMap );
-       	
 		if (bindingResult.hasErrors()) {
-			return "egovframework/com/academy/exam/ExamPassRegist";
+			return "egovframework/com/academy/exam/rst/UserRstRegist";
 		} else {
-			String sKey ="";
-	       	for(Object key:commandMap.keySet()){
-	       		sKey = key.toString();
-	       		if(sKey.equals("examCd")){
-	       			ExamVO.setExamCd(CommonUtil.parseInt(request.getParameter(sKey)));
-	       		}
-	       		if(sKey.equals("sbjCd")){
-	       			ExamVO.setSbjCd(CommonUtil.parseInt(request.getParameter(sKey)));
-	       		}
-	       		if (sKey.substring(0, 6).equals("itemNo")) {
-	       			ExamVO.setItemNo(CommonUtil.parseInt(sKey.substring(6, 8)));
-	       			ExamVO.setAns(request.getParameter(sKey));
-	    			examPassManageService.insertExamPass(ExamVO);
-	       		}
-	       	}
-			
+			examPassService.insertExamRst(ExamVO);
 			model.addAttribute("message", egovMessageSource.getMessage("success.common.insert"));
-			return "forward:/exam/pass/List.do";
+			return "forward:/exam/rst/List.do";
 		}
 	}
 

@@ -1,5 +1,7 @@
 package egovframework.com.academy.exam.service.impl;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -27,6 +29,26 @@ public class ExamPassServiceImpl extends EgovAbstractServiceImpl implements Exam
 
 	@Resource(name="examPassDAO")
 	private ExamPassDAO examPassDAO;
+
+	/**
+	 * @param searchVO 검색조건
+	 * @return List<?> 시험 목록정보
+	 * @throws Exception
+	 */
+	@Override
+	public List<?> selectExamRstList(ExamVO ExamVO) throws Exception {
+		return examPassDAO.selectExamRstList(ExamVO);
+	}
+
+	/**
+	 * @param examSearchVO 검색조건
+	 * @return 총시험 갯수(int)
+	 * @throws Exception
+	 */
+	@Override
+	public int selectExamRstListTotCnt(ExamVO ExamVO) throws Exception {
+		return examPassDAO.selectExamRstListTotCnt(ExamVO);
+	}
 
 	/**
 	 * @param ExamVO 시험 응시정보 등록

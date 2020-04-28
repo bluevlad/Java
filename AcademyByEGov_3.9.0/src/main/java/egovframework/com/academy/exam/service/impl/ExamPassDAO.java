@@ -1,5 +1,7 @@
 package egovframework.com.academy.exam.service.impl;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 import egovframework.com.academy.exam.service.ExamVO;
@@ -22,6 +24,22 @@ import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
  */
 @Repository("examPassDAO")
 public class ExamPassDAO extends EgovComAbstractDAO{
+
+    /**
+     * @param searchVO 검색조건
+     * @return List 시험 목록정보
+     */
+    public List<?> selectExamRstList(ExamVO ExamVO) throws Exception{
+		return selectList("ExamPass.selectExamRstList", ExamVO);
+    }
+
+    /**
+     * @param searchVO 검색조건
+     * @return int 시험 총갯수
+     */
+    public int selectExamRstListTotCnt(ExamVO ExamVO) {
+        return (Integer)selectOne("ExamPass.selectExamRstListTotCnt", ExamVO);
+    }
 
     /**
      * @param ExamVO 시험 응시정보 등록

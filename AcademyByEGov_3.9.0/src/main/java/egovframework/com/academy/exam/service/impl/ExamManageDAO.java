@@ -29,8 +29,8 @@ public class ExamManageDAO extends EgovComAbstractDAO{
      * @param searchVO 검색조건
      * @return List 시험 목록정보
      */
-    public List<?> selectExamList(ExamVO ExamVO) throws Exception{
-		return selectList("ExamManage.selectExamList", ExamVO);
+    public List<?> selectExamList(ExamVO searchVO) throws Exception{
+		return selectList("ExamManage.selectExamList", searchVO);
     }
 
     /**

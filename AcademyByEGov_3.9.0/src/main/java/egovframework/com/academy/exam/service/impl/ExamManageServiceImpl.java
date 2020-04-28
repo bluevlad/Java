@@ -29,7 +29,6 @@ public class ExamManageServiceImpl extends EgovAbstractServiceImpl implements Ex
 	@Resource(name="examManageDAO")
 	private ExamManageDAO examManageDAO;
 
-
 	/**
 	 * @param searchVO 검색조건
 	 * @return List<?> 시험 목록정보
