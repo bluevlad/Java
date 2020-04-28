@@ -370,7 +370,7 @@ public class ExamVO implements Serializable {
 	 * @param sbjPoint int
 	 */
 	public void setSbjPoint(int sbjPoint) {
-		this.examCd = sbjPoint;
+		this.sbjPoint = sbjPoint;
 	}
 	
 	/**
