@@ -152,16 +152,16 @@
 	</resultMap>
 
  	<select id="selectMaxNttId" resultType="java.lang.Long">
-			SELECT IFNULL(MAX(NTT_ID),0)+1 AS NTT_ID  FROM COMTNBBS
+			SELECT IFNULL(MAX(NTT_ID),0)+1 AS NTT_ID  FROM bbs
  	</select>
  	
 	<insert id="insertArticle" parameterType="egovframework.com.academy.bbs.service.BoardVO">
 		<selectKey keyProperty="nttNo" resultType="java.lang.Long" order="BEFORE">
-			SELECT IFNULL(MAX(SORT_ORDR),0)+1 AS NTT_NO  FROM COMTNBBS
+			SELECT IFNULL(MAX(SORT_ORDR),0)+1 AS NTT_NO  FROM bbs
 			WHERE BBS_ID = #{bbsId}
 		</selectKey>
 		
-			INSERT INTO COMTNBBS
+			INSERT INTO bbs
 			(NTT_ID, BBS_ID, NTT_SJ, NTT_CN, SORT_ORDR, 
 			 NTCR_ID, NTCR_NM, PASSWORD, RDCNT, 
 			 NTCE_BGNDE, NTCE_ENDDE, ANSWER_AT,  			   
@@ -182,11 +182,11 @@
 	
 	<insert id="replyArticle" parameterType="egovframework.com.academy.bbs.service.BoardVO">
 		<selectKey keyProperty="nttNo" resultType="java.lang.Long" order="BEFORE">
-			SELECT IFNULL(MAX(NTT_NO),0)+1 AS NTT_NO  FROM COMTNBBS
+			SELECT IFNULL(MAX(NTT_NO),0)+1 AS NTT_NO  FROM bbs
 			WHERE BBS_ID = #{bbsId} AND SORT_ORDR = #{sortOrdr}
 		</selectKey>			
 		
-			INSERT INTO COMTNBBS
+			INSERT INTO bbs
 			(NTT_ID, BBS_ID, NTT_SJ, NTT_CN, SORT_ORDR, 
 			 NTCR_ID, NTCR_NM, PASSWORD, RDCNT, 
 			 NTCE_BGNDE, NTCE_ENDDE, ANSWER_AT,  			   
@@ -213,7 +213,7 @@
 				a.RDCNT, a.PARNTSCTT_NO, a.ANSWER_AT, a.ANSWER_LC, a.USE_AT, a.ATCH_FILE_ID,
 				a.BBS_ID, a.NTCE_BGNDE, a.NTCE_ENDDE, a.SJ_BOLD_AT, a.NOTICE_AT, a.SECRET_AT, c.COMMENT_CO
 			FROM
-				COMTNBBS a
+				bbs a
 			LEFT OUTER JOIN 
 				COMVNUSERMASTER b
 			ON a.FRST_REGISTER_ID = b.ESNTL_ID 
@@ -248,7 +248,7 @@
 			SELECT
 				COUNT(a.NTT_ID)
 			FROM
-				COMTNBBS a
+				bbs a
 			LEFT OUTER JOIN 
 				COMVNUSERMASTER b
 			ON a.FRST_REGISTER_ID = b.ESNTL_ID 
@@ -280,12 +280,12 @@
 				c.BBS_TY_CODE, c.REPLY_POSBL_AT, 
 				c.FILE_ATCH_POSBL_AT, c.ATCH_POSBL_FILE_NUMBER, c.BBS_NM
 			FROM
-				COMTNBBS a
+				bbs a
 			LEFT OUTER JOIN 
 				COMVNUSERMASTER b
 			ON a.FRST_REGISTER_ID = b.ESNTL_ID 
 			LEFT OUTER JOIN 
-				COMTNBBSMASTER c
+				bbs_mst c
 			ON a.BBS_ID = c.BBS_ID			
 			WHERE
 				a.BBS_ID = #{bbsId}	
@@ -309,12 +309,12 @@
 				c.BBS_TY_CODE, c.REPLY_POSBL_AT, 
 				c.FILE_ATCH_POSBL_AT, c.ATCH_POSBL_FILE_NUMBER, c.BBS_NM
 			FROM
-				COMTNBBS a
+				bbs a
 			LEFT OUTER JOIN 
 				COMVNUSERMASTER b
 			ON a.FRST_REGISTER_ID = b.ESNTL_ID 
 			LEFT OUTER JOIN 
-				COMTNBBSMASTER c
+				bbs_mst c
 			ON a.BBS_ID = c.BBS_ID			
 			WHERE
 				a.BBS_ID = #{bbsId}	
@@ -327,7 +327,7 @@
 	
  	<update id="updateArticle" parameterType="egovframework.com.academy.bbs.service.BoardVO">
  		
-			UPDATE COMTNBBS SET 
+			UPDATE bbs SET 
 				NTT_SJ = #{nttSj},
 				NTT_CN = #{nttCn}, 
 				NTCE_BGNDE = #{ntceBgnde},		
@@ -345,7 +345,7 @@
 
  	<update id="deleteArticle" parameterType="egovframework.com.academy.bbs.service.BoardVO">
  		
-			UPDATE COMTNBBS SET 
+			UPDATE bbs SET 
 				NTT_SJ = #{nttSj},
 				USE_AT = 'N',
 				LAST_UPDUSR_ID = #{lastUpdusrId},
@@ -357,7 +357,7 @@
 
  	<select id="selectMaxInqireCo" parameterType="egovframework.com.academy.bbs.service.BoardVO" resultType="java.lang.Integer">
  		
-			SELECT IFNULL(MAX(RDCNT),0)+1 AS RDCNT FROM COMTNBBS
+			SELECT IFNULL(MAX(RDCNT),0)+1 AS RDCNT FROM bbs
 			WHERE BBS_ID = #{bbsId}
 			AND NTT_ID = #{nttId}
  		
@@ -366,7 +366,7 @@
 
  	<update id="updateInqireCo" parameterType="egovframework.com.academy.bbs.service.BoardVO">
  		
-			UPDATE COMTNBBS SET 
+			UPDATE bbs SET 
 				RDCNT = #{inqireCo},
 				LAST_UPDUSR_ID = #{lastUpdusrId},
 				LAST_UPDT_PNTTM = SYSDATE()
@@ -384,7 +384,7 @@
 				a.RDCNT, a.PARNTSCTT_NO, a.ANSWER_AT, a.ANSWER_LC, a.USE_AT, a.ATCH_FILE_ID,
 				a.BBS_ID, a.NTCE_BGNDE, a.NTCE_ENDDE, a.SJ_BOLD_AT, a.NOTICE_AT, a.SECRET_AT, c.COMMENT_CO
 			FROM
-				COMTNBBS a
+				bbs a
 			LEFT OUTER JOIN 
 				COMVNUSERMASTER b
 			ON a.FRST_REGISTER_ID = b.ESNTL_ID 
@@ -412,7 +412,7 @@
 				DATE_FORMAT(a.FRST_REGIST_PNTTM, '%Y-%m-%d %H:%i:%S')	as FRST_REGIST_PNTTM,
 				a.NTT_CN, a.USE_AT, a.BBS_ID, b.USER_NM as FRST_REGISTER_NM, a.FRST_REGISTER_ID
 			FROM
-				COMTNBBS a, COMVNUSERMASTER b
+				bbs a, COMVNUSERMASTER b
 			WHERE
 				a.BBS_ID = #{bbsId}
 			AND 
@@ -429,7 +429,7 @@
 			SELECT
 				COUNT(NTT_ID)
 			FROM
-				COMTNBBS 
+				bbs 
 			WHERE
 				BBS_ID = #{bbsId}	
 			AND
@@ -457,7 +457,7 @@
 				DATE_FORMAT(A.FRST_REGIST_PNTTM, '%Y-%m-%d') as FRST_REGIST_PNTTM,
 				A.USE_AT 
 			FROM
-	 			COMTNBBSMASTER A
+	 			bbs_mst A
 			LEFT OUTER JOIN    
 				COMTNBLOG B
 			ON A.BLOG_ID = B.BLOG_ID
@@ -480,7 +480,7 @@
 			SELECT 
 				COUNT(1) 
 			FROM
-	 			COMTNBBSMASTER A, COMTNBLOG B
+	 			bbs_mst A, COMTNBLOG B
 	 		WHERE A.BLOG_ID = B.BLOG_ID
 	 		AND B.BLOG_ID = #{blogId}
 	 		<if test="searchCnd == 0">AND
@@ -498,12 +498,12 @@
 			SELECT
 				a.NTT_CN
 			FROM
-				COMTNBBS a
+				bbs a
 			LEFT OUTER JOIN 
 				COMVNUSERMASTER b
 			ON a.FRST_REGISTER_ID = b.ESNTL_ID 
 			LEFT OUTER JOIN 
-				COMTNBBSMASTER c
+				bbs_mst c
 			ON a.BBS_ID = c.BBS_ID			
 			WHERE
 				a.BBS_ID = #{bbsId}	
@@ -519,7 +519,7 @@
 			SELECT 
 				A.BBS_ID, A.BLOG_ID, A.BBS_NM 
 			FROM
-	 			COMTNBBSMASTER A, COMTNBLOG B
+	 			bbs_mst A, COMTNBLOG B
 	 		WHERE A.BLOG_ID = B.BLOG_ID
 	 		AND B.BLOG_ID = #{blogId}
 	 		ORDER BY A.FRST_REGIST_PNTTM DESC
@@ -536,7 +536,7 @@
 					a.BBS_ID, a.NTCE_BGNDE, a.NTCE_ENDDE, a.SJ_BOLD_AT, a.NOTICE_AT, a.SECRET_AT, c.COMMENT_CO,
 					a.NTCR_ID, d.BLOG_ID, d.REPLY_POSBL_AT
 				FROM
-					COMTNBBS a
+					bbs a
 				LEFT OUTER JOIN 
 					COMVNUSERMASTER b
 				ON a.FRST_REGISTER_ID = b.ESNTL_ID 
@@ -547,7 +547,7 @@
 					 GROUP BY NTT_ID, BBS_ID) c
 				ON a.NTT_ID = c.NTT_ID
 				LEFT OUTER JOIN
-					COMTNBBSMASTER d
+					bbs_mst d
 				ON a.BBS_ID = d.BBS_ID
 				WHERE
 					a.BBS_ID = #{bbsId}
@@ -576,7 +576,7 @@
 			SELECT
 					COUNT(*)
 				FROM
-					COMTNBBS a
+					bbs a
 				LEFT OUTER JOIN 
 					COMVNUSERMASTER b
 				ON a.FRST_REGISTER_ID = b.ESNTL_ID 
@@ -587,7 +587,7 @@
 					 GROUP BY NTT_ID, BBS_ID) c
 				ON a.NTT_ID = c.NTT_ID
 				LEFT OUTER JOIN
-					COMTNBBSMASTER d
+					bbs_mst d
 				ON a.BBS_ID = d.BBS_ID
 				WHERE
 					a.BBS_ID = #{bbsId}
