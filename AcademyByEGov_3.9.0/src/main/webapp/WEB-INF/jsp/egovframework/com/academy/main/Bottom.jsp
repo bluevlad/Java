@@ -8,11 +8,10 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link href="<c:url value='/css/egovframework/com/cmm/main.css' />" rel="stylesheet" type="text/css">
-<title>eGovFrame 공통 컴포넌트</title>
 </head>
 <body>
 <div id="footer">
-	<div><strong class="footer_title_strong">Copyright(c)2018 eGovframework. All right reserved.</strong></div>
+	<div><strong class="footer_title_strong">Copyright(c) 2020 학원관리시스템 by EGovFramework 3.9.0.</strong></div>
 </div>
 </body>
 </html>

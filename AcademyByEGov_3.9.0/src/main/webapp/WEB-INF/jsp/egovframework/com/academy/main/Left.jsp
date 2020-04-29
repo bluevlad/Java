@@ -1,18 +1,13 @@
 <%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Left Menu</title>
+<script src="<c:url value='/js/egovframework/com/main.js' />"></script>
+<link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/main_portal.css' />">
 <link href="<c:url value='/css/egovframework/com/cmm/main.css' />" rel="stylesheet" type="text/css">
 <style type="text/css">
 link { color: #666666; text-decoration: none; }
 link:hover { color: #000000; text-decoration: none; }
 </style>
-</head>
-<body>
 <div id="lnb">
 	<ul class="lnb_title">
 	<c:forEach var="result" items="${resultList}" varStatus="status">
@@ -30,7 +25,6 @@ link:hover { color: #000000; text-decoration: none; }
 		</c:choose>
 	</c:forEach>
 	</ul>
+			<h3 class="m_tit01 mt15"><spring:message code="comSymMnuMpm.mainView.exchangeRateInformation"/></h3><!-- 환율정보 -->
+			<iframe src="http://fx.kebhana.com/fxportal/jsp/RS/DEPLOY_EXRATE/fxrate_all.html" width="100%" height="181" border="0" frameborder="no" scrolling="no" marginwidth="0" hspace="0" vspace="0"></iframe>
 </div>
-
-</body>
-</html>
