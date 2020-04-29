@@ -36,7 +36,7 @@ function fnList() {
 
 function fnInsert() {
 	var varFrom = document.getElementById("ExamVO");
-	varFrom.action = "<c:url value='/exam/pass/insertAll.do'/>";
+	varFrom.action = "<c:url value='/exam/pass/insert.do'/>";
 	if(confirm("<spring:message code="common.save.msg" />")){	
 		varFrom.submit();
 	}
