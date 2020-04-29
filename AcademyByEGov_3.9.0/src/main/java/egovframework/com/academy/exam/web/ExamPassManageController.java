@@ -93,9 +93,11 @@ public class ExamPassManageController {
 	@RequestMapping(value = "/exam/pass/Detail.do")
 	public String ExamDetail(@ModelAttribute("ExamVO") ExamVO ExamVO, ModelMap model) throws Exception {
 
-		model.addAttribute("ExamVO", examPassManageService.selectExamPassDetail(ExamVO));
+		ExamVO.setExamNm(examManageService.selectExamDetail(ExamVO).getExamNm());
+		ExamVO.setSbjNm(examManageService.selectSubjectDetail(ExamVO).getSbjNm());
+		model.addAttribute("passList", examPassManageService.selectExamPassDetail(ExamVO));
 		
-		return "egovframework/com/academy/exam/ExamPass/Detail";
+		return "egovframework/com/academy/exam/ExamPassDetail";
 	}
 
 	/**
@@ -106,7 +108,8 @@ public class ExamPassManageController {
 	@RequestMapping(value = "/exam/pass/DetailAll.do")
 	public String ExamDetailAll(@ModelAttribute("ExamVO") ExamVO ExamVO, ModelMap model) throws Exception {
 		
-		ExamVO.setExamNm(examManageService.selectSubjectDetail(ExamVO).getSbjNm());
+		ExamVO.setExamNm(examManageService.selectExamDetail(ExamVO).getExamNm());
+		ExamVO.setSbjNm(examManageService.selectSubjectDetail(ExamVO).getSbjNm());
 		model.addAttribute("passList", examPassManageService.selectExamPassDetail(ExamVO));
 		
 		return "egovframework/com/academy/exam/ExamPassDetailAll";
@@ -161,10 +164,8 @@ public class ExamPassManageController {
 	       	for(Object key:commandMap.keySet()){
 	       		sKey = key.toString();
 	       		len = sKey.length();
-	       		LOGGER.debug("sKey.substring(0, 6) : " + sKey.substring(0, 6));
-	       		if (sKey.substring(0, 6).equals("itemNo")) {
-	       			ExamVO.setItemNo(CommonUtil.parseInt(sKey.substring(7, len)));
-		       		LOGGER.debug("sKey.substring(7, len) : " + sKey.substring(7, len));
+	       		if (len > 6 && sKey.substring(0, 6).equals("itemNo")) {
+	       			ExamVO.setItemNo(CommonUtil.parseInt(sKey.substring(6, len)));
 	       			ExamVO.setPassAns(request.getParameter(sKey));
 	    			examPassManageService.insertExamPass(ExamVO);
 	       		}
@@ -212,6 +213,36 @@ public class ExamPassManageController {
 	 * @param ExamVO
 	 * @return String - 리턴 Url
 	 */
+	@RequestMapping(value = "/exam/pass/update.do")
+	public String updateExam(@ModelAttribute("ExamVO") ExamVO ExamVO, BindingResult bindingResult, 
+			@RequestParam Map<?, ?> commandMap, HttpServletRequest request, 	ModelMap model) throws Exception {
+
+		if (bindingResult.hasErrors()) {
+			return "egovframework/com/academy/exam/ExamPassRegist";
+		} else {
+			examPassManageService.deleteExamPass(ExamVO);
+			String sKey = "";
+			int len = 0;
+	       	for(Object key:commandMap.keySet()){
+	       		sKey = key.toString();
+	       		len = sKey.length();
+	       		if (len > 6 && sKey.substring(0, 6).equals("itemNo")) {
+	       			ExamVO.setItemNo(CommonUtil.parseInt(sKey.substring(6, len)));
+	       			ExamVO.setPassAns(request.getParameter(sKey));
+	    			examPassManageService.insertExamPass(ExamVO);
+	       		}
+	       	}
+			
+			model.addAttribute("message", egovMessageSource.getMessage("success.common.insert"));
+			return "forward:/exam/pass/List.do";
+		}
+	}
+
+	/**
+	 * 시험 답안지정보를 신규로 등록한다.
+	 * @param ExamVO
+	 * @return String - 리턴 Url
+	 */
 	@RequestMapping(value = "/exam/pass/updateAll.do")
 	public String updateExamAll(@ModelAttribute("ExamVO") ExamVO ExamVO, BindingResult bindingResult, 
 			@RequestParam Map<?, ?> commandMap, HttpServletRequest request, 	ModelMap model) throws Exception {
@@ -221,17 +252,14 @@ public class ExamPassManageController {
 		} else {
 			examPassManageService.deleteExamPass(ExamVO);
 			String sKey ="";
+			int len = 0;
 	       	for(Object key:commandMap.keySet()){
 	       		sKey = key.toString();
-	       		if(sKey.equals("AnsArr")){
-	       			String ans = request.getParameter(sKey);
-	       			int j = 1;
-	    	       	for(int i=0; i< ans.length(); i++) {
-		       			ExamVO.setItemNo(i+1);
-		       			ExamVO.setPassAns(ans.substring(i, j));
-		    			examPassManageService.insertExamPass(ExamVO);
-		    			j++;
-	    	       	}
+	       		len = sKey.length();
+	       		if (len > 6 && sKey.substring(0, 6).equals("itemNo")) {
+	       			ExamVO.setItemNo(CommonUtil.parseInt(sKey.substring(6, len)));
+	       			ExamVO.setPassAns(request.getParameter(sKey));
+	    			examPassManageService.insertExamPass(ExamVO);
 	       		}
 	       	}
 			

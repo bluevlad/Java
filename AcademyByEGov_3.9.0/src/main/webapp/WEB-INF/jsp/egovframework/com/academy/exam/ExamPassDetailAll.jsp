@@ -19,7 +19,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="validator" uri="http://www.springmodules.org/tags/commons-validator" %>
-<c:set var="pageTitle"><spring:message code="exam.examManage.title"/></c:set>
+<c:set var="pageTitle"><spring:message code="exam.passManage.title"/></c:set>
 <!DOCTYPE html>
 <html>
 <head>
@@ -74,6 +74,12 @@ function fnUpdate() {
 		<tr>
 			<th><label for="examNm">${title}</label> <span class="pilsu">*</span></th>
 			<td class="left">${ExamVO.examNm}	</td>
+		</tr>
+		<!-- 과목명 -->
+		<c:set var="title"><spring:message code="exam.SubjectNm" /></c:set>
+		<tr>
+			<th><label for="sbjNm">${title}</label> <span class="pilsu">*</span></th>
+			<td class="left">${ExamVO.sbjNm}	</td>
 		</tr>
 	</tbody>
 	</table>

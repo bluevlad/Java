@@ -53,11 +53,11 @@ function fnInsert() {
 
 	<!-- 등록폼 -->
 	<table class="wTable" summary="<spring:message code="common.summary.list" arguments="${pageTitle}" />">
-	<caption>${pageTitle} <spring:message code="title.create" /></caption>
-	<colgroup>
-		<col style="width: 16%;"><col style="width: ;">
-	</colgroup>
-	<tbody>
+		<caption>${pageTitle} <spring:message code="title.create" /></caption>
+		<colgroup>
+			<col style="width: 16%;"><col style="width: ;">
+		</colgroup>
+		<tbody>
 		<!-- 입력 -->
 		<c:set var="inputTxt"><spring:message code="input.input" /></c:set>
 		<c:set var="inputSelect"><spring:message code="input.select"/></c:set>
