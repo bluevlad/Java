@@ -5,6 +5,8 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -17,6 +19,7 @@ import egovframework.com.academy.exam.service.ExamPassManageService;
 import egovframework.com.academy.exam.service.ExamVO;
 import egovframework.com.api.util.CommonUtil;
 import egovframework.com.cmm.EgovMessageSource;
+import egovframework.com.uss.olp.qri.web.EgovQustnrRespondInfoController;
 import egovframework.rte.fdl.property.EgovPropertyService;
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 
@@ -36,7 +39,7 @@ import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 @Controller
 public class ExamPassManageController {
 
-//	private static final Logger LOGGER = LoggerFactory.getLogger(EgovQustnrRespondInfoController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EgovQustnrRespondInfoController.class);
 
 	@Resource(name = "examManageService")
 	private ExamManageService examManageService;
@@ -153,18 +156,16 @@ public class ExamPassManageController {
 		if (bindingResult.hasErrors()) {
 			return "egovframework/com/academy/exam/ExamPassRegist";
 		} else {
-			String sKey ="";
+			String sKey = "";
+			int len = 0;
 	       	for(Object key:commandMap.keySet()){
 	       		sKey = key.toString();
-	       		if(sKey.equals("examCd")){
-	       			ExamVO.setExamCd(CommonUtil.parseInt(request.getParameter(sKey)));
-	       		}
-	       		if(sKey.equals("sbjCd")){
-	       			ExamVO.setSbjCd(CommonUtil.parseInt(request.getParameter(sKey)));
-	       		}
+	       		len = sKey.length();
+	       		LOGGER.debug("sKey.substring(0, 6) : " + sKey.substring(0, 6));
 	       		if (sKey.substring(0, 6).equals("itemNo")) {
-	       			ExamVO.setItemNo(CommonUtil.parseInt(sKey.substring(6, 8)));
-	       			ExamVO.setAns(request.getParameter(sKey));
+	       			ExamVO.setItemNo(CommonUtil.parseInt(sKey.substring(7, len)));
+		       		LOGGER.debug("sKey.substring(7, len) : " + sKey.substring(7, len));
+	       			ExamVO.setPassAns(request.getParameter(sKey));
 	    			examPassManageService.insertExamPass(ExamVO);
 	       		}
 	       	}
