@@ -51,7 +51,7 @@
 		     , orignl_file_nm AS orignlFileNm
 		     , file_extsn AS fileExtsn
 		     , file_size AS fileMg
-		  FROM COMTNFILEDETAIL
+		  FROM file_detail
 		 WHERE atch_file_id = #{atchFileId}
 		
 	</select>
