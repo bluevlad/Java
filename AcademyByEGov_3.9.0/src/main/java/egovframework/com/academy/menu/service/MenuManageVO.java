@@ -13,7 +13,7 @@ package egovframework.com.academy.menu.service;
  *   수정일      수정자           수정내용
  *  -------    --------    ---------------------------
  *   2009.03.20  이  용          최초 생성
- *
+ *   2020.04.00  rainend		myProject 적용
  * </pre>
  */
 
