@@ -5,14 +5,12 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import org.springmodules.validation.commons.DefaultBeanValidator;
 
 import egovframework.com.academy.member.service.EgovUserManageService;
 import egovframework.com.academy.member.service.UserDefaultVO;
@@ -58,10 +56,6 @@ public class UserMngAPIController extends CORSFilter {
 	@Resource(name = "propertiesService")
 	protected EgovPropertyService propertiesService;
 
-	/** DefaultBeanValidator beanValidator */
-	@Autowired
-	private DefaultBeanValidator beanValidator;
-
 	/**
 	 * 사용자목록을 조회한다. (pageing)
 	 * @param userSearchVO 검색조건정보
@@ -92,29 +86,6 @@ public class UserMngAPIController extends CORSFilter {
 
 		List<?> userList = userManageService.selectUserList(userSearchVO);
 		modelAndView.addObject(userList);
-
-		return modelAndView;
-	}
-
-	/**
-	 * 입력한 사용자아이디의 중복여부를 체크하여 사용가능여부를 확인
-	 * @param commandMap 파라메터전달용 commandMap
-	 * @param model 화면모델
-	 * @return member/EgovIdDplctCnfirm
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/api/member/EgovIdDplctCnfirmAjax.do")
-	public ModelAndView checkIdDplctAjax(@RequestParam Map<String, Object> commandMap) throws Exception {
-
-    	ModelAndView modelAndView = new ModelAndView();
-    	modelAndView.setViewName("jsonView");
-
-		String checkId = (String) commandMap.get("checkId");
-		//checkId = new String(checkId.getBytes("ISO-8859-1"), "UTF-8");
-
-		int usedCnt = userManageService.checkIdDplct(checkId);
-		modelAndView.addObject("usedCnt", usedCnt);
-		modelAndView.addObject("checkId", checkId);
 
 		return modelAndView;
 	}
