@@ -70,12 +70,8 @@ public class ExamApiController extends CORSFilter {
 		ExamVO.setLastIndex(paginationInfo.getLastRecordIndex());
 		ExamVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
 
-		List<?> examList = (List<?>) examManageService.selectExamList(ExamVO);
+		List<?> examList = examManageService.selectExamList(ExamVO);
 		modelAndView.addObject(examList);
-		
-		int totCnt = examManageService.selectExamListTotCnt(ExamVO);
-		paginationInfo.setTotalRecordCount(totCnt);
-		modelAndView.addObject(paginationInfo);
 		
 		return modelAndView;
 	}

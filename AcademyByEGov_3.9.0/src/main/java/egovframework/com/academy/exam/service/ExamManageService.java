@@ -9,7 +9,7 @@ public interface ExamManageService {
 	 * @param searchVO
 	 * @return List - 시험 목록
 	 */
-	List<?> selectExamList(ExamVO ExamVO) throws Exception;
+	public List<?> selectExamList(ExamVO ExamVO) throws Exception;
 
 	/**
 	 * 시험 총 갯수를 조회한다.
@@ -23,7 +23,7 @@ public interface ExamManageService {
 	 * @param ExamMst
 	 * @return ExamMst
 	 */
-	ExamVO selectExamDetail(ExamVO ExamVO) throws Exception;
+	public ExamVO selectExamDetail(ExamVO ExamVO) throws Exception;
 
 	/**
 	 * 시험정보를 신규로 등록한다.
