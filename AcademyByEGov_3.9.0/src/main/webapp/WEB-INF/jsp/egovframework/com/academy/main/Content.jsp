@@ -50,14 +50,6 @@
 				</div>
 			</div>
 			
-			<!-- 배너 -->
-			<h3 class="m_tit01 mt15"><spring:message code="comSymMnuMpm.mainView.getBannerImage"/></h3><!-- 배너 -->
-			<div class="mp_bn">
-				<c:import url="/uss/ion/bnr/getBannerImage.do" charEncoding="utf-8">
-					<c:param name="atchFileId" value="${banner.bannerImageFile}" />
-				</c:import>
-			</div>
-
 		</div>
 		<!-- contents -->
 
