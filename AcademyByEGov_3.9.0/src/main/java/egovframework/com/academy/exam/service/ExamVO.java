@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
 *
-* 공통코드 VO 클래스
+* 시험정보 VO 클래스
 * @author rainend
 * @version 1.0
 * @see
@@ -13,7 +13,7 @@ import java.io.Serializable;
 *
 *  	  수정일           수정자                수정내용
 *  ---------------    --------------    ---------------------------
-*  2020.04.00			rainend			시험정보 등록
+*  2020.04.21			rainend			시험정보 등록
 * </pre>
 */
 

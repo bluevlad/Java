@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+	수정일          수정자                          수정내용
+  ===========      ========    =================
+ *  2020.05.07			rainend			   시험성적 통계
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ExamStat">
+
+	<select id="selectExamStatSbjList" parameterType="egovframework.com.academy.exam.service.ExamVO" 
+										resultType="egovframework.com.academy.exam.service.ExamStatVO">
+		SELECT bb.SBJ_CD, bb.SBJ_NM, aa.sbj_point
+		FROM (
+				SELECT sbj_cd, round(AVG(sbj_point),2) sbj_point
+				FROM exam_rst_sbj
+				GROUP BY sbj_cd
+				) aa, exam_subject bb
+		WHERE aa.sbj_cd = bb.sbj_cd
+	</select>
+
+</mapper>

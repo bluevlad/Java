@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import egovframework.com.academy.exam.service.ExamManageService;
+import egovframework.com.academy.exam.service.ExamStatService;
 import egovframework.com.academy.exam.service.ExamVO;
 import egovframework.com.api.CORSFilter;
 import egovframework.com.cmm.EgovMessageSource;
@@ -36,6 +37,9 @@ public class ExamApiController extends CORSFilter {
 
 	@Resource(name = "examManageService")
 	private ExamManageService examManageService;
+
+	@Resource(name = "examStatService")
+	private ExamStatService examStatService;
 
 	/** EgovMessageSource */
 	@Resource(name = "egovMessageSource")
@@ -72,6 +76,24 @@ public class ExamApiController extends CORSFilter {
 
 		List<?> examList = examManageService.selectExamList(ExamVO);
 		modelAndView.addObject(examList);
+		
+		return modelAndView;
+	}
+
+	/**
+	 * 시험 목록화면 이동
+	 * @return String
+	 * @exception Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/api/exam/stat/sbj", method= RequestMethod.GET)
+	public ModelAndView ExamStatSbjList(@ModelAttribute("ExamVO") ExamVO ExamVO) throws Exception {
+
+    	ModelAndView modelAndView = new ModelAndView();
+    	modelAndView.setViewName("jsonView");
+
+		List<?> examStatSbjList = examStatService.selectExamStatSbjList(ExamVO);
+		modelAndView.addObject(examStatSbjList);
 		
 		return modelAndView;
 	}
