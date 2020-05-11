@@ -13,7 +13,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import egovframework.com.academy.login.service.EgovLoginService;
+import egovframework.com.academy.login.service.LoginService;
 import egovframework.com.cmm.ComDefaultCodeVO;
 import egovframework.com.cmm.EgovComponentChecker;
 import egovframework.com.cmm.EgovMessageSource;
@@ -23,8 +23,6 @@ import egovframework.com.cmm.config.EgovLoginConfig;
 import egovframework.com.cmm.service.EgovCmmUseService;
 import egovframework.com.cmm.service.Globals;
 import egovframework.com.cmm.util.EgovUserDetailsHelper;
-import egovframework.com.utl.fcc.service.EgovStringUtil;
-import egovframework.com.utl.sim.service.EgovClntInfo;
 
 /*
 import com.gpki.gpkiapi.cert.X509Certificate;
@@ -57,11 +55,11 @@ import com.gpki.servlet.GPKIHttpServletResponse;
  *  </pre>
  */
 @Controller
-public class EgovLoginController {
+public class LoginController {
 
 	/** EgovLoginService */
 	@Resource(name = "loginService")
-	private EgovLoginService loginService;
+	private LoginService loginService;
 
 	/** EgovCmmUseService */
 	@Resource(name = "EgovCmmUseService")
@@ -75,7 +73,7 @@ public class EgovLoginController {
 	EgovLoginConfig egovLoginConfig;
 
 	/** log */
-	private static final Logger LOGGER = LoggerFactory.getLogger(EgovLoginController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
 
 	/**
 	 * 로그인 화면으로 들어간다
@@ -83,8 +81,8 @@ public class EgovLoginController {
 	 * @return 로그인 페이지
 	 * @exception Exception
 	 */
-	@IncludedInfo(name = "로그인", listUrl = "/login/egovLoginUsr.do", order = 10, gid = 10)
-	@RequestMapping(value = "/login/egovLoginUsr.do")
+	@IncludedInfo(name = "로그인", listUrl = "/login/LoginUsr.do", order = 10, gid = 10)
+	@RequestMapping(value = "/login/LoginUsr.do")
 	public String loginUsrView(@ModelAttribute("loginVO") LoginVO loginVO, HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception {
 		if (EgovComponentChecker.hasComponent("mberManageService")) {
 			model.addAttribute("useMemberManage", "true");
@@ -99,7 +97,7 @@ public class EgovLoginController {
 		String message = (String)request.getParameter("message");
 		if (message!=null) model.addAttribute("message", message);
 		
-		return "egovframework/com/academy/login/EgovLoginUsr";
+		return "egovframework/com/academy/login/LoginUsr";
 	}
 
 	/**
@@ -127,7 +125,7 @@ public class EgovLoginController {
 
 		} else {
 			model.addAttribute("message", egovMessageSource.getMessage("fail.common.login",request.getLocale()));
-			return "egovframework/com/academy/login/EgovLoginUsr";
+			return "egovframework/com/academy/login/LoginUsr";
 		}
 	}
 
@@ -144,17 +142,11 @@ public class EgovLoginController {
 		Boolean isAuthenticated = EgovUserDetailsHelper.isAuthenticated();
 		if (!isAuthenticated) {
 			model.addAttribute("message", egovMessageSource.getMessage("fail.common.login"));
-			return "egovframework/com/academy/login/EgovLoginUsr";
+			return "egovframework/com/academy/login/LoginUsr";
 		}
-		LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
 		
-		LOGGER.debug("User Id : {}", user == null ? "" : EgovStringUtil.isNullToString(user.getId()));
-
 		// 3. 메인 페이지 이동
 		String main_page = Globals.MAIN_PAGE;
-
-		LOGGER.debug("Globals.MAIN_PAGE > " + Globals.MAIN_PAGE);
-		LOGGER.debug("main_page > {}", main_page);
 
 		if (main_page.startsWith("/")) {
 			return "forward:" + main_page;
@@ -174,7 +166,7 @@ public class EgovLoginController {
 
 		request.getSession().setAttribute("loginVO", null);
 
-		return "redirect:/EgovContent.do";
+		return "redirect:/Content.do";
 	}
 
 	/**
@@ -183,7 +175,7 @@ public class EgovLoginController {
 	 * @return 아이디/비밀번호 찾기 페이지
 	 * @exception Exception
 	 */
-	@RequestMapping(value = "/login/egovIdPasswordSearch.do")
+	@RequestMapping(value = "/login/IdPasswordSearch.do")
 	public String idPasswordSearchView(ModelMap model) throws Exception {
 
 		// 1. 비밀번호 힌트 공통코드 조회
@@ -192,7 +184,7 @@ public class EgovLoginController {
 		List<?> code = cmmUseService.selectCmmCodeDetail(vo);
 		model.addAttribute("pwhtCdList", code);
 
-		return "egovframework/com/academy/login/EgovIdPasswordSearch";
+		return "egovframework/com/academy/login/IdPasswordSearch";
 	}
 
 	/**
@@ -216,10 +208,10 @@ public class EgovLoginController {
 		if (resultVO != null && resultVO.getId() != null && !resultVO.getId().equals("")) {
 
 			model.addAttribute("resultInfo", "아이디는 " + resultVO.getId() + " 입니다.");
-			return "egovframework/com/academy/login/EgovIdPasswordResult";
+			return "egovframework/com/academy/login/IdPasswordResult";
 		} else {
 			model.addAttribute("resultInfo", egovMessageSource.getMessage("fail.common.idsearch"));
-			return "egovframework/com/academy/login/EgovIdPasswordResult";
+			return "egovframework/com/academy/login/IdPasswordResult";
 		}
 	}
 
@@ -245,10 +237,10 @@ public class EgovLoginController {
 		// 2. 결과 리턴
 		if (result) {
 			model.addAttribute("resultInfo", "임시 비밀번호를 발송하였습니다.");
-			return "egovframework/com/academy/login/EgovIdPasswordResult";
+			return "egovframework/com/academy/login/IdPasswordResult";
 		} else {
 			model.addAttribute("resultInfo", egovMessageSource.getMessage("fail.common.pwsearch"));
-			return "egovframework/com/academy/login/EgovIdPasswordResult";
+			return "egovframework/com/academy/login/IdPasswordResult";
 		}
 	}
 }

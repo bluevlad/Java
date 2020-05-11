@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import egovframework.com.cmm.LoginVO;
 import egovframework.com.uat.sso.service.EgovSSOService;
-import egovframework.com.academy.login.service.EgovLoginService;
+import egovframework.com.academy.login.service.LoginService;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -62,7 +62,7 @@ public class EgovSSOLoginFilter implements Filter {
 			LOGGER.error("No SSO ServiceImpl Class!");
 		}
 
-		EgovLoginService loginService = (EgovLoginService) act.getBean("loginService");
+		LoginService loginService = (LoginService) act.getBean("loginService");
 
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		HttpSession session = httpRequest.getSession();

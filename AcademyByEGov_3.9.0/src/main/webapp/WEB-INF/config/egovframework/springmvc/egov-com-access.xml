@@ -28,8 +28,8 @@
 	    globalAuthen="session"
 	    mappingPath="/**/*.do"
 	    dataSource="egov.dataSource"
-	    loginUrl="/login/egovLoginUsr.do"
-	    accessDeniedUrl="/login/egovLoginUsr.do?auth_error=1"
+	    loginUrl="/login/LoginUsr.do"
+	    accessDeniedUrl="/login/LoginUsr.do?auth_error=1"
 	    sqlAuthorityUser="select concat(b.user_se, b.user_id) userid, a.author_code authority
 			from comtnemplyrscrtyestbs a, comvnusermaster b
 			where a.scrty_dtrmn_trget_id = b.esntl_id"
@@ -39,7 +39,7 @@
 			and a.role_ty = 'url'
 			order by a.role_sort"
 	    requestMatcherType="regex"
-		excludeList="/login/**, /index.do, /EgovLeft.do, /EgovContent.do, /EgovTop.do, /EgovBottom.do, /EgovModal.do"
+		excludeList="/login/**, /index.do, /Left.do, /Content.do, /Top.do, /Bottom.do, /Modal.do"
 	/>
 	<!--
 		* 예외 목록 URL
@@ -52,17 +52,12 @@
 		
 		처음화면 : /index.do
 		로그인화면이미지 : /cmm/fms/getImage.do
-		좌측메뉴 : /EgovLeft.do
-		초기화면 : /EgovContent.do
-		상단메뉴 : /EgovTop.do
-		하단메뉴 : /EgovBottom.do
-		모달팝업 : /EgovModal.do
+		좌측메뉴 : /Left.do
+		초기화면 : /Content.do
+		상단메뉴 : /Top.do
+		하단메뉴 : /Bottom.do
+		모달팝업 : /Modal.do
 
-		만족도조사      : /cop/stf/selectSatisfactionList.do
-		만족도조사 선택 : /cop/stf/selectSingleSatisfaction.do
-		댓글            : /cop/cmt/selectArticleCommentList.do
-		댓글 선택       : /cop/cmt/updateArticleCommentView.do
-		
 	    excludeList="/login/**, /index.do, /EgovLeft.do, /EgovContent.do, /EgovTop.do, /EgovBottom.do"
 		excludeList="/login/**, /uss/umt/**, /sec/rnc/**, /sym/ccm/zip/**, /uss/ion/lsi/**, /cmm/fms/getImage.do, /uss/ion/bnr/getBannerImage.do, /index.do, /EgovLeft.do, /EgovContent.do, /EgovTop.do, /EgovBottom.do, /EgovModal.do, /cop/cmt/selectArticleCommentList.do, /cop/stf/selectSatisfactionList.do, /cop/stf/selectSingleSatisfaction.do, /cop/cmt/updateArticleCommentView.do"
 	 -->

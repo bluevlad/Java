@@ -10,9 +10,9 @@
 	<aop:config>
 		<aop:aspect id="loginLogAspect" ref="loginlog">
 			<!--  로그인 Method -->
-			<aop:before pointcut="execution(public * egovframework.com.academy.login.web.EgovLoginController.actionLogin(..)) " method="logLogin" />
+			<aop:before pointcut="execution(public * egovframework.com.academy.login.web.LoginController.actionLogin(..)) " method="logLogin" />
 			<!--  로그아웃 Method -->
-			<aop:before pointcut="execution(public * egovframework.com.academy.login.web.EgovLoginController.actionLogout(..))" method="logLogout" />
+			<aop:before pointcut="execution(public * egovframework.com.academy.login.web.LoginController.actionLogout(..))" method="logLogout" />
 		</aop:aspect>
 	</aop:config>
 

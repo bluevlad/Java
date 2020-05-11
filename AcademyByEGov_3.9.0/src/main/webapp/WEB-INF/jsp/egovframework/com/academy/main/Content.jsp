@@ -19,7 +19,7 @@
 <input name="chkURL" type="hidden" />
 
 	<c:if test="${loginVO == null }">
-		<jsp:forward page="/login/egovLoginUsr.do"/>
+		<jsp:forward page="/login/LoginUsr.do"/>
 	</c:if>
 
 	<c:if test="${loginVO != null}">

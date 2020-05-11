@@ -26,7 +26,7 @@ import egovframework.com.cmm.EgovMessageSource;
 import egovframework.com.cmm.LoginVO;
 import egovframework.com.cmm.config.EgovLoginConfig;
 import egovframework.com.cmm.util.EgovUserDetailsHelper;
-import egovframework.com.academy.login.service.EgovLoginService;
+import egovframework.com.academy.login.service.LoginService;
 import egovframework.rte.psl.dataaccess.util.EgovMap;
 
 /**
@@ -72,7 +72,7 @@ public class EgovSpringSecurityLoginFilter implements Filter {
 		loginProcessURL = loginProcessURL.replaceAll("\r", "").replaceAll("\n", "");
 
 		ApplicationContext act = WebApplicationContextUtils.getRequiredWebApplicationContext(config.getServletContext());
-		EgovLoginService loginService = (EgovLoginService) act.getBean("loginService");
+		LoginService loginService = (LoginService) act.getBean("loginService");
 		EgovLoginConfig egovLoginConfig = (EgovLoginConfig) act.getBean("egovLoginConfig");
 		
 		EgovMessageSource egovMessageSource = (EgovMessageSource) act.getBean("egovMessageSource");

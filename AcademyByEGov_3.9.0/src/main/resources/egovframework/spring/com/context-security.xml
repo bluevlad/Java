@@ -24,9 +24,9 @@
  	<security:http pattern="\A/WEB-INF/jsp/.*\Z" request-matcher="regex" security="none"/>
 
     <egov-security:config id="securityConfig"
-		loginUrl="/login/egovLoginUsr.do"
-		logoutSuccessUrl="/EgovContent.do"
-		loginFailureUrl="/login/egovLoginUsr.do?login_error=1"
+		loginUrl="/login/LoginUsr.do"
+		logoutSuccessUrl="/Content.do"
+		loginFailureUrl="/login/LoginUsr.do?login_error=1"
 		accessDeniedUrl="/sec/ram/accessDenied.do"
 
 		dataSource="egov.dataSource"
@@ -44,9 +44,9 @@
 		hashBase64="false"
 
 		concurrentMaxSessons="1"
-		concurrentExpiredUrl="/EgovContent.do"
+		concurrentExpiredUrl="/Content.do"
 
-		defaultTargetUrl="/EgovContent.do"
+		defaultTargetUrl="/Content.do"
 		
 		sniff="true"
 		xframeOptions="SAMEORIGIN" 

@@ -160,7 +160,7 @@ public class EgovFaqController {
 		beanValidator.validate(faqVO, bindingResult);
 
 		if (bindingResult.hasErrors()) {
-			return "egovframework/com/academy/bbs/wor/EgovFaqRegist";
+			return "egovframework/com/academy/bbs/faq/EgovFaqRegist";
 		}
 
 		// 첨부파일 관련 첨부파일ID 생성

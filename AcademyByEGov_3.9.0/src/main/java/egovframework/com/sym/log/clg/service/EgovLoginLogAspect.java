@@ -28,7 +28,7 @@ public class EgovLoginLogAspect {
 
 	/**
 	 * 로그인 로그정보를 생성한다.
-	 * EgovLoginController.actionMain Method
+	 * LoginController.actionMain Method
 	 * 
 	 * @param 
 	 * @return void
@@ -59,7 +59,7 @@ public class EgovLoginLogAspect {
 	
 	/**
 	 * 로그아웃 로그정보를 생성한다.
-	 * EgovLoginController.actionLogout Method
+	 * LoginController.actionLogout Method
 	 * 
 	 * @param 
 	 * @return void

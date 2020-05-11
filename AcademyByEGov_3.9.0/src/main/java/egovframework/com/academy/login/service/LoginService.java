@@ -21,7 +21,7 @@ import egovframework.com.cmm.LoginVO;
  *  2017.07.21  장동한 			로그인인증제한 작업
  *  </pre>
  */
-public interface EgovLoginService {
+public interface LoginService {
 	
 	/**
      * 2011.08.26

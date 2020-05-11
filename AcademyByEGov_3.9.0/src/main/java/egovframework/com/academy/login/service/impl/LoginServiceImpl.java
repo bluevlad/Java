@@ -16,7 +16,7 @@ import egovframework.com.utl.fcc.service.EgovStringUtil;
 import egovframework.com.utl.sim.service.EgovFileScrty;
 import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
 import egovframework.rte.psl.dataaccess.util.EgovMap;
-import egovframework.com.academy.login.service.EgovLoginService;
+import egovframework.com.academy.login.service.LoginService;
 
 /**
  * 일반 로그인, 인증서 로그인을 처리하는 비즈니스 구현 클래스
@@ -37,7 +37,7 @@ import egovframework.com.academy.login.service.EgovLoginService;
  *  </pre>
  */
 @Service("loginService")
-public class EgovLoginServiceImpl extends EgovAbstractServiceImpl implements EgovLoginService {
+public class LoginServiceImpl extends EgovAbstractServiceImpl implements LoginService {
 
     @Resource(name="loginDAO")
     private LoginDAO loginDAO;
