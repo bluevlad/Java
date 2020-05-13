@@ -1,19 +1,28 @@
 package egovframework.com.academy.exam.web;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import egovframework.com.academy.exam.service.ExamManageService;
 import egovframework.com.academy.exam.service.ExamStatService;
 import egovframework.com.academy.exam.service.ExamVO;
+import egovframework.com.academy.schedule.web.ScheduleController;
 import egovframework.com.api.CORSFilter;
 import egovframework.com.cmm.EgovMessageSource;
 import egovframework.rte.fdl.property.EgovPropertyService;
@@ -34,6 +43,8 @@ import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 
 @Controller
 public class ExamApiController extends CORSFilter {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ScheduleController.class);
 
 	@Resource(name = "examManageService")
 	private ExamManageService examManageService;
@@ -78,6 +89,33 @@ public class ExamApiController extends CORSFilter {
 		modelAndView.addObject(examList);
 		
 		return modelAndView;
+	}
+
+	/**
+	 * 시험정보를 신규로 등록한다.
+	 * @param ExamVO
+	 * @return String - 리턴 Url
+	 */
+    @ResponseBody
+  	@Transactional(readOnly=false,rollbackFor=Exception.class)
+	@RequestMapping(value = "/api/exam/add")
+	public String insertExam(@ModelAttribute("ExamVO") ExamVO ExamVO, BindingResult bindingResult,  
+			@RequestParam Map<?, ?> commandMap, HttpServletRequest request, 	ModelMap model) throws Exception {
+
+		String sKey = "";
+       	for(Object key:commandMap.keySet()){
+       		sKey = key.toString();
+       		LOGGER.debug("sKey : " +sKey);
+       		if(sKey.equals("examNm")) {
+       			ExamVO.setExamNm(sKey);
+       		}
+       		if(sKey.equals("isUse")) {
+       			ExamVO.setIsUse(sKey);
+       		}
+       	}
+		examManageService.insertExam(ExamVO);
+		int uniqId = ExamVO.getExamCd();
+		return uniqId+"";
 	}
 
 	/**
