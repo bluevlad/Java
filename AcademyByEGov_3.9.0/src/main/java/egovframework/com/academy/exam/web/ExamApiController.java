@@ -5,14 +5,19 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.ws.rs.GET;
+import javax.ws.rs.PathParam;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,6 +30,10 @@ import egovframework.com.academy.exam.service.ExamVO;
 import egovframework.com.academy.schedule.web.ScheduleController;
 import egovframework.com.api.CORSFilter;
 import egovframework.com.cmm.EgovMessageSource;
+import egovframework.com.ext.oauth.service.OAuthConfig;
+import egovframework.com.ext.oauth.service.OAuthLogin;
+import egovframework.com.ext.oauth.service.OAuthUniversalUser;
+import egovframework.com.ext.oauth.service.OAuthVO;
 import egovframework.rte.fdl.property.EgovPropertyService;
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 
@@ -92,28 +101,44 @@ public class ExamApiController extends CORSFilter {
 	}
 
 	/**
+	 * 시험 상세정보를 조회한다.
+	 * @param ExamVO
+	 * @return String - 리턴 Url
+	 */
+	@GET
+	@RequestMapping(value = "/api/exam/view/{id}", method = { RequestMethod.GET, RequestMethod.POST})
+	public ModelAndView ExamDetail(@PathVariable int id, @ModelAttribute("ExamVO") ExamVO ExamVO, ModelMap model) throws Exception {
+
+    	ModelAndView modelAndView = new ModelAndView();
+    	modelAndView.setViewName("jsonView");
+
+    	ExamVO.setExamCd(id);
+    	 
+    	ExamVO examview = examManageService.selectExamDetail(ExamVO);
+
+    	modelAndView.addObject(examview);
+		
+		return modelAndView;
+	}
+
+	
+	/**
 	 * 시험정보를 신규로 등록한다.
 	 * @param ExamVO
 	 * @return String - 리턴 Url
 	 */
     @ResponseBody
-  	@Transactional(readOnly=false,rollbackFor=Exception.class)
 	@RequestMapping(value = "/api/exam/add")
 	public String insertExam(@ModelAttribute("ExamVO") ExamVO ExamVO, BindingResult bindingResult,  
 			@RequestParam Map<?, ?> commandMap, HttpServletRequest request, 	ModelMap model) throws Exception {
 
-		String sKey = "";
-       	for(Object key:commandMap.keySet()){
-       		sKey = key.toString();
-       		LOGGER.debug("sKey : " +sKey);
-       		if(sKey.equals("examNm")) {
-       			ExamVO.setExamNm(sKey);
-       		}
-       		if(sKey.equals("isUse")) {
-       			ExamVO.setIsUse(sKey);
-       		}
-       	}
-		examManageService.insertExam(ExamVO);
+		/*
+		 * String sKey = ""; for(Object key:commandMap.keySet()){ sKey = key.toString();
+		 * LOGGER.debug("sKey : " +sKey); if(sKey.equals("examNm")) {
+		 * ExamVO.setExamNm(sKey); } if(sKey.equals("isUse")) { ExamVO.setIsUse(sKey); }
+		 * }
+		 */		
+    	examManageService.insertExam(ExamVO);
 		int uniqId = ExamVO.getExamCd();
 		return uniqId+"";
 	}
