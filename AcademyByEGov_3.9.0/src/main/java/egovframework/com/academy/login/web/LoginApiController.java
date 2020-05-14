@@ -12,8 +12,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import egovframework.com.academy.login.service.LoginService;
+import egovframework.com.api.CORSFilter;
 import egovframework.com.cmm.ComDefaultCodeVO;
 import egovframework.com.cmm.EgovComponentChecker;
 import egovframework.com.cmm.EgovMessageSource;
@@ -55,7 +57,7 @@ import com.gpki.servlet.GPKIHttpServletResponse;
  *  </pre>
  */
 @Controller
-public class LoginApiController {
+public class LoginApiController extends CORSFilter {
 
 	/** EgovLoginService */
 	@Resource(name = "loginService")
@@ -83,7 +85,8 @@ public class LoginApiController {
 	 * @exception Exception
 	 */
 	@RequestMapping(value = "/api/login/Login")
-	public void actionLogin(@ModelAttribute("loginVO") LoginVO loginVO, HttpServletRequest request, ModelMap model) throws Exception {
+    @ResponseBody
+	public String actionLogin(@ModelAttribute("loginVO") LoginVO loginVO, HttpServletRequest request, ModelMap model) throws Exception {
 
 		// 2. 로그인 처리
 		LoginVO resultVO = loginService.actionLogin(loginVO);
@@ -93,7 +96,7 @@ public class LoginApiController {
 		// 2019.10.01 로그인 인증세션 추가
 		request.getSession().setAttribute("accessUser", resultVO.getUserSe().concat(resultVO.getId()));
 
-		//return "redirect:/login/actionMain.do";
+		return "0";
 	}
 
 	/**
