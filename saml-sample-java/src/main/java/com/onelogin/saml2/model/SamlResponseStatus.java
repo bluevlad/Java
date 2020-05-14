@@ -1,6 +1,5 @@
 package com.onelogin.saml2.model;
 
-import com.onelogin.saml2.util.Objects;
 
 /**
  * SamlResponseStatus class of OneLogin's Java Toolkit.
@@ -106,7 +105,7 @@ public class SamlResponseStatus {
 	 * @return boolean checks the status code 
 	 */
 	public boolean is(String status) {
-		return statusCode != null && !Objects.isEmpty(statusCode) && statusCode.equals(status);
+		return statusCode != null && !statusCode.isEmpty() && statusCode.equals(status);
 	}
 
 }

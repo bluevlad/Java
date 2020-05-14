@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 
 import com.onelogin.saml2.http.HttpRequest;
-import com.onelogin.saml2.util.Objects;
 import com.onelogin.saml2.util.Util;
 
 /**
@@ -35,7 +34,7 @@ public class ServletUtils {
     public static HttpRequest makeHttpRequest(HttpServletRequest req) {
     	@SuppressWarnings("unchecked")
         final Map<String, String[]> paramsAsArray = (Map<String, String[]>) req.getParameterMap();
-        final Map<String, List<String>> paramsAsList = new HashMap<String, List<String>>();
+        final Map<String, List<String>> paramsAsList = new HashMap<>();
         for (Map.Entry<String, String[]> param : paramsAsArray.entrySet()) {
             paramsAsList.put(param.getKey(), Arrays.asList(param.getValue()));
         }
@@ -99,11 +98,11 @@ public class ServletUtils {
         String requestUri = request.getRequestURI();
         String queryString = request.getQueryString();
 
-        if (null != requestUri && !Objects.isEmpty(requestUri)) {
+        if (null != requestUri && !requestUri.isEmpty()) {
             url += requestUri;
         }
 
-        if (null != queryString && !Objects.isEmpty(queryString)) {
+        if (null != queryString && !queryString.isEmpty()) {
             url += '?' + queryString;
         }
         return url;
@@ -132,7 +131,7 @@ public class ServletUtils {
     public static String getSelfRoutedURLNoQuery(HttpServletRequest request) {
         String url = getSelfURLhost(request);
         String requestUri = request.getRequestURI();
-        if (null != requestUri && !Objects.isEmpty(requestUri)) {
+        if (null != requestUri && !requestUri.isEmpty()) {
             url += requestUri;
         }
         return url;
@@ -169,7 +168,7 @@ public class ServletUtils {
                     target += "&";
                 }
                 target += parameter.getKey();
-                if (!Objects.isEmpty(parameter.getValue())) {
+                if (!parameter.getValue().isEmpty()) {
                     target += "=" + Util.urlEncoder(parameter.getValue());
                 }
             }

@@ -29,8 +29,7 @@
     	<!--  TODO Session support  --> 
 
 	<%
-	   	String path = "/classes/resources/";
-		Auth auth = new Auth(request, response, path);
+		Auth auth = new Auth(request, response);
 		auth.processResponse();
 
 		if (!auth.isAuthenticated()) {

@@ -12,6 +12,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.Key;
@@ -121,8 +123,8 @@ public final class Util {
 
 	/**
 	 * Method which uses the recommended way ( https://docs.oracle.com/javase/tutorial/jaxp/properties/error.html )
-	 * of checking if JAXP >= 1.5 options are supported. Needed if the project which uses this library also has
-	 * Xerces in it's classpath.
+	 * of checking if JAXP is equal or greater than 1.5 options are supported. Needed if the project which uses
+	 *  this library also has Xerces in it's classpath.
 	 *
 	 * If for whatever reason this method cannot determine if JAXP 1.5 properties are supported it will indicate the
 	 * options are supported. This way we don't accidentally disable configuration options.
@@ -184,8 +186,7 @@ public final class Util {
 			 *       to a value, if people have issues with using the specified implementor. This would allow users to always
 			 *       override the implementation if they so need to.
 			 */
-//			return XPathFactory.newInstance(XPathFactory.DEFAULT_OBJECT_MODEL_URI, "com.sun.org.apache.xpath.internal.jaxp.XPathFactoryImpl", java.lang.ClassLoader.getSystemClassLoader());
-			return XPathFactory.newInstance(XPathFactory.DEFAULT_OBJECT_MODEL_URI);
+			return XPathFactory.newInstance(XPathFactory.DEFAULT_OBJECT_MODEL_URI, "com.sun.org.apache.xpath.internal.jaxp.XPathFactoryImpl", java.lang.ClassLoader.getSystemClassLoader());
 		} catch (XPathFactoryConfigurationException e) {
 			LOGGER.debug("Error generating XPathFactory instance: " + e.getMessage(), e);
 		}
@@ -223,6 +224,7 @@ public final class Util {
 		XPath xpath = getXPathFactory().newXPath();
 		xpath.setNamespaceContext(new NamespaceContext() {
 
+			@Override
 			public String getNamespaceURI(String prefix) {
 				String result = null;
 				if (prefix.equals("samlp") || prefix.equals("samlp2")) {
@@ -239,11 +241,13 @@ public final class Util {
 				return result;
 			}
 
+			@Override
 			public String getPrefix(String namespaceURI) {
 				return null;
 			}
 
 			@SuppressWarnings("rawtypes")
+			@Override
 			public Iterator getPrefixes(String namespaceURI) {
 				return null;
 			}
@@ -295,14 +299,8 @@ public final class Util {
 
 			if (JAXP_15_SUPPORTED) {
 				// Prevent XXE attacks
-				String ACCESS_EXTERNAL_DTD = "http://javax.xml.XMLConstants/property/accessExternalDTD";
-				String ACCESS_EXTERNAL_SCHEMA = "http://javax.xml.XMLConstants/property/accessExternalSchema";
-				validator.setProperty(ACCESS_EXTERNAL_DTD, "");
-				validator.setProperty(ACCESS_EXTERNAL_SCHEMA, "");
-				/**
 				validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
 				validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-				 * **/
 			}
 
 			XMLErrorAccumulatorHandler errorAcumulator = new XMLErrorAccumulatorHandler();
@@ -341,8 +339,8 @@ public final class Util {
 	/**
 	 * Parse an XML from input source to a Document object
 	 *
-	 * @param xmlStr
-	 * 				The XML string which should be converted
+	 * @param inputSource
+	 * 				The InputSource with the XML string which should be converted
 	 *
 	 * @return the Document object
 	 *
@@ -539,16 +537,15 @@ public final class Util {
 	 * @return Loaded Certificate. X509Certificate object
 	 *
 	 * @throws CertificateException
-	 * @throws Exception 
 	 *
 	 */
-	public static X509Certificate loadCert(String certString) throws CertificateException, Exception {
+	public static X509Certificate loadCert(String certString) throws CertificateException {
 		certString = formatCert(certString, true);
 		X509Certificate cert;
 
 		try {
-			cert = (X509Certificate) CertificateFactory.getInstance("X.509").generateCertificate(new ByteArrayInputStream(certString.getBytes()));
-//			new ByteArrayInputStream(certString.getBytes(StandardCharsets.UTF_8)));  //JDK 1.7부터 지원
+			cert = (X509Certificate) CertificateFactory.getInstance("X.509").generateCertificate(
+				new ByteArrayInputStream(certString.getBytes(StandardCharsets.UTF_8)));
 		} catch (IllegalArgumentException e){
 			cert = null;
 		}
@@ -598,7 +595,7 @@ public final class Util {
 
 		try {
 			byte[] dataBytes = x509cert.getEncoded();
-			if (alg == null || Objects.isEmpty(alg) || alg.equals("SHA-1")|| alg.equals("sha1")) {
+			if (alg == null || alg.isEmpty() || alg.equals("SHA-1")|| alg.equals("sha1")) {
 				fingerprint = DigestUtils.sha1Hex(dataBytes);
 			} else if (alg.equals("SHA-256") || alg .equals("sha256")) {
 				fingerprint = DigestUtils.sha256Hex(dataBytes);
@@ -695,7 +692,7 @@ public final class Util {
 	 * @return the base64 decoded and inflated string
 	 */
 	public static String base64decodedInflated(String input) {
-		if (Objects.isEmpty(input)) {
+		if (input.isEmpty()) {
 			return input;
 		}
 		// Base64 decoder
@@ -734,7 +731,7 @@ public final class Util {
 		ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
 		Deflater deflater = new Deflater(Deflater.DEFLATED, true);
 		DeflaterOutputStream deflaterStream = new DeflaterOutputStream(bytesOut, deflater);
-		deflaterStream.write(input.getBytes());
+		deflaterStream.write(input.getBytes(Charset.forName("UTF-8")));
 		deflaterStream.finish();
 		// Base64 encoder
 		return new String(Base64.encodeBase64(bytesOut.toByteArray()));
@@ -913,7 +910,7 @@ public final class Util {
 	 * Validate the signature pointed to by the xpath
 	 *
 	 * @param doc The document we should validate
-	 * @param certs The public certificates
+	 * @param certList The public certificates
 	 * @param fingerprint The fingerprint of the public certificate
 	 * @param alg The signature algorithm method
 	 * @param xpath the xpath of the ds:Signture node to validate
@@ -1017,7 +1014,7 @@ public final class Util {
 					X509Certificate providedCert = keyInfo.getX509Certificate();
 					String calculatedFingerprint = calculateX509Fingerprint(providedCert, alg);
 					for (String fingerprintStr : fingerprint.split(",")) {
-						if (calculatedFingerprint.equals(fingerprintStr.trim())) {
+						if (calculatedFingerprint.equalsIgnoreCase(fingerprintStr.trim())) {
 							res = signature.checkSignatureValue(providedCert);
 						}
 					}
@@ -1032,12 +1029,6 @@ public final class Util {
 	/**
 	 * Whitelist the XMLSignature algorithm
 	 *
-	 * @param signNode
-	 * 				 The document we should validate
-	 * @param cert
-	 * 				 The public certificate
-	 * @param fingerprint
-	 * 				 The fingerprint of the public certificate
 	 * @param alg
 	 * 				 The signature algorithm method
 	 *
@@ -1191,10 +1182,10 @@ public final class Util {
 			throw new IllegalArgumentException("Provided certificate was null");
 		}
 
-		if (signAlgorithm == null || Objects.isEmpty(signAlgorithm)) {
+		if (signAlgorithm == null || signAlgorithm.isEmpty()) {
 			signAlgorithm = Constants.RSA_SHA1;
 		}
-		if (digestAlgorithm == null || Objects.isEmpty(digestAlgorithm)) {
+		if (digestAlgorithm == null || digestAlgorithm.isEmpty()) {
 			digestAlgorithm = Constants.SHA1;
 		}
 
@@ -1235,7 +1226,7 @@ public final class Util {
 		String id = elemToSign.getAttribute("ID");
 
 		String reference = id;
-		if (!Objects.isEmpty(id)) {
+		if (!id.isEmpty()) {
 			elemToSign.setIdAttributeNS(null, "ID", true);
 			reference = "#" + id;
 		}
@@ -1455,13 +1446,13 @@ public final class Util {
 			Document doc = dbf.newDocumentBuilder().newDocument();
 			Element nameId = doc.createElement("saml:NameID");
 
-			if (spnq != null && !Objects.isEmpty(spnq)) {
+			if (spnq != null && !spnq.isEmpty()) {
 				nameId.setAttribute("SPNameQualifier", spnq);
 			}
-			if (format != null && !Objects.isEmpty(format)) {
+			if (format != null && !format.isEmpty()) {
 				nameId.setAttribute("Format", format);
 			}
-			if ((nq != null) && !Objects.isEmpty(nq))
+			if ((nq != null) && !nq.isEmpty())
 			{
 				nameId.setAttribute("NameQualifier", nq);
 			}
@@ -1765,24 +1756,6 @@ public final class Util {
 			throw new IllegalStateException(e);
 		}
 	}
-	
-    /**
-     * Returns {@code true} if the arguments are equal to each other
-     * and {@code false} otherwise.
-     * Consequently, if both arguments are {@code null}, {@code true}
-     * is returned and if exactly one argument is {@code null}, {@code
-     * false} is returned.  Otherwise, equality is determined by using
-     * the {@link Object#equals equals} method of the first
-     * argument.
-     *
-     * @param a an object
-     * @param b an object to be compared with {@code a} for equality
-     * @return {@code true} if the arguments are equal to each other
-     * and {@code false} otherwise
-     * @see Object#equals(Object)
-     */
-    public static boolean equals(Object a, Object b) {
-        return (a == b) || (a != null && a.equals(b));
-    }	
-    
+
+
 }

@@ -2,6 +2,7 @@ package com.onelogin.saml2;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
+import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.SignatureException;
@@ -23,17 +24,17 @@ import org.slf4j.LoggerFactory;
 
 import com.onelogin.saml2.authn.AuthnRequest;
 import com.onelogin.saml2.authn.SamlResponse;
-import com.onelogin.saml2.exception.Error;
 import com.onelogin.saml2.exception.SettingsException;
+import com.onelogin.saml2.exception.Error;
 import com.onelogin.saml2.exception.XMLEntityException;
 import com.onelogin.saml2.http.HttpRequest;
 import com.onelogin.saml2.logout.LogoutRequest;
 import com.onelogin.saml2.logout.LogoutResponse;
+import com.onelogin.saml2.model.KeyStoreSettings;
 import com.onelogin.saml2.servlet.ServletUtils;
 import com.onelogin.saml2.settings.Saml2Settings;
 import com.onelogin.saml2.settings.SettingsBuilder;
 import com.onelogin.saml2.util.Constants;
-import com.onelogin.saml2.util.Objects;
 import com.onelogin.saml2.util.Util;
 
 /**
@@ -50,11 +51,11 @@ public class Auth {
 	/**
 	 * Private property to construct a logger for this class.
 	 */
-//	private static final Logger LOGGER = LoggerFactory.getLogger(Auth.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Auth.class);
 
 	/**
 	 * Settings data.
-	 */	
+	 */
 	private Saml2Settings settings;
 
 	/**
@@ -119,7 +120,7 @@ public class Auth {
 
 	/**
 	 * If user is authenticated.
-	 */	
+	 */
 	private boolean authenticated = false;
 
 	/**
@@ -133,20 +134,25 @@ public class Auth {
 	private String errorReason;
 
 	/**
+	 * Exception of the last error.
+	 */
+	private Exception validationException;
+
+	/**
 	 * The id of the last request (Authn or Logout) generated
 	 */
 	private String lastRequestId;
 
 	/**
 	 * The most recently-constructed/processed XML SAML request
-	 * (AuthNRequest, LogoutRequest) 
+	 * (AuthNRequest, LogoutRequest)
 	 */
 	private String lastRequest;
 
 	/**
 	 * The most recently-constructed/processed XML SAML response
 	 * (SAMLResponse, LogoutResponse). If the SAMLResponse was
-	 * encrypted, by default tries to return the decrypted XML 
+	 * encrypted, by default tries to return the decrypted XML
 	 */
 	private String lastResponse;
 
@@ -154,7 +160,7 @@ public class Auth {
 	 * Initializes the SP SAML instance.
 	 *
 	 * @throws IOException
-	 * @throws SettingsException 
+	 * @throws SettingsException
 	 * @throws Error
 	 */
 	public Auth() throws IOException, SettingsException, Error {
@@ -164,123 +170,173 @@ public class Auth {
 	/**
 	 * Initializes the SP SAML instance.
 	 *
-	 * @param filename
-	 * 				String Filename with the settings
+	 * @param keyStoreSetting KeyStoreSettings is a KeyStore which have the Private/Public keys
 	 *
 	 * @throws IOException
-	 * @throws SettingsException 
+	 * @throws SettingsException
 	 * @throws Error
 	 */
-	public Auth(String filename) throws IOException, SettingsException, Error {
-		this(new SettingsBuilder().fromFile(filename).build(), null, null);
+	public Auth(KeyStoreSettings keyStoreSetting) throws IOException, SettingsException, Error {
+		this("onelogin.saml.properties", keyStoreSetting);
 	}
 	
 	/**
 	 * Initializes the SP SAML instance.
 	 *
-	 * @param request
-	 * 				HttpServletRequest object to be processed
-	 * @param response
-	 * 				HttpServletResponse object to be used
+	 * @param filename String Filename with the settings
 	 *
 	 * @throws IOException
-	 * @throws SettingsException 
+	 * @throws SettingsException
+	 * @throws Error
+	 */
+	public Auth(String filename) throws IOException, SettingsException, Error {
+		this(filename, null, null, null);
+	}
+
+	/**
+	 * Initializes the SP SAML instance.
+	 *
+	 * @param filename String Filename with the settings
+	 * @param keyStoreSetting KeyStoreSettings is a KeyStore which have the Private/Public keys
+     *
+	 * @throws IOException
+	 * @throws SettingsException
+	 * @throws Error
+	 */
+	public Auth(String filename, KeyStoreSettings keyStoreSetting)
+			throws IOException, SettingsException, Error {
+		this(new SettingsBuilder().fromFile(filename, keyStoreSetting).build(), null, null);
+	}
+
+	/**
+	 * Initializes the SP SAML instance.
+	 *
+	 * @param request  HttpServletRequest object to be processed
+	 * @param response HttpServletResponse object to be used
+	 *
+	 * @throws IOException
+	 * @throws SettingsException
 	 * @throws Error
 	 */
 	public Auth(HttpServletRequest request, HttpServletResponse response) throws IOException, SettingsException, Error {
 		this(new SettingsBuilder().fromFile("onelogin.saml.properties").build(), request, response);
 	}
 
-	public Auth(HttpServletRequest request, HttpServletResponse response, String path) throws IOException, SettingsException, Error {
-		this(new SettingsBuilder().fromFile(path+"onelogin.saml.properties").build(), request, response);
+	/**
+	 * Initializes the SP SAML instance.
+	 * 
+	 * @param keyStoreSetting KeyStoreSettings is a KeyStore which have the Private/Public keys
+	 * @param request  HttpServletRequest object to be processed
+	 * @param response HttpServletResponse object to be used
+	 *
+	 * @throws IOException
+	 * @throws SettingsException
+	 * @throws Error
+	 */
+	public Auth(KeyStoreSettings keyStoreSetting, HttpServletRequest request, HttpServletResponse response)
+			throws IOException, SettingsException, Error {
+		this(new SettingsBuilder().fromFile("onelogin.saml.properties", keyStoreSetting).build(), request,
+				response);
 	}
 
 	/**
 	 * Initializes the SP SAML instance.
 	 *
-	 * @param filename
-	 *				String Filename with the settings
-	 * @param request
-	 * 				HttpServletRequest object to be processed
-	 * @param response
-	 * 				HttpServletResponse object to be used
+	 * @param filename String Filename with the settings
+	 * @param request  HttpServletRequest object to be processed
+	 * @param response HttpServletResponse object to be used
 	 *
-	 * @throws SettingsException 
+	 * @throws SettingsException
 	 * @throws IOException
 	 * @throws Error
 	 */
-	public Auth(String filename, HttpServletRequest request, HttpServletResponse response) throws SettingsException, IOException, Error {
-		this(new SettingsBuilder().fromFile(filename).build(), request, response);
+	public Auth(String filename, HttpServletRequest request, HttpServletResponse response)
+			throws SettingsException, IOException, Error {
+		this(filename, null, request, response);
 	}
-	
+
 	/**
 	 * Initializes the SP SAML instance.
 	 *
-	 * @param settings
-	 *				Saml2Settings object. Setting data
-	 * @param request
-	 * 				HttpServletRequest object to be processed
-	 * @param response
-	 * 				HttpServletResponse object to be used
+	 * @param filename 			String Filename with the settings
+	 * @param keyStoreSetting 	KeyStoreSettings is a KeyStore which have the Private/Public keys
+	 * @param request  			HttpServletRequest object to be processed
+	 * @param response 			HttpServletResponse object to be used
+	 *
+	 * @throws SettingsException
+	 * @throws IOException
+	 * @throws Error
+	 */
+	public Auth(String filename, KeyStoreSettings keyStoreSetting, HttpServletRequest request,
+			HttpServletResponse response) throws SettingsException, IOException, Error {
+		this(new SettingsBuilder().fromFile(filename, keyStoreSetting).build(), request, response);
+	}
+
+	/**
+	 * Initializes the SP SAML instance.
+	 *
+	 * @param settings Saml2Settings object. Setting data
+	 * @param request  HttpServletRequest object to be processed
+	 * @param response HttpServletResponse object to be used
 	 *
 	 * @throws SettingsException
 	 */
-	public Auth(Saml2Settings settings, HttpServletRequest request, HttpServletResponse response) throws SettingsException {
+	public Auth(Saml2Settings settings, HttpServletRequest request, HttpServletResponse response)
+			throws SettingsException {
 		this.settings = settings;
 		this.request = request;
 		this.response = response;
-		
+
 		// Check settings
 		List<String> settingsErrors = settings.checkSettings();
 		if (!settingsErrors.isEmpty()) {
 			String errorMsg = "Invalid settings: ";
 			errorMsg += StringUtils.join(settingsErrors, ", ");
-//			LOGGER.error(errorMsg);
+			LOGGER.error(errorMsg);
 			throw new SettingsException(errorMsg, SettingsException.SETTINGS_INVALID);
 		}
-//		LOGGER.debug("Settings validated");
+		LOGGER.debug("Settings validated");
 	}
 
 	/**
 	 * Set the strict mode active/disable
 	 *
-	 * @param value 
-	 *				Strict value
+	 * @param value Strict value
 	 */
-	public void setStrict(Boolean value)
-	{
+	public void setStrict(Boolean value) {
 		settings.setStrict(value);
 	}
 
 	/**
 	 * Initiates the SSO process.
 	 *
-	 * @param returnTo
-	 *				The target URL the user should be returned to after login (relayState).
-	 *				Will be a self-routed URL when null, or not be appended at all when an empty string is provided
-	 * @param forceAuthn
-	 *				When true the AuthNRequest will set the ForceAuthn='true'
-	 * @param isPassive
-	 *				When true the AuthNRequest will set the IsPassive='true'
-	 * @param setNameIdPolicy
-	 *            When true the AuthNRequest will set a nameIdPolicy
-	 * @param stay
-	 *            True if we want to stay (returns the url string) False to execute redirection
-	 * @param nameIdValueReq
-	 *            Indicates to the IdP the subject that should be authenticated
+	 * @param returnTo        The target URL the user should be returned to after
+	 *                        login (relayState). Will be a self-routed URL when
+	 *                        null, or not be appended at all when an empty string
+	 *                        is provided
+	 * @param forceAuthn      When true the AuthNRequest will set the
+	 *                        ForceAuthn='true'
+	 * @param isPassive       When true the AuthNRequest will set the
+	 *                        IsPassive='true'
+	 * @param setNameIdPolicy When true the AuthNRequest will set a nameIdPolicy
+	 * @param stay            True if we want to stay (returns the url string) False
+	 *                        to execute redirection
+	 * @param nameIdValueReq  Indicates to the IdP the subject that should be
+	 *                        authenticated
 	 *
 	 * @return the SSO URL with the AuthNRequest if stay = True
 	 *
 	 * @throws IOException
 	 * @throws SettingsException
 	 */
-	public String login(String returnTo, Boolean forceAuthn, Boolean isPassive, Boolean setNameIdPolicy, Boolean stay, String nameIdValueReq) throws IOException, SettingsException {
+	public String login(String returnTo, Boolean forceAuthn, Boolean isPassive, Boolean setNameIdPolicy, Boolean stay,
+			String nameIdValueReq) throws IOException, SettingsException {
 		Map<String, String> parameters = new HashMap<String, String>();
 
 		AuthnRequest authnRequest = new AuthnRequest(settings, forceAuthn, isPassive, setNameIdPolicy, nameIdValueReq);
 
 		String samlRequest = authnRequest.getEncodedAuthnRequest();
-		
+
 		parameters.put("SAMLRequest", samlRequest);
 
 		String relayState;
@@ -290,7 +346,7 @@ public class Auth {
 			relayState = returnTo;
 		}
 
-		if (!Objects.isEmpty(relayState)) {
+		if (!relayState.isEmpty()) {
 			parameters.put("RelayState", relayState);
 		}
 
@@ -307,7 +363,7 @@ public class Auth {
 		lastRequest = authnRequest.getAuthnRequestXml();
 
 		if (!stay) {
-			//LOGGER.debug("AuthNRequest sent to " + ssoUrl + " --> " + samlRequest);
+			LOGGER.debug("AuthNRequest sent to " + ssoUrl + " --> " + samlRequest);
 		}
 		return ServletUtils.sendRedirect(response, ssoUrl, parameters, stay);
 	}
@@ -315,47 +371,49 @@ public class Auth {
 	/**
 	 * Initiates the SSO process.
 	 *
-	 * @param returnTo
-	 *				The target URL the user should be returned to after login (relayState).
-	 *				Will be a self-routed URL when null, or not be appended at all when an empty string is provided
-	 * @param forceAuthn
-	 *				When true the AuthNRequest will set the ForceAuthn='true'
-	 * @param isPassive
-	 *				When true the AuthNRequest will set the IsPassive='true'
-	 * @param setNameIdPolicy
-	 *            When true the AuthNRequest will set a nameIdPolicy
-	 * @param stay
-	 *            True if we want to stay (returns the url string) False to execute redirection
+	 * @param returnTo        The target URL the user should be returned to after
+	 *                        login (relayState). Will be a self-routed URL when
+	 *                        null, or not be appended at all when an empty string
+	 *                        is provided
+	 * @param forceAuthn      When true the AuthNRequest will set the
+	 *                        ForceAuthn='true'
+	 * @param isPassive       When true the AuthNRequest will set the
+	 *                        IsPassive='true'
+	 * @param setNameIdPolicy When true the AuthNRequest will set a nameIdPolicy
+	 * @param stay            True if we want to stay (returns the url string) False
+	 *                        to execute redirection
 	 *
 	 * @return the SSO URL with the AuthNRequest if stay = True
 	 *
 	 * @throws IOException
 	 * @throws SettingsException
 	 */
-	public String login(String returnTo, Boolean forceAuthn, Boolean isPassive, Boolean setNameIdPolicy, Boolean stay) throws IOException, SettingsException {
-		return login(returnTo ,forceAuthn, isPassive, setNameIdPolicy, stay, null);
+	public String login(String returnTo, Boolean forceAuthn, Boolean isPassive, Boolean setNameIdPolicy, Boolean stay)
+			throws IOException, SettingsException {
+		return login(returnTo, forceAuthn, isPassive, setNameIdPolicy, stay, null);
 	}
 
 	/**
 	 * Initiates the SSO process.
 	 *
-	 * @param returnTo
-	 *				The target URL the user should be returned to after login (relayState).
-	 *				Will be a self-routed URL when null, or not be appended at all when an empty string is provided
-	 * @param forceAuthn
-	 *				When true the AuthNRequest will set the ForceAuthn='true'
-	 * @param isPassive
-	 *				When true the AuthNRequest will set the IsPassive='true'
-	 * @param setNameIdPolicy
-	 *            When true the AuthNRequest will set a nameIdPolicy
+	 * @param returnTo        The target URL the user should be returned to after
+	 *                        login (relayState). Will be a self-routed URL when
+	 *                        null, or not be appended at all when an empty string
+	 *                        is provided
+	 * @param forceAuthn      When true the AuthNRequest will set the
+	 *                        ForceAuthn='true'
+	 * @param isPassive       When true the AuthNRequest will set the
+	 *                        IsPassive='true'
+	 * @param setNameIdPolicy When true the AuthNRequest will set a nameIdPolicy
 	 *
 	 * @throws IOException
 	 * @throws SettingsException
 	 */
-	public void login(String returnTo, Boolean forceAuthn, Boolean isPassive, Boolean setNameIdPolicy) throws IOException, SettingsException {
-		login(returnTo ,forceAuthn, isPassive, setNameIdPolicy, false);
+	public void login(String returnTo, Boolean forceAuthn, Boolean isPassive, Boolean setNameIdPolicy)
+			throws IOException, SettingsException {
+		login(returnTo, forceAuthn, isPassive, setNameIdPolicy, false);
 	}
-		
+
 	/**
 	 * Initiates the SSO process.
 	 *
@@ -363,41 +421,42 @@ public class Auth {
 	 * @throws SettingsException
 	 */
 	public void login() throws IOException, SettingsException {
-		login(null ,false, false, true);
+		login(null, false, false, true);
 	}
 
 	/**
 	 * Initiates the SSO process.
 	 *
-	 * @param returnTo 
-	 *				The target URL the user should be returned to after login (relayState).
-	 *				Will be a self-routed URL when null, or not be appended at all when an empty string is provided.
+	 * @param returnTo The target URL the user should be returned to after login
+	 *                 (relayState). Will be a self-routed URL when null, or not be
+	 *                 appended at all when an empty string is provided.
 	 *
 	 * @throws IOException
 	 * @throws SettingsException
 	 */
 	public void login(String returnTo) throws IOException, SettingsException {
-		login(returnTo ,false, false, true);
+		login(returnTo, false, false, true);
 	}
 
 	/**
 	 * Initiates the SLO process.
 	 *
-	 * @param returnTo 
-	 *				The target URL the user should be returned to after logout (relayState).
-	 *				Will be a self-routed URL when null, or not be appended at all when an empty string is provided
-	 * @param nameId 
-	 *				The NameID that will be set in the LogoutRequest.
-	 * @param sessionIndex 
-	 *				The SessionIndex (taken from the SAML Response in the SSO process).
-	 * @param stay
-	 *            	True if we want to stay (returns the url string) False to execute redirection
-	 * @param nameidFormat
-	 *            	The NameID Format that will be set in the LogoutRequest.
-	 * @param nameIdNameQualifier
-	 *            	The NameID NameQualifier that will be set in the LogoutRequest.
-	 * @param nameIdSPNameQualifier
-	 *				The NameID SP Name Qualifier that will be set in the LogoutRequest.
+	 * @param returnTo              The target URL the user should be returned to
+	 *                              after logout (relayState). Will be a self-routed
+	 *                              URL when null, or not be appended at all when an
+	 *                              empty string is provided
+	 * @param nameId                The NameID that will be set in the
+	 *                              LogoutRequest.
+	 * @param sessionIndex          The SessionIndex (taken from the SAML Response
+	 *                              in the SSO process).
+	 * @param stay                  True if we want to stay (returns the url string)
+	 *                              False to execute redirection
+	 * @param nameidFormat          The NameID Format that will be set in the
+	 *                              LogoutRequest.
+	 * @param nameIdNameQualifier   The NameID NameQualifier that will be set in the
+	 *                              LogoutRequest.
+	 * @param nameIdSPNameQualifier The NameID SP Name Qualifier that will be set in
+	 *                              the LogoutRequest.
 	 *
 	 * @return the SLO URL with the LogoutRequest if stay = True
 	 *
@@ -405,10 +464,13 @@ public class Auth {
 	 * @throws XMLEntityException
 	 * @throws SettingsException
 	 */
-	public String logout(String returnTo, String nameId, String sessionIndex, Boolean stay, String nameidFormat, String nameIdNameQualifier, String nameIdSPNameQualifier) throws IOException, XMLEntityException, SettingsException {
+	public String logout(String returnTo, String nameId, String sessionIndex, Boolean stay, String nameidFormat,
+			String nameIdNameQualifier, String nameIdSPNameQualifier)
+			throws IOException, XMLEntityException, SettingsException {
 		Map<String, String> parameters = new HashMap<String, String>();
 
-		LogoutRequest logoutRequest = new LogoutRequest(settings, null, nameId, sessionIndex, nameidFormat, nameIdNameQualifier, nameIdSPNameQualifier);
+		LogoutRequest logoutRequest = new LogoutRequest(settings, null, nameId, sessionIndex, nameidFormat,
+				nameIdNameQualifier, nameIdSPNameQualifier);
 		String samlLogoutRequest = logoutRequest.getEncodedLogoutRequest();
 		parameters.put("SAMLRequest", samlLogoutRequest);
 
@@ -419,7 +481,7 @@ public class Auth {
 			relayState = returnTo;
 		}
 
-		if (!Objects.isEmpty(relayState)) {
+		if (!relayState.isEmpty()) {
 			parameters.put("RelayState", relayState);
 		}
 
@@ -436,7 +498,7 @@ public class Auth {
 		lastRequest = logoutRequest.getLogoutRequestXml();
 
 		if (!stay) {
-			//LOGGER.debug("Logout request sent to " + sloUrl + " --> " + samlLogoutRequest);
+			LOGGER.debug("Logout request sent to " + sloUrl + " --> " + samlLogoutRequest);
 		}
 		return ServletUtils.sendRedirect(response, sloUrl, parameters, stay);
 	}
@@ -444,19 +506,19 @@ public class Auth {
 	/**
 	 * Initiates the SLO process.
 	 *
-	 * @param returnTo 
-	 *				The target URL the user should be returned to after logout (relayState).
-	 *				Will be a self-routed URL when null, or not be appended at all when an empty string is provided
-	 * @param nameId 
-	 *				The NameID that will be set in the LogoutRequest.
-	 * @param sessionIndex 
-	 *				The SessionIndex (taken from the SAML Response in the SSO process).
-	 * @param stay
-	 *            	True if we want to stay (returns the url string) False to execute redirection
-	 * @param nameidFormat
-	 *            	The NameID Format will be set in the LogoutRequest.
-	 * @param nameIdNameQualifier
-	 *            	The NameID NameQualifier will be set in the LogoutRequest.
+	 * @param returnTo            The target URL the user should be returned to
+	 *                            after logout (relayState). Will be a self-routed
+	 *                            URL when null, or not be appended at all when an
+	 *                            empty string is provided
+	 * @param nameId              The NameID that will be set in the LogoutRequest.
+	 * @param sessionIndex        The SessionIndex (taken from the SAML Response in
+	 *                            the SSO process).
+	 * @param stay                True if we want to stay (returns the url string)
+	 *                            False to execute redirection
+	 * @param nameidFormat        The NameID Format will be set in the
+	 *                            LogoutRequest.
+	 * @param nameIdNameQualifier The NameID NameQualifier will be set in the
+	 *                            LogoutRequest.
 	 *
 	 * @return the SLO URL with the LogoutRequest if stay = True
 	 *
@@ -464,24 +526,24 @@ public class Auth {
 	 * @throws XMLEntityException
 	 * @throws SettingsException
 	 */
-	public String logout(String returnTo, String nameId, String sessionIndex, Boolean stay, String nameidFormat, String nameIdNameQualifier) throws IOException, XMLEntityException, SettingsException {
+	public String logout(String returnTo, String nameId, String sessionIndex, Boolean stay, String nameidFormat,
+			String nameIdNameQualifier) throws IOException, XMLEntityException, SettingsException {
 		return logout(returnTo, nameId, sessionIndex, stay, nameidFormat, nameIdNameQualifier, null);
 	}
 
 	/**
 	 * Initiates the SLO process.
 	 *
-	 * @param returnTo 
-	 *				The target URL the user should be returned to after logout (relayState).
-	 *				Will be a self-routed URL when null, or not be appended at all when an empty string is provided
-	 * @param nameId 
-	 *				The NameID that will be set in the LogoutRequest.
-	 * @param sessionIndex 
-	 *				The SessionIndex (taken from the SAML Response in the SSO process).
-	 * @param stay
-	 *            	True if we want to stay (returns the url string) False to execute redirection
-	 * @param nameidFormat
-	 *            	The NameID Format will be set in the LogoutRequest.
+	 * @param returnTo     The target URL the user should be returned to after
+	 *                     logout (relayState). Will be a self-routed URL when null,
+	 *                     or not be appended at all when an empty string is
+	 *                     provided
+	 * @param nameId       The NameID that will be set in the LogoutRequest.
+	 * @param sessionIndex The SessionIndex (taken from the SAML Response in the SSO
+	 *                     process).
+	 * @param stay         True if we want to stay (returns the url string) False to
+	 *                     execute redirection
+	 * @param nameidFormat The NameID Format will be set in the LogoutRequest.
 	 *
 	 * @return the SLO URL with the LogoutRequest if stay = True
 	 *
@@ -489,22 +551,23 @@ public class Auth {
 	 * @throws XMLEntityException
 	 * @throws SettingsException
 	 */
-	public String logout(String returnTo, String nameId, String sessionIndex, Boolean stay, String nameidFormat) throws IOException, XMLEntityException, SettingsException {
+	public String logout(String returnTo, String nameId, String sessionIndex, Boolean stay, String nameidFormat)
+			throws IOException, XMLEntityException, SettingsException {
 		return logout(returnTo, nameId, sessionIndex, stay, nameidFormat, null);
 	}
 
 	/**
 	 * Initiates the SLO process.
 	 *
-	 * @param returnTo
-	 *				The target URL the user should be returned to after logout (relayState).
-	 *				Will be a self-routed URL when null, or not be appended at all when an empty string is provided
-	 * @param nameId
-	 *				The NameID that will be set in the LogoutRequest.
-	 * @param sessionIndex
-	 *				The SessionIndex (taken from the SAML Response in the SSO process).
-	 * @param stay
-	 *            	True if we want to stay (returns the url string) False to execute redirection
+	 * @param returnTo     The target URL the user should be returned to after
+	 *                     logout (relayState). Will be a self-routed URL when null,
+	 *                     or not be appended at all when an empty string is
+	 *                     provided
+	 * @param nameId       The NameID that will be set in the LogoutRequest.
+	 * @param sessionIndex The SessionIndex (taken from the SAML Response in the SSO
+	 *                     process).
+	 * @param stay         True if we want to stay (returns the url string) False to
+	 *                     execute redirection
 	 *
 	 * @return the SLO URL with the LogoutRequest if stay = True
 	 *
@@ -512,94 +575,100 @@ public class Auth {
 	 * @throws XMLEntityException
 	 * @throws SettingsException
 	 */
-	public String logout(String returnTo, String nameId, String sessionIndex, Boolean stay) throws IOException, XMLEntityException, SettingsException {
+	public String logout(String returnTo, String nameId, String sessionIndex, Boolean stay)
+			throws IOException, XMLEntityException, SettingsException {
 		return logout(returnTo, nameId, sessionIndex, stay, null);
 	}
 
 	/**
 	 * Initiates the SLO process.
 	 *
-	 * @param returnTo
-	 *				The target URL the user should be returned to after logout (relayState).
-	 *				Will be a self-routed URL when null, or not be appended at all when an empty string is provided
-	 * @param nameId
-	 *				The NameID that will be set in the LogoutRequest.
-	 * @param sessionIndex
-	 *				The SessionIndex (taken from the SAML Response in the SSO process).
-	 * @param nameidFormat
-	 *            	The NameID Format will be set in the LogoutRequest.
-	 * @param nameIdNameQualifier
-	 *            	The NameID NameQualifier that will be set in the LogoutRequest.
-	 * @param nameIdSPNameQualifier
-	 *				The NameID SP Name Qualifier that will be set in the LogoutRequest.
+	 * @param returnTo              The target URL the user should be returned to
+	 *                              after logout (relayState). Will be a self-routed
+	 *                              URL when null, or not be appended at all when an
+	 *                              empty string is provided
+	 * @param nameId                The NameID that will be set in the
+	 *                              LogoutRequest.
+	 * @param sessionIndex          The SessionIndex (taken from the SAML Response
+	 *                              in the SSO process).
+	 * @param nameidFormat          The NameID Format will be set in the
+	 *                              LogoutRequest.
+	 * @param nameIdNameQualifier   The NameID NameQualifier that will be set in the
+	 *                              LogoutRequest.
+	 * @param nameIdSPNameQualifier The NameID SP Name Qualifier that will be set in
+	 *                              the LogoutRequest.
 	 *
 	 * @throws IOException
 	 * @throws XMLEntityException
 	 * @throws SettingsException
 	 */
-	public void logout(String returnTo, String nameId, String sessionIndex, String nameidFormat, String nameIdNameQualifier, String nameIdSPNameQualifier) throws IOException, XMLEntityException, SettingsException {
+	public void logout(String returnTo, String nameId, String sessionIndex, String nameidFormat,
+			String nameIdNameQualifier, String nameIdSPNameQualifier)
+			throws IOException, XMLEntityException, SettingsException {
 		logout(returnTo, nameId, sessionIndex, false, nameidFormat, nameIdNameQualifier, nameIdSPNameQualifier);
 	}
 
 	/**
 	 * Initiates the SLO process.
 	 *
-	 * @param returnTo
-	 *				The target URL the user should be returned to after logout (relayState).
-	 *				Will be a self-routed URL when null, or not be appended at all when an empty string is provided
-	 * @param nameId
-	 *				The NameID that will be set in the LogoutRequest.
-	 * @param sessionIndex
-	 *				The SessionIndex (taken from the SAML Response in the SSO process).
-	 * @param nameidFormat
-	 *            	The NameID Format will be set in the LogoutRequest.
-	 * @param nameIdNameQualifier
-	 *            	The NameID NameQualifier will be set in the LogoutRequest.
+	 * @param returnTo            The target URL the user should be returned to
+	 *                            after logout (relayState). Will be a self-routed
+	 *                            URL when null, or not be appended at all when an
+	 *                            empty string is provided
+	 * @param nameId              The NameID that will be set in the LogoutRequest.
+	 * @param sessionIndex        The SessionIndex (taken from the SAML Response in
+	 *                            the SSO process).
+	 * @param nameidFormat        The NameID Format will be set in the
+	 *                            LogoutRequest.
+	 * @param nameIdNameQualifier The NameID NameQualifier will be set in the
+	 *                            LogoutRequest.
 	 *
 	 * @throws IOException
 	 * @throws XMLEntityException
 	 * @throws SettingsException
 	 */
-	public void logout(String returnTo, String nameId, String sessionIndex, String nameidFormat, String nameIdNameQualifier) throws IOException, XMLEntityException, SettingsException {
+	public void logout(String returnTo, String nameId, String sessionIndex, String nameidFormat,
+			String nameIdNameQualifier) throws IOException, XMLEntityException, SettingsException {
 		logout(returnTo, nameId, sessionIndex, false, nameidFormat, nameIdNameQualifier);
 	}
 
 	/**
 	 * Initiates the SLO process.
 	 *
-	 * @param returnTo
-	 *				The target URL the user should be returned to after logout (relayState).
-	 *				Will be a self-routed URL when null, or not be appended at all when an empty string is provided
-	 * @param nameId
-	 *				The NameID that will be set in the LogoutRequest.
-	 * @param sessionIndex
-	 *				The SessionIndex (taken from the SAML Response in the SSO process).
-	 * @param nameidFormat
-	 *            	The NameID Format will be set in the LogoutRequest.
+	 * @param returnTo     The target URL the user should be returned to after
+	 *                     logout (relayState). Will be a self-routed URL when null,
+	 *                     or not be appended at all when an empty string is
+	 *                     provided
+	 * @param nameId       The NameID that will be set in the LogoutRequest.
+	 * @param sessionIndex The SessionIndex (taken from the SAML Response in the SSO
+	 *                     process).
+	 * @param nameidFormat The NameID Format will be set in the LogoutRequest.
 	 * @throws IOException
 	 * @throws XMLEntityException
 	 * @throws SettingsException
 	 */
-	public void logout(String returnTo, String nameId, String sessionIndex, String nameidFormat) throws IOException, XMLEntityException, SettingsException {
+	public void logout(String returnTo, String nameId, String sessionIndex, String nameidFormat)
+			throws IOException, XMLEntityException, SettingsException {
 		logout(returnTo, nameId, sessionIndex, false, nameidFormat);
 	}
-	
+
 	/**
 	 * Initiates the SLO process.
 	 *
-	 * @param returnTo
-	 *				The target URL the user should be returned to after logout (relayState).
-	 *				Will be a self-routed URL when null, or not be appended at all when an empty string is provided
-	 * @param nameId
-	 *				The NameID that will be set in the LogoutRequest.
-	 * @param sessionIndex
-	 *				The SessionIndex (taken from the SAML Response in the SSO process).
+	 * @param returnTo     The target URL the user should be returned to after
+	 *                     logout (relayState). Will be a self-routed URL when null,
+	 *                     or not be appended at all when an empty string is
+	 *                     provided
+	 * @param nameId       The NameID that will be set in the LogoutRequest.
+	 * @param sessionIndex The SessionIndex (taken from the SAML Response in the SSO
+	 *                     process).
 	 *
 	 * @throws IOException
 	 * @throws XMLEntityException
 	 * @throws SettingsException
 	 */
-	public void logout(String returnTo, String nameId, String sessionIndex) throws IOException, XMLEntityException, SettingsException {
+	public void logout(String returnTo, String nameId, String sessionIndex)
+			throws IOException, XMLEntityException, SettingsException {
 		logout(returnTo, nameId, sessionIndex, false, null);
 	}
 
@@ -610,25 +679,24 @@ public class Auth {
 	 * @throws XMLEntityException
 	 * @throws SettingsException
 	 */
-	public void logout() throws IOException, XMLEntityException, SettingsException {		
+	public void logout() throws IOException, XMLEntityException, SettingsException {
 		logout(null, null, null, false);
 	}
 
 	/**
 	 * Initiates the SLO process.
 	 *
-	 * @param returnTo
-	 *				The target URL the user should be returned to after logout (relayState).
-	 *				Will be a self-routed URL when null, or not be appended at all when an empty string is provided
+	 * @param returnTo The target URL the user should be returned to after logout
+	 *                 (relayState). Will be a self-routed URL when null, or not be
+	 *                 appended at all when an empty string is provided
 	 *
 	 * @throws IOException
 	 * @throws XMLEntityException
 	 * @throws SettingsException
 	 */
-	public void logout(String returnTo) throws IOException, XMLEntityException, SettingsException {		
+	public void logout(String returnTo) throws IOException, XMLEntityException, SettingsException {
 		logout(returnTo, null, null);
 	}
-
 
 	/**
 	 * @return The url of the Single Sign On Service
@@ -645,8 +713,8 @@ public class Auth {
 	}
 
 	/**
- 	 * @return The url of the Single Logout Service Response.
- 	 */
+	 * @return The url of the Single Logout Service Response.
+	 */
 	public String getSLOResponseUrl() {
 		return settings.getIdpSingleLogoutServiceResponseUrl().toString();
 	}
@@ -654,10 +722,9 @@ public class Auth {
 	/**
 	 * Process the SAML Response sent by the IdP.
 	 *
-	 * @param requestId
-	 *				The ID of the AuthNRequest sent by this SP to the IdP
+	 * @param requestId The ID of the AuthNRequest sent by this SP to the IdP
 	 *
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public void processResponse(String requestId) throws Exception {
 		authenticated = false;
@@ -680,17 +747,18 @@ public class Auth {
 				lastMessageId = samlResponse.getId();
 				lastAssertionId = samlResponse.getAssertionId();
 				lastAssertionNotOnOrAfter = samlResponse.getAssertionNotOnOrAfter();
-				//LOGGER.debug("processResponse success --> " + samlResponseParameter);
+				LOGGER.debug("processResponse success --> " + samlResponseParameter);
 			} else {
 				errors.add("invalid_response");
-				//LOGGER.error("processResponse error. invalid_response");
-				//LOGGER.debug(" --> " + samlResponseParameter);
+				LOGGER.error("processResponse error. invalid_response");
+				LOGGER.debug(" --> " + samlResponseParameter);
 				errorReason = samlResponse.getError();
+				validationException = samlResponse.getValidationException();
 			}
 		} else {
 			errors.add("invalid_binding");
 			String errorMsg = "SAML Response not found, Only supported HTTP_POST Binding";
-			//LOGGER.error("processResponse error." + errorMsg);
+			LOGGER.error("processResponse error." + errorMsg);
 			throw new Error(errorMsg, Error.SAML_RESPONSE_NOT_FOUND);
 		}
 	}
@@ -698,7 +766,7 @@ public class Auth {
 	/**
 	 * Process the SAML Response sent by the IdP.
 	 *
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public void processResponse() throws Exception {
 		processResponse(null);
@@ -707,16 +775,16 @@ public class Auth {
 	/**
 	 * Process the SAML Logout Response / Logout Request sent by the IdP.
 	 *
-	 * @param keepLocalSession
-	 *				When true will keep the local session, otherwise will destroy it
-	 * @param requestId
-	 *				The ID of the LogoutRequest sent by this SP to the IdP
+	 * @param keepLocalSession When true will keep the local session, otherwise will
+	 *                         destroy it
+	 * @param requestId        The ID of the LogoutRequest sent by this SP to the
+	 *                         IdP
 	 *
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public void processSLO(Boolean keepLocalSession, String requestId) throws Exception {
 		final HttpRequest httpRequest = ServletUtils.makeHttpRequest(this.request);
-		
+
 		final String samlRequestParameter = httpRequest.getParameter("SAMLRequest");
 		final String samlResponseParameter = httpRequest.getParameter("SAMLResponse");
 
@@ -725,18 +793,19 @@ public class Auth {
 			lastResponse = logoutResponse.getLogoutResponseXml();
 			if (!logoutResponse.isValid(requestId)) {
 				errors.add("invalid_logout_response");
-				//LOGGER.error("processSLO error. invalid_logout_response");
-				//LOGGER.debug(" --> " + samlResponseParameter);
-				errorReason = logoutResponse.getError();				
+				LOGGER.error("processSLO error. invalid_logout_response");
+				LOGGER.debug(" --> " + samlResponseParameter);
+				errorReason = logoutResponse.getError();
+				validationException = logoutResponse.getValidationException();
 			} else {
-				String status = logoutResponse.getStatus();				
+				String status = logoutResponse.getStatus();
 				if (status == null || !status.equals(Constants.STATUS_SUCCESS)) {
 					errors.add("logout_not_success");
-					//LOGGER.error("processSLO error. logout_not_success");
-					//LOGGER.debug(" --> " + samlResponseParameter);
+					LOGGER.error("processSLO error. logout_not_success");
+					LOGGER.debug(" --> " + samlResponseParameter);
 				} else {
 					lastMessageId = logoutResponse.getId();
-					//LOGGER.debug("processSLO success --> " + samlResponseParameter);
+					LOGGER.debug("processSLO success --> " + samlResponseParameter);
 					if (!keepLocalSession) {
 						request.getSession().invalidate();
 					}
@@ -747,19 +816,20 @@ public class Auth {
 			lastRequest = logoutRequest.getLogoutRequestXml();
 			if (!logoutRequest.isValid()) {
 				errors.add("invalid_logout_request");
-				//LOGGER.error("processSLO error. invalid_logout_request");
-				//LOGGER.debug(" --> " + samlRequestParameter);
+				LOGGER.error("processSLO error. invalid_logout_request");
+				LOGGER.debug(" --> " + samlRequestParameter);
 				errorReason = logoutRequest.getError();
+				validationException = logoutRequest.getValidationException();
 			} else {
 				lastMessageId = logoutRequest.getId();
-				//LOGGER.debug("processSLO success --> " + samlRequestParameter);
+				LOGGER.debug("processSLO success --> " + samlRequestParameter);
 				if (!keepLocalSession) {
 					request.getSession().invalidate();
 				}
 
 				String inResponseTo = logoutRequest.id;
 				LogoutResponse logoutResponseBuilder = new LogoutResponse(settings, httpRequest);
-				logoutResponseBuilder.build(inResponseTo);
+				logoutResponseBuilder.build(inResponseTo, Constants.STATUS_SUCCESS);
 				lastResponse = logoutResponseBuilder.getLogoutResponseXml();
 
 				String samlLogoutResponse = logoutResponseBuilder.getEncodedLogoutResponse();
@@ -782,16 +852,16 @@ public class Auth {
 				}
 
 				String sloUrl = getSLOResponseUrl();
-				//LOGGER.debug("Logout response sent to " + sloUrl + " --> " + samlLogoutResponse);
+				LOGGER.debug("Logout response sent to " + sloUrl + " --> " + samlLogoutResponse);
 				ServletUtils.sendRedirect(response, sloUrl, parameters);
 			}
 		} else {
 			errors.add("invalid_binding");
 			String errorMsg = "SAML LogoutRequest/LogoutResponse not found. Only supported HTTP_REDIRECT Binding";
-			//LOGGER.error("processSLO error." + errorMsg);
+			LOGGER.error("processSLO error." + errorMsg);
 			throw new Error(errorMsg, Error.SAML_LOGOUTMESSAGE_NOT_FOUND);
 		}
-	}	
+	}
 
 	/**
 	 * Process the SAML Logout Response / Logout Request sent by the IdP.
@@ -824,8 +894,7 @@ public class Auth {
 	}
 
 	/**
-	 * @param name
-	 *				Name of the attribute
+	 * @param name Name of the attribute
 	 *
 	 * @return the attribute value
 	 */
@@ -836,49 +905,43 @@ public class Auth {
 	/**
 	 * @return the nameID of the assertion
 	 */
-	public final String getNameId()
-	{
+	public final String getNameId() {
 		return nameid;
 	}
 
 	/**
 	 * @return the nameID Format of the assertion
 	 */
-	public final String getNameIdFormat()
-	{
+	public final String getNameIdFormat() {
 		return nameidFormat;
 	}
 
 	/**
 	 * @return the NameQualifier of the assertion
 	 */
-	public final String getNameIdNameQualifier()
-	{
+	public final String getNameIdNameQualifier() {
 		return nameidNameQualifier;
 	}
 
 	/**
 	 * @return the SPNameQualifier of the assertion
 	 */
-	public final String getNameIdSPNameQualifier()
-	{
+	public final String getNameIdSPNameQualifier() {
 		return nameidSPNameQualifier;
 	}
 
 	/**
 	 * @return the SessionIndex of the assertion
 	 */
-	public final String getSessionIndex()    
-	{
+	public final String getSessionIndex() {
 		return sessionIndex;
 	}
 
 	/**
 	 * @return the SessionNotOnOrAfter of the assertion
 	 */
-	public final DateTime getSessionExpiration()
-	{
-	    return sessionExpiration;
+	public final DateTime getSessionExpiration() {
+		return sessionExpiration;
 	}
 
 	/**
@@ -903,34 +966,39 @@ public class Auth {
 	}
 
 	/**
-	 * @return an array with the errors, the array is empty when the validation was successful
+	 * @return an array with the errors, the array is empty when the validation was
+	 *         successful
 	 */
-	public List<String> getErrors()
-	{
+	public List<String> getErrors() {
 		return errors;
 	}
 
 	/**
 	 * @return the reason for the last error
 	 */
-	public String getLastErrorReason()
-	{
+	public String getLastErrorReason() {
 		return errorReason;
 	}
 
 	/**
-	 * @return the id of the last request generated (AuthnRequest or LogoutRequest), null if none
+	 * @return the exception for the last error
 	 */
-	public String getLastRequestId()
-	{
+	public Exception getLastValidationException() {
+		return validationException;
+	}
+
+	/**
+	 * @return the id of the last request generated (AuthnRequest or LogoutRequest),
+	 *         null if none
+	 */
+	public String getLastRequestId() {
 		return lastRequestId;
 	}
 
 	/**
 	 * @return the Saml2Settings object. The Settings data.
 	 */
-	public Saml2Settings getSettings()
-	{
+	public Saml2Settings getSettings() {
 		return settings;
 	}
 
@@ -944,46 +1012,40 @@ public class Auth {
 	/**
 	 * Generates the Signature for a SAML Request
 	 *
-	 * @param samlRequest
-	 *				The SAML Request
-	 * @param relayState
-	 *				The RelayState
-	 * @param signAlgorithm
-	 *				Signature algorithm method
+	 * @param samlRequest   The SAML Request
+	 * @param relayState    The RelayState
+	 * @param signAlgorithm Signature algorithm method
 	 *
 	 * @return a base64 encoded signature
 	 *
 	 * @throws SettingsException
 	 */
-	public String buildRequestSignature(String samlRequest, String relayState, String signAlgorithm) throws SettingsException
-	{
+	public String buildRequestSignature(String samlRequest, String relayState, String signAlgorithm)
+			throws SettingsException {
 		return buildSignature(samlRequest, relayState, signAlgorithm, "SAMLRequest");
 	}
 
 	/**
 	 * Generates the Signature for a SAML Response
 	 *
-	 * @param samlResponse
-	 *				The SAML Response
-	 * @param relayState
-	 *				The RelayState
-	 * @param signAlgorithm
-	 *				Signature algorithm method
+	 * @param samlResponse  The SAML Response
+	 * @param relayState    The RelayState
+	 * @param signAlgorithm Signature algorithm method
 	 *
 	 * @return the base64 encoded signature
 	 *
 	 * @throws SettingsException
 	 */
-	public String buildResponseSignature(String samlResponse, String relayState, String signAlgorithm) throws SettingsException
-	{
+	public String buildResponseSignature(String samlResponse, String relayState, String signAlgorithm)
+			throws SettingsException {
 		return buildSignature(samlResponse, relayState, signAlgorithm, "SAMLResponse");
 	}
 
 	/**
-	 * Generates the Signature for a SAML Response
+	 * Generates the Signature for a SAML Message
 	 *
-	 * @param samlResponse
-	 *				The SAML Response
+	 * @param samlMessage
+	 *				The SAML Message
 	 * @param relayState
 	 *				The RelayState
 	 * @param signAlgorithm
@@ -1002,7 +1064,7 @@ public class Auth {
 		 
 		 if (!settings.checkSPCerts()) {
 			 String errorMsg = "Trying to sign the " + type + " but can't load the SP private key";
-			 //LOGGER.error("buildSignature error. " + errorMsg);
+			 LOGGER.error("buildSignature error. " + errorMsg);
 			 throw new SettingsException(errorMsg, SettingsException.PRIVATE_KEY_NOT_FOUND);
 		 }
 
@@ -1018,59 +1080,42 @@ public class Auth {
 		 }
 		 
 		 msg += "&SigAlg=" + Util.urlEncoder(signAlgorithm);
-		 
+
 		 try {
 			signature = Util.base64encoder(Util.sign(msg, key, signAlgorithm));
-		} catch (InvalidKeyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SignatureException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (InvalidKeyException | NoSuchAlgorithmException | SignatureException e) {
+			String errorMsg = "buildSignature error." + e.getMessage();
+			LOGGER.error(errorMsg);
 		}
-		 
-		 
-		/*
-		 * try { signature = Util.base64encoder(Util.sign(msg, key, signAlgorithm)); }
-		 * catch (InvalidKeyException | NoSuchAlgorithmException | SignatureException e)
-		 * { String errorMsg = "buildSignature error." + e.getMessage();
-		 * LOGGER.error(errorMsg); }
-		 */
 
-		 if (Objects.isEmpty(signature)) {
+		 if (signature.isEmpty()) {
 			 String errorMsg = "There was a problem when calculating the Signature of the " + type;
-//			 LOGGER.error("buildSignature error. " + errorMsg);
+			 LOGGER.error("buildSignature error. " + errorMsg);
 			 throw new IllegalArgumentException(errorMsg);
 		 }
 
-//		 LOGGER.debug("buildResponseSignature success. --> " + signature);
+		 LOGGER.debug("buildResponseSignature success. --> " + signature);
 		 return signature;
 	}
 
 	/**
-	 * Returns the most recently-constructed/processed
-	 * XML SAML request (AuthNRequest, LogoutRequest)
+	 * Returns the most recently-constructed/processed XML SAML request
+	 * (AuthNRequest, LogoutRequest)
 	 *
-	 * @return the last Request XML 
+	 * @return the last Request XML
 	 */
-	public String getLastRequestXML()
-	{
+	public String getLastRequestXML() {
 		return lastRequest;
 	}
 
 	/**
-	 * Returns the most recently-constructed/processed
-	 * XML SAML response (SAMLResponse, LogoutResponse).
-	 * If the SAMLResponse was encrypted, by default tries
-	 * to return the decrypted XML.
+	 * Returns the most recently-constructed/processed XML SAML response
+	 * (SAMLResponse, LogoutResponse). If the SAMLResponse was encrypted, by default
+	 * tries to return the decrypted XML.
 	 *
-	 * @return the last Response XML 
+	 * @return the last Response XML
 	 */
-	public String getLastResponseXML()
-	{
+	public String getLastResponseXML() {
 		return lastResponse;
 	}
 }

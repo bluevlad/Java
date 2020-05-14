@@ -9,12 +9,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.onelogin.saml2.util.Objects;
 import com.onelogin.saml2.util.Util;
 
 /**
@@ -90,9 +90,9 @@ public final class HttpRequest {
         checkNotNull(value, "value");
 
         final List<String> oldValues = parameters.containsKey(name) ? parameters.get(name) : new ArrayList<String>();
-        final List<String> newValues = new ArrayList<String>(oldValues);
+        final List<String> newValues = new ArrayList<>(oldValues);
         newValues.add(value);
-        final Map<String, List<String>> params = new HashMap<String, List<String>>(parameters);
+        final Map<String, List<String>> params = new HashMap<>(parameters);
         params.put(name, newValues);
 
         return new HttpRequest(requestURL, params, queryString);
@@ -106,7 +106,7 @@ public final class HttpRequest {
     public HttpRequest removeParameter(String name) {
         checkNotNull(name, "name");
 
-        final Map<String, List<String>> params = new HashMap<String, List<String>>(parameters);
+        final Map<String, List<String>> params = new HashMap<>(parameters);
         params.remove(name);
 
         return new HttpRequest(requestURL, params, queryString);
@@ -209,9 +209,9 @@ public final class HttpRequest {
     }
 
     private static Map<String, List<String>> unmodifiableCopyOf(Map<String, List<String>> orig) {
-        Map<String, List<String>> copy = new HashMap<String, List<String>>();
+        Map<String, List<String>> copy = new HashMap<>();
         for (Map.Entry<String, List<String>> entry : orig.entrySet()) {
-            copy.put(entry.getKey(), unmodifiableList(new ArrayList<String>(entry.getValue())));
+            copy.put(entry.getKey(), unmodifiableList(new ArrayList<>(entry.getValue())));
         }
 
         return unmodifiableMap(copy);

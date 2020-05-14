@@ -46,7 +46,6 @@ import com.onelogin.saml2.util.Util;
  */
 public class SettingBuilderTest {
 
-	private static final String SP_X509CERTNEW_PROPERTY_KEY = null;
 	@Rule
 	public ExpectedException expectedEx = ExpectedException.none();
 
@@ -169,12 +168,17 @@ public class SettingBuilderTest {
 	/**
 	 * Tests SettingsBuilder fromFile method
 	 * Case: minimum settings config file
-	 * @throws Exception 
+	 *
+	 * @throws IOException 
+	 * @throws CertificateException 
+	 * @throws URISyntaxException 
+	 * @throws SettingsException 
+	 * @throws Error 
 	 *
 	 * @see com.onelogin.saml2.settings.SettingsBuilder#fromFile
 	 */
 	@Test
-	public void testLoadFromFileMinProp() throws Exception {
+	public void testLoadFromFileMinProp() throws IOException, CertificateException, URISyntaxException, SettingsException, Error {
 		Saml2Settings setting = new SettingsBuilder().fromFile("config/config.min.properties").build();
 
 		assertFalse(setting.isDebugActive());
@@ -221,12 +225,17 @@ public class SettingBuilderTest {
 	/**
 	 * Tests SettingsBuilder fromFile method
 	 * Case: all settings config file
-	 * @throws Exception 
+	 *
+	 * @throws IOException 
+	 * @throws CertificateException 
+	 * @throws URISyntaxException 
+	 * @throws SettingsException
+	 * @throws Error
 	 *
 	 * @see com.onelogin.saml2.settings.SettingsBuilder#fromFile
 	 */
 	@Test
-	public void testLoadFromFileAllProp() throws Exception {
+	public void testLoadFromFileAllProp() throws IOException, CertificateException, URISyntaxException, SettingsException, Error {
 		Saml2Settings setting = new SettingsBuilder().fromFile("config/config.all.properties").build();
 
 		assertTrue(setting.isDebugActive());
@@ -287,12 +296,17 @@ public class SettingBuilderTest {
 	/**
 	 * Tests SettingsBuilder fromFile method
 	 * Case: settings config file with certificate string
-	 * @throws Exception 
+	 *
+	 * @throws IOException 
+	 * @throws CertificateException 
+	 * @throws URISyntaxException 
+	 * @throws SettingsException 
+	 * @throws Error
 	 *
 	 * @see com.onelogin.saml2.settings.SettingsBuilder#fromFile
 	 */
 	@Test
-	public void testLoadFromFileCertString() throws Exception {
+	public void testLoadFromFileCertString() throws IOException, CertificateException, URISyntaxException, SettingsException, Error {
 		Saml2Settings setting = new SettingsBuilder().fromFile("config/config.certstring.properties").build();
 
 		assertFalse(setting.isDebugActive());
@@ -336,12 +350,17 @@ public class SettingBuilderTest {
 	/**
 	 * Tests SettingsBuilder fromFile method
 	 * Case: settings config file with invalid contact info (not all required fields)
-	 * @throws Exception 
+	 *
+	 * @throws IOException 
+	 * @throws CertificateException 
+	 * @throws URISyntaxException 
+	 * @throws SettingsException 
+	 * @throws Error
 	 *
 	 * @see com.onelogin.saml2.settings.SettingsBuilder#fromFile
 	 */
 	@Test
-	public void testLoadFromFileContactString() throws Exception {
+	public void testLoadFromFileContactString() throws IOException, CertificateException, URISyntaxException, SettingsException, Error {
 		Saml2Settings setting = new SettingsBuilder().fromFile("config/config.invalidcontacts.properties").build();
 
 		assertFalse(setting.isDebugActive());
@@ -576,12 +595,15 @@ public class SettingBuilderTest {
 
 	/**
 	 * Tests SettingsBuilder fromProperties method
-	 * @throws Exception 
+	 *
+	 * @throws Error
+	 * @throws IOException
+	 * @throws CertificateException
 	 *
 	 * @see com.onelogin.saml2.settings.SettingsBuilder#fromProperties
 	 */
 	@Test
-	public void testFromProperties() throws Exception {
+	public void testFromProperties() throws IOException, Error, CertificateException {
 		Saml2Settings setting = new SettingsBuilder().fromFile("config/config.min.properties").build();
 
 		Base64 encoder = new Base64(64);

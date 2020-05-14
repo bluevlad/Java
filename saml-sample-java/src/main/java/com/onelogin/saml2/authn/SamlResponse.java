@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
@@ -27,7 +28,6 @@ import com.onelogin.saml2.model.SamlResponseStatus;
 import com.onelogin.saml2.model.SubjectConfirmationIssue;
 import com.onelogin.saml2.settings.Saml2Settings;
 import com.onelogin.saml2.util.Constants;
-import com.onelogin.saml2.util.Objects;
 import com.onelogin.saml2.util.SchemaFactory;
 import com.onelogin.saml2.util.Util;
 
@@ -83,7 +83,7 @@ public class SamlResponse {
 	/**
 	 * After validation, if it fails this property has the cause of the problem
 	 */ 
-	private String error;
+	private Exception validationException;
 
 	/**
 	 * Constructor to have a Response object fully built and ready to validate the saml response.
@@ -148,14 +148,14 @@ public class SamlResponse {
 	 * @return if the response is valid or not
 	 */
 	public boolean isValid(String requestId) {
-		error = null;
+		validationException = null;
 
 		try {
 			if (samlResponseDocument == null) {
 				throw new Exception("SAML Response is not loaded");
 			}
 
-			if (this.currentUrl == null || Objects.isEmpty(this.currentUrl)) {
+			if (this.currentUrl == null || this.currentUrl.isEmpty()) {
 				throw new Exception("The URL of the current host was not established");
 			}
 
@@ -253,7 +253,7 @@ public class SamlResponse {
 				// Check the issuers
 				List<String> issuers = this.getIssuers();
 				for (final String issuer : issuers) {
-					if (Objects.isEmpty(issuer) || !issuer.equals(settings.getIdpEntityId())) {
+					if (issuer.isEmpty() || !issuer.equals(settings.getIdpEntityId())) {
 						throw new ValidationError(
 								String.format("Invalid issuer in the Assertion/Response. Was '%s', but expected '%s'", issuer, settings.getIdpEntityId()),
 								ValidationError.WRONG_ISSUER);
@@ -284,7 +284,7 @@ public class SamlResponse {
 				throw new ValidationError("No Signature found. SAML Response rejected", ValidationError.NO_SIGNATURE_FOUND);
 			} else {
 				X509Certificate cert = settings.getIdpx509cert();
-				List<X509Certificate> certList = new ArrayList();
+				List<X509Certificate> certList = new ArrayList<>();
 				List<X509Certificate> multipleCertList = settings.getIdpx509certMulti();
 
 				if (multipleCertList != null && !multipleCertList.isEmpty()) {
@@ -311,9 +311,9 @@ public class SamlResponse {
 			LOGGER.debug("SAMLResponse validated --> {}", samlResponseString);
 			return true;
 		} catch (Exception e) {
-			error = e.getMessage();
+			validationException = e;
 			LOGGER.debug("SAMLResponse invalid --> {}", samlResponseString);
-			LOGGER.error(error);
+			LOGGER.error(validationException.getMessage());
 			return false;
 		}
 	}
@@ -328,7 +328,7 @@ public class SamlResponse {
 	 * @throws ValidationError
 	 */
 	private void validateSubjectConfirmation(String responseInResponseTo) throws XPathExpressionException, ValidationError {
-		final List<SubjectConfirmationIssue> validationIssues = new ArrayList<SubjectConfirmationIssue>();
+		final List<SubjectConfirmationIssue> validationIssues = new ArrayList<>();
 		boolean validSubjectConfirmation = false;
 		NodeList subjectConfirmationNodes = this.queryAssertion("/saml:Subject/saml:SubjectConfirmation");
 		for (int i = 0; i < subjectConfirmationNodes.getLength(); i++) {
@@ -410,7 +410,7 @@ public class SamlResponse {
 		if (this.nameIdData != null) {
 			return this.nameIdData;
 		}
-		Map<String,String> nameIdData = new HashMap<String,String>();
+		Map<String,String> nameIdData = new HashMap<>();
 
 		NodeList encryptedIDNodes = this.queryAssertion("/saml:Subject/saml:EncryptedID");
 		NodeList nameIdNodes;
@@ -440,7 +440,7 @@ public class SamlResponse {
 
 			if (nameIdElem != null) {
 				String value = nameIdElem.getTextContent();
-				if (settings.isStrict() && Objects.isEmpty(value)) {
+				if (settings.isStrict() && value.isEmpty()) {
 					throw new ValidationError("An empty NameID value found", ValidationError.EMPTY_NAMEID);
 				}
 
@@ -656,7 +656,7 @@ public class SamlResponse {
 		for (int i = 0; i < entries.getLength(); i++) {
 			if (entries.item(i) != null) {
 				String value = entries.item(i).getTextContent();
-				if (value != null && !Objects.isEmpty(value.trim())) {
+				if (value != null && !value.trim().isEmpty()) {
 					audiences.add(value.trim());
 				}
 			}
@@ -764,7 +764,7 @@ public class SamlResponse {
 	 */
 	public List<Instant> getAssertionNotOnOrAfter() throws XPathExpressionException {
 		final NodeList notOnOrAfterNodes = queryAssertion("/saml:Subject/saml:SubjectConfirmation/saml:SubjectConfirmationData");
-		final ArrayList<Instant> notOnOrAfters = new ArrayList<Instant>();
+		final ArrayList<Instant> notOnOrAfters = new ArrayList<>();
 		for (int i = 0; i < notOnOrAfterNodes.getLength(); i++) {
 			final Node notOnOrAfterAttribute = notOnOrAfterNodes.item(i).getAttributes().getNamedItem("NotOnOrAfter");
 			if (notOnOrAfterAttribute != null) {
@@ -822,7 +822,7 @@ public class SamlResponse {
 
 			// Check that reference URI matches the parent ID and no duplicate References or IDs
 			Node idNode = signNode.getParentNode().getAttributes().getNamedItem("ID");
-			if (idNode == null || idNode.getNodeValue() == null || Objects.isEmpty(idNode.getNodeValue())) {
+			if (idNode == null || idNode.getNodeValue() == null || idNode.getNodeValue().isEmpty()) {
 				throw new ValidationError("Signed Element must contain an ID. SAML Response rejected", ValidationError.ID_NOT_FOUND_IN_SIGNED_ELEMENT);
 			}
 			
@@ -836,7 +836,7 @@ public class SamlResponse {
 			if (refNodes.getLength() == 1) {
 				Node refNode = refNodes.item(0);
 				Node seiNode = refNode.getAttributes().getNamedItem("URI");
-				if (seiNode != null && seiNode.getNodeValue() != null && !Objects.isEmpty(seiNode.getNodeValue())) {
+				if (seiNode != null && seiNode.getNodeValue() != null && !seiNode.getNodeValue().isEmpty()) {
 					String sei = seiNode.getNodeValue().substring(1);
 					if (!sei.equals(idValue)) {
 						throw new ValidationError("Found an invalid Signed Element. SAML Response rejected", ValidationError.INVALID_SIGNED_ELEMENT);
@@ -964,13 +964,22 @@ public class SamlResponse {
 	/**
      * After execute a validation process, if fails this method returns the cause
      *
-     * @return the cause of the validation error 
+     * @return the cause of the validation error as a string
      */
 	public String getError() {
-		if (error != null) {
-			return error;
+		if (validationException != null) {
+			return validationException.getMessage();
 		}
 		return null;
+	}
+
+	/**
+	 * After execute a validation process, if fails this method returns the Exception object
+	 *
+	 * @return the cause of the validation error
+	 */
+	public Exception getValidationException() {
+		return validationException;
 	}
 
 	/**
@@ -997,7 +1006,7 @@ public class SamlResponse {
             if (nodeList.getLength() == 1) {
                 Node responseReferenceNode = nodeList.item(0);
                 String responseId = responseReferenceNode.getAttributes().getNamedItem("URI").getNodeValue();
-                if (responseId != null && !Objects.isEmpty(responseId)) {
+                if (responseId != null && !responseId.isEmpty()) {
                     responseId = responseId.substring(1);
                 } else {
                     responseId = responseReferenceNode.getParentNode().getParentNode().getParentNode().getAttributes().getNamedItem("ID").getNodeValue();
@@ -1012,7 +1021,7 @@ public class SamlResponse {
         } else {  // there is a signed assertion
         	Node assertionReferenceNode = nodeList.item(0);
             String assertionId = assertionReferenceNode.getAttributes().getNamedItem("URI").getNodeValue();
-            if (assertionId != null && !Objects.isEmpty(assertionId)) {
+            if (assertionId != null && !assertionId.isEmpty()) {
                 assertionId = assertionId.substring(1);
             } else {
                 assertionId = assertionReferenceNode.getParentNode().getParentNode().getParentNode().getAttributes().getNamedItem("ID").getNodeValue();
@@ -1142,7 +1151,7 @@ public class SamlResponse {
 		if (element.hasAttribute("Destination")) {
 			final String destinationUrl = element.getAttribute("Destination");
 			if (destinationUrl != null) {
-				if (Objects.isEmpty(destinationUrl)) {
+				if (destinationUrl.isEmpty()) {
 					throw new ValidationError("The response has an empty Destination value", ValidationError.EMPTY_DESTINATION);
 				} else if (!destinationUrl.equals(currentUrl)) {
 					throw new ValidationError("The response was received at " + currentUrl + " instead of " + destinationUrl, ValidationError.WRONG_DESTINATION);

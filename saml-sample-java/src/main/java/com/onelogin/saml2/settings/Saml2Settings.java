@@ -7,16 +7,13 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 import com.onelogin.saml2.model.Contact;
 import com.onelogin.saml2.model.Organization;
 import com.onelogin.saml2.util.Constants;
-import com.onelogin.saml2.util.Objects;
 import com.onelogin.saml2.util.SchemaFactory;
 import com.onelogin.saml2.util.Util;
 
@@ -43,6 +40,7 @@ public class Saml2Settings {
 	private String spSingleLogoutServiceBinding = Constants.BINDING_HTTP_REDIRECT;
 	private String spNameIDFormat = Constants.NAMEID_UNSPECIFIED;
 	private X509Certificate spX509cert = null;
+	private X509Certificate spX509certNew = null;
 	private PrivateKey spPrivateKey = null;
 
 	// IdP
@@ -68,7 +66,7 @@ public class Saml2Settings {
 	private boolean wantNameId = true;
 	private boolean wantNameIdEncrypted = false;
 	private boolean signMetadata = false;
-	private List requestedAuthnContext = new ArrayList();
+	private List<String> requestedAuthnContext = new ArrayList<>();
 	private String requestedAuthnContextComparison = "exact";
 	private boolean wantXMLValidation = true;
 	private String signatureAlgorithm = Constants.RSA_SHA1;
@@ -81,7 +79,7 @@ public class Saml2Settings {
 	private boolean compressResponse = true;
 
 	// Misc
-	private List<Contact> contacts = new LinkedList<Contact>();
+	private List<Contact> contacts = new LinkedList<>();
 	private Organization organization = null;
 
 	private boolean spValidationOnly = false;
@@ -140,6 +138,13 @@ public class Saml2Settings {
 	 */
 	public final X509Certificate getSPcert() {
 		return spX509cert;
+	}
+
+	/**
+	 * @return the spX509certNew setting value
+	 */
+	public final X509Certificate getSPcertNew() {
+		return spX509certNew;
 	}
 
 	/**
@@ -444,6 +449,16 @@ public class Saml2Settings {
 	 */
 	protected final void setSpX509cert(X509Certificate spX509cert) {
 		this.spX509cert = spX509cert;
+	}
+
+	/**
+	 * Set the spX509certNew setting value provided as X509Certificate object
+	 *
+	 * @param spX509certNew
+	 *            the spX509certNew value to be set in X509Certificate format
+	 */
+	protected final void setSpX509certNew(X509Certificate spX509certNew) {
+		this.spX509certNew = spX509certNew;
 	}
 
 	/**
@@ -800,7 +815,7 @@ public class Saml2Settings {
 	 * @return errors found on the settings data
 	 */
 	public List<String> checkSettings() {
-		List<String> errors = new ArrayList<String>(this.checkSPSettings());
+		List<String> errors = new ArrayList<>(this.checkSPSettings());
 		if (!spValidationOnly) { 
 			errors.addAll(this.checkIdPSettings());
 		}
@@ -814,7 +829,7 @@ public class Saml2Settings {
 	 * @return errors found on the IdP settings data
 	 */
 	public List<String> checkIdPSettings() {
-		List<String> errors = new ArrayList<String>();
+		List<String> errors = new ArrayList<>();
 		String errorMsg;
 
 		if (!checkRequired(getIdpEntityId())) {
@@ -829,13 +844,13 @@ public class Saml2Settings {
 			LOGGER.error(errorMsg);
 		}
 
-		if (this.getIdpx509cert() == null && !checkRequired(this.getIdpCertFingerprint())) {
+		if (!checkIdpx509certRequired() && !checkRequired(this.getIdpCertFingerprint())) {
 			errorMsg = "idp_cert_or_fingerprint_not_found_and_required";
 			errors.add(errorMsg);
 			LOGGER.error(errorMsg);			
 		}
 
-		if (this.getNameIdEncrypted() == true && this.getIdpx509cert() == null) {
+		if (!checkIdpx509certRequired() && this.getNameIdEncrypted()) {
 			errorMsg = "idp_cert_not_found_and_required";
 			errors.add(errorMsg);
 			LOGGER.error(errorMsg);
@@ -845,12 +860,25 @@ public class Saml2Settings {
 	}
 
 	/**
+	 * Auxiliary method to check Idp certificate is configured.
+	 * 
+	 * @return true if the Idp Certificate settings are valid
+	 */
+	private boolean checkIdpx509certRequired () {
+		if (this.getIdpx509cert() != null) {
+			return true;
+		}
+
+		return this.getIdpx509certMulti() != null && !this.getIdpx509certMulti().isEmpty();
+	}
+
+	/**
 	 * Checks the SP settings .
 	 *
 	 * @return errors found on the SP settings data
 	 */
 	public List<String> checkSPSettings() {
-		List<String> errors = new ArrayList<String>();
+		List<String> errors = new ArrayList<>();
 		String errorMsg;
 
 		if (!checkRequired(getSpEntityId())) {
@@ -895,7 +923,7 @@ public class Saml2Settings {
 				}
 */
 
-				if (Objects.isEmpty(contact.getEmailAddress()) || Objects.isEmpty(contact.getGivenName())) {
+				if (contact.getEmailAddress().isEmpty() || contact.getGivenName().isEmpty()) {
 					errorMsg = "contact_not_enought_data";
 					errors.add(errorMsg);
 					LOGGER.error(errorMsg);
@@ -904,7 +932,7 @@ public class Saml2Settings {
 		}
 
 		Organization org = this.getOrganization();
-		if (org != null && (Objects.isEmpty(org.getOrgDisplayName()) || Objects.isEmpty(org.getOrgName()) || Objects.isEmpty(org.getOrgUrl()))) {
+		if (org != null && (org.getOrgDisplayName().isEmpty() || org.getOrgName().isEmpty() || org.getOrgUrl().isEmpty())) {
 			errorMsg = "organization_not_enought_data";
 			errors.add(errorMsg);
 			LOGGER.error(errorMsg);
@@ -939,7 +967,7 @@ public class Saml2Settings {
 			return false;
 		}
 
-		if (value instanceof String && (Objects.isEmpty((String) value))) {
+		if (value instanceof String && ((String) value).isEmpty()) {
 			return false;
 		}
 
@@ -1014,7 +1042,7 @@ public class Saml2Settings {
 
 		Document metadataDocument = Util.loadXML(metadataString);
 
-		List<String> errors = new ArrayList<String>();
+		List<String> errors = new ArrayList<>();
 
 		if (!Util.validateXML(metadataDocument, SchemaFactory.SAML_SCHEMA_METADATA_2_0)) {
 			errors.add("Invalid SAML Metadata. Not match the saml-schema-metadata-2.0.xsd");
@@ -1048,10 +1076,5 @@ public class Saml2Settings {
 		// TODO Validate Sign if required with Util.validateMetadataSign
 		
 		return errors;
-	}
-
-	public Object getSPcertNew() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

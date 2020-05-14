@@ -11,7 +11,7 @@ import com.onelogin.saml2.settings.SettingsBuilder;
 import com.onelogin.saml2.util.Constants;
 import com.onelogin.saml2.util.Util;
 
-//import org.hamcrest.Matchers;
+import org.hamcrest.Matchers;
 import org.joda.time.Instant;
 import org.junit.Rule;
 import org.junit.Test;
@@ -37,8 +37,8 @@ import javax.xml.xpath.XPathExpressionException;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.not;
-//import static org.hamcrest.Matchers.contains;
-//import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -877,7 +877,7 @@ public class AuthnResponseTest {
 		samlResponse = new SamlResponse(settings, newHttpRequest(samlResponseEncoded));
 		assertEquals("_7164a9a9f97828bfdb8d0ebc004a05d2e7d873f70c", samlResponse.getSessionIndex());
 	}
-/*
+
 	@Test
 	public void testGetAssertionDetails() throws IOException, Error, XPathExpressionException, ParserConfigurationException, SAXException, SettingsException, ValidationError {
 		final SamlResponse samlResponse = new SamlResponse(
@@ -903,7 +903,7 @@ public class AuthnResponseTest {
 		assertThat(notOnOrAfters, contains(new Instant("2055-06-07T20:17:08Z")));
 
 	}
-	
+
 	@Test
 	public void testGetAssertionDetails_multiple() throws Exception {
 		Saml2Settings settings = new SettingsBuilder().fromFile("config/config.my.properties").build();
@@ -919,7 +919,6 @@ public class AuthnResponseTest {
 		assertEquals("pfx7841991c-c73f-4035-e2ee-c170c0e1d3e4", samlResponse.getAssertionId());
 		assertThat(notOnOrAfters, contains(new Instant("2120-06-17T14:53:44Z"), new Instant("2010-06-17T14:53:44Z")));
 	}
-*/
 
 	/**
 	 * Tests the getAttributes method of SamlResponse
@@ -1889,8 +1888,8 @@ public class AuthnResponseTest {
 		executor.awaitTermination(30, TimeUnit.SECONDS);
 
 		// then
-//		assertThat(errors, Matchers.empty());
-//		assertThat(successCount.get(), is(jobCount));
+		assertThat(errors, Matchers.empty());
+		assertThat(successCount.get(), is(jobCount));
 	}
 
 	/**
@@ -2805,7 +2804,7 @@ public class AuthnResponseTest {
 	}
 	
 	/**
-	 * Tests the getError method of SamlResponse
+	 * Tests the getError and getValidationException methods of SamlResponse
 	 *
 	 * @throws ValidationError
 	 * @throws SettingsException
@@ -2824,25 +2823,32 @@ public class AuthnResponseTest {
 		String samlResponseEncoded = Util.getFileAsString("data/responses/response4.xml.base64");
 		SamlResponse samlResponse = new SamlResponse(settings, newHttpRequest(samlResponseEncoded));
 		assertNull(samlResponse.getError());
+		assertNull(samlResponse.getValidationException());
 		samlResponse.isValid();
 		assertThat(samlResponse.getError(), containsString("SAML Response must contain 1 Assertion."));
+		assertTrue(samlResponse.getValidationException() instanceof ValidationError);
 
 		settings.setStrict(false);
 		samlResponse = new SamlResponse(settings, newHttpRequest(samlResponseEncoded));
 		samlResponse.isValid();
 		assertThat(samlResponse.getError(), containsString("SAML Response must contain 1 Assertion."));
+		assertTrue(samlResponse.getValidationException() instanceof ValidationError);
 
 		samlResponseEncoded = Util.getFileAsString("data/responses/valid_response.xml.base64");
 		samlResponse = new SamlResponse(settings, newHttpRequest(samlResponseEncoded));
 		assertNull(samlResponse.getError());
+		assertNull(samlResponse.getValidationException());
 		samlResponse.isValid();
 		assertNull(samlResponse.getError());
+		assertNull(samlResponse.getValidationException());
 
 		settings.setStrict(true);
 		samlResponse = new SamlResponse(settings, newHttpRequest(samlResponseEncoded));
 		assertNull(samlResponse.getError());
+		assertNull(samlResponse.getValidationException());
 		samlResponse.isValid();
 		assertNull(samlResponse.getError());
+		assertNull(samlResponse.getValidationException());
 	}
 
 	private String loadAndEncode(String path) throws Exception

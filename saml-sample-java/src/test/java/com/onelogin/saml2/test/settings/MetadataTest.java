@@ -396,12 +396,16 @@ public class MetadataTest {
 	/**
 	 * Tests the signMetadata method of Metadata
 	 * Case imported metadata
-	 * @throws Exception 
+	 *
+	 * @throws IOException
+	 * @throws GeneralSecurityException
+	 * @throws XMLSecurityException
+	 * @throws XPathExpressionException
 	 *
 	 * @see com.onelogin.saml2.settings.Metadata#signMetadata
 	 */
 	@Test
-	public void testSignImportedMetadata() throws Exception {
+	public void testSignImportedMetadata() throws IOException, GeneralSecurityException, XPathExpressionException, XMLSecurityException {
 		String certString = Util.getFileAsString("data/customPath/certs/sp.crt");
 		X509Certificate cert = Util.loadCert(certString);
 		String keyString = Util.getFileAsString("data/customPath/certs/sp.pem");
@@ -430,12 +434,17 @@ public class MetadataTest {
 	/**
 	 * Tests the signMetadata method of Metadata
 	 * Case generated metadata
-	 * @throws Exception 
+	 *
+	 * @throws Error
+	 * @throws IOException
+	 * @throws GeneralSecurityException
+	 * @throws XMLSecurityException 
+	 * @throws XPathExpressionException
 	 *
 	 * @see com.onelogin.saml2.settings.Metadata#signMetadata
 	 */
 	@Test
-	public void testSigngeneratedMetadata() throws Exception {
+	public void testSigngeneratedMetadata() throws Error, IOException, GeneralSecurityException, XPathExpressionException, XMLSecurityException {
 		Saml2Settings settings = new SettingsBuilder().fromFile("config/config.all.properties").build();
 		String certString = Util.getFileAsString("data/customPath/certs/sp.crt");
 		X509Certificate cert = Util.loadCert(certString);

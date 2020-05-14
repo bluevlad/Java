@@ -1,16 +1,20 @@
 package com.onelogin.saml2.settings;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.Key;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,14 +29,13 @@ import com.onelogin.saml2.exception.Error;
 import com.onelogin.saml2.model.Contact;
 import com.onelogin.saml2.model.KeyStoreSettings;
 import com.onelogin.saml2.model.Organization;
-import com.onelogin.saml2.util.Objects;
 import com.onelogin.saml2.util.Util;
 
 /**
  * SettingsBuilder class of OneLogin's Java Toolkit.
  *
  * A class that implements the settings builder
- */ 
+ */
 public class SettingsBuilder {
 	/**
 	 * Private property to construct a logger for this class.
@@ -42,7 +45,7 @@ public class SettingsBuilder {
 	/**
 	 * Private property that contains the SAML settings
 	 */
-	private Map<String, Object> samlData = new LinkedHashMap<String, Object>();
+	private Map<String, Object> samlData = new LinkedHashMap<>();
 
 	/**
 	 * Saml2Settings object
@@ -62,6 +65,12 @@ public class SettingsBuilder {
 
 	public final static String SP_X509CERT_PROPERTY_KEY = "onelogin.saml2.sp.x509cert";
 	public final static String SP_PRIVATEKEY_PROPERTY_KEY = "onelogin.saml2.sp.privatekey";
+	public final static String SP_X509CERTNEW_PROPERTY_KEY = "onelogin.saml2.sp.x509certNew";
+
+	// KeyStore
+	public final static String KEYSTORE_KEY = "onelogin.saml2.keystore.store";
+	public final static String KEYSTORE_ALIAS = "onelogin.saml2.keystore.alias";
+	public final static String KEYSTORE_KEY_PASSWORD = "onelogin.saml2.keystore.key.password";
 
 	// IDP
 	public final static String IDP_ENTITYID_PROPERTY_KEY = "onelogin.saml2.idp.entityid";
@@ -96,7 +105,7 @@ public class SettingsBuilder {
 	// Compress
 	public final static String COMPRESS_REQUEST = "onelogin.saml2.compress.request";
 	public final static String COMPRESS_RESPONSE = "onelogin.saml2.compress.response";
-	
+
 	// Misc
 	public final static String CONTACT_TECHNICAL_GIVEN_NAME = "onelogin.saml2.contacts.technical.given_name";
 	public final static String CONTACT_TECHNICAL_EMAIL_ADDRESS = "onelogin.saml2.contacts.technical.email_address";
@@ -112,42 +121,62 @@ public class SettingsBuilder {
 	/**
 	 * Load settings from the file
 	 *
-	 * @param propFileName
-	 *            OneLogin_Saml2_Settings
+	 * @param propFileName OneLogin_Saml2_Settings
 	 *
 	 * @return the SettingsBuilder object with the settings loaded from the file
 	 *
 	 * @throws IOException
 	 * @throws Error
 	 */
-	public SettingsBuilder fromFile(String propFileName) throws Error {
-		try  {
-//			LOGGER.error("propFileName" + propFileName);
-			System.out.println("propFileName" + propFileName);
-			propFileName = "D:\\eclipse-workspace\\saml-test\\src\\main\\resources\\" + propFileName;
-			InputStream stream = new FileInputStream(propFileName);
-			if (stream != null) {
-				Properties prop = new Properties();				
-		        prop.load(stream);
+	public SettingsBuilder fromFile(String propFileName) throws Error, IOException {
+		return fromFile(propFileName, null);
+	}
+
+	/**
+	 * Load settings from the file
+	 *
+	 * @param propFileName OneLogin_Saml2_Settings
+	 * @param keyStoreSetting KeyStore which have the Private/Public keys
+	 * 
+	 * @return the SettingsBuilder object with the settings loaded from the file
+	 *
+	 * @throws IOException
+	 * @throws Error
+	 */
+	public SettingsBuilder fromFile(String propFileName, KeyStoreSettings keyStoreSetting) throws Error, IOException {
+
+		ClassLoader classLoader = getClass().getClassLoader();
+		try (InputStream inputStream = classLoader.getResourceAsStream(propFileName)) {
+			if (inputStream != null) {
+				Properties prop = new Properties();
+				prop.load(inputStream);
 				parseProperties(prop);
 				LOGGER.debug("properties file '{}' loaded succesfully", propFileName);
+			} else {
+				String errorMsg = "properties file '" + propFileName + "' not found in the classpath";
+				LOGGER.error(errorMsg);
+				throw new Error(errorMsg, Error.SETTINGS_FILE_NOT_FOUND);
 			}
 		} catch (IOException e) {
 			String errorMsg = "properties file'" + propFileName + "' cannot be loaded.";
 			LOGGER.error(errorMsg, e);
 			throw new Error(errorMsg, Error.SETTINGS_FILE_NOT_FOUND);
 		}
-		
+		// Parse KeyStore and set the properties for SP Cert and Key
+		if (keyStoreSetting != null) {
+			parseKeyStore(keyStoreSetting);
+		}
+
 		return this;
 	}
 
 	/**
 	 * Loads the settings from a properties object
 	 *
-	 * @param prop
-	 *            contains the properties
+	 * @param prop contains the properties
 	 *
-	 * @return the SettingsBuilder object with the settings loaded from the prop object
+	 * @return the SettingsBuilder object with the settings loaded from the prop
+	 *         object
 	 */
 	public SettingsBuilder fromProperties(Properties prop) {
 		parseProperties(prop);
@@ -155,22 +184,39 @@ public class SettingsBuilder {
 	}
 
 	/**
-	 * Loads the settings from mapped values. 
+	 * Loads the settings from mapped values.
 	 *
-	 * @param values
-	 *            Mapped values. 
+	 * @param samlData Mapped values.
 	 *
-	 * @return the SettingsBuilder object with the settings loaded from the prop object
+	 * @return the SettingsBuilder object with the settings loaded from the prop
+	 *         object
 	 */
 	public SettingsBuilder fromValues(Map<String, Object> samlData) {
+	    return this.fromValues(samlData, null);
+	}
+
+	/**
+	 * Loads the settings from mapped values and KeyStore settings.
+	 *
+	 * @param samlData Mapped values.
+	 * @param keyStoreSetting KeyStore model
+	 *
+	 * @return the SettingsBuilder object with the settings loaded from the prop
+	 *         object
+	 */
+	public SettingsBuilder fromValues(Map<String, Object> samlData, KeyStoreSettings keyStoreSetting) {
 		if (samlData != null) {
-			this.samlData.putAll(samlData);
+		    this.samlData.putAll(samlData);
+		}
+		if (keyStoreSetting != null) {
+		    parseKeyStore(keyStoreSetting);
 		}
 		return this;
 	}
-	
+
 	/**
-	 * Builds the Saml2Settings object. Read the Properties object and set all the SAML settings
+	 * Builds the Saml2Settings object. Read the Properties object and set all the
+	 * SAML settings
 	 * 
 	 * @return the Saml2Settings object with all the SAML settings loaded
 	 *
@@ -180,10 +226,10 @@ public class SettingsBuilder {
 	}
 
 	/**
-	 * Builds the Saml2Settings object. Read the Properties object and set all the SAML settings
+	 * Builds the Saml2Settings object. Read the Properties object and set all the
+	 * SAML settings
 	 * 
-	 * @param saml2Setting
-	 *            an existing Saml2Settings
+	 * @param saml2Setting an existing Saml2Settings
 	 * 
 	 * @return the Saml2Settings object with all the SAML settings loaded
 	 *
@@ -204,7 +250,7 @@ public class SettingsBuilder {
 		this.loadIdpSetting();
 		this.loadSecuritySetting();
 		this.loadCompressSetting();
-		
+
 		saml2Setting.setContacts(loadContacts());
 
 		saml2Setting.setOrganization(loadOrganization());
@@ -213,7 +259,7 @@ public class SettingsBuilder {
 
 		return saml2Setting;
 	}
-	
+
 	/**
 	 * Loads the IdP settings from the properties file
 	 */
@@ -256,7 +302,7 @@ public class SettingsBuilder {
 			saml2Setting.setIdpCertFingerprint(idpCertFingerprint);
 
 		String idpCertFingerprintAlgorithm = loadStringProperty(CERTFINGERPRINT_ALGORITHM_PROPERTY_KEY);
-		if (idpCertFingerprintAlgorithm != null && !Objects.isEmpty(idpCertFingerprintAlgorithm))
+		if (idpCertFingerprintAlgorithm != null && !idpCertFingerprintAlgorithm.isEmpty())
 			saml2Setting.setIdpCertFingerprintAlgorithm(idpCertFingerprintAlgorithm);
 	}
 
@@ -313,11 +359,11 @@ public class SettingsBuilder {
 			saml2Setting.setRequestedAuthnContext(requestedAuthnContext);
 
 		String requestedAuthnContextComparison = loadStringProperty(SECURITY_REQUESTED_AUTHNCONTEXTCOMPARISON);
-		if (requestedAuthnContextComparison != null && !Objects.isEmpty(requestedAuthnContextComparison))
+		if (requestedAuthnContextComparison != null && !requestedAuthnContextComparison.isEmpty())
 			saml2Setting.setRequestedAuthnContextComparison(requestedAuthnContextComparison);
 
 		String signatureAlgorithm = loadStringProperty(SECURITY_SIGNATURE_ALGORITHM);
-		if (signatureAlgorithm != null && !Objects.isEmpty(signatureAlgorithm))
+		if (signatureAlgorithm != null && !signatureAlgorithm.isEmpty())
 			saml2Setting.setSignatureAlgorithm(signatureAlgorithm);
 
 		Boolean rejectUnsolicitedResponsesWithInResponseTo = loadBooleanProperty(SECURITY_REJECT_UNSOLICITED_RESPONSES_WITH_INRESPONSETO);
@@ -338,9 +384,9 @@ public class SettingsBuilder {
 		Boolean compressResponse = loadBooleanProperty(COMPRESS_RESPONSE);
 		if (compressResponse != null) {
 			saml2Setting.setCompressResponse(compressResponse);
-		}		
+		}
 	}
-	
+
 	/**
 	 * Loads the organization settings from the properties file
 	 */
@@ -363,12 +409,12 @@ public class SettingsBuilder {
 	 * Loads the contacts settings from the properties file
 	 */
 	private List<Contact> loadContacts() {
-		List<Contact> contacts = new LinkedList<Contact>();
+		List<Contact> contacts = new LinkedList<>();
 
 		String technicalGn = loadStringProperty(CONTACT_TECHNICAL_GIVEN_NAME);
 		String technicalEmailAddress = loadStringProperty(CONTACT_TECHNICAL_EMAIL_ADDRESS);
 
-		if ((technicalGn != null && !Objects.isEmpty(technicalGn)) || (technicalEmailAddress != null && !Objects.isEmpty(technicalEmailAddress))) {
+		if ((technicalGn != null && !technicalGn.isEmpty()) || (technicalEmailAddress != null && !technicalEmailAddress.isEmpty())) {
 			Contact technical = new Contact("technical", technicalGn, technicalEmailAddress);
 			contacts.add(technical);
 		}
@@ -376,7 +422,7 @@ public class SettingsBuilder {
 		String supportGn = loadStringProperty(CONTACT_SUPPORT_GIVEN_NAME);
 		String supportEmailAddress = loadStringProperty(CONTACT_SUPPORT_EMAIL_ADDRESS);
 
-		if ((supportGn != null && !Objects.isEmpty(supportGn)) || (supportEmailAddress != null && !Objects.isEmpty(supportEmailAddress))) {
+		if ((supportGn != null && !supportGn.isEmpty()) || (supportEmailAddress != null && !supportEmailAddress.isEmpty())) {
 			Contact support = new Contact("support", supportGn, supportEmailAddress);
 			contacts.add(support);
 		}
@@ -421,23 +467,41 @@ public class SettingsBuilder {
 			saml2Setting.setSpSingleLogoutServiceBinding(spSingleLogoutServiceBinding);
 
 		String spNameIDFormat = loadStringProperty(SP_NAMEIDFORMAT_PROPERTY_KEY);
-		if (spNameIDFormat != null && !Objects.isEmpty(spNameIDFormat))
+		if (spNameIDFormat != null && !spNameIDFormat.isEmpty())
 			saml2Setting.setSpNameIDFormat(spNameIDFormat);
 
-		X509Certificate spX509cert = loadCertificateFromProp(SP_X509CERT_PROPERTY_KEY);
+		boolean keyStoreEnabled = this.samlData.get(KEYSTORE_KEY) != null && this.samlData.get(KEYSTORE_ALIAS) != null
+				&& this.samlData.get(KEYSTORE_KEY_PASSWORD) != null;
+
+		X509Certificate spX509cert;
+		PrivateKey spPrivateKey;
+
+		if (keyStoreEnabled) {
+			KeyStore ks = (KeyStore) this.samlData.get(KEYSTORE_KEY);
+			String alias = (String) this.samlData.get(KEYSTORE_ALIAS);
+			String password = (String) this.samlData.get(KEYSTORE_KEY_PASSWORD);
+
+			spX509cert = getCertificateFromKeyStore(ks, alias, password);
+			spPrivateKey = getPrivateKeyFromKeyStore(ks, alias, password);
+		} else {
+			spX509cert = loadCertificateFromProp(SP_X509CERT_PROPERTY_KEY);
+			spPrivateKey = loadPrivateKeyFromProp(SP_PRIVATEKEY_PROPERTY_KEY);
+		}
+
 		if (spX509cert != null)
 			saml2Setting.setSpX509cert(spX509cert);
-
-		PrivateKey spPrivateKey = loadPrivateKeyFromProp(SP_PRIVATEKEY_PROPERTY_KEY);
 		if (spPrivateKey != null)
 			saml2Setting.setSpPrivateKey(spPrivateKey);
+
+		X509Certificate spX509certNew = loadCertificateFromProp(SP_X509CERTNEW_PROPERTY_KEY);
+		if (spX509certNew != null)
+			saml2Setting.setSpX509certNew(spX509certNew);
 	}
 
 	/**
 	 * Loads a property of the type String from the Properties object
 	 *
-	 * @param propertyKey
-	 *            the property name
+	 * @param propertyKey the property name
 	 *
 	 * @return the value
 	 */
@@ -452,8 +516,7 @@ public class SettingsBuilder {
 	/**
 	 * Loads a property of the type Boolean from the Properties object
 	 *
-	 * @param propertyKey
-	 *            the property name
+	 * @param propertyKey the property name
 	 *
 	 * @return the value
 	 */
@@ -462,9 +525,9 @@ public class SettingsBuilder {
 		if (isString(propValue)) {
 			return Boolean.parseBoolean(((String) propValue).trim());
 		}
-		
+
 		if (propValue instanceof Boolean) {
-		    	return (Boolean) propValue;
+			return (Boolean) propValue;
 		}
 		return null;
 	}
@@ -472,21 +535,20 @@ public class SettingsBuilder {
 	/**
 	 * Loads a property of the type List from the Properties object
 	 *
-	 * @param propertyKey
-	 *            the property name
+	 * @param propertyKey the property name
 	 *
 	 * @return the value
 	 */
 	private List<String> loadListProperty(String propertyKey) {
 		Object propValue = samlData.get(propertyKey);
 		if (isString(propValue)) {
-			String [] values = ((String) propValue).trim().split(",");
+			String[] values = ((String) propValue).trim().split(",");
 			for (int i = 0; i < values.length; i++) {
 				values[i] = values[i].trim();
 			}
 			return Arrays.asList(values);
 		}
-		
+
 		if (propValue instanceof List) {
 			return (List<String>) propValue;
 		}
@@ -496,8 +558,7 @@ public class SettingsBuilder {
 	/**
 	 * Loads a property of the type URL from the Properties object
 	 *
-	 * @param propertyKey
-	 *            the property name
+	 * @param propertyKey the property name
 	 *
 	 * @return the value
 	 */
@@ -517,20 +578,54 @@ public class SettingsBuilder {
 		if (propValue instanceof URL) {
 			return (URL) propValue;
 		}
-		
+
 		return null;
 	}
-	
+
+	protected PrivateKey getPrivateKeyFromKeyStore(KeyStore keyStore, String alias, String password) {
+		Key key;
+		try {
+			if (keyStore.containsAlias(alias)) {
+				key = keyStore.getKey(alias, password.toCharArray());
+				if (key instanceof PrivateKey) {
+					return (PrivateKey) key;
+				}
+			} else {
+				LOGGER.error("Entry for alias {} not found in keystore", alias);
+			}
+		} catch (UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException e) {
+			LOGGER.error("Error loading private key from keystore. {}", e);
+		}
+		return null;
+	}
+
+	protected X509Certificate getCertificateFromKeyStore(KeyStore keyStore, String alias, String password) {
+		try {
+			if (keyStore.containsAlias(alias)) {
+				Key key = keyStore.getKey(alias, password.toCharArray());
+				if (key instanceof PrivateKey) {
+					Certificate cert = keyStore.getCertificate(alias);
+					if (cert instanceof X509Certificate) {
+						return (X509Certificate) cert;
+					}
+				}
+			} else {
+				LOGGER.error("Entry for alias {} not found in keystore", alias);
+			}
+		} catch (KeyStoreException | UnrecoverableKeyException | NoSuchAlgorithmException e) {
+			LOGGER.error("Error loading certificate from keystore. {}", e);
+		}
+		return null;
+	}
+
 	/**
 	 * Loads a property of the type X509Certificate from the property value
 	 *
-	 * @param propValue
-	 *            the property value
+	 * @param propValue the property value
 	 *
 	 * @return the X509Certificate object
-	 * @throws Exception 
 	 */
-	protected X509Certificate loadCertificateFromProp(Object propValue) throws Exception {
+	protected X509Certificate loadCertificateFromProp(Object propValue) {
 
 		if (isString(propValue)) {
 			try {
@@ -541,37 +636,29 @@ public class SettingsBuilder {
 			}
 		}
 
-		if ( propValue instanceof X509Certificate) {
-		    	return (X509Certificate) propValue;
+		if (propValue instanceof X509Certificate) {
+			return (X509Certificate) propValue;
 		}
-		
+
 		return null;
 	}
 
 	/**
 	 * Loads a property of the type X509Certificate from the Properties object
 	 *
-	 * @param propertyKey
-	 *            the property name
+	 * @param propertyKey the property name
 	 *
 	 * @return the X509Certificate object
 	 */
 	protected X509Certificate loadCertificateFromProp(String propertyKey) {
-		X509Certificate cert = null;
-		try {
-			cert = loadCertificateFromProp(samlData.get(propertyKey));
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return cert;
+		return loadCertificateFromProp(samlData.get(propertyKey));
 	}
 
 	/**
-	 * Loads a property of the type List of X509Certificate from the Properties object
+	 * Loads a property of the type List of X509Certificate from the Properties
+	 * object
 	 *
-	 * @param propertyKey
-	 *            the property name
+	 * @param propertyKey the property name
 	 *
 	 * @return the X509Certificate object list
 	 */
@@ -585,12 +672,7 @@ public class SettingsBuilder {
 			if (propValue == null)
 				break;
 
-			try {
-				list.add(loadCertificateFromProp(propValue));
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			list.add(loadCertificateFromProp(propValue));
 		}
 
 		return list;
@@ -599,15 +681,13 @@ public class SettingsBuilder {
 	/**
 	 * Loads a property of the type X509Certificate from file
 	 *
-	 * @param filename
-	 *            the file name of the file that contains the X509Certificate
+	 * @param filename the file name of the file that contains the X509Certificate
 	 *
 	 * @return the X509Certificate object
 	 */
 	/*
 	protected X509Certificate loadCertificateFromFile(String filename) {
 		String certString = null;
-
 		try {
 			certString = Util.getFileAsString(filename.trim());
 		} catch (URISyntaxException e) {
@@ -634,8 +714,7 @@ public class SettingsBuilder {
 	/**
 	 * Loads a property of the type PrivateKey from the Properties object
 	 *
-	 * @param propertyKey
-	 *            the property name
+	 * @param propertyKey the property name
 	 *
 	 * @return the PrivateKey object
 	 */
@@ -643,75 +722,51 @@ public class SettingsBuilder {
 		Object propValue = samlData.get(propertyKey);
 
 		if (isString(propValue)) {
-		    try {
-			return Util.loadPrivateKey(((String) propValue).trim());
-		    } catch (Exception e) {
-			LOGGER.error("Error loading privatekey from properties.", e);
-			return null;
-		    }
+			try {
+				return Util.loadPrivateKey(((String) propValue).trim());
+			} catch (Exception e) {
+				LOGGER.error("Error loading privatekey from properties.", e);
+				return null;
+			}
 		}
 
-		if ( propValue instanceof PrivateKey) {
-		    	return (PrivateKey) propValue;
+		if (propValue instanceof PrivateKey) {
+			return (PrivateKey) propValue;
 		}
-		
+
 		return null;
 	}
 
 	/**
-	 * Loads a property of the type PrivateKey from file
+	 * Parses properties
 	 *
-	 * @param filename
-	 *            the file name of the file that contains the PrivateKey
-	 *
-	 * @return the PrivateKey object
+	 * @param properties the Properties object to be parsed
 	 */
-	/*
-	protected PrivateKey loadPrivateKeyFromFile(String filename) {
-		String keyString = null;
-		
-		try {
-			keyString = Util.getFileAsString(filename.trim());
-		} catch (URISyntaxException e) {
-			LOGGER.error("Error loading privatekey from file.", e);
-			return null;
-		} catch (IOException e) {
-			LOGGER.error("Error loading privatekey from file.", e);
-			return null;
-		}
-		
-		try {
-			return Util.loadPrivateKey(keyString);
-		} catch (GeneralSecurityException e) {
-			LOGGER.error("Error loading privatekey from file.", e);
-			return null;
-		} catch (IOException e) {
-			LOGGER.debug("Error loading privatekey from file.", e);
-			return null;
-		}
-	}
-	*/
 	private void parseProperties(Properties properties) {
 		if (properties != null) {
-			Enumeration<?> e = properties.propertyNames();
-		    while (e.hasMoreElements()) {
-		        String key = (String) e.nextElement();
-				this.samlData.put(key, properties.getProperty(key));
-		      }
+			for (String propertyKey : properties.stringPropertyNames()) {
+				this.samlData.put(propertyKey, properties.getProperty(propertyKey));
+			}
 		}
 	}
-	
+
+	/**
+	 * Parses the KeyStore data
+	 *
+	 * @param setting the KeyStoreSettings object to be parsed
+	 */
+    private void parseKeyStore(KeyStoreSettings setting) {
+		this.samlData.put(KEYSTORE_KEY, setting.getKeyStore());
+		this.samlData.put(KEYSTORE_ALIAS, setting.getSpAlias());
+		this.samlData.put(KEYSTORE_KEY_PASSWORD, setting.getSpKeyPass());
+    }
+
+	/**
+	 * Aux method that verifies if an Object is an string
+	 *
+	 * @param propValue the Object to be verified
+	 */
 	private boolean isString(Object propValue) {
 		return propValue instanceof String && StringUtils.isNotBlank((String) propValue);
-	}
-
-	public SettingsBuilder fromFile(String string, KeyStoreSettings keyStoreSettings) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public SettingsBuilder fromValues(Map<String, Object> samlData2, KeyStoreSettings keyStoreSettings) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

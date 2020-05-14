@@ -14,8 +14,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-//import static org.mockito.Mockito.mock;
-//import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -495,12 +495,15 @@ public class UtilsTest {
 	
 	/**
 	 * Tests the loadCert method
-	 * @throws Exception 
+	 *
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 * @throws CertificateException
 	 *
 	 * @see com.onelogin.saml2.util.Util#loadCert
 	 */
 	@Test
-	public void testLoadCertCert() throws Exception {
+	public void testLoadCertCert() throws URISyntaxException, IOException, CertificateException {
 		String cert = Util.getFileAsString("data/customPath/certs/sp.crt");
 		String certWithHeads = Util.formatCert(cert, true);
 		String certWithoutHeads = Util.formatCert(cert, false);
@@ -517,12 +520,14 @@ public class UtilsTest {
 	
 	/**
 	 * Tests load public certificate X.509 String with heads.
-	 * @throws Exception 
+	 *
+	 * @throws UnsupportedEncodingException
+	 * @throws CertificateException
 	 *
 	 * @see com.onelogin.saml2.util.Util#loadCert
 	 */
 	@Test
-	public void testLoadCertWithHeads() throws Exception {
+	public void testLoadCertWithHeads() throws CertificateException, UnsupportedEncodingException {
 		String certWithHeads = "-----BEGIN CERTIFICATE-----\n"
 				+ "MIICeDCCAeGgAwIBAgIBADANBgkqhkiG9w0BAQ0FADBZMQswCQYDVQQGEwJ1czET\n"
 				+ "MBEGA1UECAwKQ2FsaWZvcm5pYTEVMBMGA1UECgwMT25lTG9naW4gSW5jMR4wHAYD\n"
@@ -546,12 +551,14 @@ public class UtilsTest {
 
 	/**
 	 * Tests load public certificate X.509 String without heads.
-	 * @throws Exception 
+	 *
+	 * @throws UnsupportedEncodingException
+	 * @throws CertificateException
 	 *
 	 * @see com.onelogin.saml2.util.Util#loadCert
 	 */
 	@Test
-	public void testLoadCertWithoutHeads() throws Exception {
+	public void testLoadCertWithoutHeads() throws CertificateException, UnsupportedEncodingException {
 		String certWithoutHeads = "MIICeDCCAeGgAwIBAgIBADANBgkqhkiG9w0BAQ0FADBZMQswCQYDVQQGEwJ1czET"
 				+ "MBEGA1UECAwKQ2FsaWZvcm5pYTEVMBMGA1UECgwMT25lTG9naW4gSW5jMR4wHAYD"
 				+ "VQQDDBVqYXZhLXNhbWwuZXhhbXBsZS5jb20wHhcNMTUxMDE4MjAxMjM1WhcNMTgw"
@@ -691,12 +698,15 @@ public class UtilsTest {
 
 	/**
 	 * Tests the calculateX509Fingerprint method
-	 * @throws Exception 
+	 *
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 * @throws CertificateException
 	 *
 	 * @see com.onelogin.saml2.util.Util#calculateX509Fingerprint
 	 */
 	@Test
-	public void testCalculateX509Fingerprint() throws Exception {
+	public void testCalculateX509Fingerprint() throws URISyntaxException, IOException, CertificateException {
 		String certString = Util.getFileAsString("data/customPath/certs/sp.crt");
 		X509Certificate cert = Util.loadCert(certString);
 		String fingerprint = Util.calculateX509Fingerprint(cert);
@@ -728,12 +738,15 @@ public class UtilsTest {
 	
 	/**
 	 * Tests the convertToPem method
-	 * @throws Exception 
+	 *
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 * @throws CertificateException
 	 *
 	 * @see com.onelogin.saml2.util.Util#convertToPem
 	 */
 	@Test
-	public void testConvertToPem() throws Exception {
+	public void testConvertToPem() throws URISyntaxException, IOException, CertificateException {
 		String cert = Util.getFileAsString("data/customPath/certs/sp.crt");
 		String certWithHeads = Util.formatCert(cert, true);
 		String certWithoutHeads = Util.formatCert(cert, false);
@@ -928,12 +941,17 @@ public class UtilsTest {
 	/**
 	 * Tests the validateSign method
 	 * Case: Exception due invalid document
-	 * @throws Exception 
+	 *
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 * @throws CertificateException
+	 * @throws SAXException
+	 * @throws ParserConfigurationException
 	 *
 	 * @see com.onelogin.saml2.util.Util#validateSign
 	 */
 	@Test
-	public void testValidateSignInvalidsInputs() throws Exception {
+	public void testValidateSignInvalidsInputs() throws URISyntaxException, IOException, CertificateException, ParserConfigurationException, SAXException {
 		String responseStr = Util.getFileAsString("data/responses/signed_message_response.xml.base64");
 		String samlResponseStr = new String(Util.base64decoder(responseStr));
 		Document samlResponseDocument = Util.loadXML(samlResponseStr);
@@ -1061,12 +1079,15 @@ public class UtilsTest {
 	/**
 	 * Tests the validateSign method
 	 * Case: Exception due invalid document
-	 * @throws Exception 
+	 *
+	 * @throws IOException 
+	 * @throws URISyntaxException 
+	 * @throws CertificateException
 	 *
 	 * @see com.onelogin.saml2.util.Util#validateSign
 	 */
 	@Test
-	public void testValidateSign() throws Exception {
+	public void testValidateSign() throws URISyntaxException, IOException, CertificateException {
 		String certString = Util.getFileAsString("data/customPath/certs/sp.crt");
 		X509Certificate cert = Util.loadCert(certString);
 		String fingerprint_sha1 = "afe71c28ef740bc87425be13a2263d37971da1f9";
@@ -1122,12 +1143,15 @@ public class UtilsTest {
 	/**
 	 * Tests the validateSign method
 	 * Case: Exception due invalid document
-	 * @throws Exception 
+	 *
+	 * @throws IOException 
+	 * @throws URISyntaxException 
+	 * @throws CertificateException
 	 *
 	 * @see com.onelogin.saml2.util.Util#validateSign
 	 */
 	@Test
-	public void testValidateSignWilthMultiCert() throws Exception {
+	public void testValidateSignWilthMultiCert() throws URISyntaxException, IOException, CertificateException {
 		String[] certListString = new String[] {
 													Util.getFileAsString("data/customPath/certs/sp.crt"),
 													Util.getFileAsString("certs/certificate1"),
@@ -1182,12 +1206,15 @@ public class UtilsTest {
 	/**
 	 * Tests the validateMetadataSign method
 	 * Case: Exception due invalid document
-	 * @throws Exception 
+	 *
+	 * @throws IOException 
+	 * @throws URISyntaxException 
+	 * @throws CertificateException
 	 *
 	 * @see com.onelogin.saml2.util.Util#validateMetadataSign
 	 */
 	@Test
-	public void testValidateMetadataSign() throws Exception {
+	public void testValidateMetadataSign() throws URISyntaxException, IOException, CertificateException {
 		String certString = Util.getFileAsString("data/customPath/certs/sp.crt");
 		X509Certificate cert = Util.loadCert(certString);
 		String fingerprint_sha1 = "afe71c28ef740bc87425be13a2263d37971da1f9";
@@ -1444,12 +1471,18 @@ public class UtilsTest {
 	/**
 	 * Tests the addSign method
 	 * Case: Try sign doc = null
-	 * @throws Exception 
+	 *
+	 * @throws IOException
+	 * @throws URISyntaxException 
+	 * @throws GeneralSecurityException
+	 * @throws ParserConfigurationException
+	 * @throws XMLSecurityException
+	 * @throws XPathExpressionException
 	 *
 	 * @see com.onelogin.saml2.util.Util#addSign
 	 */
 	@Test(expected=IllegalArgumentException.class)
-	public void testAddSignDocNull() throws Exception {
+	public void testAddSignDocNull() throws URISyntaxException, IOException, GeneralSecurityException, ParserConfigurationException, XPathExpressionException, XMLSecurityException {
 		String certString = Util.getFileAsString("data/customPath/certs/sp.crt");
 		X509Certificate cert = Util.loadCert(certString);
 		String keyString = Util.getFileAsString("data/customPath/certs/sp.pem");
@@ -1462,35 +1495,45 @@ public class UtilsTest {
 	/**
 	 * Tests the addSign method
 	 * Case: Try sign getDocumentElement = null
-	 * @throws Exception 
+	 *
+	 * @throws IOException
+	 * @throws URISyntaxException 
+	 * @throws GeneralSecurityException
+	 * @throws ParserConfigurationException
+	 * @throws XMLSecurityException
+	 * @throws XPathExpressionException
 	 *
 	 * @see com.onelogin.saml2.util.Util#addSign
 	 */
 	@Test(expected=IllegalArgumentException.class)
-	public void testAddSignDocEmpty() throws Exception {
+	public void testAddSignDocEmpty() throws URISyntaxException, IOException, GeneralSecurityException, ParserConfigurationException, XPathExpressionException, XMLSecurityException {
 		String certString = Util.getFileAsString("data/customPath/certs/sp.crt");
 		X509Certificate cert = Util.loadCert(certString);
 		String keyString = Util.getFileAsString("data/customPath/certs/sp.pem");
 		PrivateKey key = Util.loadPrivateKey(keyString);
 		String signAlgorithmSha1 = Constants.RSA_SHA1;
+		
 		Document emptyDoc = mock(Document.class);
+	    when(emptyDoc.getDocumentElement()).thenReturn(null);
+		
 		String docSigned = Util.addSign(emptyDoc, key, cert, signAlgorithmSha1);
 	}
 	
-	private Document mock(Class<Document> class1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	/**
 	 * Tests the addSign method
 	 * Case: Try sign node = null
-	 * @throws Exception 
+	 *
+	 * @throws IOException
+	 * @throws URISyntaxException 
+	 * @throws GeneralSecurityException
+	 * @throws ParserConfigurationException
+	 * @throws XMLSecurityException
+	 * @throws XPathExpressionException
 	 *
 	 * @see com.onelogin.saml2.util.Util#addSign
 	 */
 	@Test(expected=IllegalArgumentException.class)
-	public void testAddSignNodeNull() throws Exception {
+	public void testAddSignNodeNull() throws URISyntaxException, IOException, GeneralSecurityException, ParserConfigurationException, XPathExpressionException, XMLSecurityException {
 		String certString = Util.getFileAsString("data/customPath/certs/sp.crt");
 		X509Certificate cert = Util.loadCert(certString);
 		String keyString = Util.getFileAsString("data/customPath/certs/sp.pem");
@@ -1504,12 +1547,18 @@ public class UtilsTest {
 	/**
 	 * Tests the addSign method
 	 * Case: Try sign key = null
-	 * @throws Exception 
+	 *
+	 * @throws IOException 
+	 * @throws URISyntaxException
+	 * @throws GeneralSecurityException
+	 * @throws ParserConfigurationException
+	 * @throws XMLSecurityException
+	 * @throws XPathExpressionException
 	 *
 	 * @see com.onelogin.saml2.util.Util#addSign
 	 */
 	@Test(expected=IllegalArgumentException.class)
-	public void testAddSignKeyNull() throws Exception {
+	public void testAddSignKeyNull() throws URISyntaxException, IOException, GeneralSecurityException, ParserConfigurationException, XPathExpressionException, XMLSecurityException {
 		String certString = Util.getFileAsString("data/customPath/certs/sp.crt");
 		X509Certificate cert = Util.loadCert(certString);
 		String signAlgorithmSha1 = Constants.RSA_SHA1;
@@ -1522,12 +1571,18 @@ public class UtilsTest {
 	/**
 	 * Tests the addSign method
 	 * Case: Invalid signAlgorithm
-	 * @throws Exception 
+	 *
+	 * @throws IOException 
+	 * @throws URISyntaxException
+	 * @throws GeneralSecurityException
+	 * @throws ParserConfigurationException
+	 * @throws XMLSecurityException
+	 * @throws XPathExpressionException
 	 *
 	 * @see com.onelogin.saml2.util.Util#addSign
 	 */
 	@Test(expected=XMLSignatureException.class)
-	public void testAddSignInvalidSigAlg() throws Exception {
+	public void testAddSignInvalidSigAlg() throws URISyntaxException, IOException, GeneralSecurityException, ParserConfigurationException, XPathExpressionException, XMLSecurityException {
 		String keyString = Util.getFileAsString("data/customPath/certs/sp.pem");
 		PrivateKey key = Util.loadPrivateKey(keyString);
 		String authNRequest = Util.getFileAsString("data/requests/authn_request.xml");
@@ -1566,12 +1621,18 @@ public class UtilsTest {
 	/**
 	 * Tests the addSign method
 	 * Case: Sign Doc
-	 * @throws Exception 
+	 *
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 * @throws GeneralSecurityException
+	 * @throws ParserConfigurationException
+	 * @throws XMLSecurityException
+	 * @throws XPathExpressionException 
 	 *
 	 * @see com.onelogin.saml2.util.Util#addSign
 	 */
 	@Test
-	public void testAddSignDoc() throws Exception {
+	public void testAddSignDoc() throws URISyntaxException, IOException, GeneralSecurityException, ParserConfigurationException, XPathExpressionException, XMLSecurityException {
 		String certString = Util.getFileAsString("data/customPath/certs/sp.crt");
 		X509Certificate cert = Util.loadCert(certString);
 		String keyString = Util.getFileAsString("data/customPath/certs/sp.pem");
@@ -1690,12 +1751,18 @@ public class UtilsTest {
 	/**
 	 * Tests the addSign method
 	 * Case: Sign Node
-	 * @throws Exception 
+	 *
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 * @throws GeneralSecurityException
+	 * @throws ParserConfigurationException
+	 * @throws XMLSecurityException
+	 * @throws XPathExpressionException 
 	 *
 	 * @see com.onelogin.saml2.util.Util#addSign
 	 */
 	@Test
-	public void testAddSignNode() throws Exception {
+	public void testAddSignNode() throws URISyntaxException, IOException, GeneralSecurityException, ParserConfigurationException, XPathExpressionException, XMLSecurityException {
 		String certString = Util.getFileAsString("data/customPath/certs/sp.crt");
 		X509Certificate cert = Util.loadCert(certString);
 		String keyString = Util.getFileAsString("data/customPath/certs/sp.pem");
@@ -1715,12 +1782,19 @@ public class UtilsTest {
 	
 	/**
 	 * Tests the validateBinarySignature method
-	 * @throws Exception 
 	 *
+	 * @throws IOException 
+	 * @throws URISyntaxException 
+	 * @throws CertificateException 
+	 * @throws SignatureException
+	 * @throws NoSuchProviderException 
+	 * @throws NoSuchAlgorithmException 
+	 * @throws InvalidKeyException 
+	 * 
 	 * @see com.onelogin.saml2.util.Util#validateBinarySignature
 	 */
 	@Test
-	public void testValidateBinarySignature() throws Exception {
+	public void testValidateBinarySignature() throws URISyntaxException, IOException, CertificateException, InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException {
 		String certString = "-----BEGIN CERTIFICATE-----MIICeDCCAeGgAwIBAgIBADANBgkqhkiG9w0BAQ0FADBZMQswCQYDVQQGEwJ1czETMBEGA1UECAwKQ2FsaWZvcm5pYTEVMBMGA1UECgwMT25lTG9naW4gSW5jMR4wHAYDVQQDDBVqYXZhLXNhbWwuZXhhbXBsZS5jb20wHhcNMTUxMDE4MjAxMjM1WhcNMTgwNzE0MjAxMjM1WjBZMQswCQYDVQQGEwJ1czETMBEGA1UECAwKQ2FsaWZvcm5pYTEVMBMGA1UECgwMT25lTG9naW4gSW5jMR4wHAYDVQQDDBVqYXZhLXNhbWwuZXhhbXBsZS5jb20wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALvwEktX1+4y2AhEqxVwOO6HO7Wtzi3hr5becRkfLYGjNSyhzZCjI1DsNL61JSWDO3nviZd9fSkFnRC4akFUm0CS6GJ7TZe4T5o+9aowQ6N8e8cts9XPXyP6Inz7q4sD8pO2EInlfwHYPQCqFmz/SDW7cDgIC8vb0ygOsiXdreANAgMBAAGjUDBOMB0GA1UdDgQWBBTifMwN3CQ5ZOPkV5tDJsutU8teFDAfBgNVHSMEGDAWgBTifMwN3CQ5ZOPkV5tDJsutU8teFDAMBgNVHRMEBTADAQH/MA0GCSqGSIb3DQEBDQUAA4GBAG3nAEUjJaA75SkzID5FKLolsxG5TE/0HU0+yEUAVkXiqvqN4mPWq/JjoK5+uP4LEZIb4pRrCqI3iHp+vazLLYSeyV3kaGN7q35Afw8nk8WM0f7vImbQ69j1S8GQ+6E0PEI26qBLykGkMn3GUVtBBWSdpP093NuNLJiOomnHqhqj-----END CERTIFICATE-----";
 		X509Certificate cert = Util.loadCert(certString);
 		
@@ -1765,12 +1839,15 @@ public class UtilsTest {
 	
 	/**
 	 * Tests the generateNameId method
-	 * @throws Exception 
 	 *
+	 * @throws IOException 
+	 * @throws URISyntaxException 
+	 * @throws CertificateException 
+	 * 
 	 * @see com.onelogin.saml2.util.Util#generateNameId
 	 */
 	@Test
-	public void testGenerateNameId() throws Exception {
+	public void testGenerateNameId() throws URISyntaxException, IOException, CertificateException {
         String nameIdValue = "ONELOGIN_ce998811003f4e60f8b07a311dc641621379cfde";
         String entityId = "http://stuff.com/endpoints/metadata.php";
         String nameIDFormat = "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified";

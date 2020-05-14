@@ -11,10 +11,9 @@ import org.apache.commons.lang3.text.StrSubstitutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.onelogin.saml2.model.Organization;
 import com.onelogin.saml2.settings.Saml2Settings;
+import com.onelogin.saml2.model.Organization;
 import com.onelogin.saml2.util.Constants;
-import com.onelogin.saml2.util.Objects;
 import com.onelogin.saml2.util.Util;
 
 /**
@@ -192,7 +191,7 @@ public class AuthnRequest {
 		valueMap.put("destinationStr", destinationStr);
 
 		String subjectStr = "";
-		if (nameIdValueReq != null && !Objects.isEmpty(nameIdValueReq)) {
+		if (nameIdValueReq != null && !nameIdValueReq.isEmpty()) {
 			String nameIDFormat = settings.getSpNameIDFormat();
 			subjectStr = "<saml:Subject>";
 			subjectStr += "<saml:NameID Format=\"" + nameIDFormat + "\">" + nameIdValueReq + "</saml:NameID>";
@@ -215,7 +214,7 @@ public class AuthnRequest {
 		Organization organization = settings.getOrganization();
 		if (organization != null) {
 			String displayName = organization.getOrgDisplayName();
-			if (!Objects.isEmpty(displayName)) {
+			if (!displayName.isEmpty()) {
 				providerStr = " ProviderName=\""+ displayName + "\""; 
 			}
 		}

@@ -7,8 +7,7 @@
 </head>
 <body>
 	<%
-	   	String path = "/classes/resources/";
-		Auth auth = new Auth(request, response, path);
+		Auth auth = new Auth(request, response);
 		if (request.getParameter("attrs") == null) {
 			auth.login();
 		} else {
