@@ -32,6 +32,12 @@ public interface ExamManageService {
 	void insertExam(ExamVO ExamVO) throws Exception;
 
 	/**
+	 * 시험정보를 신규로 등록한다.
+	 * @param ExamVO
+	 */
+	public int insertExamRetcd(ExamVO ExamVO) throws Exception;
+
+	/**
 	 * 기 등록된 시험정보를 수정한다.
 	 * @param ExamVO
 	 */

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import egovframework.com.academy.bbs.mng.service.BoardMaster;
 import egovframework.com.academy.exam.service.ExamVO;
 import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
@@ -54,6 +55,13 @@ public class ExamManageDAO extends EgovComAbstractDAO{
      */
     public void insertExam(ExamVO ExamVO) throws Exception{
         insert("ExamManage.insertExam", ExamVO);
+    }
+
+    /**
+     * @param ExamVO 시험정보 등록
+     */
+    public int insertExamRetcd(ExamVO ExamVO) throws Exception{
+        return getSqlSession().insert("ExamManage.insertExamRetcd", ExamVO);
     }
 
     /**

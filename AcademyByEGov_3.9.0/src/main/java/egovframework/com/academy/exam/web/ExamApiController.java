@@ -38,16 +38,18 @@ import egovframework.rte.fdl.property.EgovPropertyService;
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 
 /**
- * 시험(과목)정보 처리를  비지니스 클래스로 전달하고 처리된결과를  해당 웹 화면으로 전달하는 Controller를 정의한다
+ * 시험(과목)정보 처리를 비지니스 클래스로 전달하고 처리된결과를 해당 웹 화면으로 전달하는 Controller를 정의한다
+ * 
  * @author rainend
  * @version 1.0
  * @see
- * <pre>
+ * 
+ *      <pre>
  * << 개정이력(Modification Information) >>
  *   수정일      			수정자           수정내용
  *  ----------------    --------------    ---------------------------
  *  2020.04.00  			rainend          최초 생성
- * </pre>
+ *      </pre>
  */
 
 @Controller
@@ -67,19 +69,20 @@ public class ExamApiController extends CORSFilter {
 
 	/** EgovPropertyService */
 	@Resource(name = "propertiesService")
-    protected EgovPropertyService propertyService;
+	protected EgovPropertyService propertyService;
 
 	/**
 	 * 시험 목록화면 이동
+	 * 
 	 * @return String
 	 * @exception Exception
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/api/exam/list", method= RequestMethod.GET)
+	@RequestMapping(value = "/api/exam/list", method = RequestMethod.GET)
 	public ModelAndView ExamList(@ModelAttribute("ExamVO") ExamVO ExamVO) throws Exception {
 
-    	ModelAndView modelAndView = new ModelAndView();
-    	modelAndView.setViewName("jsonView");
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
 
 		ExamVO.setPageUnit(propertyService.getInt("pageUnit"));
 		ExamVO.setPageSize(propertyService.getInt("pageSize"));
@@ -96,68 +99,76 @@ public class ExamApiController extends CORSFilter {
 
 		List<?> examList = examManageService.selectExamList(ExamVO);
 		modelAndView.addObject(examList);
-		
+
 		return modelAndView;
 	}
 
 	/**
 	 * 시험 상세정보를 조회한다.
+	 * 
 	 * @param ExamVO
 	 * @return String - 리턴 Url
 	 */
 	@GET
-	@RequestMapping(value = "/api/exam/view/{id}", method = { RequestMethod.GET, RequestMethod.POST})
-	public ModelAndView ExamDetail(@PathVariable int id, @ModelAttribute("ExamVO") ExamVO ExamVO, ModelMap model) throws Exception {
+	@RequestMapping(value = "/api/exam/view/{id}", method = { RequestMethod.GET, RequestMethod.POST })
+	public ModelAndView ExamDetail(@PathVariable int id, @ModelAttribute("ExamVO") ExamVO ExamVO, ModelMap model)
+			throws Exception {
 
-    	ModelAndView modelAndView = new ModelAndView();
-    	modelAndView.setViewName("jsonView");
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
 
-    	ExamVO.setExamCd(id);
-    	 
-    	ExamVO examview = examManageService.selectExamDetail(ExamVO);
+		ExamVO.setExamCd(id);
 
-    	modelAndView.addObject(examview);
-		
+		ExamVO examview = examManageService.selectExamDetail(ExamVO);
+
+		modelAndView.addObject(examview);
+
 		return modelAndView;
 	}
 
-	
 	/**
 	 * 시험정보를 신규로 등록한다.
+	 * 
 	 * @param ExamVO
 	 * @return String - 리턴 Url
 	 */
-    @ResponseBody
+	@ResponseBody
 	@RequestMapping(value = "/api/exam/add")
-	public String insertExam(@ModelAttribute("ExamVO") ExamVO ExamVO, BindingResult bindingResult,  
-			@RequestParam Map<?, ?> commandMap, HttpServletRequest request, 	ModelMap model) throws Exception {
+	public String insertExam(@ModelAttribute("ExamVO") ExamVO ExamVO, BindingResult bindingResult,
+			@RequestParam Map<?, ?> commandMap, HttpServletRequest request, ModelMap model) throws Exception {
 
-		/*
-		 * String sKey = ""; for(Object key:commandMap.keySet()){ sKey = key.toString();
-		 * LOGGER.debug("sKey : " +sKey); if(sKey.equals("examNm")) {
-		 * ExamVO.setExamNm(sKey); } if(sKey.equals("isUse")) { ExamVO.setIsUse(sKey); }
-		 * }
-		 */		
-    	examManageService.insertExam(ExamVO);
-		int uniqId = ExamVO.getExamCd();
-		return uniqId+"";
+		String sKey = ""; 
+		for(Object key:commandMap.keySet()){ 
+			sKey = key.toString();
+			if(sKey.equals("examNm")) {
+				ExamVO.setExamNm(request.getParameter(sKey));
+			} 
+			if(sKey.equals("isUse")) { 
+				ExamVO.setIsUse(request.getParameter(sKey)); 
+			}
+		}
+		
+		int uniqId = examManageService.insertExamRetcd(ExamVO);
+//		LOGGER.debug("uniqId : " + uniqId);
+		return uniqId + "";
 	}
 
 	/**
 	 * 시험 목록화면 이동
+	 * 
 	 * @return String
 	 * @exception Exception
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/api/exam/stat/sbj", method= RequestMethod.GET)
+	@RequestMapping(value = "/api/exam/stat/sbj", method = RequestMethod.GET)
 	public ModelAndView ExamStatSbjList(@ModelAttribute("ExamVO") ExamVO ExamVO) throws Exception {
 
-    	ModelAndView modelAndView = new ModelAndView();
-    	modelAndView.setViewName("jsonView");
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
 
 		List<?> examStatSbjList = examStatService.selectExamStatSbjList(ExamVO);
 		modelAndView.addObject(examStatSbjList);
-		
+
 		return modelAndView;
 	}
 

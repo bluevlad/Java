@@ -69,6 +69,15 @@ public class ExamManageServiceImpl extends EgovAbstractServiceImpl implements Ex
 	}
 
 	/**
+	 * @param ExamVO 시험 등록정보
+	 * @throws Exception
+	 */
+	@Override
+	public int insertExamRetcd(ExamVO ExamVO) throws Exception {
+		return examManageDAO.insertExamRetcd(ExamVO);
+	}
+
+	/**
 	 * ExamVO 시험정보 수정
 	 * @param ExamVO 시험정보
 	 * @throws Exception

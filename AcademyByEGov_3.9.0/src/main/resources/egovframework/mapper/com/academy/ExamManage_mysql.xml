@@ -42,6 +42,17 @@
 		)
 	</insert>
 
+	<insert id="insertExamRetcd" keyProperty="examCd" keyColumn="examCd">
+		INSERT INTO exam_mst (
+			EXAM_NM, ISUSE
+		) VALUES (
+			#{examNm}, #{isUse}
+		)
+		<selectKey keyProperty="examCd" resultType="java.lang.Integer">
+			SELECT IFNULL(MAX(EXAM_CD),0)+1 AS EXAM_CD FROM exam_mst
+		</selectKey>			
+	</insert>
+
 	<update id="updateExam">
 		UPDATE exam_mst
 		SET 
