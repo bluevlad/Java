@@ -87,9 +87,9 @@ public class ExamRstDAO extends EgovComAbstractDAO{
      * @return ExamVO 시험 과목 선택 정보
      */
     public ExamVO selectExamRstSbjDetail(ExamVO ExamVO){
-        return selectOne("ExamPass.selectExamRstDetail", ExamVO);
+        return selectOne("ExamPass.selectExamRstSbjDetail", ExamVO);
     }
-
+    
     /**
      * @param ExamVO 시험 응시과목 정보 등록
      */

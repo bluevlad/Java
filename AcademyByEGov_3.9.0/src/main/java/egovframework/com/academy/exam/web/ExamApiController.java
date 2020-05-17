@@ -1,19 +1,16 @@
 package egovframework.com.academy.exam.web;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.ws.rs.GET;
-import javax.ws.rs.PathParam;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -25,15 +22,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import egovframework.com.academy.exam.service.ExamManageService;
-import egovframework.com.academy.exam.service.ExamStatService;
+import egovframework.com.academy.exam.service.ExamRstService;
 import egovframework.com.academy.exam.service.ExamVO;
 import egovframework.com.academy.schedule.web.ScheduleController;
 import egovframework.com.api.CORSFilter;
 import egovframework.com.cmm.EgovMessageSource;
-import egovframework.com.ext.oauth.service.OAuthConfig;
-import egovframework.com.ext.oauth.service.OAuthLogin;
-import egovframework.com.ext.oauth.service.OAuthUniversalUser;
-import egovframework.com.ext.oauth.service.OAuthVO;
 import egovframework.rte.fdl.property.EgovPropertyService;
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 
@@ -59,9 +52,9 @@ public class ExamApiController extends CORSFilter {
 
 	@Resource(name = "examManageService")
 	private ExamManageService examManageService;
-
-	@Resource(name = "examStatService")
-	private ExamStatService examStatService;
+	
+	@Resource(name = "examRstService")
+	private ExamRstService examRstService;
 
 	/** EgovMessageSource */
 	@Resource(name = "egovMessageSource")
@@ -154,21 +147,55 @@ public class ExamApiController extends CORSFilter {
 	}
 
 	/**
-	 * 시험 목록화면 이동
-	 * 
+	 * 시험 응시자 목록화면 이동
 	 * @return String
 	 * @exception Exception
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/api/exam/stat/sbj", method = RequestMethod.GET)
-	public ModelAndView ExamStatSbjList(@ModelAttribute("ExamVO") ExamVO ExamVO) throws Exception {
+	@RequestMapping(value = "/api/exam/rst/list")
+	public ModelAndView ExamList(@ModelAttribute("ExamVO") ExamVO ExamVO, ModelMap model) throws Exception {
 
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("jsonView");
 
-		List<?> examStatSbjList = examStatService.selectExamStatSbjList(ExamVO);
-		modelAndView.addObject(examStatSbjList);
+		ExamVO.setPageUnit(propertyService.getInt("pageUnit"));
+		ExamVO.setPageSize(propertyService.getInt("pageSize"));
 
+		/** paging */
+		PaginationInfo paginationInfo = new PaginationInfo();
+		paginationInfo.setCurrentPageNo(ExamVO.getPageIndex());
+		paginationInfo.setRecordCountPerPage(ExamVO.getPageUnit());
+		paginationInfo.setPageSize(ExamVO.getPageSize());
+
+		ExamVO.setFirstIndex(paginationInfo.getFirstRecordIndex());
+		ExamVO.setLastIndex(paginationInfo.getLastRecordIndex());
+		ExamVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
+
+		List<?> examRstmList = examRstService.selectExamRstSbjList(ExamVO);
+		modelAndView.addObject(examRstmList);
+		
+		return modelAndView;
+	}
+
+	/**
+	 * 시험 응시자 정보를 조회한다.
+	 * @param ExamVO
+	 * @return String - 리턴 Url
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/api/exam/rst/view", method = { RequestMethod.GET, RequestMethod.POST })
+	public ModelAndView ExamRstView(@ModelAttribute("ExamVO") ExamVO ExamVO, BindingResult bindingResult,
+			@RequestParam Map<?, ?> commandMap, HttpServletRequest request, ModelMap model) throws Exception {
+
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("jsonView");
+		
+		ExamVO detail = examRstService.selectExamRstSbjDetail(ExamVO);
+		List<ExamVO> exam_rstDet = examRstService.selectExamRstDetList(ExamVO);
+
+		modelAndView.addObject(detail);
+		modelAndView.addObject(exam_rstDet);
+		
 		return modelAndView;
 	}
 

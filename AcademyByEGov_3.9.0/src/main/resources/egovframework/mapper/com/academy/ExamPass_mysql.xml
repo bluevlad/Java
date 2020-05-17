@@ -82,12 +82,14 @@
 
 	<select id="selectExamRstSbjDetail" parameterType="egovframework.com.academy.exam.service.ExamVO" 
 										resultType="egovframework.com.academy.exam.service.ExamVO">
-		SELECT a.EXAM_CD, a.USER_ID, a.REG_DT, a.REG_ID, b.sbj_cd, b.sbj_point, c.USER_NM, d.SBJ_NM
-		FROM exam_rst_mst a, exam_rst_sbj b, member_mst c, exam_subject d
+		SELECT a.EXAM_CD examCd, a.USER_ID userId, a.REG_DT regDt, a.REG_ID regId, 
+				b.SBJ_CD sbjCd, b.SBJ_POINT sbjPoint, c.USER_NM userNm, d.SBJ_NM sbjNm, e.exam_nm examNm
+		FROM exam_rst_mst a, exam_rst_sbj b, member_mst c, exam_subject d, exam_mst e
 		WHERE a.exam_cd = b.exam_cd
 		AND a.user_id = b.user_id
 		AND a.user_id = c.EMPLYR_ID
       	AND b.sbj_cd = d.SBJ_CD
+      	AND a.exam_cd = e.exam_cd
       	and a.EXAM_CD = #{examCd}
 		AND a.USER_ID = #{userId}
 		AND b.SBJ_CD = #{sbjCd}
