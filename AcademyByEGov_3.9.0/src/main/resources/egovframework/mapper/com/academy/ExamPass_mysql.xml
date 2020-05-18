@@ -120,11 +120,15 @@
 
 	<select id="selectExamRstDetList" parameterType="egovframework.com.academy.exam.service.ExamVO" 
 										resultType="egovframework.com.academy.exam.service.ExamVO">
-		SELECT a.EXAM_CD, a.USER_ID, a.sbj_cd, a.item_no, a.ans, a.yn, a.REG_DT, a.REG_ID
-		FROM exam_rst_det a
-      	WHERE a.EXAM_CD = #{examCd}
+		SELECT a.EXAM_CD, a.USER_ID, a.sbj_cd, a.item_no, a.ans, a.yn, b.pass_ans, a.REG_DT, a.REG_ID
+		FROM exam_rst_det a, exam_pass_mst b
+     	WHERE a.EXAM_CD = #{examCd}
 		AND a.USER_ID = #{userId}
 		AND a.SBJ_CD = #{sbjCd}
+      	AND a.exam_cd = b.EXAM_CD
+      	AND a.sbj_cd = b.SBJ_CD
+      	AND a.item_no = b.ITEM_NO
+      		
 	</select>
 
 	<insert id="insertExamRstDet">
