@@ -13,7 +13,7 @@
 		SELECT a.exam_cd, b.exam_nm, a.user_id, c.USER_NM, a.reg_dt, a.reg_id
 		FROM exam_rst_mst a, exam_mst b, member_mst c
 		WHERE a.exam_cd = b.exam_cd
-		AND a.user_id = c.EMPLYR_ID
+		AND a.user_id = c.USER_ID
         <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchKeyword)">
         AND c.USER_NM LIKE '%' #{searchKeyword} '%'
         </if>
@@ -24,7 +24,7 @@
 		SELECT COUNT(*) totcnt
 		FROM exam_rst_mst a, exam_mst b, member_mst c
 		WHERE a.exam_cd = b.exam_cd
-		AND a.user_id = c.EMPLYR_ID
+		AND a.user_id = c.USER_ID
         <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchKeyword)">
         AND c.USER_NM LIKE '%' #{searchKeyword} '%'
         </if>
@@ -57,7 +57,7 @@
 		SELECT a.exam_cd, b.exam_nm, a.user_id, c.USER_NM, a.reg_dt, a.reg_id, d.sbj_cd, d.sbj_point, e.SBJ_NM
 		FROM exam_rst_mst a, exam_mst b, member_mst c, exam_rst_sbj d, exam_subject e
 		WHERE a.exam_cd = b.exam_cd
-		AND a.user_id = c.EMPLYR_ID
+		AND a.user_id = c.USER_ID
 		AND a.exam_cd = d.exam_cd
 		AND a.user_id = d.user_id
 		AND d.sbj_cd = e.SBJ_CD
@@ -71,7 +71,7 @@
 		SELECT COUNT(*) totcnt
 		FROM exam_rst_mst a, exam_mst b, member_mst c, exam_rst_sbj d, exam_subject e
 		WHERE a.exam_cd = b.exam_cd
-		AND a.user_id = c.EMPLYR_ID
+		AND a.user_id = c.USER_ID
 		AND a.exam_cd = d.exam_cd
 		AND a.user_id = d.user_id
 		AND d.sbj_cd = e.SBJ_CD
@@ -87,7 +87,7 @@
 		FROM exam_rst_mst a, exam_rst_sbj b, member_mst c, exam_subject d, exam_mst e
 		WHERE a.exam_cd = b.exam_cd
 		AND a.user_id = b.user_id
-		AND a.user_id = c.EMPLYR_ID
+		AND a.user_id = c.USER_ID
       	AND b.sbj_cd = d.SBJ_CD
       	AND a.exam_cd = e.exam_cd
       	and a.EXAM_CD = #{examCd}

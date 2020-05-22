@@ -59,8 +59,8 @@
 					code_sub WHERE CODE_ID = 'COM101' AND USE_AT='Y') b
 				ON a.BBS_TY_CODE = b.CODE
 			LEFT OUTER JOIN
-				(SELECT EMPLYR_ID, USER_NM FROM member_mst) d
-				ON a.FRST_REGISTER_ID = d.EMPLYR_ID
+				(SELECT USER_ID, USER_NM FROM member_mst) d
+				ON a.FRST_REGISTER_ID = d.USER_ID
 			WHERE 1=1
 			<if test="searchCnd == 0">AND
 					a.BBS_NM LIKE CONCAT ('%', #{searchWrd},'%') 		
@@ -82,8 +82,8 @@
 					code_sub WHERE CODE_ID = 'COM101' AND USE_AT='Y') b
 				ON a.BBS_TY_CODE = b.CODE
 			LEFT OUTER JOIN
-				(SELECT EMPLYR_ID, USER_NM FROM member_mst) d
-				ON a.FRST_REGISTER_ID = d.EMPLYR_ID
+				(SELECT USER_ID, USER_NM FROM member_mst) d
+				ON a.FRST_REGISTER_ID = d.USER_ID
 			WHERE 1=1
 			<if test="searchCnd == 0">AND
 					a.BBS_NM LIKE CONCAT ('%', #{searchWrd},'%') 		

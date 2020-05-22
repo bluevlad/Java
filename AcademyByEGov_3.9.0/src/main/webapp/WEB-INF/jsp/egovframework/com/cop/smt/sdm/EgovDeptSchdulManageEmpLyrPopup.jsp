@@ -131,7 +131,7 @@ function fn_egov_open_Popup(cnt, esntlId){
 				<select name="searchCondition" title="<spring:message code="title.searchCondition" /> <spring:message code="input.cSelect" />">
 					<option selected value=''>--<spring:message code="input.select" />--</option>
 			   		<option value='USER_NM' <c:if test="${searchCondition == 'USER_NM'}">selected</c:if>><spring:message code="comCopSmtSdm.empLyrList.id" /></option><!-- 이름 -->
-			   		<option value='EMPLYR_ID' <c:if test="${searchCondition == 'EMPLYR_ID'}">selected</c:if>><spring:message code="comCopSmtSdm.empLyrList.name" /></option><!-- 아이디 -->
+			   		<option value='USER_ID' <c:if test="${searchCondition == 'USER_ID'}">selected</c:if>><spring:message code="comCopSmtSdm.empLyrList.name" /></option><!-- 아이디 -->
 			   		<option value='OFFM_TELNO' <c:if test="${searchCondition == 'OFFM_TELNO'}">selected</c:if>><spring:message code="comCopSmtSdm.empLyrList.tel" /></option><!-- 전화번호 -->
 				</select>
 			</li>

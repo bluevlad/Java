@@ -8,7 +8,7 @@
     		uniqId, userTy, userId , userNm, emailAdres, areaNo, middleTelno, endTelno, moblphonNo, groupId, sttus, sbscrbDe
 		FROM(
     			SELECT
-        			ESNTL_ID uniqId, 'USR03' userTy, EMPLYR_ID userId, USER_NM userNm, EMAIL_ADRES emailAdres, 
+        			ESNTL_ID uniqId, 'USR03' userTy, USER_ID userId, USER_NM userNm, EMAIL_ADRES emailAdres, 
         			AREA_NO areaNo, HOUSE_MIDDLE_TELNO middleTelno, HOUSE_END_TELNO endTelno, 
         			MBTLNUM moblphonNo, GROUP_ID groupId, EMPLYR_STTUS_CODE sttus, SBSCRB_DE sbscrbDe
 				FROM member_mst
@@ -33,7 +33,7 @@
 		SELECT COUNT(1) totcnt
         FROM(
     			SELECT
-        			ESNTL_ID uniqId, 'USR03' userTy, EMPLYR_ID userId, USER_NM userNm, EMAIL_ADRES emailAdres, 
+        			ESNTL_ID uniqId, 'USR03' userTy, USER_ID userId, USER_NM userNm, EMAIL_ADRES emailAdres, 
         			AREA_NO areaNo, HOUSE_MIDDLE_TELNO middleTelno, HOUSE_END_TELNO endTelno, 
         			MBTLNUM moblphonNo, GROUP_ID groupId, EMPLYR_STTUS_CODE sttus, SBSCRB_DE sbscrbDe
 				FROM member_mst
@@ -54,7 +54,7 @@
     
     <select id="selectUser_S" resultType="egovframework.com.academy.member.service.UserManageVO">
 		SELECT
-        	ESNTL_ID uniqId, 'USR03' userTy, EMPLYR_ID emplyrId, USER_NM emplyrNm, PASSWORD password, PASSWORD_HINT passwordHint, PASSWORD_CNSR passwordCnsr,
+        	ESNTL_ID uniqId, 'USR03' userTy, USER_ID emplyrId, USER_NM emplyrNm, PASSWORD password, PASSWORD_HINT passwordHint, PASSWORD_CNSR passwordCnsr,
             EMPL_NO emplNo, IHIDNUM ihidnum, SEXDSTN_CODE sexdstnCode, BRTHDY brth, AREA_NO areaNo, 
             HOUSE_MIDDLE_TELNO homemiddleTelno, HOUSE_END_TELNO homeendTelno,
             FXNUM fxnum, HOUSE_ADRES homeadres, DETAIL_ADRES detailAdres, ZIP zip, OFFM_TELNO offmTelno, MBTLNUM moblphonNo,
@@ -66,7 +66,7 @@
     
     <insert id="insertUser_S">
 		INSERT INTO member_mst(   
-			ESNTL_ID, EMPLYR_ID, USER_NM, PASSWORD, EMPL_NO, SEXDSTN_CODE,
+			ESNTL_ID, USER_ID, USER_NM, PASSWORD, EMPL_NO, SEXDSTN_CODE,
 			BRTHDY, HOUSE_ADRES, DETAIL_ADRES, ZIP,
 			MBTLNUM, EMAIL_ADRES, OFCPS_NM, GROUP_ID, ORGNZT_ID, EMPLYR_STTUS_CODE, SBSCRB_DE, CRTFC_DN_VALUE
 		) VALUES (
@@ -77,15 +77,15 @@
     </insert>
     
     <select id="checkIdDplct_S" resultType="int">
-		SELECT COUNT(EMPLYR_ID) usedCnt
+		SELECT COUNT(USER_ID) usedCnt
         FROM member_mst
-        WHERE EMPLYR_ID = #{checkId}
+        WHERE USER_ID = #{checkId}
     </select>
     
     <update id="updateUser_S">
 		UPDATE member_mst 
 		SET 
-			EMPLYR_ID = #{emplyrId},
+			USER_ID = #{emplyrId},
 			USER_NM = #{emplyrNm},
 			EMPL_NO = #{emplNo},
 			SEXDSTN_CODE = #{sexdstnCode},

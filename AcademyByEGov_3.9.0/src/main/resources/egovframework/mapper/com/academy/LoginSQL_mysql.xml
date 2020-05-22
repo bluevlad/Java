@@ -35,17 +35,17 @@
 	<!-- 일반 로그인 -->
 	<select id="actionLogin" resultMap="login">
 		SELECT 
-				emplyr_id AS id, user_nm AS name, password AS password, ihidnum AS ihidNum
+				USER_ID AS id, user_nm AS name, password AS password, ihidnum AS ihidNum
 			     , email_adres AS email, 'USR' AS userSe, orgnzt_id AS orgnztId, esntl_id AS uniqId
 		FROM member_mst
-		WHERE emplyr_id = #{id}
+		WHERE USER_ID = #{id}
 		AND password = #{password}
 		AND emplyr_sttus_code = 'P'
 	</select>
 
 	<!-- 아이디 찾기 -->
 	<select id="searchId" resultMap="id">
-		SELECT emplyr_id AS id
+		SELECT USER_ID AS id
 		FROM member_mst
 		WHERE user_nm = #{name}
 		AND email_adres = #{email}
@@ -56,7 +56,7 @@
 	<select id="searchPassword" resultMap="password">
 		SELECT password AS password
 		FROM member_mst
-		WHERE emplyr_id = #{id}
+		WHERE USER_ID = #{id}
 		AND user_nm = #{name}
 		AND email_adres = #{email}
 		AND password_hint = #{passwordHint}
@@ -68,7 +68,7 @@
 	<update id="updatePassword">
 		UPDATE member_mst
 		SET password = #{password}
-		WHERE emplyr_id = #{id}
+		WHERE USER_ID = #{id}
 	</update>
 	
 </mapper>
