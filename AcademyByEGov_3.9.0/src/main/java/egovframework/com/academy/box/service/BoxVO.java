@@ -98,6 +98,8 @@ public class BoxVO implements Serializable {
     private String payGubun;
     /** 주문번호 */
     private String orderId;
+    /** 사용여부 */
+    private String isUse;
     
 	/**
 	 * searchCondition attribute 를 리턴한다.
@@ -666,6 +668,21 @@ public class BoxVO implements Serializable {
 	 */
 	public void setOrderId(String orderId) {
 		this.orderId = orderId;
+	}
+	
+	/**
+	 * isUse attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getIsUse() {
+		return isUse;
+	}
+	/**
+	 * isUse attribute 값을 설정한다.
+	 * @param isUse String
+	 */
+	public void setIsUse(String isUse) {
+		this.isUse = isUse;
 	}
 
 }
