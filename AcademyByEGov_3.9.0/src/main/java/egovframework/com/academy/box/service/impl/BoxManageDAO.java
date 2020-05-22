@@ -4,12 +4,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import egovframework.com.academy.bbs.mng.service.BoardMaster;
-import egovframework.com.academy.exam.service.ExamVO;
+import egovframework.com.academy.box.service.BoxVO;
 import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 /**
- * 시험정보에 관한 데이터 접근 클래스를 정의한다.
+ * 사물함 정보에 관한 데이터 접근 클래스를 정의한다.
  * @author rainend
  * @since 2009.04.10
  * @version 1.0
@@ -20,93 +19,85 @@ import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
  *
  *   수정일      		수정자           수정내용
  *  ----------------    --------    ---------------------------
- *   2020.04.00  		rainend          최초 생성
+ *   2020.05.21  		rainend          최초 생성
  * </pre>
  */
-@Repository("examManageDAO")
+@Repository("boxManageDAO")
 public class BoxManageDAO extends EgovComAbstractDAO{
 
     /**
      * @param searchVO 검색조건
-     * @return List 시험 목록정보
+     * @return List 사물함 목록정보
      */
-    public List<?> selectExamList(ExamVO searchVO) throws Exception{
-		return selectList("ExamManage.selectExamList", searchVO);
+    public List<?> selectBoxList(BoxVO searchVO) throws Exception{
+		return selectList("BoxManage.selectBoxList", searchVO);
     }
 
     /**
      * @param searchVO 검색조건
-     * @return int 시험 총갯수
+     * @return int 사물함 총갯수
      */
-    public int selectExamListTotCnt(ExamVO searchVO) {
-        return (Integer)selectOne("ExamManage.selectExamListTotCnt", searchVO);
+    public int selectBoxListTotCnt(BoxVO searchVO) {
+        return (Integer)selectOne("BoxManage.selectBoxListTotCnt", searchVO);
     }
 
     /**
-     * @param examCd 상세조회대상 시험코드
-     * @return ExamVO 시험  상세정보
+     * @param boxCd 상세조회대상 사물함코드
+     * @return BoxVO 사물함  상세정보
      */
-    public ExamVO selectExamDetail(ExamVO ExamVO){
-        return selectOne("ExamManage.selectExamDetail", ExamVO);
+    public BoxVO selectBoxDetail(BoxVO BoxVO){
+        return selectOne("BoxManage.selectBoxDetail", BoxVO);
     }
 
     /**
-     * @param ExamVO 시험정보 등록
+     * @param ExamVO 사물함 정보 등록
      */
-    public void insertExam(ExamVO ExamVO) throws Exception{
-        insert("ExamManage.insertExam", ExamVO);
+    public void insertBox(BoxVO BoxVO) throws Exception{
+        insert("BoxManage.insertBox", BoxVO);
     }
 
     /**
-     * @param ExamVO 시험정보 등록
+     * @param ExamVO 사물함 정보 변경
      */
-    public int insertExamRetcd(ExamVO ExamVO) throws Exception{
-        return getSqlSession().insert("ExamManage.insertExamRetcd", ExamVO);
+    public void updateBox(BoxVO BoxVO) throws Exception{
+        insert("BoxManage.updateBox", BoxVO);
     }
 
     /**
-     * @param ExamVO 시험정보 수정(삭제)
+     * @param BoxVO 사물함 정보 삭제
      */
-    public void updateExam(ExamVO ExamVO) throws Exception{
-        update("ExamManage.updateExam", ExamVO);
+    public void deleteBox(BoxVO BoxVO) throws Exception{
+        update("BoxManage.deleteBox", BoxVO);
     }
 
     /**
-     * @param examSearchVO 검색조건
+     * @param searchVO 검색조건
      * @return List 과목 목록정보
      */
-    public List<ExamVO> selectSubjectList(ExamVO ExamVO) throws Exception{
-		return selectList("ExamManage.selectSubjectList", ExamVO);
+    public List<?> selectBoxNumList(BoxVO searchVO) throws Exception{
+		return selectList("BoxManage.selectBoxNumList", searchVO);
     }
 
     /**
      * @param examSearchVO 검색조건
      * @return int 과목 총갯수
      */
-    public int selectSubjectListTotCnt(ExamVO ExamVO) {
-        return (Integer)selectOne("ExamManage.selectSubjectListTotCnt", ExamVO);
+    public int selectBoxNumListTotCnt(BoxVO searchVO) {
+        return (Integer)selectOne("BoxManage.selectBoxNumListTotCnt", searchVO);
     }
 
     /**
-     * @param examCd 상세조회대상 시험코드
-     * @return ExamVO 시험  상세정보
+     * @param BoxVO 사물함 등록
      */
-    public ExamVO selectSubjectDetail(ExamVO ExamVO){
-        return (ExamVO) selectOne("ExamManage.selectSubjectDetail", ExamVO);
+    public int insertBoxNum(BoxVO BoxVO) throws Exception{
+        return getSqlSession().insert("BoxManage.insertBoxNum", BoxVO);
     }
 
     /**
-     * @param ExamVO 시험정보 등록
+     * @param BoxVO 사물함 등록
      */
-    public void insertSubject(ExamVO ExamVO){
-        insert("ExamManage.insertSubject", ExamVO);
-    }
-
-    /**
-     * @param ExamVO 시험정보 수정(삭제)
-     */
-    public void updateSubject(ExamVO ExamVO){
-        update("ExamManage.updateSubject", ExamVO);
+    public int deleteBoxNum(BoxVO BoxVO) throws Exception{
+        return getSqlSession().insert("BoxManage.deleteBoxNum", BoxVO);
     }
 
 }

@@ -49,11 +49,15 @@ public class BoxVO implements Serializable {
     /** 사물함대여금 */
 	private int boxPrice;
 	/** 예치금 */
-    private int Deposit;
+    private int deposit;
     /** 층수 */
-    private int rowCount;
+    private int highNum;
 	/** 가로갯수 */
     private int rowNum;
+	/** 사용갯수 */
+    private int useNum;
+	/** 예약가능갯수 */
+    private int reqNum;
 	/** 사물함 시작번호 */
     private int startNum;
     /** 사물함 종료번호 */
@@ -77,7 +81,7 @@ public class BoxVO implements Serializable {
     /** 사물함번호 */
     private int boxNum;
     /** 사물함신청번호 */
-    private int Seq;
+    private int seq;
     /** 대여시작일 */
     private String rentStart;
     /** 대여종료일 */
@@ -269,74 +273,104 @@ public class BoxVO implements Serializable {
 	}
 	/**
 	 * boxCount attribute 값을 설정한다.
-	 * @param boxCount String
+	 * @param boxCount int
 	 */
 	public void setBoxCount(int boxCount) {
 		this.boxCount = boxCount;
 	}
 	/**
 	 * boxPrice attribute 를 리턴한다.
-	 * @return String
+	 * @return int
 	 */
 	public int getBoxPrice() {
 		return boxPrice;
 	}
 	/**
 	 * boxPrice attribute 값을 설정한다.
-	 * @param boxPrice String
+	 * @param boxPrice int
 	 */
 	public void setBoxPrice(int boxPrice) {
 		this.boxPrice = boxPrice;
 	}
 	
 	/**
-	 * Deposit attribute 를 리턴한다.
+	 * deposit attribute 를 리턴한다.
 	 * @return int
 	 */
 	public int getDeposit() {
-		return Deposit;
+		return deposit;
 	}
 	/**
 	 * Deposit attribute 값을 설정한다.
-	 * @param Deposit String
+	 * @param deposit int
 	 */
-	public void setDeposit(int Deposit) {
-		this.Deposit = Deposit;
+	public void setDeposit(int deposit) {
+		this.deposit = deposit;
 	}
 
 	/**
-	 * rowCount attribute 를 리턴한다.
-	 * @return String
+	 * highNum attribute 를 리턴한다.
+	 * @return int
 	 */
-	public int getRowCount() {
-		return rowCount;
+	public int getHighNum() {
+		return highNum;
 	}
 	/**
-	 * rowCount attribute 값을 설정한다.
-	 * @param rowCount String
+	 * highNum attribute 값을 설정한다.
+	 * @param highNum int
 	 */
-	public void setRowCount(int rowCount) {
-		this.rowCount = rowCount;
+	public void setHighNum(int highNum) {
+		this.highNum = highNum;
 	}
 
 	/**
 	 * rowNum attribute 를 리턴한다.
-	 * @return String
+	 * @return int
 	 */
 	public int getRowNum() {
 		return rowNum;
 	}
 	/**
 	 * rowNum attribute 값을 설정한다.
-	 * @param rowNum String
+	 * @param rowNum int
 	 */
 	public void setRowNum(int rowNum) {
 		this.rowNum = rowNum;
 	}
 
 	/**
-	 * startNum attribute 를 리턴한다.
+	 * useNum attribute 를 리턴한다.
 	 * @return String
+	 */
+	public int getUseNum() {
+		return useNum;
+	}
+	/**
+	 * useNum attribute 값을 설정한다.
+	 * @param useNum int
+	 */
+	public void setUseNum(int useNum) {
+		this.useNum = useNum;
+	}
+
+	/**
+	 * reqNum attribute 를 리턴한다.
+	 * @return String
+	 */
+	public int getReqNum() {
+		return reqNum;
+	}
+	/**
+	 * reqNum attribute 값을 설정한다.
+	 * @param reqNum int
+	 */
+	public void setReqNum(int reqNum) {
+		this.reqNum = reqNum;
+	}
+
+	/**
+	 * startNum attribute 를 리턴한다.
+	 * @return int
 	 */
 	public int getStartNum() {
 		return startNum;
@@ -351,7 +385,7 @@ public class BoxVO implements Serializable {
 
 	/**
 	 * endNum attribute 를 리턴한다.
-	 * @return String
+	 * @return int
 	 */
 	public int getEndNum() {
 		return endNum;
@@ -500,18 +534,18 @@ public class BoxVO implements Serializable {
 	}
 	
 	/**
-	 * Seq attribute 를 리턴한다.
+	 * seq attribute 를 리턴한다.
 	 * @return int
 	 */
 	public int getSeq() {
-		return Seq;
+		return seq;
 	}
 	/**
-	 * Seq attribute 값을 설정한다.
-	 * @param Seq String
+	 * seq attribute 값을 설정한다.
+	 * @param seq String
 	 */
-	public void setSeq(int Seq) {
-		this.Seq = Seq;
+	public void setSeq(int seq) {
+		this.seq = seq;
 	}
 	
 	/**

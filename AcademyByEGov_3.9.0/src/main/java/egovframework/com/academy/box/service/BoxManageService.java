@@ -5,75 +5,68 @@ import java.util.List;
 public interface BoxManageService {
 	
 	/**
-	 * 시험 목록을 조회한다.
+	 * 사물함 목록을 조회한다.
 	 * @param searchVO
-	 * @return List - 시험 목록
+	 * @return List - 사물함 목록
 	 */
-	public List<?> selectExamList(BoxVO ExamVO) throws Exception;
+	public List<?> selectBoxList(BoxVO searchVO) throws Exception;
 
 	/**
-	 * 시험 총 갯수를 조회한다.
+	 * 사물함 총 갯수를 조회한다.
 	 * @param searchVO
-	 * @return int - 시험 카운트 수
+	 * @return int - 사물함 카운트 수
 	 */
-	int selectExamListTotCnt(BoxVO ExamVO) throws Exception;
+	int selectBoxListTotCnt(BoxVO searchVO) throws Exception;
 	
 	/**
-	 * 시험 상세정보를 조회한다.
-	 * @param ExamMst
-	 * @return ExamMst
+	 * 사물함 상세정보를 조회한다.
+	 * @param BoxVO
+	 * @return BoxVO
 	 */
-	public BoxVO selectExamDetail(BoxVO ExamVO) throws Exception;
+	public BoxVO selectBoxDetail(BoxVO BoxVO) throws Exception;
 
 	/**
-	 * 시험정보를 신규로 등록한다.
-	 * @param examMst
+	 * 사물함 정보를 신규로 등록한다.
+	 * @param BoxVO
 	 */
-	void insertExam(BoxVO ExamVO) throws Exception;
+	void insertBox(BoxVO BoxVO) throws Exception;
 
 	/**
-	 * 시험정보를 신규로 등록한다.
+	 * 사물함 정보를 신규로 등록한다.
 	 * @param ExamVO
 	 */
-	public int insertExamRetcd(BoxVO ExamVO) throws Exception;
+	void updateBox(BoxVO BoxVO) throws Exception;
 
 	/**
-	 * 기 등록된 시험정보를 수정한다.
+	 * 기 등록된 사물함 정보를 수정한다.
 	 * @param ExamVO
 	 */
-	void updateExam(BoxVO ExamVO) throws Exception;
+	void deleteBox(BoxVO BoxVO) throws Exception;
 	
 	/**
-	 * 과목 목록을 조회한다.
-	 * @param examSearchVO
-	 * @return List - 과목 목록
+	 * 사물함 목록을 조회한다.
+	 * @param searchVO
+	 * @return List - 사물함 목록
 	 */
-	public List<BoxVO> selectSubjectList(BoxVO ExamVO) throws Exception;
+	public List<?> selectBoxNumList(BoxVO searchVO) throws Exception;
 
 	/**
-	 * 과목 총 갯수를 조회한다.
+	 * 사물함 총 갯수를 조회한다.
 	 * @param examSearchVO
 	 * @return int - 과목 카운트 수
 	 */
-	public int selectSubjectListTotCnt(BoxVO ExamVO) throws Exception;
+	public int selectBoxNumListTotCnt(BoxVO searchVO) throws Exception;
 	
 	/**
-	 * 과목 상세정보를 조회한다.
-	 * @param ExamVO
-	 * @return ExamVO
+	 * 사물함 정보를 신규로 등록한다.
+	 * @param BoxVO
 	 */
-	public BoxVO selectSubjectDetail(BoxVO ExamVO) throws Exception;
+	public void insertBoxNum(BoxVO BoxVO) throws Exception;
 
 	/**
-	 * 과목정보를 신규로 등록한다.
-	 * @param ExamVO
+	 * 기 등록된 사물함 정보를 수정한다.
+	 * @param BoxVO
 	 */
-	public void insertSubject(BoxVO ExamVO) throws Exception;
-
-	/**
-	 * 기 등록된 과목정보를 수정한다.
-	 * @param ExamVO
-	 */
-	public void updateSubject(BoxVO ExamVO) throws Exception;
+	public void deleteBoxNum(BoxVO BoxVO) throws Exception;
 
 }

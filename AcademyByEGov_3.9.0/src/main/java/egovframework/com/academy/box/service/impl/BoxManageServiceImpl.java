@@ -6,12 +6,12 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import egovframework.com.academy.exam.service.ExamManageService;
-import egovframework.com.academy.exam.service.ExamVO;
+import egovframework.com.academy.box.service.BoxManageService;
+import egovframework.com.academy.box.service.BoxVO;
 import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
 
 /**
- * 시험(과목)관리에 관한 비지니스 클래스를 정의한다.
+ * 사물함 관리에 관한 비지니스 클래스를 정의한다.
  * @author rainend
  * @since 2009.04.10
  * @version 1.0
@@ -20,71 +20,71 @@ import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
  * << 개정이력(Modification Information) >>
  *   수정일      			수정자           수정내용
  *  ----------------    --------------    ---------------------------
- *  2020.04.00  			rainend          최초 생성
+ *  2020.05.21  			rainend          최초 생성
  * </pre>
  */
-@Service("examManageService")
-public class BoxManageServiceImpl extends EgovAbstractServiceImpl implements ExamManageService {
+@Service("boxManageService")
+public class BoxManageServiceImpl extends EgovAbstractServiceImpl implements BoxManageService {
 
-	@Resource(name="examManageDAO")
-	private BoxManageDAO examManageDAO;
+	@Resource(name="boxManageDAO")
+	private BoxManageDAO boxManageDAO;
 
 	/**
 	 * @param searchVO 검색조건
-	 * @return List<?> 시험 목록정보
+	 * @return List<?> 사물함 목록정보
 	 * @throws Exception
 	 */
 	@Override
-	public List<?> selectExamList(ExamVO ExamVO) throws Exception {
-		return examManageDAO.selectExamList(ExamVO);
+	public List<?> selectBoxList(BoxVO searchVO) throws Exception {
+		return boxManageDAO.selectBoxList(searchVO);
 	}
 
 	/**
-	 * @param examSearchVO 검색조건
-	 * @return 총시험 갯수(int)
+	 * @param searchVO 검색조건
+	 * @return 사물함 갯수(int)
 	 * @throws Exception
 	 */
 	@Override
-	public int selectExamListTotCnt(ExamVO ExamVO) throws Exception {
-		return examManageDAO.selectExamListTotCnt(ExamVO);
+	public int selectBoxListTotCnt(BoxVO searchVO) throws Exception {
+		return boxManageDAO.selectBoxListTotCnt(searchVO);
 	}
 
 	/**
-	 * @param examCd 상세조회대상 시험코드
-	 * @return ExamVO 시험 상세정보
+	 * @param boxCd 상세조회대상 사물함코드
+	 * @return BoxVO 사물함 상세정보
 	 * @throws Exception
 	 */
 	@Override
-	public ExamVO selectExamDetail(ExamVO ExamVO) throws Exception {
-		return examManageDAO.selectExamDetail(ExamVO);
+	public BoxVO selectBoxDetail(BoxVO BoxVO) throws Exception {
+		return boxManageDAO.selectBoxDetail(BoxVO);
 	}
 
 	/**
-	 * @param ExamVO 시험 등록정보
+	 * @param BoxVO 사물함 등록정보
 	 * @throws Exception
 	 */
 	@Override
-	public void insertExam(ExamVO ExamVO) throws Exception {
-		examManageDAO.insertExam(ExamVO);
+	public void insertBox(BoxVO BoxVO) throws Exception {
+		boxManageDAO.insertBox(BoxVO);
 	}
 
 	/**
-	 * @param ExamVO 시험 등록정보
+	 * @param BoxVO 사물함 등록정보
 	 * @throws Exception
 	 */
 	@Override
-	public int insertExamRetcd(ExamVO ExamVO) throws Exception {
-		return examManageDAO.insertExamRetcd(ExamVO);
+	public void updateBox(BoxVO BoxVO) throws Exception {
+		boxManageDAO.updateBox(BoxVO);
 	}
 
 	/**
-	 * ExamVO 시험정보 수정
-	 * @param ExamVO 시험정보
+	 * BoxVO 사물함 수정
+	 * @param BoxVO 사물함
 	 * @throws Exception
 	 */
 	@Override
-	public void updateExam(ExamVO ExamVO) throws Exception {
-		examManageDAO.updateExam(ExamVO);
+	public void deleteBox(BoxVO BoxVO) throws Exception {
+		boxManageDAO.deleteBox(BoxVO);
 	}
 
 	/**
@@ -92,8 +92,8 @@ public class BoxManageServiceImpl extends EgovAbstractServiceImpl implements Exa
 	 * @return List<ExamVO> 과목 목록정보
 	 * @throws Exception
 	 */
-	public List<ExamVO> selectSubjectList(ExamVO ExamVO) throws Exception {
-		return examManageDAO.selectSubjectList(ExamVO);
+	public List<?> selectBoxNumList(BoxVO searchVO) throws Exception {
+		return boxManageDAO.selectBoxNumList(searchVO);
 	}
 
 	/**
@@ -101,25 +101,16 @@ public class BoxManageServiceImpl extends EgovAbstractServiceImpl implements Exa
 	 * @return 총시험 갯수(int)
 	 * @throws Exception
 	 */
-	public int selectSubjectListTotCnt(ExamVO ExamVO) throws Exception {
-		return examManageDAO.selectSubjectListTotCnt(ExamVO);
-	}
-
-	/**
-	 * @param sbjCd 상세조회대상 과목코드
-	 * @return ExamVO 과목 상세정보
-	 * @throws Exception
-	 */
-	public ExamVO selectSubjectDetail(ExamVO ExamVO) throws Exception {
-		return examManageDAO.selectSubjectDetail(ExamVO);
+	public int selectBoxNumListTotCnt(BoxVO searchVO) throws Exception {
+		return boxManageDAO.selectBoxNumListTotCnt(searchVO);
 	}
 
 	/**
 	 * @param ExamVO 과목 등록정보
 	 * @throws Exception
 	 */
-	public void insertSubject(ExamVO ExamVO) throws Exception {
-		examManageDAO.insertSubject(ExamVO);
+	public void insertBoxNum(BoxVO BoxVO) throws Exception {
+		boxManageDAO.insertBoxNum(BoxVO);
 	}
 
 	/**
@@ -127,8 +118,8 @@ public class BoxManageServiceImpl extends EgovAbstractServiceImpl implements Exa
 	 * @param ExamVO 과목정보
 	 * @throws Exception
 	 */
-	public void updateSubject(ExamVO ExamVO) throws Exception {
-		examManageDAO.updateSubject(ExamVO);
+	public void deleteBoxNum(BoxVO BoxVO) throws Exception {
+		boxManageDAO.deleteBoxNum(BoxVO);
 	}
 
 }
