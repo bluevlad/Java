@@ -179,11 +179,11 @@ function fnUpdate() {
 		<tr>
 		<c:forEach var="boxList" items="${boxList}" varStatus="status">
 			<c:choose>
-				<c:when test="${boxList.BOX_FLAG eq 'N'}"><c:set var="bgcolor1" value="#f8dcd4" /></c:when>
-				<c:when test="${boxList.BOX_FLAG eq 'Y'}"><c:set var="bgcolor1" value="#CCCCCC" /></c:when>
-				<c:when test="${boxList.BOX_FLAG eq 'D'}"><c:set var="bgcolor1" value="#f3fc65" /></c:when>
-				<c:when test="${boxList.BOX_FLAG eq 'H'}"><c:set var="bgcolor1" value="#79f670" /></c:when>
-				<c:when test="${boxList.BOX_FLAG eq 'X'}"><c:set var="bgcolor1" value="#f36262" /></c:when>
+				<c:when test="${boxList.boxFlag eq 'N'}"><c:set var="bgcolor1" value="#f8dcd4" /></c:when>
+				<c:when test="${boxList.boxFlag eq 'Y'}"><c:set var="bgcolor1" value="#CCCCCC" /></c:when>
+				<c:when test="${boxList.boxFlag eq 'D'}"><c:set var="bgcolor1" value="#f3fc65" /></c:when>
+				<c:when test="${boxList.boxFlag eq 'H'}"><c:set var="bgcolor1" value="#79f670" /></c:when>
+				<c:when test="${boxList.boxFlag eq 'X'}"><c:set var="bgcolor1" value="#f36262" /></c:when>
 				<c:otherwise><c:set var="bgcolor1" value="#FFFFFF" /></c:otherwise>
 			</c:choose>
 			<td width="70" height="30" bgcolor="${bgcolor1}">

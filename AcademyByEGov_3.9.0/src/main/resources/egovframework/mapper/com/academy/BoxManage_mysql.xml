@@ -44,7 +44,7 @@
     <delete id="insertBox">
    		DELETE 
    			FROM BOX_MST 
-   			WHERE BOX_CD=#{BOX_CD}
+   			WHERE BOX_CD=#{boxCd}
    	</delete>
  
 	<!-- 사물함정보 변경 -->
@@ -62,22 +62,23 @@
    	</delete>
 
 	<!-- 사물함 개별정보를 가져온다.  -->
-	<select id="selectBoxNumList"  parameterType="egovframework.com.academy.box.service.BoxVO" 
+	<select id="selectBoxInfoList"  parameterType="egovframework.com.academy.box.service.BoxVO" 
 										resultType="egovframework.com.academy.box.service.BoxVO">
 		SELECT BOX_CD, BOX_NUM, a.USER_ID, b.USER_NM, BOX_FLAG, UPD_DT, UPD_ID, RENT_SEQ 
 		FROM box_info a
-		LEFT OUTER JOIN MEMBER_MST b ON a.USER_ID = b.USER_ID  
+		LEFT OUTER JOIN MEMBER_MST b ON a.USER_ID = b.USER_ID
 		WHERE a.BOX_CD = #{boxCd}
 		ORDER BY a.BOX_NUM ASC
 	</select>
 
-	<!-- 사물함 개별정보 갯수를 조회 -->
-	<select id="selectBoxNumListTotCnt" parameterType="egovframework.com.academy.box.service.BoxVO" resultType="int">
-		SELECT 
-			COUNT(a.BOX_NUM)
+	<!-- 사물함  상세정보 -->
+	<select id="selectBoxInfoDetail" parameterType="egovframework.com.academy.box.service.BoxVO" 
+										resultType="egovframework.com.academy.box.service.BoxVO">
+		SELECT BOX_CD, BOX_NUM, a.USER_ID, b.USER_NM, BOX_FLAG, UPD_DT, UPD_ID, RENT_SEQ 
 		FROM box_info a
-		LEFT OUTER JOIN MEMBER_MST b ON a.USER_ID = b.USER_ID  
+		LEFT OUTER JOIN MEMBER_MST b ON a.USER_ID = b.USER_ID
 		WHERE a.BOX_CD = #{boxCd}
+		AND a.box_num = #{boxNum}
 	</select>
 
 	<!-- 사물함 등록 -->

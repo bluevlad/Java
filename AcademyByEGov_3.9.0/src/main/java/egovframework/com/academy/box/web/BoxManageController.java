@@ -1,7 +1,11 @@
 package egovframework.com.academy.box.web;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -10,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import egovframework.com.academy.box.service.BoxManageService;
 import egovframework.com.academy.box.service.BoxVO;
+import egovframework.com.academy.schedule.web.ScheduleController;
 import egovframework.com.cmm.EgovMessageSource;
 import egovframework.rte.fdl.property.EgovPropertyService;
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
@@ -29,6 +34,8 @@ import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 
 @Controller
 public class BoxManageController {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ScheduleController.class);
 
 	@Resource(name = "boxManageService")
 	private BoxManageService boxManageService;
@@ -80,7 +87,7 @@ public class BoxManageController {
 	public String Detail(@ModelAttribute("BoxVO") BoxVO BoxVO, ModelMap model) throws Exception {
 
 		model.addAttribute("BoxVO", boxManageService.selectBoxDetail(BoxVO));
-		model.addAttribute("BoxList", boxManageService.selectBoxNumList(BoxVO));
+		model.addAttribute("boxList", boxManageService.selectBoxInfoList(BoxVO));
 		
 		return "egovframework/com/academy/box/BoxMstDetail";
 	}

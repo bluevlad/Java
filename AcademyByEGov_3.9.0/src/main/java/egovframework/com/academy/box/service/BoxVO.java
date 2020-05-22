@@ -72,6 +72,8 @@ public class BoxVO implements Serializable {
     private String updId;
     /** 사용자ID */
     private String userId;
+    /** 사용자명 */
+    private String userNm;
     /** 사물함상태 */
     private String boxFlag;
     /** 사물함대여번호 */
@@ -80,8 +82,6 @@ public class BoxVO implements Serializable {
     private String rentMemo;
     /** 사물함번호 */
     private int boxNum;
-    /** 사물함신청번호 */
-    private int seq;
     /** 대여시작일 */
     private String rentStart;
     /** 대여종료일 */
@@ -467,10 +467,25 @@ public class BoxVO implements Serializable {
 	}
 	/**
 	 * userId attribute 값을 설정한다.
-	 * @param userId int
+	 * @param userId String
 	 */
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	/**
+	 * userNm attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getUserNm() {
+		return userNm;
+	}
+	/**
+	 * userNm attribute 값을 설정한다.
+	 * @param userNm String
+	 */
+	public void setUserNm(String userNm) {
+		this.userNm = userNm;
 	}
 	
 	/**
@@ -531,21 +546,6 @@ public class BoxVO implements Serializable {
 	 */
 	public void setBoxNum(int boxNum) {
 		this.boxNum = boxNum;
-	}
-	
-	/**
-	 * seq attribute 를 리턴한다.
-	 * @return int
-	 */
-	public int getSeq() {
-		return seq;
-	}
-	/**
-	 * seq attribute 값을 설정한다.
-	 * @param seq String
-	 */
-	public void setSeq(int seq) {
-		this.seq = seq;
 	}
 	
 	/**
