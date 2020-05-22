@@ -74,9 +74,10 @@
 	<!-- 사물함 개별정보 갯수를 조회 -->
 	<select id="selectBoxNumListTotCnt" parameterType="egovframework.com.academy.box.service.BoxVO" resultType="int">
 		SELECT 
-			COUNT(BOX_NUM)  
-		FROM BOX_MST_NUM
-		WHERE BOX_CD = #{BOX_CD} AND BOX_FLAG = 'Y'
+			COUNT(a.BOX_NUM)
+		FROM box_info a
+		LEFT OUTER JOIN MEMBER_MST b ON a.USER_ID = b.USER_ID  
+		WHERE a.BOX_CD = #{boxCd}
 	</select>
 
 	<!-- 사물함 등록 -->

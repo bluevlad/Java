@@ -80,6 +80,7 @@ public class BoxManageController {
 	public String Detail(@ModelAttribute("BoxVO") BoxVO BoxVO, ModelMap model) throws Exception {
 
 		model.addAttribute("BoxVO", boxManageService.selectBoxDetail(BoxVO));
+		model.addAttribute("BoxList", boxManageService.selectBoxNumList(BoxVO));
 		
 		return "egovframework/com/academy/box/BoxMstDetail";
 	}

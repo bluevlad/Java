@@ -74,16 +74,16 @@ public class BoxManageDAO extends EgovComAbstractDAO{
      * @param searchVO 검색조건
      * @return List 과목 목록정보
      */
-    public List<?> selectBoxNumList(BoxVO searchVO) throws Exception{
-		return selectList("BoxManage.selectBoxNumList", searchVO);
+    public List<?> selectBoxNumList(BoxVO BoxVO) throws Exception{
+		return selectList("BoxManage.selectBoxNumList", BoxVO);
     }
 
     /**
      * @param examSearchVO 검색조건
      * @return int 과목 총갯수
      */
-    public int selectBoxNumListTotCnt(BoxVO searchVO) {
-        return (Integer)selectOne("BoxManage.selectBoxNumListTotCnt", searchVO);
+    public int selectBoxNumListTotCnt(BoxVO BoxVO) {
+        return (Integer)selectOne("BoxManage.selectBoxNumListTotCnt", BoxVO);
     }
 
     /**

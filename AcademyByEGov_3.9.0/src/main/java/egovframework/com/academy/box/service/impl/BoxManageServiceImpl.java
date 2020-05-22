@@ -92,8 +92,8 @@ public class BoxManageServiceImpl extends EgovAbstractServiceImpl implements Box
 	 * @return List<ExamVO> 과목 목록정보
 	 * @throws Exception
 	 */
-	public List<?> selectBoxNumList(BoxVO searchVO) throws Exception {
-		return boxManageDAO.selectBoxNumList(searchVO);
+	public List<?> selectBoxNumList(BoxVO BoxVO) throws Exception {
+		return boxManageDAO.selectBoxNumList(BoxVO);
 	}
 
 	/**
@@ -101,8 +101,8 @@ public class BoxManageServiceImpl extends EgovAbstractServiceImpl implements Box
 	 * @return 총시험 갯수(int)
 	 * @throws Exception
 	 */
-	public int selectBoxNumListTotCnt(BoxVO searchVO) throws Exception {
-		return boxManageDAO.selectBoxNumListTotCnt(searchVO);
+	public int selectBoxNumListTotCnt(BoxVO BoxVO) throws Exception {
+		return boxManageDAO.selectBoxNumListTotCnt(BoxVO);
 	}
 
 	/**

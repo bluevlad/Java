@@ -48,14 +48,14 @@ public interface BoxManageService {
 	 * @param searchVO
 	 * @return List - 사물함 목록
 	 */
-	public List<?> selectBoxNumList(BoxVO searchVO) throws Exception;
+	public List<?> selectBoxNumList(BoxVO BoxVO) throws Exception;
 
 	/**
 	 * 사물함 총 갯수를 조회한다.
 	 * @param examSearchVO
 	 * @return int - 과목 카운트 수
 	 */
-	public int selectBoxNumListTotCnt(BoxVO searchVO) throws Exception;
+	public int selectBoxNumListTotCnt(BoxVO BoxVO) throws Exception;
 	
 	/**
 	 * 사물함 정보를 신규로 등록한다.

@@ -134,6 +134,69 @@ function fnUpdate() {
 		</tr>
 	</tbody>
 	</table>
+	<br>
+	<table class="wTable" summary="<spring:message code="common.summary.list" arguments="${pageTitle}" />">
+		<caption>${pageTitle} <spring:message code="title.update" /></caption>
+		<tbody>
+		<tr>
+	        <td width="50" bgcolor="#CCCCCC">
+	            <p>&nbsp;</p>
+	        </td>
+	        <td width="50">
+	            <p>사용중</p>
+	        </td>
+	        <td width="50" bgcolor="#f8dcd4">
+	            <p>&nbsp;</p>
+	        </td>
+	        <td width="50">
+	            <p>사용가능</p>
+	        </td>
+	        <td width="50" bgcolor="#f3fc65">
+	            <p>&nbsp;</p>
+	        </td>
+	        <td width="50">
+	            <p>대기중</p>
+	        </td>
+	        <td width="50" bgcolor="#79f670">
+	            <p>&nbsp;</p>
+	        </td>
+	        <td width="50">
+	            <p>홀드</p>
+	        </td>
+	        <td width="50" bgcolor="#f36262">
+	            <p>&nbsp;</p>
+	        </td>
+	        <td width="50">
+	            <p>고장</p>
+	        </td>
+		</tr>	        
+	</tbody>
+	</table>
+
+	<table class="wTable" summary="<spring:message code="common.summary.list" arguments="${pageTitle}" />">
+		<caption>${pageTitle} <spring:message code="title.update" /></caption>
+		<tbody>
+		<tr>
+		<c:forEach var="boxList" items="${boxList}" varStatus="status">
+			<c:choose>
+				<c:when test="${boxList.BOX_FLAG eq 'N'}"><c:set var="bgcolor1" value="#f8dcd4" /></c:when>
+				<c:when test="${boxList.BOX_FLAG eq 'Y'}"><c:set var="bgcolor1" value="#CCCCCC" /></c:when>
+				<c:when test="${boxList.BOX_FLAG eq 'D'}"><c:set var="bgcolor1" value="#f3fc65" /></c:when>
+				<c:when test="${boxList.BOX_FLAG eq 'H'}"><c:set var="bgcolor1" value="#79f670" /></c:when>
+				<c:when test="${boxList.BOX_FLAG eq 'X'}"><c:set var="bgcolor1" value="#f36262" /></c:when>
+				<c:otherwise><c:set var="bgcolor1" value="#FFFFFF" /></c:otherwise>
+			</c:choose>
+			<td width="70" height="30" bgcolor="${bgcolor1}">
+				<a href="javascript:fn_view('${boxList.boxNum}','${boxList.rentSeq}');"><p align="center">${boxList.boxNum}<br><c:if test="${boxList.boxFlag == 'Y'}">${boxList.userNm}</c:if></p></a>
+			</td>
+		<c:if test="${((status.index+1) mod 10) eq 0 }">
+		</tr>
+		<tr>
+		</c:if>				
+		</c:forEach>
+		</tr>
+		</tbody>
+	</table>
 
 	<!-- 하단 버튼 -->
 	<div class="btn">
