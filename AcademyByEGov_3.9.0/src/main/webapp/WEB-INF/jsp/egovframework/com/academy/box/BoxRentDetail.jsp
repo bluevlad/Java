@@ -25,9 +25,45 @@
 <head>
 <title>${pageTitle} <spring:message code="title.create" /></title><!-- 사물함 관리 -->
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/cmm/jqueryui.css' />">
+<script src="<c:url value='/js/egovframework/com/cmm/jquery.js' />"></script>
+<script src="<c:url value='/js/egovframework/com/cmm/jqueryui.js' />"></script>
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
 <validator:javascript formName="BoxVO" staticJavascript="false" xhtml="true" cdata="false"/>
 <script type="text/javaScript">
+function fn_egov_init_BoxManage(){
+
+	$("#rentStart").datepicker( 
+	        {dateFormat:'yy-mm-dd'
+	         , showOn: 'button'
+	         , buttonImage: '<c:url value='/images/egovframework/com/cmm/icon/bu_icon_carlendar.gif'/>'  
+	         , buttonImageOnly: true 
+	         
+	         , showMonthAfterYear: true
+	         , showOtherMonths: true
+		     , selectOtherMonths: true
+				
+	         , changeMonth: true // 월선택 select box 표시 (기본은 false)
+	         , changeYear: true  // 년선택 selectbox 표시 (기본은 false)
+	         , showButtonPanel: true // 하단 today, done  버튼기능 추가 표시 (기본은 false)
+	});
+
+	$("#rentEnd").datepicker(  
+	        {dateFormat:'yy-mm-dd' 
+	         , showOn: 'button' 
+	         , buttonImage: '<c:url value='/images/egovframework/com/cmm/icon/bu_icon_carlendar.gif'/>'  
+	         , buttonImageOnly: true 
+         
+	         , showMonthAfterYear: true
+	         , showOtherMonths: true
+		     , selectOtherMonths: true
+				
+	         , changeMonth: true // 월선택 select box 표시 (기본은 false)
+	         , changeYear: true  // 년선택 selectbox 표시 (기본은 false)
+	         , showButtonPanel: true // 하단 today, done  버튼기능 추가 표시 (기본은 false)
+	});
+}
+
 function fnList() {
     var varFrom = document.getElementById("BoxVO");
     varFrom.action = "<c:url value='/box/mst/Detail.do'/>";
@@ -44,7 +80,7 @@ function fnUpdate() {
 </script>
 </head>
 
-<body>
+<body onLoad="fn_egov_init_BoxManage()">
 <form:form commandName="BoxVO" method="post" action="" onSubmit="fnUpdate(); return false;">
 <div class="wTableFrm">
 	<!-- 타이틀 -->
@@ -79,34 +115,41 @@ function fnUpdate() {
 		</tr>
 		<tr>
 		<!-- 사용자아이디 -->
-		<c:set var="title"><spring:message code="box.userNm" /></c:set>
-			<th><label for="userNm">${title}</label> <span class="pilsu">*</span></th>
+		<c:set var="title"><spring:message code="box.title.userInfo" /></c:set>
+			<th><label for="userId">${title}</label> <span class="pilsu">*</span></th>
 			<td class="left" colspan="3">
-				<form:input path="userNm" title="${title} ${inputTxt}" style="width:70px;" />
-				<div><form:errors path="userNm" cssClass="error" /></div>
+				<form:input path="userId" title="${title} ${inputTxt}" style="width:70px;" />
+				<div><form:errors path="userId" cssClass="error" /></div>
 			</td>
 		</tr>
 		<tr>
 		<!-- 사용여부 -->
-		<c:set var="title"><spring:message code="box.boxFlag" /></c:set>
+		<c:set var="title"><spring:message code="box.title.rentInfo" /></c:set>
 			<th><label for="boxFlag">${title}</label> <span class="pilsu">*</span></th>
 			<td class="left" colspan="3">
-				<form:input path="boxFlag" title="${title} ${inputTxt}" style="width:70px;" />
-				<div><form:errors path="boxFlag" cssClass="error" /></div>
+				<div style="float:left;"><form:radiobutton path="boxFlag" value="1"/><spring:message code="box.code.flag1"/> </div> <!-- 사용 -->
+				<div style="float:left; margin:0 0 0 10px"><form:radiobutton path="boxFlag" value="2"/><spring:message code="box.code.flag2"/> </div><!-- 미사용 --> 
+				<div style="float:left; margin:0 0 0 10px"><form:radiobutton path="boxFlag" value="3"/><spring:message code="box.code.flag3"/> </div><!-- 대기 -->
+				<div style="float:left; margin:0 0 0 10px"><form:radiobutton path="boxFlag" value="4"/><spring:message code="box.code.flag4"/> </div><!-- 홀드 -->
+				<div style="float:left; margin:0 0 0 10px"><form:radiobutton path="boxFlag" value="5"/><spring:message code="box.code.flag5"/> </div><!-- 고장 -->
+				<div style="clear:both;"><form:errors path="boxFlag" cssClass="error"/></div>
+				
 			</td>
 		</tr>
 		<tr>
 		<!-- 대여기간 -->
-		<c:set var="title"><spring:message code="box.rentStart" /></c:set>
+		<c:set var="title"><spring:message code="box.title.rentDay" /></c:set>
 			<th><label for="rentStart">${title}</label> <span class="pilsu">*</span></th>
 			<td class="left" colspan="3">
-				<form:input path="rentStart" title="${title} ${inputTxt}" style="width:70px;" />
-				<div><form:errors path="rentStart" cssClass="error" /></div>
+				<form:input path="rentStart" readonly="true" maxlength="10" style="width:70px;"/>
+				&nbsp;&nbsp;~&nbsp;&nbsp;
+				<form:input path="rentEnd" readonly="true" maxlength="10" style="width:70px;"/>
+				&nbsp;
 			</td>
 		</tr>
 		<tr>
 		<!-- 주문정보 -->
-		<c:set var="title"><spring:message code="box.orderId" /></c:set>
+		<c:set var="title"><spring:message code="box.title.ordInfo" /></c:set>
 			<th><label for="orderId">${title}</label> <span class="pilsu">*</span></th>
 			<td class="left" colspan="3">
 				<form:input path="orderId" title="${title} ${inputTxt}" style="width:100px;" />
@@ -199,7 +242,7 @@ function fnUpdate() {
 
 	<!-- 하단 버튼 -->
 	<div class="btn">
-		<span class="btn_s"><a href="<c:url value='/box/mst/Detail.do'/>" title="<spring:message code="button.list" /><spring:message code="input.button" />"><spring:message code="button.list" /></a></span><!-- 목록 -->
+		<span class="btn_s"><a href="javascript:fnList()" title="<spring:message code="button.list" /><spring:message code="input.button" />"><spring:message code="button.list" /></a></span><!-- 목록 -->
 	</div>
 	<div style="clear:both;"></div>
 
