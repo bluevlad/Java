@@ -1,11 +1,11 @@
 <%
 /**
- * @Class Name : ExamList.java
+ * @Class Name : BoxMstList.java
  * @Modification Information
  * @
  * @  수정일     수정자         수정내용
  * @ ---------     --------    ---------------------------
- *  2020.04.00	rainend		사물함 정보
+ *  2020.05.21	rainend		사물함 정보
  *  @author rainend
  *  @version 1.0
  *  @see
@@ -37,9 +37,25 @@ function fnList() {
 function fnUpdate() {
     var varFrom = document.getElementById("BoxVO");
     varFrom.action = "<c:url value='/box/mst/update.do'/>";
-    if(confirm("<spring:message code="common.save.msg" />")){
+    if(confirm("<spring:message code="common.update.msg" />")){
 		varFrom.submit();
     }
+}
+
+function fnDelete() {
+    var varFrom = document.getElementById("BoxVO");
+    varFrom.action = "<c:url value='/box/mst/delete.do'/>";
+    if(confirm("<spring:message code="common.delete.msg" />")){
+		varFrom.submit();
+    }
+}
+
+function fnRent(boxnum, rentseq) {
+    var varFrom = document.getElementById("BoxVO");
+    varFrom.boxNum.value = boxnum;
+    varFrom.rentSeq.value = rentseq;
+    varFrom.action = "<c:url value='/box/rent/Detail.do'/>";
+	varFrom.submit();
 }
 </script>
 </head>
@@ -73,6 +89,8 @@ function fnUpdate() {
 			<th><label for="boxNm">${title}</label> <span class="pilsu">*</span></th>
 			<td class="left">
 				<form:input path="boxCd" title="${title} ${inputTxt}" style="width:70px;" readonly="true" />
+				<form:hidden path="boxNum" title="${title} ${inputTxt}" />
+				<form:hidden path="rentSeq" title="${title} ${inputTxt}" />
 				<form:input path="boxNm" title="${title} ${inputTxt}" style="width:80%;" />
 				<div><form:errors path="boxNm" cssClass="error" /></div> 
 			</td>
@@ -187,7 +205,7 @@ function fnUpdate() {
 				<c:otherwise><c:set var="bgcolor1" value="#FFFFFF" /></c:otherwise>
 			</c:choose>
 			<td width="70" height="30" bgcolor="${bgcolor1}">
-				<a href="javascript:fn_view('${boxList.boxNum}','${boxList.rentSeq}');"><p align="center">${boxList.boxNum}<br><c:if test="${boxList.boxFlag == 'Y'}">${boxList.userNm}</c:if></p></a>
+				<a href="javascript:fnRent('${boxList.boxNum}','${boxList.rentSeq}');"><p align="center">${boxList.boxNum}<br><c:if test="${boxList.boxFlag == 'Y'}">${boxList.userNm}</c:if></p></a>
 			</td>
 		<c:if test="${((status.index+1) mod 10) eq 0 }">
 		</tr>
@@ -200,9 +218,9 @@ function fnUpdate() {
 
 	<!-- 하단 버튼 -->
 	<div class="btn">
-		<span class="btn_s"><a href="<c:url value='/box/mst/List.do'/>" title="<spring:message code="button.list" /><spring:message code="input.button" />"><spring:message code="button.list" /></a></span><!-- 목록 -->
-		<input type="submit" class="s_submit" value="<spring:message code="button.save" />" title="<spring:message code="button.save" /> <spring:message code="input.button" />" /><!-- 저장 -->
-		<input type="button" class="s_submit" value="<spring:message code="button.delete" />" title="<spring:message code="button.delete" /> <spring:message code="button.delete" />" /><!-- 삭제 -->
+		<span class="btn_s"><a href="javascript:fnList();" title="<spring:message code="button.list" /><spring:message code="input.button" />"><spring:message code="button.list" /></a><!-- 목록 --></span>
+		<span class="btn_s"><a href="javascript:fnUpdate();" title="<spring:message code="button.save" /><spring:message code="input.button" />" ><spring:message code="button.save" /></a><!-- 저장 -->	</span>
+		<span class="btn_s"><a href="javascript:fnDelete();" title="<spring:message code="button.delete" /><spring:message code="input.button" />" ><spring:message code="button.delete" /></a><!-- 삭제 --></span>
 	</div>
 	<div style="clear:both;"></div>
 

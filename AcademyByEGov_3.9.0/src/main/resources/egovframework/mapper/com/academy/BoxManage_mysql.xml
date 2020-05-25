@@ -95,4 +95,29 @@
    			WHERE BOX_CD = #{BOX_CD} AND BOX_NUM = #{BOX_NUM} AND SEQ = #{RENT_SEQ}
    	</delete>
 
+	<!-- 사물함 대여정보를 가져온다.  -->
+	<select id="selectBoxRentInfo"  parameterType="egovframework.com.academy.box.service.BoxVO" 
+										resultType="egovframework.com.academy.box.service.BoxVO">
+		SELECT a.box_cd, a.box_num, a.user_id, a.box_flag, a.rent_seq, 
+       			b.rent_start, b.RENT_END, b.DEPOSIT, b.DEPOSIT_YN, b.EXTEND_YN, b.KEY_YN, b.RENT_TYPE, b.PAY_GUBUN,
+      	 		case when b.rent_memo IS NULL then a.RENT_MEMO ELSE a.rent_memo END rent_memo, b.ORDER_ID
+		FROM box_info a, box_rent b
+		WHERE a.BOX_CD= b.BOX_CD
+		AND a.BOX_NUM = b.BOX_NUM
+		AND a.RENT_SEQ = b.RENT_SEQ
+		and a.box_cd = #{boxCd}
+		and a.box_num = #{boxNum}
+		and a.rent_seq = #{rentSeq}
+	</select>
+
+	<!-- 사물함 대여리스트 정보를 가져온다.  -->
+	<select id="selectBoxRentList"  parameterType="egovframework.com.academy.box.service.BoxVO" 
+										resultType="egovframework.com.academy.box.service.BoxVO">
+		SELECT user_id, rent_start, RENT_END, DEPOSIT, DEPOSIT_YN, EXTEND_YN, KEY_YN, RENT_TYPE, PAY_GUBUN, rent_memo, ORDER_ID
+		FROM box_rent
+		WHERE box_cd = #{boxCd}
+		and box_num = #{boxNum}
+		order by rent_seq
+	</select>
+
 </mapper>

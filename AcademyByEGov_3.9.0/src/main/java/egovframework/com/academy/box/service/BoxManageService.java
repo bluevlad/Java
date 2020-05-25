@@ -69,5 +69,22 @@ public interface BoxManageService {
 	 * @param BoxVO
 	 */
 	public void deleteBoxNum(BoxVO BoxVO) throws Exception;
+	
+	/**
+	 * 사물함 대여정보를 조회한다.
+	 * @param boxCd 상세조회대상 사물함코드
+	 * @param boxNum 상세조회대상 사물함번호
+     * @param rentSeq 상세조회대상 대여번호
+	 * @return BoxVO 사물함 상세정보
+	 */
+	public BoxVO selectBoxRentInfo(BoxVO BoxVO) throws Exception;
+	
+	/**
+	 * 사물함 대여 목록을 조회한다.
+	 * @param boxCd 상세조회대상 사물함코드
+	 * @param boxNum 상세조회대상 사물함번호
+	 * @return List<BoxVO> 사물함 대여 목록정보
+	 */
+	public List<?> selectBoxRentList(BoxVO BoxVO) throws Exception;
 
 }

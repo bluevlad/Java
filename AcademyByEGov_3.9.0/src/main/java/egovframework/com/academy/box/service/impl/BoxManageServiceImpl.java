@@ -88,8 +88,8 @@ public class BoxManageServiceImpl extends EgovAbstractServiceImpl implements Box
 	}
 
 	/**
-	 * @param subjectSearchVO 검색조건
-	 * @return List<ExamVO> 과목 목록정보
+	 * @param BoxVO 검색조건
+	 * @return List<BoxVO> 사물함 목록정보
 	 * @throws Exception
 	 */
 	public List<?> selectBoxInfoList(BoxVO BoxVO) throws Exception {
@@ -108,7 +108,8 @@ public class BoxManageServiceImpl extends EgovAbstractServiceImpl implements Box
 	}
 
 	/**
-	 * @param ExamVO 과목 등록정보
+	 * @param BoxVO 사물함 등록
+	 * @param boxCd 사물함코드
 	 * @throws Exception
 	 */
 	public void insertBoxNum(BoxVO BoxVO) throws Exception {
@@ -116,12 +117,34 @@ public class BoxManageServiceImpl extends EgovAbstractServiceImpl implements Box
 	}
 
 	/**
-	 * ExamVO 과목정보 수정
-	 * @param ExamVO 과목정보
+	 * BoxVO 사물함 삭제
+	 * @param boxCd 사물함코드
+	 * @param boxNum 사물함번호
 	 * @throws Exception
 	 */
 	public void deleteBoxNum(BoxVO BoxVO) throws Exception {
 		boxManageDAO.deleteBoxNum(BoxVO);
+	}
+
+	/**
+	 * @param boxCd 상세조회대상 사물함코드
+	 * @param boxNum 상세조회대상 사물함번호
+     * @param rentSeq 상세조회대상 대여번호
+	 * @return BoxVO 사물함 상세정보
+	 * @throws Exception
+	 */
+	public BoxVO selectBoxRentInfo(BoxVO BoxVO) throws Exception {
+		return boxManageDAO.selectBoxRentInfo(BoxVO);
+	}
+
+	/**
+	 * @param boxCd 상세조회대상 사물함코드
+	 * @param boxNum 상세조회대상 사물함번호
+	 * @return List<BoxVO> 사물함 대여 목록정보
+	 * @throws Exception
+	 */
+	public List<?> selectBoxRentList(BoxVO BoxVO) throws Exception {
+		return boxManageDAO.selectBoxRentList(BoxVO);
 	}
 
 }

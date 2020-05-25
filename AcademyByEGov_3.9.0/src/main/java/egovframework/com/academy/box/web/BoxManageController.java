@@ -154,4 +154,18 @@ public class BoxManageController {
 		}
 	}
 
+	/**
+	 * 시험 상세정보를 조회한다.
+	 * @param ExamVO
+	 * @return String - 리턴 Url
+	 */
+	@RequestMapping(value = "/box/rent/Detail.do")
+	public String Rent(@ModelAttribute("BoxVO") BoxVO BoxVO, ModelMap model) throws Exception {
+
+		model.addAttribute("BoxVO", boxManageService.selectBoxRentInfo(BoxVO));
+		model.addAttribute("RentList", boxManageService.selectBoxRentList(BoxVO));
+		
+		return "egovframework/com/academy/box/BoxRentDetail";
+	}
+
 }

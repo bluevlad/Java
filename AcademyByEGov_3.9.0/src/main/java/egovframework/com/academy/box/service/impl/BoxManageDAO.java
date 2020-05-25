@@ -72,7 +72,7 @@ public class BoxManageDAO extends EgovComAbstractDAO{
 
     /**
      * @param searchVO 검색조건
-     * @return List 과목 목록정보
+     * @return List 사물함 목록정보
      */
     public List<?> selectBoxInfoList(BoxVO BoxVO) throws Exception{
 		return selectList("BoxManage.selectBoxInfoList", BoxVO);
@@ -81,7 +81,7 @@ public class BoxManageDAO extends EgovComAbstractDAO{
     /**
      * @param boxCd 상세조회대상 사물함코드
      * @param boxNum 상세조회대상 사물함번호
-     * @return BoxVO 사물함  상세정보
+     * @return BoxVO 사물함 상세정보
      */
     public BoxVO selectBoxInfoDetail(BoxVO BoxVO){
         return selectOne("BoxManage.selectBoxInfoDetail", BoxVO);
@@ -99,6 +99,24 @@ public class BoxManageDAO extends EgovComAbstractDAO{
      */
     public int deleteBoxNum(BoxVO BoxVO) throws Exception{
         return getSqlSession().insert("BoxManage.deleteBoxNum", BoxVO);
+    }
+
+    /**
+     * @param boxCd 상세조회대상 사물함코드
+     * @param boxNum 상세조회대상 사물함번호
+     * @param rentSeq 상세조회대상 대여번호
+     * @return BoxVO 사물함 대여 상세정보
+     */
+    public BoxVO selectBoxRentInfo(BoxVO BoxVO){
+        return selectOne("BoxManage.selectBoxRentInfo", BoxVO);
+    }
+
+    /**
+     * @param searchVO 검색조건
+     * @return List 사물함 대여 목록정보
+     */
+    public List<?> selectBoxRentList(BoxVO BoxVO) throws Exception{
+		return selectList("BoxManage.selectBoxRentList", BoxVO);
     }
 
 }
