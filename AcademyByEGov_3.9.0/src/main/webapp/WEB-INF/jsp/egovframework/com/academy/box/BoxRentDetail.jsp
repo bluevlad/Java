@@ -31,7 +31,7 @@
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
 <validator:javascript formName="BoxVO" staticJavascript="false" xhtml="true" cdata="false"/>
 <script type="text/javaScript">
-function fn_egov_init_BoxManage(){
+function init_BoxManage(){
 
 	$("#rentStart").datepicker( 
 	        {dateFormat:'yy-mm-dd'
@@ -80,7 +80,7 @@ function fnUpdate() {
 </script>
 </head>
 
-<body onLoad="fn_egov_init_BoxManage()">
+<body onLoad="init_BoxManage()">
 <form:form commandName="BoxVO" method="post" action="" onSubmit="fnUpdate(); return false;">
 <div class="wTableFrm">
 	<!-- 타이틀 -->

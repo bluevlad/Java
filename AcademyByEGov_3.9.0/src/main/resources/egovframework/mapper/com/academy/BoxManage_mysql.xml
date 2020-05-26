@@ -14,7 +14,7 @@
 		(SELECT COUNT(BOX_NUM) FROM BOX_info WHERE BOX_CD=a.BOX_CD AND BOX_FLAG = 'Y') use_num,
 		(SELECT COUNT(BOX_NUM) FROM BOX_info WHERE BOX_CD=a.BOX_CD AND BOX_FLAG = 'N') req_num
 		FROM BOX_MST a  
-		WHERE 1=1
+		WHERE ISUSE = 'Y'
         <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchKeyword)">
         AND a.box_nm LIKE '%' #{searchKeyword} '%'
         </if>
@@ -26,7 +26,7 @@
 	<select id="selectBoxListTotCnt" parameterType="egovframework.com.academy.box.service.BoxVO" resultType="int">
 		SELECT COUNT(*) totcnt
 		FROM BOX_MST
-		WHERE 1=1
+		WHERE ISUSE = 'Y'
         <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchKeyword)">
         AND box_nm LIKE '%' #{searchKeyword} '%'
         </if>
@@ -41,24 +41,38 @@
 	</select>
  
 	<!-- 사물함정보 등록 -->
-    <delete id="insertBox">
-   		DELETE 
-   			FROM BOX_MST 
-   			WHERE BOX_CD=#{boxCd}
-   	</delete>
+    <insert id="insertBox">
+		INSERT box_mst (
+			BOX_CD, BOX_NM, BOX_COUNT, BOX_PRICE, DEPOSIT, HIGH_NUM, ROW_NUM, 
+			START_NUM, END_NUM, reg_dt, reg_id, ISUSE
+		) VALUES (
+			#{boxCd}, #{boxNm}, #{boxCount}, #{boxPrice}, #{deposit}, #{highNum}, #{rowNum},
+			#{startNum}, #{endNum}, now(), #{regId}, 'Y'
+		)
+   	</insert>
  
 	<!-- 사물함정보 변경 -->
-    <delete id="updateBox">
-   		DELETE 
-   			FROM BOX_MST 
-   			WHERE BOX_CD = #{boxCd}
-   	</delete>
+    <update id="updateBox">
+   		UPDATE BOX_MST
+   		SET
+   			BOX_NM = #{boxNm},
+   			BOX_COUNT = #{boxCount}, 
+   			BOX_PRICE = #{boxPrice}, 
+   			DEPOSIT = #{deposit}, 
+   			HIGH_NUM = #{highNum}, 
+   			ROW_NUM = #{rowNum}, 
+   			START_NUM = #{startNum}, 
+   			END_NUM = #{endNum}, 
+   			upd_dt = now(),
+   			upd_id = #{updId}
+		WHERE BOX_CD = #{boxCd}
+   	</update>
  
 	<!-- 사물함정보 삭제 -->
     <delete id="deleteBox">
-   		DELETE 
-   			FROM BOX_MST 
-   			WHERE BOX_CD = #{boxCd}
+   		UPDATE BOX_MST
+   		SET ISUSE = 'N' 
+		WHERE BOX_CD = #{boxCd}
    	</delete>
 
 	<!-- 사물함 개별정보를 가져온다.  -->
@@ -82,17 +96,19 @@
 	</select>
 
 	<!-- 사물함 등록 -->
-    <delete id="insertBoxNum">
-   		DELETE 
-   			FROM BOX_MST 
-   			WHERE BOX_CD = #{BOX_CD} AND BOX_NUM = #{BOX_NUM} AND SEQ = #{RENT_SEQ}
-   	</delete>
+    <insert id="insertBoxNum">
+    	INSERT INTO box_info (
+    		BOX_CD, BOX_NUM, USER_ID, BOX_FLAG, RENT_SEQ, RENT_MEMO, upd_dt, upd_id
+    	) VALUES (
+    		#{boxCd}, #{boxNum}, #{userId}, #{boxFlag}, #{rentSeq}, #{rentMemo}, now(), #{updId}
+    	)
+   	</insert>
 
 	<!-- 사물함 삭제 -->
     <delete id="deleteBoxNum">
    		DELETE 
-   			FROM BOX_MST 
-   			WHERE BOX_CD = #{BOX_CD} AND BOX_NUM = #{BOX_NUM} AND SEQ = #{RENT_SEQ}
+		FROM box_info 
+		WHERE BOX_CD = #{boxCd}
    	</delete>
 
 	<!-- 사물함 대여정보를 가져온다.  -->

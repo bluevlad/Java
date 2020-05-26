@@ -54,7 +54,7 @@ public class BoxManageController {
 	 * @exception Exception
 	 */
 	@RequestMapping(value = "/box/mst/List.do")
-	public String List(@ModelAttribute("BoxVO") BoxVO searchVO, ModelMap model) throws Exception {
+	public String List(@ModelAttribute("searchVO") BoxVO searchVO, ModelMap model) throws Exception {
 
 		searchVO.setPageUnit(propertyService.getInt("pageUnit"));
 		searchVO.setPageSize(propertyService.getInt("pageSize"));

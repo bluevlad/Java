@@ -59,7 +59,7 @@ function press() {
 			<li><div style="line-height:4px;">&nbsp;</div><div><spring:message code="box.searchKeywordText" /> : </div></li><!-- 사물함명 -->
 			<!-- 검색키워드 및 조회버튼 -->
 			<li>
-				<input class="s_input" name="searchKeyword" type="text"  size="35" title="<spring:message code="title.search" /> <spring:message code="input.input" />" value='<c:out value="${BoxVO.searchKeyword}"/>'  maxlength="155" >
+				<input class="s_input" name="searchKeyword" type="text"  size="35" title="<spring:message code="title.search" /> <spring:message code="input.input" />" value='<c:out value="${searchVO.searchKeyword}"/>'  maxlength="155" >
 				<input type="submit" class="s_btn" value="<spring:message code="button.inquire" />" title="<spring:message code="title.inquire" /> <spring:message code="input.button" />" /><!-- 조회 -->
 				<span class="btn_b"><a href="<c:url value='/box/mst/Regist.do'/>" title="<spring:message code="button.create" /> <spring:message code="input.button" />"><spring:message code="button.create" /></a></span><!-- 등록 -->
 			</li>
@@ -99,9 +99,9 @@ function press() {
 	</c:if>
 	<c:forEach var="boxList" items="${boxList}" varStatus="status">
 	<tr>
-		<td><c:out value="${(BoxVO.pageIndex-1) * ExamVO.pageSize + status.count}"/></td>
-		<td><a href="<c:url value='/box/mst/Detail.do'/>?pageIndex=${BoxVO.pageIndex}&searchKeyword=${BoxVO.searchKeyword}&boxCd=${boxList.boxCd}"><c:out value="${boxList.boxCd}"/></a></td>
-		<td><a href="<c:url value='/box/mst/Detail.do'/>?pageIndex=${BoxVO.pageIndex}&searchKeyword=${BoxVO.searchKeyword}&boxCd=${boxList.boxCd}"><c:out value="${boxList.boxNm}"/></a></td>
+		<td><c:out value="${(searchVO.pageIndex-1) * searchVO.pageSize + status.count}"/></td>
+		<td><a href="<c:url value='/box/mst/Detail.do'/>?pageIndex=${searchVO.pageIndex}&searchKeyword=${searchVO.searchKeyword}&boxCd=${boxList.boxCd}"><c:out value="${boxList.boxCd}"/></a></td>
+		<td><a href="<c:url value='/box/mst/Detail.do'/>?pageIndex=${searchVO.pageIndex}&searchKeyword=${searchVO.searchKeyword}&boxCd=${boxList.boxCd}"><c:out value="${boxList.boxNm}"/></a></td>
 		<td><c:out value="${boxList.boxCount}"/></td>
 		<td><c:out value="${boxList.useNum}"/></td>
 		<td><c:out value="${boxList.reqNum}"/></td>
@@ -113,7 +113,7 @@ function press() {
 	</table>
 	
 	<!-- paging navigation -->
-	<c:if test="${!empty BoxVO.pageIndex }">
+	<c:if test="${!empty searchVO.pageIndex }">
 	<div class="pagination">
 		<ul><ui:pagination paginationInfo="${paginationInfo}" type="image" jsFunction="linkPage"/></ul>
 	</div>
@@ -121,7 +121,7 @@ function press() {
 	
 </div><!-- end div board -->
 
-<input name="pageIndex" type="hidden" value="<c:out value='${BoxVO.pageIndex}'/>">
+<input name="pageIndex" type="hidden" value="<c:out value='${searchVO.pageIndex}'/>">
 </form>
 
 </body>
