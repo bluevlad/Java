@@ -49,7 +49,7 @@ public class BoxManageController {
     protected EgovPropertyService propertyService;
 
 	/**
-	 * 시험 목록화면 이동
+	 * 사물함 목록화면 이동
 	 * @return String
 	 * @exception Exception
 	 */
@@ -79,8 +79,8 @@ public class BoxManageController {
 	}
 
 	/**
-	 * 시험 상세정보를 조회한다.
-	 * @param ExamVO
+	 * 사물함 상세정보를 조회한다.
+	 * @param BoxVO
 	 * @return String - 리턴 Url
 	 */
 	@RequestMapping(value = "/box/mst/Detail.do")
@@ -93,7 +93,7 @@ public class BoxManageController {
 	}
 
 	/**
-	 * 시험등록 화면으로 이동한다.
+	 * 사물함 등록 화면으로 이동한다.
 	 * @return String - 리턴 Url
 	 */
 	@RequestMapping(value = "/box/mst/Regist.do")
@@ -104,8 +104,19 @@ public class BoxManageController {
 	}
 
 	/**
-	 * 시험정보를 신규로 등록한다.
-	 * @param ExamVO
+	 * 사물함 팝업 화면으로 이동한다.
+	 * @return String - 리턴 Url
+	 */
+	@RequestMapping(value = "/box/mst/modal.do")
+	public String Modal(@ModelAttribute("BoxVO") BoxVO BoxVO, ModelMap model) throws Exception {
+
+		model.addAttribute("BoxVO", BoxVO);
+		return "egovframework/com/academy/box/BoxCodeModal";
+	}
+
+	/**
+	 * 사물함 정보를 신규로 등록한다.
+	 * @param BoxVO
 	 * @return String - 리턴 Url
 	 */
 	@RequestMapping(value = "/box/mst/insert.do")
@@ -121,8 +132,8 @@ public class BoxManageController {
 	}
 
 	/**
-	 * 기 등록된 시험정보를 수정한다.
-	 * @param ExamVO
+	 * 기 등록된 사물함 정보를 수정한다.
+	 * @param BoxVO
 	 * @return String - 리턴 Url
 	 */
 	@RequestMapping(value = "/box/mst/update.do")
@@ -138,8 +149,8 @@ public class BoxManageController {
 	}
 
 	/**
-	 * 기 등록된 시험정보를 수정한다.
-	 * @param ExamVO
+	 * 기 등록된 사물함 정보를 삭제한다.
+	 * @param BoxVO
 	 * @return String - 리턴 Url
 	 */
 	@RequestMapping(value = "/box/mst/delete.do")
@@ -155,8 +166,8 @@ public class BoxManageController {
 	}
 
 	/**
-	 * 시험 상세정보를 조회한다.
-	 * @param ExamVO
+	 * 사물함 상세정보를 조회한다.
+	 * @param BoxVO
 	 * @return String - 리턴 Url
 	 */
 	@RequestMapping(value = "/box/rent/Detail.do")

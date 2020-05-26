@@ -10,6 +10,10 @@ import egovframework.com.academy.box.service.BoxManageService;
 import egovframework.com.academy.box.service.BoxVO;
 import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
 
+import egovframework.com.cmm.LoginVO;
+import egovframework.com.cmm.util.EgovUserDetailsHelper;
+import egovframework.com.utl.fcc.service.EgovStringUtil;
+
 /**
  * 사물함 관리에 관한 비지니스 클래스를 정의한다.
  * @author rainend
@@ -65,7 +69,23 @@ public class BoxManageServiceImpl extends EgovAbstractServiceImpl implements Box
 	 */
 	@Override
 	public void insertBox(BoxVO BoxVO) throws Exception {
+		
+    	LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+
+		int box_num = BoxVO.getStartNum();
+		BoxVO.setEndNum(box_num+BoxVO.getBoxCount()-1);
+		BoxVO.setRegId(user == null ? "" : EgovStringUtil.isNullToString(user.getId()));
+
 		boxManageDAO.insertBox(BoxVO);
+
+		for(int i=0; i< BoxVO.getBoxCount(); i++) {
+			BoxVO.setBoxNum(box_num);
+			BoxVO.setBoxFlag("Y");
+			BoxVO.setRentMemo("신규등록");
+			BoxVO.setUpdId(user == null ? "" : EgovStringUtil.isNullToString(user.getId()));
+			boxManageDAO.insertBoxNum(BoxVO);
+			box_num++;
+		}
 	}
 
 	/**

@@ -98,9 +98,9 @@
 	<!-- 사물함 등록 -->
     <insert id="insertBoxNum">
     	INSERT INTO box_info (
-    		BOX_CD, BOX_NUM, USER_ID, BOX_FLAG, RENT_SEQ, RENT_MEMO, upd_dt, upd_id
+    		BOX_CD, BOX_NUM, BOX_FLAG, RENT_MEMO, upd_dt, upd_id
     	) VALUES (
-    		#{boxCd}, #{boxNum}, #{userId}, #{boxFlag}, #{rentSeq}, #{rentMemo}, now(), #{updId}
+    		#{boxCd}, #{boxNum}, #{boxFlag}, #{rentMemo}, now(), #{updId}
     	)
    	</insert>
 
