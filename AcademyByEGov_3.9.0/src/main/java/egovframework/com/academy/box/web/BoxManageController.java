@@ -1,7 +1,5 @@
 package egovframework.com.academy.box.web;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
