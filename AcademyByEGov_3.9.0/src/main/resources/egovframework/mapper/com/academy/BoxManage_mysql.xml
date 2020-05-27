@@ -114,16 +114,24 @@
 	<!-- 사물함 대여정보를 가져온다.  -->
 	<select id="selectBoxRentInfo"  parameterType="egovframework.com.academy.box.service.BoxVO" 
 										resultType="egovframework.com.academy.box.service.BoxVO">
-		SELECT a.box_cd, a.box_num, a.user_id, a.box_flag, a.rent_seq, 
-       			b.rent_start, b.RENT_END, b.DEPOSIT, b.DEPOSIT_YN, b.EXTEND_YN, b.KEY_YN, b.RENT_TYPE, b.PAY_GUBUN,
-      	 		case when b.rent_memo IS NULL then a.RENT_MEMO ELSE a.rent_memo END rent_memo, b.ORDER_ID
-		FROM box_info a, box_rent b
-		WHERE a.BOX_CD= b.BOX_CD
-		AND a.BOX_NUM = b.BOX_NUM
-		AND a.RENT_SEQ = b.RENT_SEQ
-		and a.box_cd = #{boxCd}
-		and a.box_num = #{boxNum}
-		and a.rent_seq = #{rentSeq}
+		SELECT aa.box_cd, aa.box_nm, aa.box_num, aa.user_id, aa.box_flag, aa.rent_seq, 
+				bb.rent_start, bb.RENT_END, bb.DEPOSIT, bb.DEPOSIT_YN, bb.EXTEND_YN, bb.KEY_YN, bb.RENT_TYPE, bb.PAY_GUBUN,
+		 		case when bb.rent_memo IS NULL then aa.RENT_MEMO ELSE bb.rent_memo END rent_memo, bb.ORDER_ID
+		FROM (SELECT a.box_cd, b.BOX_NM, box_num, user_id, box_flag, rent_seq, a.rent_memo
+				FROM box_info a, box_mst b
+				WHERE a.box_cd = b.BOX_CD
+				AND a.box_cd =  #{boxCd}
+				AND a.box_num = #{boxNum}) aa LEFT OUTER JOIN
+				(SELECT box_cd, box_num, user_id, rent_seq, 
+		       			rent_start, RENT_END, DEPOSIT, DEPOSIT_YN, EXTEND_YN, KEY_YN, RENT_TYPE, PAY_GUBUN,
+		      	 		rent_memo, ORDER_ID
+				FROM box_rent
+				WHERE box_cd = #{boxCd}
+				and box_num = #{boxNum}
+				and rent_seq = #{rentSeq}) bb
+		ON aa.box_cd = bb.box_cd
+		AND aa.box_num = bb.box_num
+		AND aa.rent_seq = bb.rent_seq
 	</select>
 
 	<!-- 사물함 대여리스트 정보를 가져온다.  -->

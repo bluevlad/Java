@@ -109,7 +109,7 @@ function fnUpdate() {
 			<th><label for="boxNm">${title}</label> <span class="pilsu">*</span></th>
 			<td class="left" colspan="3">
 				<form:input path="boxCd" title="${title} ${inputTxt}" style="width:70px;" readonly="true" />
-				<form:input path="boxNm" title="${title} ${inputTxt}" style="width:80%;" />
+				<form:input path="boxNm" title="${title} ${inputTxt}" style="width:150px;" readonly="true" />
 				<div><form:errors path="boxNm" cssClass="error" /></div>
 			</td>
 		</tr>
@@ -127,8 +127,8 @@ function fnUpdate() {
 		<c:set var="title"><spring:message code="box.title.rentInfo" /></c:set>
 			<th><label for="boxFlag">${title}</label> <span class="pilsu">*</span></th>
 			<td class="left" colspan="3">
-				<div style="float:left;"><form:radiobutton path="boxFlag" value="N"/><spring:message code="box.code.flag1"/> </div> <!-- 사용 -->
-				<div style="float:left; margin:0 0 0 10px"><form:radiobutton path="boxFlag" value="Y"/><spring:message code="box.code.flag2"/> </div><!-- 미사용 --> 
+				<div style="float:left;"><form:radiobutton path="boxFlag" value="N"/><spring:message code="box.code.flag1"/> </div> <!-- 미사용 -->
+				<div style="float:left; margin:0 0 0 10px"><form:radiobutton path="boxFlag" value="Y"/><spring:message code="box.code.flag2"/> </div><!-- 사용중 --> 
 				<div style="float:left; margin:0 0 0 10px"><form:radiobutton path="boxFlag" value="D"/><spring:message code="box.code.flag3"/> </div><!-- 대기 -->
 				<div style="float:left; margin:0 0 0 10px"><form:radiobutton path="boxFlag" value="H"/><spring:message code="box.code.flag4"/> </div><!-- 홀드 -->
 				<div style="float:left; margin:0 0 0 10px"><form:radiobutton path="boxFlag" value="X"/><spring:message code="box.code.flag5"/> </div><!-- 고장 -->

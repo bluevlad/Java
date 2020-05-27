@@ -91,8 +91,8 @@ function fnRent(boxnum, rentseq) {
 				<form:input path="boxCd" title="${title} ${inputTxt}" style="width:70px;" readonly="true" />
 				<form:hidden path="boxNum" title="${title} ${inputTxt}" />
 				<form:hidden path="rentSeq" title="${title} ${inputTxt}" />
-				<form:input path="boxNm" title="${title} ${inputTxt}" style="width:80%;" />
-				<div><form:errors path="boxNm" cssClass="error" /></div> 
+				<form:input path="boxNm" title="${title} ${inputTxt}" style="width:150px;" readonly="true" />
+				<div><form:errors path="boxCd" cssClass="error" /></div> 
 			</td>
 		<!-- 사물함갯수 -->
 		<c:set var="title"><spring:message code="box.boxCount" /></c:set>
@@ -167,7 +167,7 @@ function fnRent(boxnum, rentseq) {
 	            <p>&nbsp;</p>
 	        </td>
 	        <td width="50">
-	            <p>사용가능</p>
+	            <p>미사용</p>
 	        </td>
 	        <td width="50" bgcolor="#f3fc65">
 	            <p>&nbsp;</p>
