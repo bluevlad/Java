@@ -105,8 +105,8 @@ public class BoxManageController {
 	 * 사물함 팝업 화면으로 이동한다.
 	 * @return String - 리턴 Url
 	 */
-	@RequestMapping(value = "/box/mst/modal.do")
-	public String Modal(@ModelAttribute("BoxVO") BoxVO BoxVO, ModelMap model) throws Exception {
+	@RequestMapping(value = "/box/mst/modalPopup.do")
+	public String openPopupWinodw(@ModelAttribute("BoxVO") BoxVO BoxVO, ModelMap model) throws Exception {
 
 		model.addAttribute("BoxVO", BoxVO);
 		return "egovframework/com/academy/box/BoxCodeModal";

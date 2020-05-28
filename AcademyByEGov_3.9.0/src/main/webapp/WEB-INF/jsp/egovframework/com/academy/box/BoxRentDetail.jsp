@@ -29,6 +29,7 @@
 <script src="<c:url value='/js/egovframework/com/cmm/jquery.js' />"></script>
 <script src="<c:url value='/js/egovframework/com/cmm/jqueryui.js' />"></script>
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
+<script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/showModalDialog.js'/>"></script>
 <validator:javascript formName="BoxVO" staticJavascript="false" xhtml="true" cdata="false"/>
 <script type="text/javaScript">
 function init_BoxManage(){
@@ -77,11 +78,24 @@ function fnUpdate() {
 		varFrom.submit();
     }
 }
+
+function fn_select_user() {
+	var retVal;
+	var url = "<c:url value='/box/mst/modalPopup.do' />";
+	var openParam = "dialogWidth: 900px; dialogHeight: 520px; resizable: 0, scroll: 1, center: 1";
+
+	retVal = window.showModalDialog(url,"box", openParam, "boxCallback");
+	if (retVal != null) {
+		var tmp = retVal.split("|");
+		document.boardUseInf.bbsId.value = tmp[0];
+		document.boardUseInf.bbsNm.value = tmp[1];
+	}
+}
 </script>
 </head>
 
 <body onLoad="init_BoxManage()">
-<form:form commandName="BoxVO" method="post" action="" onSubmit="fnUpdate(); return false;">
+<form:form commandName="BoxVO" method="post" action="">
 <div class="wTableFrm">
 	<!-- 타이틀 -->
 	<h2>${pageTitle} <spring:message code="title.create" /></h2>
@@ -119,6 +133,7 @@ function fnUpdate() {
 			<th><label for="userId">${title}</label> <span class="pilsu">*</span></th>
 			<td class="left" colspan="3">
 				<form:input path="userId" title="${title} ${inputTxt}" style="width:70px;" />
+				<span class="button"><input type="button" value="조회" title="조회" onclick="javascript:fn_select_user();"></span>
 				<div><form:errors path="userId" cssClass="error" /></div>
 			</td>
 		</tr>
