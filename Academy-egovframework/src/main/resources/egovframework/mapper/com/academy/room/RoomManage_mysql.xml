@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+	수정일          수정자                          수정내용
+  ===========      ========    =================
+ *  2020.05.21			rainend				독서실 관리
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="RoomManage">
+
+	<!-- 독서실 정보 목록 -->
+	<select id="selectRoomList" parameterType="egovframework.com.academy.room.service.RoomVO" 
+										resultType="egovframework.com.academy.room.service.RoomVO">
+		SELECT a.room_cd, a.room_nm, a.room_count, a.room_price, a.start_num, a.end_num, is_use, reg_dt, reg_id, upd_dt, upd_id,
+		(SELECT COUNT(room_num) FROM acm_room_num WHERE room_cd=a.room_cd AND room_flag = 'Y') use_num,
+		(SELECT COUNT(room_num) FROM acm_room_num WHERE room_cd=a.room_cd AND room_flag = 'N') req_num
+		FROM acm_room a
+		WHERE 1 = 1
+        <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchKeyword)">
+        AND a.room_nm LIKE '%' #{searchKeyword} '%'
+        </if>
+		ORDER BY room_cd ASC
+		LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+	</select>
+
+	<!-- 독서실 총갯수 -->
+	<select id="selectRoomListTotCnt" parameterType="egovframework.com.academy.room.service.RoomVO" resultType="int">
+		SELECT COUNT(*) totcnt
+		FROM acm_room
+		WHERE 1 = 1
+        <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchKeyword)">
+        AND room_nm LIKE '%' #{searchKeyword} '%'
+        </if>
+	</select>
+
+	<!-- 독서실  상세정보 -->
+	<select id="selectRoomDetail" parameterType="egovframework.com.academy.room.service.RoomVO" 
+										resultType="egovframework.com.academy.room.service.RoomVO">
+		SELECT a.room_cd, a.room_nm, a.room_count, a.room_price, a.start_num, a.end_num, reg_dt, reg_id, upd_dt, upd_id,
+		(SELECT COUNT(room_num) FROM acm_room_num WHERE room_cd=a.room_cd AND room_flag = 'Y') use_num,
+		(SELECT COUNT(room_num) FROM acm_room_num WHERE room_cd=a.room_cd AND room_flag = 'N') req_num
+		FROM acm_room a
+		WHERE a.room_cd = #{roomCd}
+	</select>
+ 
+	<!-- 독서실정보 등록 -->
+    <insert id="insertRoom" keyProperty="roomCd" keyColumn="roomCd">
+		INSERT acm_room (
+			room_nm, room_count, room_price, strat_num, end_num, is_use, reg_dt, reg_id, upd_dt, upd_id
+		) VALUES (
+			#{roomNm}, #{roomCount}, #{roomPrice}, #{startNum}, #{endNum}, 'Y', now(), #{regId}, now(), #{updId}
+		)
+		<selectKey keyProperty="roomCd" resultType="java.lang.Integer">
+			SELECT IFNULL(MAX(ROOM_CD),1) AS ROOM_CD FROM acm_room
+		</selectKey>
+   	</insert>
+ 
+	<!-- 독서실정보 변경 -->
+    <update id="updateRoom">
+   		UPDATE acm_room
+   		SET
+   			room_nm = #{roomNm},
+   			room_price = #{roomPrice}, 
+   			upd_dt = now(),
+   			upd_id = #{updId}
+		WHERE room_cd = #{roomCd}
+   	</update>
+ 
+	<!-- 독서실정보 삭제 -->
+    <delete id="deleteRoom">
+   		UPDATE acm_room
+   		SET is_use = 'N' 
+		WHERE room_cd = #{roomCd}
+   	</delete>
+
+	<!-- 독서실 개별정보를 가져온다.  -->
+	<select id="selectRoomNumList"  parameterType="egovframework.com.academy.room.service.RoomVO" 
+										resultType="egovframework.com.academy.room.service.RoomVO">
+		SELECT room_cd, room_num, a.user_id, room_flag, rent_seq, room_memo, reg_dt, reg_id, upd_dt, upd_id 
+		FROM acm_room_num a
+		WHERE a.room_cd = #{roomCd}
+		ORDER BY a.room_num ASC
+	</select>
+
+	<!-- 독서실  상세정보 -->
+	<select id="selectRoomNumDetail" parameterType="egovframework.com.academy.room.service.RoomVO" 
+										resultType="egovframework.com.academy.room.service.RoomVO">
+		SELECT room_cd, room_num, rent_seq, user_id, room_flag, room_memo, reg_dt, reg_id, upd_dt, upd_id 
+		FROM acm_room_num a
+		WHERE a.room_cd = #{roomCd}
+		AND a.room_num = #{roomNum}
+	</select>
+
+	<!-- 독서실 등록 -->
+    <insert id="insertRoomNum">
+    	INSERT INTO acm_room_num (
+    		room_cd, room_num, room_flag, room_memo, reg_dt, reg_id, upd_dt, upd_id
+    	) VALUES (
+    		#{roomCd}, #{roomNum}, #{roomFlag}, #{roomMemo}, now(), #{regId}, now(), #{updId}
+    	)
+   	</insert>
+ 
+	<!-- 독서실 자리정보 변경 -->
+    <update id="updateRoomNum">
+   		UPDATE acm_room_num
+   		SET
+	        <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(userId)">
+   			user_id = #{userId},
+        	</if>
+	        <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(roomFlag)">
+   			room_flag = #{roomFlag},
+   			</if>
+	        <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(rentSeq)">
+   			rent_seq = #{rentSeq},
+   			</if>
+	        <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(roomMemo)">
+   			room_memo = #{roomMemo}, 
+   			</if>
+   			upd_dt = now(),
+   			upd_id = #{updId}
+		WHERE room_cd = #{roomCd}
+		AND room_num = #{roomNum}
+   	</update>
+
+	<!-- 독서실 삭제 -->
+    <delete id="deleteRoomNum">
+   		DELETE 
+		FROM acm_room_num 
+		WHERE room_cd = #{roomCd}
+   	</delete>
+
+</mapper>

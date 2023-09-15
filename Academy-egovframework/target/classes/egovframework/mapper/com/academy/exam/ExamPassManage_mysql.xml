@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+	수정일          수정자                          수정내용
+  ===========      ========    =================
+ *  2020.04.00			rainend				시험/과목 정답 관리
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ExamPassManage">
+
+	<select id="selectExamPassList" parameterType="egovframework.com.academy.exam.service.ExamVO" 
+										resultType="egovframework.com.academy.exam.service.ExamVO">
+		SELECT aa.exam_cd, aa.exam_nm, aa.ISUSE, bb.sbj_cd, bb.sbj_nm
+		FROM exam_mst aa,
+				(SELECT c.exam_cd, c.sbj_Cd, c.sbj_nm
+					FROM (SELECT a.exam_cd, b.SBJ_CD, b.sbj_nm
+								FROM exam_pass_mst a LEFT OUTER join exam_subject b
+								on a.sbj_cd = b.sbj_cd
+								GROUP BY a.exam_cd, b.SBJ_CD
+							) c
+					) bb
+		WHERE  aa.exam_cd = bb.exam_cd
+        <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchKeyword)">
+        and aa.EXAM_NM LIKE '%' #{searchKeyword} '%'
+        </if>
+		ORDER BY exam_cd DESC, sbj_cd
+		LIMIT  #{recordCountPerPage} OFFSET #{firstIndex}
+	</select>
+
+	<select id="selectExamPassListTotCnt" parameterType="egovframework.com.academy.exam.service.ExamVO" resultType="int">
+		SELECT COUNT(*) totcnt
+		FROM exam_mst aa,
+				(SELECT c.exam_cd, c.sbj_Cd, c.sbj_nm
+					FROM (SELECT a.exam_cd, b.SBJ_CD, b.sbj_nm
+								FROM exam_pass_mst a LEFT OUTER join exam_subject b
+								on a.sbj_cd = b.sbj_cd
+								GROUP BY a.exam_cd, b.SBJ_CD
+							) c
+					) bb
+		WHERE  aa.exam_cd = bb.exam_cd
+        <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchKeyword)">
+        and aa.EXAM_NM LIKE '%' #{searchKeyword} '%'
+        </if>
+	</select>
+
+	<select id="selectExamPassDetail" parameterType="egovframework.com.academy.exam.service.ExamVO" 
+										resultType="egovframework.com.academy.exam.service.ExamVO">
+		SELECT a.exam_cd, b.SBJ_CD, b.ITEM_NO, b.PASS_ANS
+		FROM exam_mst a, exam_pass_mst b, exam_subject c
+		where a.EXAM_CD = b.exam_cd
+		and b.sbj_cd = c.sbj_cd
+		and a.EXAM_CD = #{examCd}
+		and b.SBJ_CD = #{sbjCd}
+		ORDER BY a.exam_cd, b.SBJ_CD, b.ITEM_NO
+	</select>
+
+	<insert id="insertExamPass">
+		INSERT INTO exam_pass_mst (
+			EXAM_CD, SBJ_CD, ITEM_NO, PASS_ANS
+		) VALUES (
+			#{examCd}, #{sbjCd}, #{itemNo}, #{passAns}
+		)
+	</insert>
+
+	<delete id="deleteExamPass">
+		DELETE FROM exam_pass_mst
+		WHERE EXAM_CD = #{examCd}
+		AND SBJ_CD = #{sbjCd}
+	</delete>
+
+</mapper>

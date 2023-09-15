@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE form-validation PUBLIC 
+    "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.1//EN" 
+    "http://jakarta.apache.org/commons/dtds/validator_1_1.dtd">
+
+<form-validation>
+
+    <formset>
+
+        <form name="MemberVO"> 
+			<field property="userId" depends="required,maxlength">
+        		<arg0 key="member.userId" resource="true"/><!-- 사용자아이디 -->
+        		<arg1 key="20" resource="true"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>20</var-value>
+				</var>
+			</field> 
+			<field property="userNm" depends="required,maxlength">
+        		<arg0 key="member.userNm" resource="true"/><!-- 사용자이름 -->
+        		<arg1 key="20" resource="true"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>20</var-value>
+				</var>
+			</field> 
+			<field property="userPwd" depends="required,maxlength">
+        		<arg0 key="member.userPwd" resource="true"/><!-- 비밀번호 -->
+        		<arg1 key="20" resource="true"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>20</var-value>
+				</var>
+			</field> 
+			<field property="email" depends="required,maxlength">
+        		<arg0 key="member.email" resource="true"/><!-- 이메일 -->
+        		<arg1 key="50" resource="true"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>50</var-value>
+				</var>
+			</field>
+			<field property="isokSms" depends="required">
+        		<arg0 key="comUssOlpQtm.isUse" resource="true"/><!-- 문자수신여부 -->
+			</field> 
+			<field property="isokEmail" depends="required">
+        		<arg0 key="member.isokSms" resource="true"/><!-- 이메일수신여부 -->
+			</field> 
+			<field property="isUse" depends="required">
+        		<arg0 key="member.isokEmail" resource="true"/><!-- 사용여부 -->
+			</field> 
+		</form>
+
+    </formset>
+
+</form-validation>

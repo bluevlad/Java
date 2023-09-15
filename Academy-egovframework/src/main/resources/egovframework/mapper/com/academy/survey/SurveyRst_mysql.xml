@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+	수정일          수정자                          수정내용
+  ===========      ========    =================
+ *  2020.04.00			rainend				시험/과목 관리
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SurveyRst">
+
+	<insert id="insertSurveyRst">
+		INSERT INTO acm_survey_rst (
+			SURVEY_ID, USER_ID, REG_DT
+		) VALUES (
+			#{surveyId}, #{userId}, now()
+		)
+	</insert>
+
+	<delete id="deleteSurveyRst">
+		DELETE acm_survey_rst
+		WHERE SURVEY_ID = #{surveyId}
+		AND USER_ID = #{userId}
+	</delete>
+
+	<insert id="insertSurveyRstItem">
+		INSERT INTO acm_survey_rst_item (
+			SURVEY_ID, USER_ID, QUE_ID, USER_ANSW
+		) VALUES (
+			#{surveyId}, #{userId}, #{queId}, #{userAnsw}
+		)
+	</insert>
+
+	<delete id="deleteSurveyRstItem">
+		DELETE acm_survey_rst_item
+		WHERE SURVEY_ID = #{surveyId}
+		AND USER_ID = #{userId}
+	</delete>
+
+</mapper>
