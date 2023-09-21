@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE form-validation PUBLIC 
+    "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.1//EN" 
+    "http://jakarta.apache.org/commons/dtds/validator_1_1.dtd">
+
+<form-validation>
+
+    <formset>
+
+        <form name="BoxVO"> 
+			<field property="boxCd" depends="required,maxlength">
+        		<arg0 key="box.boxCd" resource="true"/><!-- 사물함코드 -->
+        		<arg1 key="20" resource="true"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>20</var-value>
+				</var>
+			</field>
+			<field property="boxNm" depends="required,maxlength">
+        		<arg0 key="box.boxNm" resource="true"/><!-- 사물함명칭 -->
+        		<arg1 key="20" resource="true"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>20</var-value>
+				</var>
+			</field>
+			<field property="boxCount" depends="required,integer">
+        		<arg0 key="box.boxCount" resource="true"/><!-- 사물함갯수 -->
+			</field>
+			<field property="boxPrice" depends="required,integer">
+        		<arg0 key="box.boxPrice" resource="true"/><!-- 사물함사용금액 -->
+			</field>
+			<field property="rowCount" depends="required,integer">
+        		<arg0 key="box.rowCount" resource="true"/><!-- 위치층수 -->
+			</field>
+			<field property="rowNum" depends="required,integer">
+        		<arg0 key="box.rowNum" resource="true"/><!-- 배열갯수 -->
+			</field>
+			<field property="startNum" depends="required,integer">
+        		<arg0 key="box.startNum" resource="true"/><!-- 시작번호 -->
+			</field>
+			<field property="endNum" depends="required,integer">
+        		<arg0 key="box.endNum" resource="true"/><!-- 종료번호 -->
+			</field>
+		</form>
+
+    </formset>
+
+</form-validation>

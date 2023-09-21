@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="box">
+
+	<select id="selectBoxList" parameterType="egovframework.com.academy.box.service.BoxVO" 
+										resultType="egovframework.com.academy.box.service.BoxVO">
+		SELECT BOX_CD, BOX_NM, BOX_COUNT, BOX_PRICE, DEPOSIT, ROW_COUNT, ROW_NUM, UPD_DT, UPD_ID, START_NUM, END_NUM,
+		(SELECT COUNT(BOX_NUM) FROM ACM_BOX_NUM WHERE BOX_CD = AB.BOX_CD AND BOX_FLAG = 'Y') AS USE_CNT,
+		(SELECT COUNT(BOX_NUM) FROM ACM_BOX_NUM WHERE BOX_CD = AB.BOX_CD AND BOX_FLAG = 'N') AS NOT_CNT
+		FROM ACM_BOX AB
+        <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchKeyword)">
+        WHERE BOX_NM LIKE '%' #{searchKeyword} '%'
+        </if>
+		ORDER BY AB.BOX_CD ASC
+		LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+	</select>
+
+	<select id="selectBoxListTotCnt" parameterType="egovframework.com.academy.box.service.BoxVO" resultType="int">
+		SELECT COUNT(*) totcnt
+		FROM ACM_BOX
+        <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchKeyword)">
+        WHERE BOX_NM LIKE '%' #{searchKeyword} '%'
+        </if>
+	</select>
+
+	<!-- 사물함정보 한개를 가져온다.  -->
+	<select id="selectBoxDetail" parameterType="egovframework.com.academy.box.service.BoxVO" 
+										resultType="egovframework.com.academy.box.service.BoxVO">
+		SELECT BOX_CD, BOX_NM, BOX_COUNT, BOX_PRICE, DEPOSIT, ROW_COUNT, ROW_NUM, UPD_DT, UPD_ID, START_NUM, END_NUM,
+		(SELECT COUNT(BOX_NUM) FROM ACM_BOX_NUM WHERE BOX_CD = AB.BOX_CD AND BOX_FLAG = 'Y') USE_CNT,
+		(SELECT COUNT(BOX_NUM) FROM ACM_BOX_NUM WHERE BOX_CD = AB.BOX_CD AND BOX_FLAG = 'N') NOT_CNT
+		FROM ACM_BOX AB
+		WHERE AB.BOX_CD = #{boxCd}
+	</select>
+
+	<!-- 사물함 세부정보를 가져온다.  -->
+	<select id="selectBoxNumList" parameterType="egovframework.com.academy.box.service.BoxVO" 
+										resultType="egovframework.com.academy.box.service.BoxVO">
+		SELECT BOX_CD, BOX_NUM, AM.USER_ID, AM.USER_NM, BOX_FLAG, ABN.UPD_DT, ABN.UPD_ID, RENT_SEQ, RENT_MEMO   
+		FROM ACM_BOX_NUM ABN    
+		LEFT OUTER JOIN ACM_MEMBER AM ON ABN.USER_ID = AM.USER_ID
+		WHERE ABN.BOX_CD = #{boxCd}
+		ORDER BY ABN.BOX_NUM ASC
+	</select>
+
+</mapper>
