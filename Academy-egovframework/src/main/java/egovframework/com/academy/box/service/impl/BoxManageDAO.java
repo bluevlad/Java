@@ -1,6 +1,5 @@
 package egovframework.com.academy.box.service.impl;
 
-import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -49,5 +48,17 @@ public class BoxManageDAO extends EgovComAbstractDAO{
     public List<?> selectBoxNumList(BoxVO BoxVO) throws Exception{
 		return selectList("box.selectBoxNumList", BoxVO);
     }
+
+	public BoxVO selectBoxNumRentDetail(BoxVO BoxVO) {
+		return getSqlSession().selectOne("box.selectBoxNumRentDetail", BoxVO);
+	}
+
+	public BoxVO selectBoxNumRentOrderDetail(BoxVO BoxVO) {
+		return getSqlSession().selectOne("box.selectBoxNumRentOrderDetail", BoxVO);
+	}
+
+	public List<?> selectBoxNumRentOrderList(BoxVO BoxVO) {
+		return selectList("box.selectBoxNumRentOrderList", BoxVO);
+	}
 	
 }

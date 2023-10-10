@@ -1,7 +1,5 @@
 package egovframework.com.academy.box.web;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -14,8 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import egovframework.com.academy.box.service.BoxManageService;
 import egovframework.com.academy.box.service.BoxVO;
-import egovframework.com.academy.exam.service.ExamVO;
-import egovframework.com.academy.lecture.service.LectureVO;
+import egovframework.com.api.util.CommonUtil;
 import egovframework.com.cmm.EgovMessageSource;
 import egovframework.rte.fdl.property.EgovPropertyService;
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
@@ -52,7 +49,7 @@ public class BoxManageController {
 	 * @exception Exception
 	 */
 	@RequestMapping(value = "/academy/box/List.do")
-	public String ExamList(@ModelAttribute("BoxVO") BoxVO BoxVO, ModelMap model) throws Exception {
+	public String List(@ModelAttribute("BoxVO") BoxVO BoxVO, ModelMap model) throws Exception {
 
 		BoxVO.setPageUnit(propertyService.getInt("pageUnit"));
 		BoxVO.setPageSize(propertyService.getInt("pageSize"));
@@ -84,7 +81,7 @@ public class BoxManageController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/academy/box/Detail.do")
-	public String SubjectDetail(@ModelAttribute("BoxVO") BoxVO BoxVO, @RequestParam Map<?, ?> commandMap, ModelMap model) throws Exception {
+	public String Detail(@ModelAttribute("BoxVO") BoxVO BoxVO, @RequestParam Map<?, ?> commandMap, ModelMap model) throws Exception {
 	
         model.addAttribute("boxCd", commandMap.get("boxCd") == null ? "" : (String)commandMap.get("boxCd"));
         BoxVO.setBoxCd((String) commandMap.get("boxCd"));
@@ -93,6 +90,51 @@ public class BoxManageController {
 		model.addAttribute("boxnumList", boxManageService.selectBoxNumList(BoxVO));
 
 		return "egovframework/com/academy/box/Detail";
+	}
+
+	/**
+	 * @Method Name : boxRentWrite
+	 * @작성일 : 2023. 09
+	 * @Method 설명 : 사물함 대여 신청 등록
+	 * @param model
+	 * @param request
+	 * @return String
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/academy/box/RentWrite.do")
+	public String boxRentWrite(@ModelAttribute("BoxVO") BoxVO BoxVO, @RequestParam Map<?, ?> commandMap, ModelMap model) throws Exception {
+
+		// 사물함 BOX_CD로 상세정보를 가져온다.
+        model.addAttribute("rentSeq", commandMap.get("rentSeq") == null ? "" : (String)commandMap.get("rentSeq"));
+		BoxVO.setRentSeq(CommonUtil.parseInt(commandMap.get("rentSeq").toString()));
+
+		BoxVO boxNumRentDetail = null;
+		BoxVO boxNumRentOrderDetail = null;
+		if (!commandMap.get("rentSeq").toString().isEmpty()) {
+			// 사물함 대여 신청 정보(현재)
+			boxNumRentDetail = boxManageService.selectBoxNumRentDetail(BoxVO);
+			
+			// 사물함 대여 현재 결제 정보를 가져온다
+			if (boxNumRentDetail != null){
+				BoxVO.setOrderno(boxNumRentDetail.getOrderno());
+				boxNumRentOrderDetail = boxManageService.selectBoxNumRentOrderDetail(BoxVO);
+			}
+		}
+
+		if (boxNumRentOrderDetail != null){
+			model.addAttribute("WMODE", "EDT");
+		} else {
+			model.addAttribute("WMODE", "INS");
+		}
+
+		// 사물함 대여 결제 이력들
+		model.addAttribute("boxNumRentOrderList", boxManageService.selectBoxNumRentOrderList(BoxVO));
+
+        model.addAttribute("BoxVO", boxManageService.selectBoxDetail(BoxVO));
+		model.addAttribute("boxNumRentDetail", boxNumRentDetail);
+		model.addAttribute("boxNumRentOrderDetail", boxNumRentOrderDetail);
+
+		return "egovframework/com/academy/box/RentWrite";
 	}
 
 }

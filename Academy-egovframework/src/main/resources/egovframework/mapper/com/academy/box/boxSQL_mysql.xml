@@ -43,4 +43,665 @@
 		ORDER BY ABN.BOX_NUM ASC
 	</select>
 
+	<!-- 사물함 상세정보 테이블에서 사용중인 사물함 갯수를 조회 -->
+	<select id="selectBoxNumUSeCount" parameterType="egovframework.com.academy.box.service.BoxVO" resultType="int">
+		SELECT COUNT(BOX_NUM)
+		FROM ACM_BOX_NUM			
+		WHERE BOX_CD = #{boxCd} AND BOX_FLAG = 'Y'
+	</select>
+
+	<!-- 사물함 대여 신청 결제정보를 한개 가져온다.  -->
+	<select id="selectBoxNumRentDetail" parameterType="egovframework.com.academy.box.service.BoxVO" 
+										resultType="egovframework.com.academy.box.service.BoxVO">
+		SELECT AB.BOX_NM, ABN.BOX_CD, ABN.USER_ID, ABN.BOX_FLAG, ABN.RENT_SEQ, ABR.RENT_MEMO,
+				DATE_FORMAT(ABR.RENT_START, "%Y-%m-%d") RENT_START, DATE_FORMAT(ABR.RENT_END , "%Y-%m-%d") RENT_END,
+				ABR.DEPOSIT, ABR.DEPOSIT_YN, ABR.ORDERNO, ABR.EXTEND_YN, ABR.KEY_YN, ABR.RENT_TYPE, ABR.PAY_GUBUN, ABR.DEPOSIT_REFUND
+		FROM ACM_BOX AB INNER JOIN ACM_BOX_NUM ABN 
+		ON AB.BOX_CD = ABN.BOX_CD 
+		AND ABN.BOX_CD = #{boxCd}
+		AND ABN.BOX_NUM = #{boxNum}
+		LEFT OUTER JOIN ACM_BOX_RENT ABR
+		ON AB.BOX_CD = ABR.BOX_CD
+		AND ABN.BOX_NUM = ABR.BOX_NUM
+		AND ABR.RENT_SEQ = #{rentSeq}
+	</select>
+
+	<!-- 사물함 대여 현재 결제 정보를 가져온다.  -->
+	<select id="selectBoxNumRentOrderDetail" parameterType="egovframework.com.academy.box.service.BoxVO" 
+										resultType="egovframework.com.academy.box.service.BoxVO">
+		SELECT TOO.ORDERNO, TOO.USER_NM, TOO.REG_DT, TOO.OFF_LINE, TOO.USER_ID,
+       		TOA.PAYCODE, TOA.PRICE, TOA.PRICE_CARD, TOA.PRICE_CASH, TOA.PRICE_BANK, TOA.PAYNAME, 
+       		TOA.PRICE_DISCOUNT, TOA.PRICE_DISCOUNT_REASON
+		FROM ACM_ORDERS TOO, ACM_ORDER_ITEM TOM, ACM_ORDER_APPROVALS TOA
+		WHERE TOO.ORDERNO = TOM.ORDERNO
+		AND TOM.ORDERNO = TOA.ORDERNO
+		AND TOM.ISCANCEL= 0
+		AND TOO.ORDERNO = #{ORDERNO}
+	</select>
+
+	<!-- 사물함 대여 현재 결제 정보를 가져온다.  -->
+	<select id="boxOrderDetail" parameterType="hashMap" resultType="hashMap">
+         SELECT A.ORDERNO, A.USER_ID, A.USER_NM, A.EMAIL, A.REG_DT, A.ORDER_TYPE,
+              B.MGNTNO, B.PRICE, B.STATUSCODE, B.ISCANCEL,  
+              C.PRICE, C.PRICE_CARD, C.PRICE_CASH, C.PRICE_BANK, C.PRICE_UNPAID, C.PRICE_DISCOUNT, C.PRICE_DISCOUNT_TYPE, C.PRICE_DISCOUNT_REASON,
+              D.SEQ, D.BOX_NUM, D.RENT_TYPE, E.BOX_NM, E.BOX_CD, D.RENT_MEMO, D.SEQ RENT_SEQ,
+              TO_CHAR(D.RENT_START , 'YYYY-MM-DD') RENT_START, TO_CHAR(D.RENT_END , 'YYYY-MM-DD') RENT_END
+         FROM ACM_ORDERS A, ACM_ORDER_ITEM B, ACM_ORDER_APPROVALS C, ACM_BOX_RENT D, ACM_BOX E
+         WHERE A.ORDERNO = B.ORDERNO
+         AND A.ORDERNO = C.ORDERNO
+         AND C.ORDERNO = D.ORDERNO
+         AND D.BOX_CD = E.BOX_CD
+		<if test="STATUSCODE !=null and STATUSCODE == 'DLV230' ">
+		AND B.STATUSCODE = #{STATUSCODE}
+		</if>
+   		 AND A.ORDERNO = #{ORDERNO}
+ 	</select>
+ 
+
+	<!-- 사물함 대여 결제 이력 정보들을 가져온다.  -->
+	<select id="boxNumRentOrderList" parameterType="hashMap" resultType="hashMap">
+		SELECT TOBR.USER_ID, TOBN.BOX_FLAG, TOBR.RENT_MEMO, TOBR.SEQ,
+			TO_CHAR(TOBR.RENT_START , 'YYYY-MM-DD') RENT_START, TO_CHAR(TOBR.RENT_END , 'YYYY-MM-DD') RENT_END,
+			DECODE(TOBR.DEPOSIT_YN,'Y','반환','미반환') DEPOSIT_YN,
+			DECODE(TOBR.EXTEND_YN,'R','대여','Y','연장','비연장') EXTEND_YN,
+			DECODE(TOBR.KEY_YN,'Y','반납','미반납') KEY_YN,
+			DECODE(TOBR.RENT_TYPE,'ON','온라인','오프라인') RENT_TYPE,
+			TOBR.DEPOSIT, TOBR.ORDERNO, TOBR.DEPOSIT, TOBR.DEPOSIT_YN, 
+			TOBR.ORDERNO, TOBR.PAY_GUBUN, TOBR.DEPOSIT_REFUND,
+			TMM.USER_NM, TMM.PHONE_NO
+		FROM ACM_BOX TOB INNER JOIN ACM_BOX_NUM TOBN 
+			ON TOB.BOX_CD = TOBN.BOX_CD 
+		LEFT OUTER JOIN ACM_BOX_RENT TOBR
+			ON TOB.BOX_CD=TOBR.BOX_CD
+			AND TOBN.BOX_NUM = TOBR.BOX_NUM
+		LEFT OUTER JOIN ACM_MEMBER TMM
+			ON TOBR.USER_ID = TMM.USER_ID 
+		WHERE TOBR.BOX_CD = #{BOX_CD}
+			AND TOBR.BOX_NUM = #{BOX_NUM}
+		ORDER BY TOBR.RENT_END DESC
+	</select>
+
+
+	<!-- 사물함신청(결제완료) 정보들을 가져온다.  -->
+	<select id="getBoxOrderList" parameterType="hashMap" resultType="hashMap">
+		SELECT * FROM 	( 
+			SELECT A.*, ROWNUM RNUM 
+		  	FROM (
+					SELECT 
+						TOO.ORDERNO, TOO.REG_DT, TOO.USER_ID, TOO.USER_NM, TOBR.BOX_CD, TOB.BOX_NM, TOBR.BOX_NUM, TOA.PRICE, 
+						TOA.PAYCODE, DECODE(TOA.PAYCODE,'PAY110','카드결제','PAY140','현금결제','PAY150','예금결제','PAY100','무통장입금','없음') PAYCODE_NM,
+						TOBR.RENT_TYPE, DECODE(TOBR.RENT_TYPE,'ON','온라인','OFF','오프라인','데스트접수') RENT_TYPE_NM,
+						TOM.STATUSCODE, DECODE(TOM.STATUSCODE,'DLV105','결제완료','DLV230','환불완료','DLV150','취소완료','대기중') STATUSCODE_NM
+					FROM ACM_ORDERS TOO INNER JOIN ACM_ORDER_APPROVALS TOA
+						ON TOO.ORDERNO = TOA.ORDERNO
+						INNER JOIN ACM_BOX_RENT TOBR
+						ON TOO.ORDERNO = TOBR.ORDERNO
+						INNER JOIN ACM_BOX TOB
+						ON TOBR.BOX_CD = TOB.BOX_CD
+						INNER JOIN (SELECT ORDERNO, MAX(STATUSCODE) STATUSCODE FROM ACM_ORDER_ITEM WHERE PTYPE='S' GROUP BY ORDERNO) TOM
+						ON TOO.ORDERNO = TOM.ORDERNO 
+						LEFT OUTER JOIN ACM_ORDER_REFUND TOR
+						ON TOO.ORDERNO = TOR.ORDERNO 
+					WHERE 1=1
+						<if test="ORDERSTATUSCODE !=null and ORDERSTATUSCODE == 'DLV105' ">
+						AND NVL(TOA.PRICE_UNPAID,0) <![CDATA[ < ]]> 1
+						AND TOM.STATUSCODE = 'DLV105'
+						</if>
+						<if test="ORDERSTATUSCODE !=null and ORDERSTATUSCODE == 'DLV230' ">
+						AND TOM.STATUSCODE = 'DLV230'
+						</if>
+						
+						<if test="SDATE !=null and SDATE != '' and EDATE !=null and EDATE != ''">
+						AND TO_CHAR(TOO.REG_DT, 'YYYYMMDD') BETWEEN #{SDATE} AND #{EDATE}
+						</if>
+											   		
+						<if test="SEARCHKEY !=null and SEARCHKEY != '' ">
+					   		<if test="SEARCHTYPE !=null and SEARCHTYPE != '' ">
+					   			<choose>
+								  <when test="SEARCHTYPE != 'ALL'">
+									  AND INSTR(${SEARCHTYPE}, #{SEARCHKEY}) <![CDATA[ > ]]> 0
+								  </when>
+								  <when test="SEARCHTYPE == 'ALL'">
+									  AND (
+									   		INSTR(TOO.ORDERNO, #{SEARCHKEY}) <![CDATA[ > ]]> 0 OR
+									   		INSTR(TOO.USER_NM, #{SEARCHKEY}) <![CDATA[ > ]]> 0
+										   )
+								  </when>
+							 	</choose>
+					   		</if>							
+						</if>
+					ORDER BY TOO.REG_DT DESC
+					) A 
+               	WHERE ROWNUM <![CDATA[ <= ]]> #{ENDNO}
+			)
+		WHERE RNUM <![CDATA[ > ]]> #{STARTNO}
+	</select>
+
+	<select id="getBoxOrderListCount" parameterType="hashMap" resultType="int">
+		SELECT  
+			COUNT(*) CNT
+		FROM ACM_ORDERS TOO INNER JOIN ACM_ORDER_APPROVALS TOA
+			ON TOO.ORDERNO = TOA.ORDERNO
+			INNER JOIN ACM_BOX_RENT TOBR
+			ON TOO.ORDERNO = TOBR.ORDERNO
+			INNER JOIN ACM_BOX TOB
+			ON TOBR.BOX_CD = TOB.BOX_CD
+			INNER JOIN (SELECT ORDERNO, MAX(STATUSCODE) STATUSCODE FROM ACM_ORDER_ITEM WHERE PTYPE='S' GROUP BY ORDERNO) TOM
+			ON TOO.ORDERNO = TOM.ORDERNO 
+			LEFT OUTER JOIN ACM_ORDER_REFUND TOR
+			ON TOO.ORDERNO = TOR.ORDERNO 
+		WHERE 1=1
+			<if test="ORDERSTATUSCODE !=null and ORDERSTATUSCODE == 'DLV105' ">
+			AND NVL(TOA.PRICE_UNPAID,0) <![CDATA[ < ]]> 1
+			AND TOM.STATUSCODE = 'DLV105'
+			</if>
+			<if test="ORDERSTATUSCODE !=null and ORDERSTATUSCODE == 'DLV230' ">
+			AND TOM.STATUSCODE = 'DLV230'
+			</if>
+			<if test="SDATE !=null and SDATE != '' and EDATE !=null and EDATE != ''">
+			AND TO_CHAR(TOO.REG_DT, 'YYYYMMDD') BETWEEN #{SDATE} AND #{EDATE}
+			</if>
+			<if test="SEARCHKEY !=null and SEARCHKEY != '' ">
+					   		<if test="SEARCHTYPE !=null and SEARCHTYPE != '' ">
+					   			<choose>
+								  <when test="SEARCHTYPE != 'ALL'">
+									  AND INSTR(${SEARCHTYPE}, #{SEARCHKEY}) <![CDATA[ > ]]> 0
+								  </when>
+								  <when test="SEARCHTYPE == 'ALL'">
+									  AND (
+									   		INSTR(TOO.ORDERNO, #{SEARCHKEY}) <![CDATA[ > ]]> 0 OR
+									   		INSTR(TOO.USER_NM, #{SEARCHKEY}) <![CDATA[ > ]]> 0
+										   )
+								  </when>
+							 	</choose>
+					   		</if>							
+			</if>
+		ORDER BY TOO.REG_DT DESC
+	</select>				
+	
+		
+	<!-- 사물함신청(결제완료) 정보들을 엑셀 출력용으로 가져온다.  -->
+	<select id="getBoxOrderListExcel" parameterType="hashMap" resultType="hashMap">
+		SELECT 
+			TOO.ORDERNO, TOO.REG_DT, TOO.USER_NM, TOBR.BOX_CD, TOB.BOX_NM, TOBR.BOX_NUM, TOA.PRICE, 
+			TOA.PAYCODE, DECODE(TOA.PAYCODE,'PAY110','카드결제','PAY140','현금결제','PAY150','예금결제','PAY100','무통장입금','없음') PAYCODE_NM,
+			TOBR.RENT_TYPE, DECODE(TOBR.RENT_TYPE,'ON','온라인','OFF','오프라인','데스트접수') RENT_TYPE_NM,
+			TOM.STATUSCODE, DECODE(TOM.STATUSCODE,'DLV105','결제완료','DLV230','환불완료','DLV150','취소완료','대기중') STATUSCODE_NM
+		FROM TB_OFF_ORDERS TOO INNER JOIN TB_OFF_APPROVALS TOA
+			ON TOO.ORDERNO = TOA.ORDERNO
+			INNER JOIN TB_OFF_BOX_RENT TOBR
+			ON TOO.ORDERNO = TOBR.ORDERNO
+			INNER JOIN TB_OFF_BOX TOB
+			ON TOBR.BOX_CD = TOB.BOX_CD
+			INNER JOIN (SELECT ORDERNO, MAX(STATUSCODE) STATUSCODE FROM TB_OFF_ORDER_MGNT_NO WHERE PTYPE='S' GROUP BY ORDERNO) TOM
+			ON TOO.ORDERNO = TOM.ORDERNO 
+			LEFT OUTER JOIN TB_OFF_REFUND TOR
+			ON TOO.ORDERNO = TOR.ORDERNO 
+		WHERE 1=1
+			<if test="ORDERSTATUSCODE !=null and ORDERSTATUSCODE == 'DLV105' ">
+			AND NVL(TOA.PRICE_UNPAID,0) <![CDATA[ < ]]> 1
+			AND TOM.STATUSCODE = 'DLV105'
+			</if>
+			<if test="ORDERSTATUSCODE !=null and ORDERSTATUSCODE == 'DLV230' ">
+			AND TOM.STATUSCODE = 'DLV230'
+			</if>
+			
+			<if test="SDATE !=null and SDATE != '' and EDATE !=null and EDATE != ''">
+			AND TO_CHAR(TOO.REG_DT, 'YYYYMMDD') BETWEEN #{SDATE} AND #{EDATE}
+			</if>
+								   		
+			<if test="SEARCHKEY !=null and SEARCHKEY != '' ">
+					   		<if test="SEARCHTYPE !=null and SEARCHTYPE != '' ">
+					   			<choose>
+								  <when test="SEARCHTYPE != 'ALL'">
+									  AND INSTR(${SEARCHTYPE}, #{SEARCHKEY}) <![CDATA[ > ]]> 0
+								  </when>
+								  <when test="SEARCHTYPE == 'ALL'">
+									  AND (
+									   		INSTR(TOO.ORDERNO, #{SEARCHKEY}) <![CDATA[ > ]]> 0 OR
+									   		INSTR(TOO.USER_NM, #{SEARCHKEY}) <![CDATA[ > ]]> 0
+										   )
+								  </when>
+							 	</choose>
+					   		</if>							
+			</if>
+		ORDER BY TOO.REG_DT DESC
+	</select>
+
+
+	<!-- 사물함사용 만료 예정자 정보들을 가져온다.  -->
+	<select id="getBoxExtOrderList" parameterType="hashMap" resultType="hashMap">
+		SELECT * FROM 	(
+			SELECT A.*, ROWNUM RNUM 
+		  	FROM (
+                    SELECT 
+                        TOO.ORDERNO, TOO.USER_NM, TOO.EMAIL,
+                        TOB.BOX_NM, TOBR.BOX_NUM, 
+                        TO_CHAR(TOBR.RENT_START, 'YYYY-MM-DD') RENT_START, 
+                        TO_CHAR(TOBR.RENT_END, 'YYYY-MM-DD') RENT_END
+                    FROM TB_OFF_ORDERS TOO INNER JOIN TB_OFF_APPROVALS TOA
+                        ON TOO.ORDERNO = TOA.ORDERNO
+                        INNER JOIN TB_OFF_BOX_RENT TOBR
+                        ON TOO.ORDERNO = TOBR.ORDERNO
+                        INNER JOIN TB_OFF_BOX TOB
+                        ON TOBR.BOX_CD = TOB.BOX_CD
+                        INNER JOIN (SELECT ORDERNO FROM TB_OFF_ORDER_MGNT_NO WHERE PTYPE='S' GROUP BY ORDERNO HAVING COUNT(ORDERNO) = 1) TOM
+                        ON TOO.ORDERNO = TOM.ORDERNO 
+                        LEFT OUTER JOIN TB_OFF_REFUND TOR
+                        ON TOO.ORDERNO = TOR.ORDERNO 
+						<if test="SDATE !=null and SDATE != '' and EDATE !=null and EDATE != ''">
+						WHERE TOBR.RENT_END BETWEEN  #{SDATE} AND #{EDATE}
+						</if>
+                    ORDER BY TOBR.RENT_END DESC
+					) A 
+               	WHERE ROWNUM <![CDATA[ <= ]]> #{ENDNO}
+			)
+		WHERE RNUM <![CDATA[ > ]]> #{STARTNO}
+	</select>
+
+	<select id="getBoxExtOrderListCount" parameterType="hashMap" resultType="int">
+		SELECT  
+			COUNT(*) CNT
+                    FROM TB_OFF_ORDERS TOO INNER JOIN TB_OFF_APPROVALS TOA
+                        ON TOO.ORDERNO = TOA.ORDERNO
+                        INNER JOIN TB_OFF_BOX_RENT TOBR
+                        ON TOO.ORDERNO = TOBR.ORDERNO
+                        INNER JOIN TB_OFF_BOX TOB
+                        ON TOBR.BOX_CD = TOB.BOX_CD
+                        INNER JOIN (SELECT ORDERNO FROM TB_OFF_ORDER_MGNT_NO WHERE PTYPE='S' GROUP BY ORDERNO HAVING COUNT(ORDERNO) = 1) TOM
+                        ON TOO.ORDERNO = TOM.ORDERNO 
+                        LEFT OUTER JOIN TB_OFF_REFUND TOR
+                        ON TOO.ORDERNO = TOR.ORDERNO
+						<if test="SDATE !=null and SDATE != '' and EDATE !=null and EDATE != ''">
+						WHERE TOBR.RENT_END BETWEEN  #{SDATE} AND #{EDATE}
+						</if>
+	</select>				
+	
+		
+	<!-- 사물함신청(결제완료) 정보들을 엑셀 출력용으로 가져온다.  -->
+	<select id="getBoxExtOrderListExcel" parameterType="hashMap" resultType="hashMap">
+                    SELECT 
+                        TOO.ORDERNO, TOO.USER_NM, TOO.EMAIL,
+                        TOB.BOX_NM, TOBR.BOX_NUM, 
+                        TO_CHAR(TOBR.RENT_START, 'YYYY-MM-DD') RENT_START, 
+                        TO_CHAR(TOBR.RENT_END, 'YYYY-MM-DD') RENT_END
+                    FROM TB_OFF_ORDERS TOO INNER JOIN TB_OFF_APPROVALS TOA
+                        ON TOO.ORDERNO = TOA.ORDERNO
+                        INNER JOIN TB_OFF_BOX_RENT TOBR
+                        ON TOO.ORDERNO = TOBR.ORDERNO
+                        INNER JOIN TB_OFF_BOX TOB
+                        ON TOBR.BOX_CD = TOB.BOX_CD
+                        INNER JOIN (SELECT ORDERNO FROM TB_OFF_ORDER_MGNT_NO WHERE PTYPE='S' GROUP BY ORDERNO HAVING COUNT(ORDERNO) = 1) TOM
+                        ON TOO.ORDERNO = TOM.ORDERNO 
+                        LEFT OUTER JOIN TB_OFF_REFUND TOR
+                        ON TOO.ORDERNO = TOR.ORDERNO
+						<if test="SDATE !=null and SDATE != '' and EDATE !=null and EDATE != ''">
+						WHERE TOBR.RENT_END BETWEEN  #{SDATE} AND #{EDATE}
+						</if>
+                    ORDER BY TOBR.RENT_END DESC
+	</select>
+
+	<!-- 사물함정보 삭제 -->
+    <delete id="boxDeleteBox" parameterType="hashMap" >
+   		DELETE 
+   			FROM ACM_BOX 
+   			WHERE BOX_CD = #{BOX_CD}
+   	</delete>
+
+	<!-- 사물함 상세정보 삭제 -->
+    <delete id="boxDeleteBoxNum" parameterType="hashMap" >
+   		DELETE 
+   			FROM ACM_BOX_NUM 
+   			WHERE BOX_CD = #{BOX_CD}
+   	</delete>
+
+	<!-- 사물함 대여 이력정보 삭제 -->
+    <delete id="boxDeleteBoxRent" parameterType="hashMap" >
+   		DELETE 
+   			FROM ACM_BOX_RENT 
+   			WHERE BOX_CD = #{BOX_CD} AND BOX_NUM = #{BOX_NUM} AND SEQ = #{RENT_SEQ}
+   	</delete>
+
+	<!-- 사물함 대여 이력정보 삭제 (주문번호 이용) -->
+    <delete id="boxDeleteBoxRentByOrderId" parameterType="hashMap" >
+   		DELETE 
+   			FROM ACM_BOX_RENT 
+   			WHERE ORDERNO = #{ORDERNO} 
+   	</delete>
+   	
+	<!-- 사물함 관련 3개 테이블 삭제 -->
+    <delete id="boxDeleteBoxAll" parameterType="hashMap" >
+	{call
+        declare
+        begin
+	   		DELETE 
+	   			FROM ACM_BOX_RENT WHERE BOX_CD = #{BOX_CD};
+	   		DELETE 
+	   			FROM ACM_BOX_NUM WHERE BOX_CD = #{BOX_CD};
+	   		DELETE 
+	   			FROM ACM_BOX WHERE BOX_CD = #{BOX_CD};
+        end
+    }
+   	</delete>
+
+	<!-- 사물함 등록 처리 -->
+	<insert id="boxInsertProcess" parameterType="hashMap" flushCache="true" >
+		INSERT INTO ACM_BOX(
+			BOX_CD, BOX_NM, BOX_COUNT, BOX_PRICE, DEPOSIT, ROW_COUNT, ROW_NUM, UPD_DT, UPD_ID, START_NUM, END_NUM
+		)VALUES(
+			#{BOX_CD}, #{BOX_NM}, #{BOX_COUNT}, #{BOX_PRICE}, #{DEPOSIT}, #{ROW_COUNT}, #{ROW_NUM}, SYSDATE, #{UPD_ID}, #{START_NUM}, #{END_NUM}
+		)
+	</insert>
+
+	<!-- 사물함 등록 처리 -->
+	<insert id="boxNumInsertProcess" parameterType="hashMap" flushCache="true" >
+		INSERT INTO ACM_BOX_NUM(
+			BOX_CD, BOX_NUM, USER_ID, BOX_FLAG, UPD_DT, UPD_ID
+		)VALUES(
+			#{BOX_CD}, #{BOX_NUM}, '', 'N', SYSDATE, #{UPD_ID}
+		)
+	</insert>
+	
+	<!-- 사물함 등록 처리 -->
+	<insert id="boxRentInsertProcess" parameterType="hashMap" flushCache="true" >
+		INSERT INTO ACM_BOX_RENT(
+			BOX_CD, SEQ, BOX_NUM, USER_ID, RENT_START, RENT_END, DEPOSIT, DEPOSIT_YN, EXTEND_YN, KEY_YN,     
+			RENT_MEMO, UPD_DT, UPD_ID, RENT_TYPE, PAY_GUBUN, ORDERNO    
+		)VALUES(
+			#{BOX_CD}, SEQ_BOXRENT_ID.NEXTVAL, #{BOX_NUM}, #{USER_ID}, #{RENT_START}, #{RENT_END}, #{DEPOSIT}, #{DEPOSIT_YN}, #{EXTEND_YN}, #{KEY_YN},
+			#{RENT_MEMO}, SYSDATE, #{UPD_ID}, #{RENT_TYPE}, #{PAY_GUBUN}, #{ORDERNO}
+		)
+	</insert>
+	
+	<!-- 사물함 환불 처리 -->
+	<insert id="offRefundInsertProcess" parameterType="hashMap" flushCache="true" >
+		INSERT INTO ACM_ORDER_REFUND(
+			IDX, ORDERNO, REFUND_PAY, SET_YN, SET_DATE,
+			<if test="ACC_BANK_NAME !=null and ACC_BANK_NAME != '' ">
+			ACC_BANK_NAME,
+			</if>
+			<if test="ACC_BANK_NUM !=null and ACC_BANK_NUM != '' ">
+			ACC_BANK_NUM,
+			</if>
+			REG_DT
+		)VALUES(
+			SEQ_TB_OFF_REFUND_IDX.NEXTVAL, #{ORDERNO}, #{REFUND_PRICE}, 'N', #{REFUND_DATE},
+			<if test="ACC_BANK_NAME !=null and ACC_BANK_NAME != '' ">
+			#{ACC_BANK_NAME},
+			</if>
+			<if test="ACC_BANK_NUM !=null and ACC_BANK_NUM != '' ">
+			#{ACC_BANK_NUM},
+			</if>
+			SYSDATE
+		)
+	</insert>
+		
+	
+	<!-- 사물함 대여 결제정보 테이블에서 최종 SEQ를 조회 -->
+	<select id="getBoxRentSeq" parameterType="hashMap" resultType="int">
+		SELECT MAX(SEQ) 
+		FROM ACM_BOX_RENT 
+		WHERE BOX_CD = #{BOX_CD} AND BOX_NUM = #{BOX_NUM} AND USER_ID = #{USER_ID}
+	</select>	
+	 
+	<!--  오프라인 사물함 대여 주문 세부정보 등록 처리-->
+	<insert id="offOrderMgntNoInsertProcess" parameterType="hashMap">
+		INSERT INTO ACM_ORDER_ITEM ( 
+			ORDERNO, MGNTNO, CNT, ISCANCEL,
+			<if test="CANCELDATE != null and CANCELDATE != '' ">
+			CANCELDATE, 
+			</if>			
+			PRICE, STATUSCODE, PTYPE, CONFIRM_DT, CONFIRM_ID, REG_ID, REG_DT
+		) VALUES (
+			#{ORDERNO}, #{ORDERNO}, 1, #{ISCANCEL},
+			<if test="CANCELDATE != null and CANCELDATE != '0' ">
+			#{CANCELDATE}, 
+			</if>			
+			#{PRICE_GET_TOTAL}, #{STATUSCODE}, 'S', SYSDATE, #{ADMIN_ID}, #{ADMIN_ID}, SYSDATE
+		)
+	</insert>
+	
+	<!-- 오프라인 사물함 대여 주문 등록 처리-->
+	<insert id="offOrdersInsertProcess" parameterType="hashMap">
+		INSERT INTO ACM_ORDERS (
+			ORDERNO, USER_ID, USER_NM, ZIP_CODE, ADDRESS1, ADDRESS2, EMAIL, OFF_LINE, REG_DT, REG_ID
+		 ) SELECT  
+			#{ORDERNO}, #{USER_ID}, USER_NM, ZIP_CODE, ADDRESS1, ADDRESS2, EMAIL, #{ISOFFLINE}, SYSDATE, #{ADMIN_ID}
+		FROM TB_MA_MEMBER
+			WHERE USER_ID = #{USER_ID}
+	</insert>
+	
+	<!-- 오프라인 사물함 대여 결제정보 등록처리-->
+	<insert id="offApprovalsInsertProcess" parameterType="hashMap">
+		INSERT	INTO ACM_APPROVALS (
+			ORDERNO, PRICE, PRICE_CARD, PRICE_CASH, PRICE_DISCOUNT, PRICE_DISCOUNT_REASON, PRICE_DISCOUNT_TYPE, 
+			ADDPRICE, PAYCODE, ACCTNOCODE, PAYNAME, POINT, REG_DT
+		) VALUES ( 
+			#{ORDERNO}, #{PRICE_GET_TOTAL}, #{PRICE_GET_CARD}, #{PRICE_GET_CASH}, #{PRICE_DISCOUNT_VALUE}, #{PRICE_DISCOUNT_REASON}, 'W', 
+			0, #{PAYCODE}, 'ACT888', #{USER_NM}, 0, SYSDATE
+		)
+	</insert>
+		
+	<!-- 사물함 정보를 업데이트한다. -->
+	<update id="boxUpdateProcess" parameterType="hashMap">
+		UPDATE ACM_BOX 
+		SET 		
+			BOX_NM    = #{BOX_NM},
+			BOX_COUNT = #{BOX_COUNT},
+			BOX_PRICE   = #{BOX_PRICE},
+			DEPOSIT   = #{DEPOSIT},
+			ROW_COUNT = #{ROW_COUNT},
+			ROW_NUM   = #{ROW_NUM},
+			UPD_DT = SYSDATE,
+			UPD_ID = #{UPD_ID},
+			START_NUM = #{START_NUM},
+			END_NUM   = #{END_NUM}
+		WHERE 
+			BOX_CD = #{BOX_CD}
+	</update>
+
+	<!-- 사물함 상세정보(사물함갯수,시작번호, 종료번호 제외)를 업데이트한다. -->
+	<update id="boxUpdate2Process" parameterType="hashMap">
+		UPDATE ACM_BOX 
+		SET 		
+			BOX_NM    = #{BOX_NM},
+			DEPOSIT   = #{DEPOSIT},
+			ROW_COUNT = #{ROW_COUNT},
+			ROW_NUM   = #{ROW_NUM},
+			UPD_DT = SYSDATE,
+			UPD_ID = #{UPD_ID}
+		WHERE 
+			BOX_CD = #{BOX_CD}
+	</update>
+
+	<!-- 사물함 상세 정보를 업데이트한다. -->
+	<update id="boxNumUpdateProcess" parameterType="hashMap">
+		UPDATE ACM_BOX_NUM 
+		SET 
+			USER_ID    = #{USER_ID},
+			BOX_FLAG  = #{BOX_FLAG},
+			<if test="RENT_SEQ !=null">
+			RENT_SEQ  = #{RENT_SEQ},
+			</if> 
+			<if test="RENT_MEMO !=null">
+			RENT_MEMO = #{RENT_MEMO},
+			</if>
+			UPD_DT = SYSDATE,
+			UPD_ID = #{UPD_ID}
+		WHERE 
+			BOX_CD = #{BOX_CD} AND BOX_NUM = #{BOX_NUM}
+	</update>
+
+	<!-- 사물함 상세 테이블에 환불정보를 업데이트한다. -->
+	<update id="boxNumResetUpdateProcess" parameterType="hashMap">
+		UPDATE ACM_BOX_NUM 
+		SET 
+			USER_ID    = '',
+			BOX_FLAG  = 'N',
+			RENT_SEQ  = NULL,
+			RENT_MEMO = '',
+			UPD_DT = SYSDATE,
+			UPD_ID = #{UPD_ID}
+		WHERE 
+			BOX_CD = #{BOX_CD} AND BOX_NUM = #{BOX_NUM}
+			<if test="RENT_SEQ !=null and RENT_SEQ != '' ">
+			AND RENT_SEQ = #{RENT_SEQ}
+			</if>
+	</update>
+
+	<!-- 사물함 상세 테이블에 주문정보가 일치한다면 환불정보를 업데이트한다. -->
+	<update id="boxNumResetUpdateByOrderIdProcess" parameterType="hashMap">
+		UPDATE ACM_BOX_NUM 
+		SET 
+			USER_ID    = '',
+			BOX_FLAG  = 'N',
+			RENT_SEQ  = NULL,
+			RENT_MEMO = '',
+			UPD_DT = SYSDATE,
+			UPD_ID = #{UPD_ID}
+		WHERE 
+			BOX_CD = #{BOX_CD} AND BOX_NUM = #{BOX_NUM}
+			AND RENT_SEQ IN (
+				SELECT SEQ FROM ACM_BOX_RENT
+				WHERE ORDERNO  = #{ORDERNO}
+				)
+	</update>
+
+
+	<!-- 사물함 상세 테이블에 사물함 변경하기 업데이트한다. -->
+	<update id="boxNumChangeUpdateProcess" parameterType="hashMap">
+		UPDATE ACM_BOX_NUM
+		SET (USERID, BOX_FLAG, RENT_SEQ, RENT_MEMO) = 
+		  	(SELECT USER_ID, BOX_FLAG, RENT_SEQ, RENT_MEMO 
+	  		FROM ACM_BOX_NUM 
+		  	WHERE BOX_CD = #{USED_BOX_CD} AND BOX_NUM = #{USED_BOX_NUM})
+		WHERE BOX_CD = #{BOX_CD} AND BOX_NUM = #{BOX_NUM}
+	</update>
+
+
+	<!-- 사물함 대여 신청 정보를 업데이트한다. -->
+	<update id="boxNumRentUpdateProcess" parameterType="hashMap">
+		UPDATE ACM_BOX_RENT 
+		SET 
+			<if test="USER_ID !=null and USER_ID != '' ">
+			USER_ID	       = #{USER_ID},
+			</if>
+			<if test="RENT_START !=null and RENT_START != '' ">
+			RENT_START     = #{RENT_START},
+			</if>
+			<if test="RENT_END !=null and RENT_END != '' ">
+			RENT_END       = #{RENT_END},
+			</if>
+			<if test="DEPOSIT !=null and DEPOSIT != '' ">
+			DEPOSIT	       = #{DEPOSIT},
+			</if>
+			<if test="DEPOSIT_YN !=null and DEPOSIT_YN != '' ">
+			DEPOSIT_YN     = #{DEPOSIT_YN},
+			</if>
+			<if test="EXTEND_YN !=null and EXTEND_YN != '' ">
+			EXTEND_YN      = #{EXTEND_YN},
+			</if>
+			<if test="KEY_YN !=null and KEY_YN != '' ">
+			KEY_YN	       = #{KEY_YN},
+			</if>
+			<if test="UPDATE_ID !=null and UPDATE_ID != '' ">
+			UPD_ID      = #{UPD_ID},
+			</if>
+			<if test="RENT_TYPE !=null and RENT_TYPE != '' ">
+			RENT_TYPE      = #{RENT_TYPE},
+			</if>
+			<if test="ORDERNO !=null and ORDERNO != '' ">
+			ORDERNO       = #{ORDERNO},
+			</if>
+			<if test="PAY_GUBUN !=null and PAY_GUBUN != '' ">
+			PAY_GUBUN      = #{PAY_GUBUN},
+			</if>
+			<if test="DEPOSIT_REFUND !=null and DEPOSIT_REFUND != '' ">
+			DEPOSIT_REFUND = #{DEPOSIT_REFUND},
+			</if>
+			<if test="RENT_MEMO !=null">
+			RENT_MEMO      = #{RENT_MEMO},	
+			</if>
+			UPD_DT      = SYSDATE
+		WHERE 
+			BOX_CD = #{BOX_CD} AND BOX_NUM = #{BOX_NUM} AND SEQ = #{RENT_SEQ}
+	</update>
+
+
+	<!-- 환불시 사물함 대여 신청 정보를 업데이트한다. -->
+	<update id="boxNumRentRefundUpdateProcess" parameterType="hashMap">
+		UPDATE ACM_BOX_RENT 
+		SET 
+			RENT_END       = SYSDATE,
+			DEPOSIT_YN      = 'Y',
+			KEY_YN	       = 'Y',
+			UPD_ID      = #{UPD_ID},
+			UPD_DT      = SYSDATE
+		WHERE 
+			BOX_CD = #{BOX_CD} AND BOX_NUM = #{BOX_NUM} AND SEQ = #{RENT_SEQ}
+	</update>
+
+	<!-- 사물함 변경시 정보를 업데이트한다. -->
+	<update id="boxRentChangeUpdateProcess" parameterType="hashMap">
+		UPDATE ACM_BOX_RENT 
+		SET 
+			BOX_CD		= #{BOX_CD}, 
+			BOX_NUM		= #{BOX_NUM}, 
+			UPD_ID   = #{UPD_ID},
+			UPD_DT   = SYSDATE
+		WHERE 
+			SEQ = #{RENT_SEQ}
+	</update>
+
+
+
+	<!-- 사물함 대여신청 결제정보를 업데이트한다. -->
+	<update id="offApprovalsUpdateProcess" parameterType="hashMap">
+		UPDATE ACM_ORDER_APPROVALS 
+		SET 
+			PRICE_DISCOUNT  	= #{PRICE_DISCOUNT_VALUE},
+			PRICE       		= #{PRICE_GET_TOTAL},
+			PRICE_CARD        	= #{PRICE_GET_CARD},
+			PRICE_CASH	      	= #{PRICE_GET_CASH},
+			<if test="PRICE_DISCOUNT_REASON !=null">
+			PRICE_DISCOUNT_REASON = #{PRICE_DISCOUNT_REASON},
+			</if>
+			PAYCODE = #{PAYCODE}	
+		WHERE 
+			ORDERNO = #{ORDERNO}
+	</update>
+
+	<!-- 사물함 대여신청 결제정보를 업데이트한다. -->
+	<update id="offApprovalsRefundUpdateProcess" parameterType="hashMap">
+		UPDATE ACM_ORDER_APPROVALS 
+		SET 
+			REPRICE			= #{REFUND_PRICE},
+			REPRICEDATE 	= TO_DATE(#{REFUND_DATE}, 'YYYYMMDD') 
+		WHERE 
+			ORDERNO = #{ORDERNO}
+	</update>
+	
+	<!-- 사물함 상태값 정보를 업데이트한다. -->
+	<update id="updateBoxFlagAsync" parameterType="hashMap">
+		UPDATE ACM_BOX_NUM 
+		SET 
+			BOX_FLAG = #{BOX_FLAG}
+			<if test='BOX_FLAG !="Y"'>
+			, RENT_SEQ = NULL
+			</if>
+		WHERE 
+			BOX_CD = #{BOX_CD} AND BOX_NUM = #{BOX_NUM}
+	</update>
+	
+	<update id="deleteBoxOrder" statementType="CALLABLE"  parameterType="hashMap">
+		CALL PKG_CART.SP_DELETE_OFF_ORDER(
+		        #{ORDERNO, mode=IN}
+		)
+	</update>
+
+	<!-- 오프라인 주문정보 테이블에서 사용할 주문번호를 생성하여 리턴 -->
+	<select id="getOffOrderNo" parameterType="hashMap" resultType="string">
+		 SELECT GET_NEXTSEQ_OFFORDERNO(#{PTYPE}) FROM DUAL
+	</select>
+
 </mapper>

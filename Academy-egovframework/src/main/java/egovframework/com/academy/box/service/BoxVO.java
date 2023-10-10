@@ -85,6 +85,8 @@ public class BoxVO implements Serializable {
     private String userId;
     /** 대여자ID */
     private String userNm;
+    /** 주문번호 */
+    private String orderno;
 
 	/**
 	 * searchCondition attribute 를 리턴한다.
@@ -539,6 +541,20 @@ public class BoxVO implements Serializable {
 	 */
 	public void setUserNm(String userNm) {
 		this.userNm = userNm;
+	}
+	/**
+	 * orderno attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getOrderno() {
+		return orderno;
+	}
+	/**
+	 * orderno attribute 값을 설정한다.
+	 * @param orderno String
+	 */
+	public void setOrderno(String orderno) {
+		this.orderno = orderno;
 	}
 
 }

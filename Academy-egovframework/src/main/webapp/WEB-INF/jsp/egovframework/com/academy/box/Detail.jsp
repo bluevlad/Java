@@ -31,7 +31,7 @@
  ******************************************************** */
 function fn_list(){
 
-	var varFrom = document.getElementById("LectureVO");
+	var varFrom = document.getElementById("BoxVO");
 	varFrom.action = "<c:url value='/academy/box/List.do' />";
 	varFrom.submit();
 }
@@ -39,12 +39,24 @@ function fn_list(){
  * 저장처리화면
  ******************************************************** */
 function fn_save(){
-	var varFrom = document.getElementById("LectureVO");
+	var varFrom = document.getElementById("BoxVO");
 
 	if(confirm("<spring:message code='common.save.msg' />")){
 		varFrom.action =  "<c:url value='/academy/box/Update.do' />";
 		varFrom.submit();
 	}
+}
+/* ********************************************************
+ * 대여화면
+ ******************************************************** */
+function fn_view(box_num, rent_seq){
+
+	var varFrom = document.getElementById("BoxVO");
+	varFrom.boxNum.value = box_num;
+	varFrom.rentSeq.value = rent_seq;
+
+	varFrom.action =  "<c:url value='/academy/box/RentWrite.do' />";
+	varFrom.submit();
 }
 </script>
 </head>
@@ -56,6 +68,8 @@ function fn_save(){
 <div class="wTableFrm">
 <!-- 상단타이틀 -->
 <form:form commandName="BoxVO" name="BoxVO" action="" method="post" onSubmit="fn_save(document.forms[0]); return false;">
+<input type="hidden" name="boxNum" value="">
+<input type="hidden" name="rentSeq" value="">
 	
 <!-- 타이틀 -->
 <h2>${pageTitle} <spring:message code="title.update" /></h2>

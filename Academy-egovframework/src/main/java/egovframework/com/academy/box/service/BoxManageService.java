@@ -27,4 +27,10 @@ public interface BoxManageService {
 
 	public List<?> selectBoxNumList(BoxVO BoxVO) throws Exception;
 
+	public BoxVO selectBoxNumRentDetail(BoxVO BoxVO) throws Exception;
+
+	public BoxVO selectBoxNumRentOrderDetail(BoxVO BoxVO) throws Exception;
+
+	public List<?> selectBoxNumRentOrderList(BoxVO BoxVO) throws Exception;
+
 }
