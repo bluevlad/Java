@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import egovframework.com.academy.box.service.BoxVO;
+import egovframework.com.academy.lecture.service.LectureVO;
 import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 /**
@@ -52,6 +53,18 @@ public class BoxManageDAO extends EgovComAbstractDAO{
 	public BoxVO selectBoxNumRentDetail(BoxVO BoxVO) {
 		return getSqlSession().selectOne("box.selectBoxNumRentDetail", BoxVO);
 	}
+
+    public void insertBox(BoxVO BoxVO) throws Exception{
+        insert("box.insertBox", BoxVO);
+    }
+
+    public void insertBoxNum(BoxVO BoxVO) throws Exception{
+        insert("box.insertBoxNum", BoxVO);
+    }
+
+    public void updateBox(BoxVO BoxVO) throws Exception{
+        update("box.updateBox", BoxVO);
+    }
 
 	public BoxVO selectBoxNumRentOrderDetail(BoxVO BoxVO) {
 		return getSqlSession().selectOne("box.selectBoxNumRentOrderDetail", BoxVO);

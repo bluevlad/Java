@@ -33,6 +33,37 @@
 		WHERE AB.BOX_CD = #{boxCd}
 	</select>
 
+	<!-- 사물함 등록 처리 -->
+	<insert id="insertBox">
+		INSERT INTO ACM_BOX(
+			BOX_CD, BOX_NM, BOX_COUNT, BOX_PRICE, DEPOSIT, ROW_COUNT, ROW_NUM, UPD_DT, UPD_ID, START_NUM, END_NUM
+		)VALUES(
+			#{boxCd}, #{boxNm}, #{boxCount}, #{boxPrice}, #{deposit}, #{rowCount}, #{rowNum}, now(), #{updId}, #{startNum}, #{endNum}
+		)
+	</insert>
+
+	<!-- 사물함 등록 처리 -->
+	<insert id="insertBoxNum">
+		INSERT INTO ACM_BOX_NUM(
+			BOX_CD, BOX_NUM, USER_ID, BOX_FLAG, UPD_DT, UPD_ID
+		)VALUES(
+			#{boxCd}, #{boxNum}, '', 'N', now(), #{updId}
+		)
+	</insert>
+		
+	<!-- 사물함 정보를 업데이트한다. -->
+	<update id="updateBox">
+		UPDATE ACM_BOX 
+		SET 		
+			BOX_NM    = #{boxNm},
+			BOX_PRICE   = #{boxPrice},
+			DEPOSIT   = #{deposit},
+			UPD_DT = now(),
+			UPD_ID = #{updId}
+		WHERE 
+			BOX_CD = #{boxCd}
+	</update>
+
 	<!-- 사물함 세부정보를 가져온다.  -->
 	<select id="selectBoxNumList" parameterType="egovframework.com.academy.box.service.BoxVO" 
 										resultType="egovframework.com.academy.box.service.BoxVO">
@@ -80,7 +111,8 @@
 	</select>
 
 	<!-- 사물함 대여 현재 결제 정보를 가져온다.  -->
-	<select id="selectBoxOrderDetail" parameterType="hashMap" resultType="hashMap">
+	<select id="selectBoxOrderDetail" parameterType="egovframework.com.academy.box.service.BoxVO" 
+										resultType="egovframework.com.academy.box.service.BoxVO">
          SELECT A.ORDERNO, A.USER_ID, A.USER_NM, A.EMAIL, A.REG_DT, A.ORDER_TYPE,
               B.MGNTNO, B.PRICE, B.STATUSCODE, B.ISCANCEL,  
               C.PRICE, C.PRICE_CARD, C.PRICE_CASH, C.PRICE_BANK, C.PRICE_UNPAID, C.PRICE_DISCOUNT, C.PRICE_DISCOUNT_TYPE, C.PRICE_DISCOUNT_REASON,
@@ -124,7 +156,8 @@
 
 
 	<!-- 사물함신청(결제완료) 정보들을 가져온다.  -->
-	<select id="getBoxOrderList" parameterType="hashMap" resultType="hashMap">
+	<select id="getBoxOrderList" parameterType="egovframework.com.academy.box.service.BoxVO" 
+										resultType="egovframework.com.academy.box.service.BoxVO">
 		SELECT * FROM 	( 
 			SELECT A.*, ROWNUM RNUM 
 		  	FROM (
@@ -178,7 +211,8 @@
 		WHERE RNUM <![CDATA[ > ]]> #{STARTNO}
 	</select>
 
-	<select id="getBoxOrderListCount" parameterType="hashMap" resultType="int">
+	<select id="getBoxOrderListCount" parameterType="egovframework.com.academy.box.service.BoxVO" 
+										resultType="int">
 		SELECT  
 			COUNT(*) CNT
 		FROM ACM_ORDERS TOO INNER JOIN ACM_ORDER_APPROVALS TOA
@@ -222,7 +256,8 @@
 	
 		
 	<!-- 사물함신청(결제완료) 정보들을 엑셀 출력용으로 가져온다.  -->
-	<select id="getBoxOrderListExcel" parameterType="hashMap" resultType="hashMap">
+	<select id="getBoxOrderListExcel" parameterType="egovframework.com.academy.box.service.BoxVO" 
+										resultType="egovframework.com.academy.box.service.BoxVO">
 		SELECT 
 			TOO.ORDERNO, TOO.REG_DT, TOO.USER_NM, TOBR.BOX_CD, TOB.BOX_NM, TOBR.BOX_NUM, TOA.PRICE, 
 			TOA.PAYCODE, DECODE(TOA.PAYCODE,'PAY110','카드결제','PAY140','현금결제','PAY150','예금결제','PAY100','무통장입금','없음') PAYCODE_NM,
@@ -271,7 +306,8 @@
 
 
 	<!-- 사물함사용 만료 예정자 정보들을 가져온다.  -->
-	<select id="getBoxExtOrderList" parameterType="hashMap" resultType="hashMap">
+	<select id="getBoxExtOrderList" parameterType="egovframework.com.academy.box.service.BoxVO" 
+										resultType="egovframework.com.academy.box.service.BoxVO">
 		SELECT * FROM 	(
 			SELECT A.*, ROWNUM RNUM 
 		  	FROM (
@@ -300,7 +336,8 @@
 		WHERE RNUM <![CDATA[ > ]]> #{STARTNO}
 	</select>
 
-	<select id="getBoxExtOrderListCount" parameterType="hashMap" resultType="int">
+	<select id="getBoxExtOrderListCount" parameterType="egovframework.com.academy.box.service.BoxVO" 
+										resultType="int">
 		SELECT  
 			COUNT(*) CNT
                     FROM TB_OFF_ORDERS TOO INNER JOIN TB_OFF_APPROVALS TOA
@@ -320,7 +357,8 @@
 	
 		
 	<!-- 사물함신청(결제완료) 정보들을 엑셀 출력용으로 가져온다.  -->
-	<select id="getBoxExtOrderListExcel" parameterType="hashMap" resultType="hashMap">
+	<select id="getBoxExtOrderListExcel" parameterType="egovframework.com.academy.box.service.BoxVO" 
+										resultType="egovframework.com.academy.box.service.BoxVO">
                     SELECT 
                         TOO.ORDERNO, TOO.USER_NM, TOO.EMAIL,
                         TOB.BOX_NM, TOBR.BOX_NUM, 
@@ -384,24 +422,6 @@
         end
     }
    	</delete>
-
-	<!-- 사물함 등록 처리 -->
-	<insert id="boxInsertProcess" parameterType="hashMap" flushCache="true" >
-		INSERT INTO ACM_BOX(
-			BOX_CD, BOX_NM, BOX_COUNT, BOX_PRICE, DEPOSIT, ROW_COUNT, ROW_NUM, UPD_DT, UPD_ID, START_NUM, END_NUM
-		)VALUES(
-			#{boxCd}, #{boxNm}, #{boxCount}, #{boxPrice}, #{deposit}, #{rowCount}, #{rowNum}, now(), #{updId}, #{startNum}, #{endNum}
-		)
-	</insert>
-
-	<!-- 사물함 등록 처리 -->
-	<insert id="boxNumInsertProcess" parameterType="hashMap" flushCache="true" >
-		INSERT INTO ACM_BOX_NUM(
-			BOX_CD, BOX_NUM, USER_ID, BOX_FLAG, UPD_DT, UPD_ID
-		)VALUES(
-			#{boxCd}, #{boxNum}, '', 'N', now(), #{updId}
-		)
-	</insert>
 	
 	<!-- 사물함 등록 처리 -->
 	<insert id="boxRentInsertProcess" parameterType="hashMap" flushCache="true" >

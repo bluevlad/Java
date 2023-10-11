@@ -12,16 +12,16 @@
         		<arg0 key="box.boxCd" resource="true"/><!-- 사물함코드 -->
         		<arg1 key="20" resource="true"/>
 				<var>
-				<var-name>maxlength</var-name>
-				<var-value>20</var-value>
+					<var-name>maxlength</var-name>
+					<var-value>20</var-value>
 				</var>
 			</field>
 			<field property="boxNm" depends="required,maxlength">
         		<arg0 key="box.boxNm" resource="true"/><!-- 사물함명칭 -->
         		<arg1 key="20" resource="true"/>
 				<var>
-				<var-name>maxlength</var-name>
-				<var-value>20</var-value>
+					<var-name>maxlength</var-name>
+					<var-value>20</var-value>
 				</var>
 			</field>
 			<field property="boxCount" depends="required,integer">
@@ -44,6 +44,34 @@
 			</field>
 			<field property="payTotal" depends="required,integer">
         		<arg0 key="box.pay.Total" resource="true"/><!-- 사물함대여금액 -->
+			</field>
+			<field property="priceDiscount" depends="required,integer">
+        		<arg0 key="box.pay.priceDiscount" resource="true"/><!-- 사물함대여금액 -->
+			</field>
+			<field property="priceCard" depends="required,integer">
+        		<arg0 key="box.pay.priceCard" resource="true"/><!-- 카드지불액 -->
+			</field>
+			<field property="priceCash" depends="required,integer">
+        		<arg0 key="box.pay.priceCard" resource="true"/><!-- 현금지불액 -->
+			</field>
+			<field property="priceDiscountReason" depends="maxlength">
+        		<arg0 key="box.priceDiscountReason" resource="true"/><!-- 할인사유 -->
+        		<arg1 key="1000" resource="true"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>1000</var-value>
+				</var>
+			</field>
+			<field property="deposit" depends="required,integer">
+        		<arg0 key="box.deposit" resource="true"/><!-- 현금지불액 -->
+			</field>
+			<field property="rentMemo" depends="maxlength">
+        		<arg0 key="box.rentMemo" resource="true"/><!-- 대여정보 -->
+        		<arg1 key="1000" resource="true"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>1000</var-value>
+				</var>
 			</field>
 		</form>
 

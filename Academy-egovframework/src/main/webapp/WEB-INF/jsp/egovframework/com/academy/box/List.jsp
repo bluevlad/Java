@@ -29,7 +29,7 @@
  ******************************************************** */
 function linkPage(pageNo){
 	document.listForm.pageIndex.value = pageNo;
-	document.listForm.action = "<c:url value='/academy/boxt/List.do'/>";
+	document.listForm.action = "<c:url value='/academy/box/List.do'/>";
    	document.listForm.submit();
 }
 /* ********************************************************
@@ -72,7 +72,7 @@ function fn_search(){
 		</ul>
 	</div>
 
-<input name="pageIndex" type="hidden" value="<c:out value='${LectureVO.pageIndex}'/>">
+<input name="pageIndex" type="hidden" value="<c:out value='${BoxVO.pageIndex}'/>">
 </form>
 
 	<!-- 목록영역 -->

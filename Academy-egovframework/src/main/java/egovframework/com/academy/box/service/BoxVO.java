@@ -79,7 +79,7 @@ public class BoxVO implements Serializable {
 	private String boxFlag;
 	/** 사물함대여번호 */
 	private int rentSeq;
-	/** 사물함대여메모 */
+	/** 대여정보 */
 	private String rentMemo;
     /** 대여자ID */
     private String userId;
@@ -87,7 +87,36 @@ public class BoxVO implements Serializable {
     private String userNm;
     /** 주문번호 */
     private String orderno;
+    /** 주문상태 */
+    private String statuscode;
+    /** 대여시작일 */
+    private String rentStart;
+    /** 대여종료일 */
+    private String rentEnd;
+    /** 예치금반환여부 */
+    private String depositYn;
+    /** 연장여부 */
+    private String extendYn;
+    /** 키반납여부 */
+    private String keyYn;
+    /** 신청구분 */
+    private String rentType;
+    /** 결제구분 */
+    private String payGubun;
+	/** 예치금환불 */
+	private int depositRefund;
+	/** 예치금환불 */
+	private int payTotal;
+	/** 할인금액 */
+	private int priceDiscount;
+	/** 카드결제금액 */
+	private int priceCard;
+	/** 현금결제금액 */
+	private int priceCash;
+    /** 할인사유 */
+    private String priceDiscountReason;
 
+    
 	/**
 	 * searchCondition attribute 를 리턴한다.
 	 * @return String
@@ -555,6 +584,202 @@ public class BoxVO implements Serializable {
 	 */
 	public void setOrderno(String orderno) {
 		this.orderno = orderno;
+	}
+	/**
+	 * statuscode attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getStatuscode() {
+		return statuscode;
+	}
+	/**
+	 * statuscode attribute 값을 설정한다.
+	 * @param statuscode String
+	 */
+	public void setStatuscode(String statuscode) {
+		this.statuscode = statuscode;
+	}
+	/**
+	 * rentStart attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getRentStart() {
+		return rentStart;
+	}
+	/**
+	 * rentStart attribute 값을 설정한다.
+	 * @param rentStart String
+	 */
+	public void setRentStart(String rentStart) {
+		this.rentStart = rentStart;
+	}
+	/**
+	 * rentEnd attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getRentEnd() {
+		return rentEnd;
+	}
+	/**
+	 * rentEnd attribute 값을 설정한다.
+	 * @param rentEnd String
+	 */
+	public void setRentEnd(String rentEnd) {
+		this.rentEnd = rentEnd;
+	}
+	/**
+	 * depositYn attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getDepositYn() {
+		return depositYn;
+	}
+	/**
+	 * depositYn attribute 값을 설정한다.
+	 * @param depositYn String
+	 */
+	public void setDepositYn(String depositYn) {
+		this.depositYn = depositYn;
+	}
+	/**
+	 * extendYn attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getExtendYn() {
+		return extendYn;
+	}
+	/**
+	 * extendYn attribute 값을 설정한다.
+	 * @param extendYn String
+	 */
+	public void setExtendYn(String extendYn) {
+		this.extendYn = extendYn;
+	}
+	/**
+	 * keyYn attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getKeyYn() {
+		return keyYn;
+	}
+	/**
+	 * keyYn attribute 값을 설정한다.
+	 * @param keyYn String
+	 */
+	public void setKeyYn(String keyYn) {
+		this.keyYn = keyYn;
+	}
+	/**
+	 * rentType attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getRentType() {
+		return rentType;
+	}
+	/**
+	 * rentType attribute 값을 설정한다.
+	 * @param rentType String
+	 */
+	public void setRentType(String rentType) {
+		this.rentType = rentType;
+	}
+	/**
+	 * payGubun attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getPayGubun() {
+		return payGubun;
+	}
+	/**
+	 * payGubun attribute 값을 설정한다.
+	 * @param payGubun String
+	 */
+	public void setPayGubun(String payGubun) {
+		this.payGubun = payGubun;
+	}
+	/**
+	 * depositRefund attribute 를 리턴한다.
+	 * @return int
+	 */
+	public int getDepositRefund() {
+		return depositRefund;
+	}
+	/**
+	 * depositRefund attribute 값을 설정한다.
+	 * @param depositRefund int
+	 */
+	public void setDepositRefund(int depositRefund) {
+		this.depositRefund = depositRefund;
+	}
+	/**
+	 * payTotal attribute 를 리턴한다.
+	 * @return int
+	 */
+	public int getPayTotal() {
+		return payTotal;
+	}
+	/**
+	 * payTotal attribute 값을 설정한다.
+	 * @param payTotal int
+	 */
+	public void setPayTotal(int payTotal) {
+		this.payTotal = payTotal;
+	}
+	/**
+	 * priceDiscount attribute 를 리턴한다.
+	 * @return int
+	 */
+	public int getPriceDiscount() {
+		return priceDiscount;
+	}
+	/**
+	 * priceDiscount attribute 값을 설정한다.
+	 * @param priceDiscount int
+	 */
+	public void setPriceDiscount(int priceDiscount) {
+		this.priceDiscount = priceDiscount;
+	}
+	/**
+	 * priceCard attribute 를 리턴한다.
+	 * @return int
+	 */
+	public int getPriceCard() {
+		return priceCard;
+	}
+	/**
+	 * priceCard attribute 값을 설정한다.
+	 * @param priceCard int
+	 */
+	public void setPriceCard(int priceCard) {
+		this.priceCard = priceCard;
+	}
+	/**
+	 * priceCash attribute 를 리턴한다.
+	 * @return int
+	 */
+	public int getPriceCash() {
+		return priceCash;
+	}
+	/**
+	 * priceCash attribute 값을 설정한다.
+	 * @param priceCash int
+	 */
+	public void setPriceCash(int priceCash) {
+		this.priceCash = priceCash;
+	}
+	/**
+	 * priceDiscountReason attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getPriceDiscountReason() {
+		return priceDiscountReason;
+	}
+	/**
+	 * priceDiscountReason attribute 값을 설정한다.
+	 * @param priceDiscountReason String
+	 */
+	public void setPriceDiscountReason(String priceDiscountReason) {
+		this.priceDiscountReason = priceDiscountReason;
 	}
 
 }

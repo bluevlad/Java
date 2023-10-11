@@ -137,28 +137,14 @@ function fn_Delete(){
 		$('#USER_ID').keyup(function () { $("#CHECKID").val("");});
 	});
 	
-	function onOnlyNumber(obj) {
-		 for (var i = 0; i < obj.value.length ; i++){
-		  chr = obj.value.substr(i,1);  
-		  chr = escape(chr);
-		  key_eg = chr.charAt(1);
-		  if (key_eg == "u"){
-		   key_num = chr.substr(i,(chr.length-1));   
-		   if((key_num < "AC00") || (key_num > "D7A3")) { 
-		    event.returnValue = false;
-		   }    
-		  }
-		 }
-		 if ((event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105) || event.keyCode == 8 || event.keyCode == 9) {
-		 } else {
-		  event.returnValue = false;
-		 }
-	}
 	
-	function status_update() {
-		$("#frm").attr("action","<c:url value='/box/updateBoxFlagAsync.do' />");
-		$("#frm").submit();
-	}
+/* ********************************************************
+ * 사물함 상태 변경 처리화면
+ ******************************************************** */
+function status_update() {
+	$("#frm").attr("action","<c:url value='/box/updateBoxFlagAsync.do' />");
+	$("#frm").submit();
+}
 
 /* ********************************************************
  * 사물함 변경 처리화면
@@ -262,7 +248,7 @@ function fn_Refund() {
 			<th>${title}<span class="pilsu">*</span></th>
 			<td class="left">
 	   			${BoxVO.boxNm} (${BoxVO.boxNum}번) &nbsp;
-	   			<a href="javascript:change_box('${BoxVO.boxCd}','${BoxVO.boxNum}','${boxNumRentDetail.rentSeq}');"><b>[사물함 변경]</b></a>
+	   			<a class="btn02" onclick="change_box('${BoxVO.boxCd}','${BoxVO.boxNum}','${boxNumRentDetail.rentSeq}'); return false;">사물함 변경</a>
 		</tr>
 		
 		<!-- 사용자정보 -->
@@ -271,7 +257,7 @@ function fn_Refund() {
 			<th>${title}<span class="pilsu">*</span></th>
 			<td class="left">
   				<input type="text" id="userId" name="userId" value="${boxNumRentDetail.userId}" style="width:90px;background:#FFECEC;"/> ${boxnumrentorderdetail.userNm}
-	   			<input name="input" type="button" onClick="fn_IdCheck();" value="아이디 등록체크">
+	   			<a class="btn02"  onclick="fn_IdCheck()">아이디 등록체크</a>
 			</td>
 		</tr>
 		
@@ -287,7 +273,7 @@ function fn_Refund() {
 	  			<input type="radio" name="boxFlag" VALUE="D" <c:if test="${boxFlag eq 'D'}" > checked='checked' </c:if>/><spring:message code="box.code.flag3"/> &nbsp;
 	  			<input type="radio" name="boxFlag" VALUE="H" <c:if test="${boxFlag eq 'H'}" > checked='checked' </c:if>/><spring:message code="box.code.flag4"/> &nbsp;
 	  			<input type="radio" name="boxFlag" VALUE="X" <c:if test="${boxFlag eq 'X'}" > checked='checked' </c:if>/><spring:message code="box.code.flag5"/> &nbsp;
-	  			<a href="javascript:status_update();"><b>[상태값 변경]</b></a>
+	   			<a class="btn02" onclick="status_update()">상태값 변경</a>
 			</td>
 		</tr>
 		
@@ -320,95 +306,95 @@ function fn_Refund() {
 		</tr>
 		
 		<!-- 할인금액 -->
-		<c:set var="title"><spring:message code="box.boxPrice"/></c:set>
+		<c:set var="title"><spring:message code="box.pay.priceDiscount"/></c:set>
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
-			<td class="left"><input name="PRICE_DISCOUNT_VALUE" type="text" value="${boxNumRentOrderDetail.PRICE_DISCOUNT}" style="width:90%;" onKeyDown="onOnlyNumber(this);">원</td>
+			<td class="left"><input name="priceDiscount" type="text" value="${boxNumRentOrderDetail.priceDiscount}" style="width:90%;">원</td>
 		</tr>
 		
 		<!-- 카드지불액 -->
-		<c:set var="title"><spring:message code="box.deposit"/></c:set>
+		<c:set var="title"><spring:message code="box.pay.priceCard"/></c:set>
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
-			<td class="left"><input name="PRICE_GET_CARD" type="text" value="${boxNumRentOrderDetail.PRICE_CARD}" style="width:90%;;background:#FFECEC;" onKeyDown="onOnlyNumber(this);"></td>
+			<td class="left"><input name="priceCard" type="text" value="${boxNumRentOrderDetail.priceCard}" style="width:90%;;background:#FFECEC;"></td>
 		</tr>
 		<!-- 현금지불액 -->
-		<c:set var="title"><spring:message code="box.startNum"/></c:set>
+		<c:set var="title"><spring:message code="box.pay.priceCash"/></c:set>
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
-			<td class="left"><input name="PRICE_GET_CASH" type="text" value="${boxNumRentOrderDetail.PRICE_CASH}" style="width:90%;;background:#FFECEC;" onKeyDown="onOnlyNumber(this);"></td>
+			<td class="left"><input name="priceCash" type="text" value="${boxNumRentOrderDetail.priceCash}" style="width:90%;;background:#FFECEC;" onKeyDown="onOnlyNumber(this);"></td>
 		</tr>
 		
 		<!-- 할인내역 -->
 		<c:set var="title"><spring:message code="box.endNum"/></c:set>
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
-			<td class="left"><textarea id="PRICE_DISCOUNT_REASON" name="PRICE_DISCOUNT_REASON" ROWS="3" maxlength="4000" style="width:75%;">${boxNumRentOrderDetail.PRICE_DISCOUNT_REASON}</textarea></td>
+			<td class="left"><textarea id="priceDiscountReason" name="priceDiscountReason" ROWS="3" style="width:75%;">${boxNumRentOrderDetail.priceDiscountReason}</textarea></td>
 		</tr>
 		
 		<!-- 예치금 -->
-		<c:set var="title"><spring:message code="box.endNum"/></c:set>
+		<c:set var="title"><spring:message code="box.deposit"/></c:set>
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
-			<td class="left"><input name="DEPOSIT" type="text" value="${DEPOSIT}" style="width:90%;;background:#FFECEC;" onKeyDown="onOnlyNumber(this);"></td>
+			<td class="left"><input name="deposit" type="text" value="${BoxVO.deposit}" style="width:90%;;background:#FFECEC;" onKeyDown="onOnlyNumber(this);"></td>
 		</tr>
 		
 		<!-- 예치금 반환 여부 -->
-		<c:set var="title"><spring:message code="box.endNum"/></c:set>
+		<c:set var="title"><spring:message code="box.depositYn"/></c:set>
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
 			<td class="left">
-	  			<input type="radio" name="DEPOSIT_YN" VALUE="Y" <c:if test="${boxNumRentDetail.DEPOSIT_YN eq 'Y'}" > checked='checked' </c:if>/>반환 &nbsp;
-	  			<input type="radio" name="DEPOSIT_YN" VALUE="N" <c:if test="${boxNumRentDetail.DEPOSIT_YN eq 'N'}" > checked='checked' </c:if>/>미반환 &nbsp;
+	  			<input type="radio" name="depositYn" VALUE="Y" <c:if test="${boxNumRentDetail.depositYn eq 'Y'}" > checked='checked' </c:if>/>반환 &nbsp;
+	  			<input type="radio" name="depositYn" VALUE="N" <c:if test="${boxNumRentDetail.depositYn eq 'N'}" > checked='checked' </c:if>/>미반환 &nbsp;
 			</td>
 		</tr>
 		
 		<!-- 결제방법 -->
-		<c:set var="title"><spring:message code="box.endNum"/></c:set>
+		<c:set var="title"><spring:message code="box.payGubun"/></c:set>
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
 			<td class="left">
-	  			<input type="radio" name="APPROVAL_KIND" VALUE="PAY110" <c:if test="${boxNumRentOrderDetail.PAYCODE eq 'PAY110'}" > checked='checked' </c:if>/>카드 &nbsp;
-	  			<input type="radio" name="APPROVAL_KIND" VALUE="PAY140" <c:if test="${boxNumRentOrderDetail.PAYCODE eq 'PAY140'}" > checked='checked' </c:if>/>현금 &nbsp;
+	  			<input type="radio" name="payGubun" VALUE="PAY110" <c:if test="${boxNumRentOrderDetail.payGubun eq 'PAY110'}" > checked='checked' </c:if>/>카드 &nbsp;
+	  			<input type="radio" name="payGubun" VALUE="PAY140" <c:if test="${boxNumRentOrderDetail.payGubun eq 'PAY140'}" > checked='checked' </c:if>/>현금 &nbsp;
 			</td>
 		</tr>
 
 		<!-- 신청구분 -->
-		<c:set var="title"><spring:message code="box.endNum"/></c:set>
+		<c:set var="title"><spring:message code="box.rentType"/></c:set>
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
 			<td class="left">
-	  			<input type="radio" name="RENT_TYPE" VALUE="ON" <c:if test="${boxNumRentDetail.RENT_TYPE eq 'ON'}" > checked='checked' </c:if>/>온라인 &nbsp;
-	  			<input type="radio" name="RENT_TYPE" VALUE="OFF" <c:if test="${boxNumRentDetail.RENT_TYPE eq 'OFF'}" > checked='checked' </c:if>/>오프라인 &nbsp;
+	  			<input type="radio" name="rentType" VALUE="ON" <c:if test="${boxNumRentDetail.rentType eq 'ON'}" > checked='checked' </c:if>/>온라인 &nbsp;
+	  			<input type="radio" name="rentType" VALUE="OFF" <c:if test="${boxNumRentDetail.rentType eq 'OFF'}" > checked='checked' </c:if>/>오프라인 &nbsp;
 			</td>
 		</tr>
 
 		<!-- 키반납여부 -->
-		<c:set var="title"><spring:message code="box.endNum"/></c:set>
+		<c:set var="title"><spring:message code="box.keyYn"/></c:set>
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
 			<td class="left">
-	  			<input type="radio" name="KEY_YN" VALUE="R" <c:if test="${boxNumRentDetail.KEY_YN eq 'R'}" > checked='checked' </c:if>/>대여 &nbsp;
-	  			<input type="radio" name="KEY_YN" VALUE="Y" <c:if test="${boxNumRentDetail.KEY_YN eq 'Y'}" > checked='checked' </c:if>/>반납 &nbsp;
-	  			<input type="radio" name="KEY_YN" VALUE="N" <c:if test="${boxNumRentDetail.KEY_YN eq 'N'}" > checked='checked' </c:if>/>미반납 &nbsp;
+	  			<input type="radio" name="keyYn" VALUE="R" <c:if test="${boxNumRentDetail.keyYn eq 'R'}" > checked='checked' </c:if>/>대여 &nbsp;
+	  			<input type="radio" name="keyYn" VALUE="Y" <c:if test="${boxNumRentDetail.keyYn eq 'Y'}" > checked='checked' </c:if>/>반납 &nbsp;
+	  			<input type="radio" name="keyYn" VALUE="N" <c:if test="${boxNumRentDetail.keyYn eq 'N'}" > checked='checked' </c:if>/>미반납 &nbsp;
 			</td>
 		</tr>
 
 		<!-- 연장여부 -->
-		<c:set var="title"><spring:message code="box.endNum"/></c:set>
+		<c:set var="title"><spring:message code="box.extendYn"/></c:set>
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
 			<td class="left">
-	  			<input type="radio" name="EXTEND_YN" VALUE="Y" <c:if test="${boxNumRentDetail.EXTEND_YN eq 'Y'}" > checked='checked' </c:if>/>Yes &nbsp;
-	  			<input type="radio" name="EXTEND_YN" VALUE="N" <c:if test="${boxNumRentDetail.EXTEND_YN eq 'N'}" > checked='checked' </c:if>/>No &nbsp;
+	  			<input type="radio" name="extendYn" VALUE="Y" <c:if test="${boxNumRentDetail.extendYn eq 'Y'}" > checked='checked' </c:if>/>Yes &nbsp;
+	  			<input type="radio" name="extendYn" VALUE="N" <c:if test="${boxNumRentDetail.extendYn eq 'N'}" > checked='checked' </c:if>/>No &nbsp;
 			</td>
 		</tr>
 		
-		<!-- 할인내역 -->
-		<c:set var="title"><spring:message code="box.endNum"/></c:set>
+		<!-- 대여정보 -->
+		<c:set var="title"><spring:message code="box.rentMemo"/></c:set>
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
-			<td class="left"><textarea id="RENT_MEMO" name="RENT_MEMO" ROWS="3" maxlength="4000" style="width:75%;">${boxNumRentOrderDetail.RENT_MEMO}</textarea></td>
+			<td class="left"><textarea id="rentMemo" name="rentMemo" ROWS="3" style="width:75%;">${boxNumRentOrderDetail.rentMemo}</textarea></td>
 		</tr>
 
 	</tbody>
@@ -420,7 +406,7 @@ function fn_Refund() {
 	<input type="submit" class="s_submit" value="<spring:message code='button.save' />" title="<spring:message code='button.save' /> <spring:message code='input.button' />" onclick="fn_save(this.form); return false;"/>
 	<!-- 목록버튼 -->	
 	<span class="btn_s"><a href="<c:url value='/academy/box/List.do' />"   title="<spring:message code='button.list' />  <spring:message code='input.button' />"><spring:message code="button.list" /></a></span>
-    <c:if test="${!empty boxNumRentOrderDetail.ORDERNO}">
+    <c:if test="${!empty boxNumRentOrderDetail.orderno}">
 	<span class="btn_s"><a href="javascript:fn_Extend();" title="<spring:message code='button.list' />  <spring:message code='input.button' />">연장<spring:message code="button.list" /></a></span>
     </c:if>
 </div><div style="clear:both;"></div>

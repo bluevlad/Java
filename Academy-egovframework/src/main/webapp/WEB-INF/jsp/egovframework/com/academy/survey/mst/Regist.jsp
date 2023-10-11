@@ -90,7 +90,6 @@ function fn_save(form){
 		if(!validateSurveyVO(form)){
 			return;
 		}else{
-		alert("a");
 			if(iStartDay > iEndDay || iEndDay < iStartDay){
 				alert("<spring:message code='survey.surveySdat'/>"+"\n\n"+"<spring:message code='survey.surveyEdat'/>"); //설문기간  시작일은 종료일  보다 클수 없고 \n\n설문기간 종료일은 시작일 보다 작을수 없습니다!
 				return;

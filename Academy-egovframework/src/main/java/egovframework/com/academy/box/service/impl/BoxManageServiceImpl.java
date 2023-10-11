@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import egovframework.com.academy.box.service.BoxManageService;
 import egovframework.com.academy.box.service.BoxVO;
+import egovframework.com.academy.lecture.service.LectureVO;
 import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
 
 /**
@@ -68,6 +69,21 @@ public class BoxManageServiceImpl extends EgovAbstractServiceImpl implements Box
 		return boxManageDAO.selectBoxNumRentDetail(BoxVO);
 	}
 	
+	@Override
+	public void insertBox(BoxVO BoxVO) throws Exception {
+		boxManageDAO.insertBox(BoxVO);
+	}
+
+	@Override
+	public void insertBoxNum(BoxVO BoxVO) throws Exception {
+		boxManageDAO.insertBoxNum(BoxVO);
+	}
+
+	@Override
+	public void updateBox(BoxVO BoxVO) throws Exception {
+		boxManageDAO.updateBox(BoxVO);
+	}
+
 	@Override
 	public BoxVO selectBoxNumRentOrderDetail(BoxVO BoxVO) throws Exception {
 		return boxManageDAO.selectBoxNumRentOrderDetail(BoxVO);
