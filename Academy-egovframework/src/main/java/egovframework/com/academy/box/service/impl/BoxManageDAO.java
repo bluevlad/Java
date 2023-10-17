@@ -73,5 +73,9 @@ public class BoxManageDAO extends EgovComAbstractDAO{
 	public List<?> selectBoxNumRentOrderList(BoxVO BoxVO) {
 		return selectList("box.selectBoxNumRentOrderList", BoxVO);
 	}
+
+    public void updateBoxFlag(BoxVO BoxVO) throws Exception{
+        update("box.updateBoxFlag", BoxVO);
+    }
 	
 }

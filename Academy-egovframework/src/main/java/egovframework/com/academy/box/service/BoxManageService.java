@@ -53,4 +53,10 @@ public interface BoxManageService {
 
 	public List<?> selectBoxNumRentOrderList(BoxVO BoxVO) throws Exception;
 
+	/**
+	 * 사물함 상태 정보를 변경한다.
+	 * @param BoxVO
+	 */
+	void updateBoxFlag(BoxVO BoxVO) throws Exception;
+
 }

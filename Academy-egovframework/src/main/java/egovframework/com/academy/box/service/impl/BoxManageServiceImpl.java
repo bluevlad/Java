@@ -93,5 +93,10 @@ public class BoxManageServiceImpl extends EgovAbstractServiceImpl implements Box
 	public List<?> selectBoxNumRentOrderList(BoxVO BoxVO) throws Exception {
 		return boxManageDAO.selectBoxNumRentOrderList(BoxVO);
 	}
+
+	@Override
+	public void updateBoxFlag(BoxVO BoxVO) throws Exception {
+		boxManageDAO.updateBoxFlag(BoxVO);
+	}
 	
 }
