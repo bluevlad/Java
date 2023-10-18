@@ -6,16 +6,19 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import egovframework.com.uss.umt.service.EgovUserManageService;
-import egovframework.com.uss.umt.service.UserDefaultVO;
+import egovframework.com.academy.member.service.MemberService;
+import egovframework.com.academy.member.service.MemberVO;
 import egovframework.com.api.CORSFilter;
 import egovframework.com.cmm.service.EgovCmmUseService;
+import egovframework.com.uss.umt.service.EgovUserManageService;
+import egovframework.com.uss.umt.service.UserDefaultVO;
 import egovframework.rte.fdl.property.EgovPropertyService;
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 
@@ -47,6 +50,10 @@ public class UserMngAPIController extends CORSFilter {
 	/** userManageService */
 	@Resource(name = "userManageService")
 	private EgovUserManageService userManageService;
+
+	/** memberService */
+	@Resource(name = "memberService")
+	private MemberService memberService;
 
 	/** cmmUseService */
 	@Resource(name = "EgovCmmUseService")
@@ -88,6 +95,32 @@ public class UserMngAPIController extends CORSFilter {
 		modelAndView.addObject(userList);
 
 		return modelAndView;
+	}
+
+	/**
+	 * 사용자목록을 조회한다. (pageing)
+	 * @param userSearchVO 검색조건정보
+	 * @param model 화면모델
+	 * @return /member/EgovUserManage
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/api/member/idCheck")
+	@ResponseBody
+	public String checkUser(@ModelAttribute("MemberVO") MemberVO MemberVO, @RequestParam Map<?, ?> commandMap) throws Exception {
+
+		String ret = "";
+		// 사물함 BOX_CD로 상세정보를 가져온다.
+        String userId = commandMap.get("userId") == null ? "" : (String)commandMap.get("userId");
+        MemberVO.setUserId(userId);
+
+        MemberVO user = memberService.selectMember(MemberVO);
+
+        if (user != null) {
+        	ret = "Y";
+        } else {
+        	ret = "N";
+        }
+		return ret;
 	}
 
 }

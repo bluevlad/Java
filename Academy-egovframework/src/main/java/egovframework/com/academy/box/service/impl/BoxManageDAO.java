@@ -77,5 +77,33 @@ public class BoxManageDAO extends EgovComAbstractDAO{
     public void updateBoxFlag(BoxVO BoxVO) throws Exception{
         update("box.updateBoxFlag", BoxVO);
     }
+
+    public String selectOrderno(BoxVO BoxVO) {
+        return (String)selectOne("box.selectOrderno", BoxVO);
+    }
+
+    public void insertOrderItem(BoxVO BoxVO) throws Exception{
+        insert("box.insertOrderItem", BoxVO);
+    }
+
+    public void insertOrders(BoxVO BoxVO) throws Exception{
+        insert("box.insertOrders", BoxVO);
+    }
+
+    public void insertApprovals(BoxVO BoxVO) throws Exception{
+        insert("box.insertApprovals", BoxVO);
+    }
+
+    public void insertBoxRent(BoxVO BoxVO) throws Exception{
+        insert("box.insertBoxRent", BoxVO);
+    }
+
+    public int getBoxRentSeq(BoxVO BoxVO) {
+        return (Integer)selectOne("box.getBoxRentSeq", BoxVO);
+    }
+
+    public void updateBoxNum(BoxVO BoxVO) throws Exception{
+        update("box.updateBoxNum", BoxVO);
+    }
 	
 }

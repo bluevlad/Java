@@ -281,107 +281,37 @@ public class BoxManageController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/academy/box/ExtendOrder.do")
-	public String boxExtendOrderProcess(ModelMap model, HttpServletRequest request) throws Exception {
-		HashMap<String, String> params = new HashMap<String, String>();
-		setParam(params, request, model);
+	public String ExtendOrder(@ModelAttribute("BoxVO") BoxVO BoxVO, @RequestParam Map<?, ?> commandMap, BindingResult bindingResult, ModelMap model) throws Exception {
+    	// 0. Spring Security 사용자권한 처리
+    	Boolean isAuthenticated = EgovUserDetailsHelper.isAuthenticated();
+    	if(!isAuthenticated) {
+    		model.addAttribute("message", egovMessageSource.getMessage("fail.common.login"));
+        	return "egovframework/com/uat/uia/EgovLoginUsr";
+    	}
 
-		// 사물함 신청 정보
-		params.put("WMODE", CommonUtil.isNull(request.getParameter("WMODE"), ""));
-		params.put("ROW_COUNT", CommonUtil.isNull(request.getParameter("ROW_COUNT"), "0"));
-		params.put("ROW_NUM", CommonUtil.isNull(request.getParameter("ROW_NUM"), "0"));
-		params.put("SEQ", CommonUtil.isNull(request.getParameter("SEQ"), ""));
-		params.put("USERID", CommonUtil.isNull(request.getParameter("USER_ID"), ""));
-		String[] boxFlag = request.getParameterValues("BOX_FLAG");
-		if (boxFlag != null && boxFlag.length>0){
-			params.put("BOX_FLAG", boxFlag[0]);
-		} else {
-			params.put("BOX_FLAG", "Y");
-		}
-		String[] depositYN = request.getParameterValues("DEPOSIT_YN");
-		if (depositYN != null && depositYN.length>0){
-			params.put("DEPOSIT_YN", depositYN[0]);
-		} else {
-			params.put("DEPOSIT_YN", "N");
-		}
-		String[] approvalKind = request.getParameterValues("APPROVAL_KIND");
-		if (approvalKind != null && approvalKind.length>0){
-			params.put("APPROVAL_KIND", approvalKind[0]);
-		} else {
-			params.put("APPROVAL_KIND", "PAY140");
-		}
-		params.put("KEY_YN", "N");  // 키 = 미반납
-		params.put("EXTEND_YN", "Y");  // 연장
-		params.put("RENT_TYPE", "OFF");  // 오프라인
-		params.put("DEPOSIT", "10000");
-		params.put("PRICE_DISCOUNT_REASON", "사물함 데스크에서 연장");
-		params.put("PRICE_GET_TOTAL", "10000");
+		//로그인 객체 선언
+		LoginVO loginVO = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+		//아이디 설정
+		BoxVO.setRegId(loginVO == null ? "" : EgovStringUtil.isNullToString(loginVO.getUniqId()));
+		BoxVO.setUpdId(loginVO == null ? "" : EgovStringUtil.isNullToString(loginVO.getUniqId()));
 
-		params.put("RENT_START", CommonUtil.isNull(request.getParameter("RENT_START"), ""));
-		params.put("RENT_END", CommonUtil.isNull(request.getParameter("RENT_END"), ""));
-		params.put("RENT_MEMO", CommonUtil.isNull(request.getParameter("RENT_MEMO"), ""));
-		params.put("ORDERNO", CommonUtil.isNull(request.getParameter("ORDERNO"), ""));
-		params.put("PRICE_DISCOUNT_VALUE", CommonUtil.isNull(request.getParameter("PRICE_DISCOUNT_VALUE"), "0"));
-		params.put("USER_ID", CommonUtil.isNull(request.getParameter("USER_ID"), ""));
-		params.put("PAYCODE", CommonUtil.isNull(request.getParameter("APPROVAL_KIND"), "PAY140"));
+		BoxVO.setDeposit(10000);
+		BoxVO.setRentMemo("사물함 데스크에서 연장");
+		BoxVO.setPriceDiscountReason("사물함 데스크에서 연장");
 
-		if ("PAY140".equals(params.get("PAYCODE"))){
-			params.put("PAY_GUBUN", "현금");
-			params.put("PRICE_GET_CARD", "0");
-			params.put("PRICE_GET_CASH", "10000");
-		} else {
-			params.put("PAY_GUBUN", "카드");
-			params.put("PRICE_GET_CARD", "10000");
-			params.put("PRICE_GET_CASH", "0");
-		}
+		String Orderno = boxManageService.selectOrderno(BoxVO);
+		
+		BoxVO.setOrderno(Orderno);
+		boxManageService.insertOrderItem(BoxVO);
 
-		HashMap<String, Object> memparams = new  HashMap<String, Object>();
-		memparams.put("USER_ID",request.getParameter("USER_ID"));
-		HashMap<String, Object> memDetail  = memberManagementService.memberDetail(memparams);
-		if (memDetail != null) {
-			String UserTel = "";
-			if (memDetail.get("PHONE_NO") == null || "".equals(memDetail.get("PHONE_NO"))) {
-				UserTel = String.valueOf(memDetail.get("TEL_NO"));
-			} else{
-				UserTel = String.valueOf(memDetail.get("PHONE_NO"));
-			}
-			params.put("USER_TEL", UserTel);
-			params.put("USER_NAME", memDetail.get("USER_NM").toString());
-			params.put("USER_EMAIL", memDetail.get("EMAIL").toString());
-		} else {
-			params.put("USER_TEL", "");
-			params.put("USER_NAME", "");
-			params.put("USER_EMAIL", "");
-		}
-		params.put("USER_NM", params.get("USER_NAME"));
-		params.put("ADMIN_ID", params.get("REG_ID"));
-
-		// 1. 수강신청시에 사용할 새로운 주문번호를 생성한다.
-		HashMap<String, String> ordernoparams = new HashMap<String, String>();
-		ordernoparams.put("PTYPE", "S");
-		String orderNo = boxService.getOffOrderNo(ordernoparams); 
-		params.put("ORDERNO", orderNo);
-
-		// 2. 오프라인 사물함 대여 주문 세부정보 등록 처리
-		params.put("ISCANCEL", "0");
-		params.put("STATUSCODE", "DLV105");
-		boxService.offOrderMgntNoInsertProcess(params);
-
-		// 3. 오프라인 사물함 대여 주문 등록 처리
-		if ("OFF".equals(params.get("RENT_TYPE"))){
-			params.put("ISOFFLINE","1");
-		} else{
-			params.put("ISOFFLINE","0");
-		}
-
-		boxService.offOrdersInsertProcess(params);
+		boxManageService.insertOrders(BoxVO);
 
 		// 3. 오프라인 사물함 대여 결제정보 등록처리
-		boxService.offApprovalsInsertProcess(params);
+		boxManageService.insertApprovals(BoxVO);
 
 		// 4. 사물함 대여정보테이블(TB_OFF_BOX_RENT)에 추가
 		// 기간을 연장한다. = 기존 종료일 + 2개월
-		String rentStart = params.get("RENT_START");
-		String rentEnd = params.get("RENT_END");
+		String rentEnd = BoxVO.getRentEnd();
 
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		Date stdate = null;
@@ -400,18 +330,30 @@ public class BoxManageController {
 		cal.add(Calendar.MONTH, 2);
 		String nRentEnd = dateFormat.format(cal.getTime());  	// 연장 종료일
 
-		params.put("RENT_START", nRentStart);	// 연장시 시작일
-		params.put("RENT_END", nRentEnd);		// 연장시 종료일
-
-		boxService.boxRentInsertProcess(params);
+		BoxVO.setRentStart(nRentStart);	// 연장시 시작일
+		BoxVO.setRentEnd(nRentEnd);		// 연장시 종료일
 
 		// 5. 사물함 세부정보(TB_OFF_BOX_NUM) 업데이트 boxNumUpdateProcess
-		int rentSeq = boxService.getBoxRentSeq(params);
-		params.put("RENT_SEQ", String.valueOf(rentSeq));  // TB_OFF_RENT에 추가한 RENT_SEQ를 전달한다.
-		boxService.boxNumUpdateProcess(params);
+		int rentSeq = boxManageService.getBoxRentSeq(BoxVO);
+		BoxVO.setRentSeq(rentSeq);
 
-		model.addAttribute("params",params);
-		return "redirect:/box/boxRentWrite.do";
+		BoxVO.setKeyYn("N");  // 키 = 미반납
+		BoxVO.setExtendYn("Y");  // 연장
+		BoxVO.setRentType("OFF");  // 오프라인
+		
+		boxManageService.insertBoxRent(BoxVO);
+
+		boxManageService.updateBoxNum(BoxVO);
+
+		if ("PAY140".equals(BoxVO.getPayGubun())){
+			BoxVO.setPriceCard(0);
+			BoxVO.setPriceCash(10000);
+		} else {
+			BoxVO.setPriceCard(10000);
+			BoxVO.setPriceCash(0);
+		}
+
+		return "redirect:/academy/box/RentWrite.do";
 	}
 	
 }

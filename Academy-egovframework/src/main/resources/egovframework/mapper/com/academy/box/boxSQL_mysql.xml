@@ -167,6 +167,82 @@
 			BOX_CD = #{boxCd} AND BOX_NUM = #{boxNum}
 	</update>
 
+	<!-- 사물함 상세정보 테이블에서 사용중인 사물함 갯수를 조회 -->
+	<select id="selectOrderno" parameterType="egovframework.com.academy.box.service.BoxVO" resultType="String">
+		SELECT GET_ORDERNO('B')
+	</select>
+	 
+	<!--  오프라인 사물함 대여 주문 세부정보 등록 처리-->
+	<insert id="insertOrderItem">
+		INSERT INTO ACM_ORDER_ITEM ( 
+			ORDERNO, MGNTNO, CNT, PRICE, STATUSCODE, ISCANCEL, CONFIRM_DT, MEMO,
+			CONFIRMID, OPEN_ADMIN_ID, PTYPE, CNT, REG_ID, REG_DT, UPD_DT, UPD_ID		
+		) VALUES (
+			#{orderno}, #{boxCd}#{boxNum}, 1, #{payTotal}, 'DLV105', 0, now(), #{memo},
+			#{regId}, #{regId}, 'B', 1, now(), #{regId}, now(), #{updId} 
+		)
+	</insert>
+	
+	<!-- 오프라인 사물함 대여 주문 등록 처리-->
+	<insert id="insertOrders">
+		INSERT INTO ACM_ORDERS (
+			ORDERNO, USER_ID, USER_NM, ZIP_CODE, ADDRESS1, ADDRESS2, EMAIL, REG_DT, REG_ID
+		 ) SELECT  
+			#{orderno}, #{userId}, USER_NM, ZIP_CODE, ADDRESS1, ADDRESS2, EMAIL, now(), #{regId}
+		FROM ACM_MEMBER
+			WHERE USER_ID = #{userId}
+	</insert>
+	
+	<!-- 오프라인 사물함 대여 결제정보 등록처리-->
+	<insert id="insertApprovals">
+		INSERT INTO ACM_ORDER_APPROVALS (
+			ORDERNO, PRICE, PRICE_CARD, PRICE_CASH, PRICE_DISCOUNT, PRICE_DISCOUNT_REASON, PRICE_DISCOUNT_TYPE, 
+			ADDPRICE, PAYCODE, POINT, REG_DT
+		) VALUES ( 
+			#{orderno}, #{payTotal}, #{priceCard}, #{priceCash}, #{priceDiscount}, #{priceDiscountReason}, 'W', 
+			0, #{payGubun}, 0, now()
+		)
+	</insert>
+	
+	<!-- 사물함 등록 처리 -->
+	<insert id="insertBoxRent">
+		INSERT INTO ACM_BOX_RENT(
+			BOX_CD, RENT_SEQ, BOX_NUM, USER_ID, RENT_START, RENT_END, DEPOSIT, DEPOSIT_YN, EXTEND_YN, KEY_YN,     
+			RENT_MEMO, UPD_DT, UPD_ID, RENT_TYPE, PAY_GUBUN, ORDERNO    
+		)VALUES(
+			#{boxCd}, #{rentSeq}, #{boxNum}, #{userId}, #{rentStart}, #{rentEnd}, #{deposit}, #{depositYn}, #{extendYn}, #{keyYn},
+			#{rentMemo}, now(), #{updId}, #{rentType}, #{payGubun}, #{orderno}
+		)
+	</insert>
+	
+	<!-- 사물함 대여 결제정보 테이블에서 최종 SEQ를 조회 -->
+	<select id="getBoxRentSeq" parameterType="egovframework.com.academy.box.service.BoxVO" resultType="int">
+		SELECT IFNULL(MAX(RENT_SEQ),1)
+		FROM ACM_BOX_RENT
+		WHERE BOX_CD = #{boxCd} AND BOX_NUM = #{boxNum}
+	</select>	
+
+	<!-- 사물함 상세 정보를 업데이트한다. -->
+	<update id="updateBoxNum">
+		UPDATE ACM_BOX_NUM 
+		SET 
+			USER_ID    = #{userId},
+			BOX_FLAG  = #{boxFlag},
+			<if test="rentSeq !=null">
+			RENT_SEQ  = #{rentSeq},
+			</if> 
+			<if test="rentMemo !=null">
+			RENT_MEMO = #{rentMemo},
+			</if>
+			UPD_DT = now(),
+			UPD_ID = #{updId}
+		WHERE BOX_CD = #{boxCd} 
+		AND BOX_NUM = #{boxNum}
+	</update>
+
+<!-- mysql conversion end -->
+
+
 	<!-- 사물함신청(결제완료) 정보들을 가져온다.  -->
 	<select id="getBoxOrderList" parameterType="egovframework.com.academy.box.service.BoxVO" 
 										resultType="egovframework.com.academy.box.service.BoxVO">
@@ -469,51 +545,6 @@
 		)
 	</insert>
 		
-	
-	<!-- 사물함 대여 결제정보 테이블에서 최종 SEQ를 조회 -->
-	<select id="getBoxRentSeq" parameterType="hashMap" resultType="int">
-		SELECT MAX(RENT_SEQ) 
-		FROM ACM_BOX_RENT
-		WHERE BOX_CD = #{boxCd} AND BOX_NUM = #{boxNum} AND USER_ID = #{userId}
-	</select>	
-	 
-	<!--  오프라인 사물함 대여 주문 세부정보 등록 처리-->
-	<insert id="offOrderMgntNoInsertProcess" parameterType="hashMap">
-		INSERT INTO ACM_ORDER_ITEM ( 
-			ORDERNO, MGNTNO, CNT, ISCANCEL,
-			<if test="CANCELDATE != null and CANCELDATE != '' ">
-			CANCELDATE, 
-			</if>			
-			PRICE, STATUSCODE, PTYPE, CONFIRM_DT, CONFIRM_ID, REG_ID, REG_DT
-		) VALUES (
-			#{orderno}, #{orderno}, 1, #{ISCANCEL},
-			<if test="CANCELDATE != null and CANCELDATE != '0' ">
-			#{CANCELDATE}, 
-			</if>			
-			#{PRICE_GET_TOTAL}, #{statuscode}, 'S', SYSDATE, #{ADMIN_ID}, #{ADMIN_ID}, SYSDATE
-		)
-	</insert>
-	
-	<!-- 오프라인 사물함 대여 주문 등록 처리-->
-	<insert id="offOrdersInsertProcess" parameterType="hashMap">
-		INSERT INTO ACM_ORDERS (
-			ORDERNO, USER_ID, USER_NM, ZIP_CODE, ADDRESS1, ADDRESS2, EMAIL, OFF_LINE, REG_DT, REG_ID
-		 ) SELECT  
-			#{orderno}, #{USER_ID}, USER_NM, ZIP_CODE, ADDRESS1, ADDRESS2, EMAIL, #{ISOFFLINE}, SYSDATE, #{ADMIN_ID}
-		FROM TB_MA_MEMBER
-			WHERE USER_ID = #{USER_ID}
-	</insert>
-	
-	<!-- 오프라인 사물함 대여 결제정보 등록처리-->
-	<insert id="offApprovalsInsertProcess" parameterType="hashMap">
-		INSERT	INTO ACM_APPROVALS (
-			ORDERNO, PRICE, PRICE_CARD, PRICE_CASH, PRICE_DISCOUNT, PRICE_DISCOUNT_REASON, PRICE_DISCOUNT_TYPE, 
-			ADDPRICE, PAYCODE, ACCTNOCODE, PAYNAME, POINT, REG_DT
-		) VALUES ( 
-			#{orderno}, #{PRICE_GET_TOTAL}, #{PRICE_GET_CARD}, #{PRICE_GET_CASH}, #{PRICE_DISCOUNT_VALUE}, #{PRICE_DISCOUNT_REASON}, 'W', 
-			0, #{PAYCODE}, 'ACT888', #{USER_NM}, 0, SYSDATE
-		)
-	</insert>
 		
 	<!-- 사물함 정보를 업데이트한다. -->
 	<update id="boxUpdateProcess" parameterType="hashMap">

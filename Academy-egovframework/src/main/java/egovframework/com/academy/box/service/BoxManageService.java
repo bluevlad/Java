@@ -2,8 +2,6 @@ package egovframework.com.academy.box.service;
 
 import java.util.List;
 
-import egovframework.com.academy.lecture.service.LectureVO;
-
 public interface BoxManageService {
 	
 	/**
@@ -58,5 +56,28 @@ public interface BoxManageService {
 	 * @param BoxVO
 	 */
 	void updateBoxFlag(BoxVO BoxVO) throws Exception;
+
+	/**
+	 * 주문번호를 조회한다.
+	 * @param BoxVO
+	 * @return String - 주문번호
+	 */
+	String selectOrderno(BoxVO BoxVO) throws Exception;
+
+	/**
+	 * 사물함 주문상세 정보를 등록한다.
+	 * @param BoxVO
+	 */
+	void insertOrderItem(BoxVO BoxVO) throws Exception;
+	
+	void insertOrders(BoxVO BoxVO) throws Exception;
+	
+	void insertApprovals(BoxVO BoxVO) throws Exception;
+	
+	void insertBoxRent(BoxVO BoxVO) throws Exception;
+	
+	int getBoxRentSeq(BoxVO BoxVO) throws Exception;
+
+	void updateBoxNum(BoxVO BoxVO) throws Exception;
 
 }

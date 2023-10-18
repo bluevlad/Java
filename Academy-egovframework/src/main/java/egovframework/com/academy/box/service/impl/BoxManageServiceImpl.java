@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import egovframework.com.academy.box.service.BoxManageService;
 import egovframework.com.academy.box.service.BoxVO;
-import egovframework.com.academy.lecture.service.LectureVO;
 import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
 
 /**
@@ -97,6 +96,45 @@ public class BoxManageServiceImpl extends EgovAbstractServiceImpl implements Box
 	@Override
 	public void updateBoxFlag(BoxVO BoxVO) throws Exception {
 		boxManageDAO.updateBoxFlag(BoxVO);
+	}
+
+	/**
+	 * @param BoxVO
+	 * @return 주문번호(String)
+	 * @throws Exception
+	 */
+	@Override
+	public String selectOrderno(BoxVO BoxVO) throws Exception {
+		return boxManageDAO.selectOrderno(BoxVO);
+	}
+
+	@Override
+	public void insertOrderItem(BoxVO BoxVO) throws Exception {
+		boxManageDAO.insertBoxNum(BoxVO);
+	}
+
+	@Override
+	public void insertOrders(BoxVO BoxVO) throws Exception {
+		boxManageDAO.insertOrders(BoxVO);
+	}
+
+	@Override
+	public void insertApprovals(BoxVO BoxVO) throws Exception {
+		boxManageDAO.insertApprovals(BoxVO);
+	}
+
+	@Override
+	public void insertBoxRent(BoxVO BoxVO) throws Exception {
+		boxManageDAO.insertBoxRent(BoxVO);
+	}
+	@Override
+	public int getBoxRentSeq(BoxVO BoxVO) throws Exception {
+		return boxManageDAO.getBoxRentSeq(BoxVO);
+	}
+
+	@Override
+	public void updateBoxNum(BoxVO BoxVO) throws Exception {
+		boxManageDAO.updateBoxNum(BoxVO);
 	}
 	
 }

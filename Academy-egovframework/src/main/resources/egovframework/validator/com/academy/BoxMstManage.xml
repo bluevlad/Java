@@ -46,7 +46,7 @@
         		<arg0 key="box.pay.Total" resource="true"/><!-- 사물함대여금액 -->
 			</field>
 			<field property="priceDiscount" depends="required,integer">
-        		<arg0 key="box.pay.priceDiscount" resource="true"/><!-- 사물함대여금액 -->
+        		<arg0 key="box.pay.priceDiscount" resource="true"/><!-- 사물함할인금액 -->
 			</field>
 			<field property="priceCard" depends="required,integer">
         		<arg0 key="box.pay.priceCard" resource="true"/><!-- 카드지불액 -->

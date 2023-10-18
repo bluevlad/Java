@@ -115,6 +115,8 @@ public class BoxVO implements Serializable {
 	private int priceCash;
     /** 할인사유 */
     private String priceDiscountReason;
+    /** 취소일시 */
+    private String cancelDt;
 
     
 	/**
@@ -780,6 +782,20 @@ public class BoxVO implements Serializable {
 	 */
 	public void setPriceDiscountReason(String priceDiscountReason) {
 		this.priceDiscountReason = priceDiscountReason;
+	}
+	/**
+	 * cancelDt attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getCancelDt() {
+		return cancelDt;
+	}
+	/**
+	 * cancelDt attribute 값을 설정한다.
+	 * @param cancelDt String
+	 */
+	public void setCancelDt(String cancelDt) {
+		this.cancelDt = cancelDt;
 	}
 
 }
