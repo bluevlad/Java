@@ -140,67 +140,38 @@ function status_update() {
 	});		
 
 }
-
-/* ********************************************************
- * 등록처리화면
- ******************************************************** */
-function fn_Submit() {
-		if($.trim($("#USER_ID").val())==""){
-			alert("아이디를 입력해주세요");
-			$("#USER_ID").focus();
-			return;
-		}
-		if($.trim($("#USER_ID").val()).length < 4){
-			alert("아이디는 4자 이상 13자 이하로 구성해주세요");
-			$("#USER_ID").focus();
-			return;
-		}	
-		if($.trim($("#CHECKID").val())!=$.trim($("#USER_ID").val())){
-			alert("아이디 등록체크를 해주세요");
-			return;
-		}
-		if($.trim($("#RENT_START").val())==""){
-			alert("대여 시작일을 입력해주세요");
-			$("#RENT_START").focus();
-			return;
-		}
-		if($.trim($("#RENT_END").val())==""){
-			alert("대여 종료일을 입력해주세요");
-			$("#RENT_END").focus();
-			return;
-		}
-		if ($.trim($("#PRICE_GET_TOTAL").val()) == "") {
-			alert("결재금액을 입력해 주세요.");
-			$("#PRICE_GET_TOTAL").focus();
-			return;
-		}
-		if ($.trim($("#DEPOSIT").val()) == "") {
-			alert("예치금을 입력해 주세요.");
-			$("#DEPOSIT").focus();
-			return;
-		}
-
-		if (confirm("사물함 신청정보를 저장하겠습니까?")) {
-			$("#frm").attr("action", "<c:url value='/box/boxRentOrderProcess.do' />");
-			$("#frm").submit();
-		}
-	}
-	
-/* ********************************************************
- * 사물함 변경 처리화면
- ******************************************************** */
-function change_box(box_cd, box_num, rent_seq) {
-   	window.open('<c:url value="/box/boxChange.pop"/>?USED_BOX_CD='+box_cd+'&BOX_CD='+box_cd+'&USED_BOX_NUM='+box_num+'&USED_RENT_SEQ='+rent_seq+'&TOP_MENU_ID=<c:out value="${params.TOP_MENU_ID}"/>&MENU_ID=<c:out value="${params.MENU_ID}"/>', '_boxChangeFrm', 'location=no,resizable=yes,width=800,height=500,top=0,left=0,scrollbars=yes,location=no');
-}
 	
 /* ********************************************************
  * 사물함 연장 처리화면
  ******************************************************** */
 function fn_Extend() {
 	if(confirm('현재의 사물함을 연장하시겠습니까?')) {
-		$("#frm").attr("action", "<c:url value='/box/boxExtendOrderProcess.do' />");
-		$("#frm").submit();
+		var varFrom = document.getElementById("BoxVO");
+		varFrom.action = "<c:url value='/academy/box/ExtendOrder.do' />";
+		varFrom.submit();
 	}
+}
+
+/* ********************************************************
+ * 등록처리화면
+ ******************************************************** */
+function fn_save(form) {
+	form.action = "<c:url value='/academy/box/RentOrder.do'/>";
+
+	if(confirm("<spring:message code="common.save.msg" />")){	
+		if (!validateBoxVO(form)){
+			return false;
+		} else{
+			form.submit();
+		}
+	}
+}
+	
+/* ********************************************************
+ * 사물함 변경 처리화면
+ ******************************************************** */
+function change_box(box_cd, box_num, rent_seq) {
+   	window.open('<c:url value="/box/boxChange.pop"/>?USED_BOX_CD='+box_cd+'&BOX_CD='+box_cd+'&USED_BOX_NUM='+box_num+'&USED_RENT_SEQ='+rent_seq+'&TOP_MENU_ID=<c:out value="${params.TOP_MENU_ID}"/>&MENU_ID=<c:out value="${params.MENU_ID}"/>', '_boxChangeFrm', 'location=no,resizable=yes,width=800,height=500,top=0,left=0,scrollbars=yes,location=no');
 }
 
 /* ********************************************************
@@ -249,7 +220,7 @@ String.prototype.replaceAll = function(src, repl){
 <div class="wTableFrm">
 <!-- 상단타이틀 -->
 
-<form:form commandName="BoxVO" name="BoxVO" action="" method="post" onSubmit="fn_submit(document.forms[0]); return false;">
+<form:form commandName="BoxVO" name="BoxVO" action="" method="post" onSubmit="fn_save(document.forms[0]); return false;">
 <input type="hidden" name="WMODE" value="${WMODE}">
 <input type="hidden" id="CALLPOSITION" name="CALLPOSITION" value="BOXRENTWRITE">
 <input type="hidden" id="CHECKID" name="CHECKID" value="${BoxVO.userId}">
@@ -292,7 +263,7 @@ String.prototype.replaceAll = function(src, repl){
 			<th>${title}<span class="pilsu">*</span></th>
 			<td class="left">
 	   			${boxNumRentDetail.boxNm} (${boxNumRentDetail.boxNum}번) &nbsp;
-	   			<a class="btn02" onclick="change_box('${boxNumRentDetail.boxCd}','${boxNumRentDetail.boxNum}','${boxNumRentDetail.rentSeq}'); return false;">사물함 변경</a>
+	   			<a class="btn02" onclick="change_box('${boxNumRentDetail.boxCd}','${boxNumRentDetail.boxNum}','${boxNumRentDetail.rentSeq}'); return false;"><spring:message code="box.button.exchange" /></a>
 		</tr>
 		
 		<!-- 사용자정보 -->
@@ -300,7 +271,7 @@ String.prototype.replaceAll = function(src, repl){
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
 			<td class="left">
-  				<form:input path="userId" title="${title} ${inputTxt}" style="width:150px;" value="${boxNumRentDetail.userId}" />&nbsp;<a class="btn02" onclick="fn_IdCheck();">아이디 등록체크</a>
+  				<form:input path="userId" title="${title} ${inputTxt}" style="width:150px;" value="${boxNumRentDetail.userId}" />&nbsp;<a class="btn02" onclick="fn_IdCheck();"><spring:message code="member.button.checkId" /></a>
     			<div><form:errors path="userId" cssClass="error" /></div>
 			</td>
 		</tr>
@@ -317,7 +288,7 @@ String.prototype.replaceAll = function(src, repl){
 	  			<input type="radio" name="boxFlag" VALUE="D" <c:if test="${boxFlag eq 'D'}" > checked='checked' </c:if>/><spring:message code="box.code.flag3"/> &nbsp;
 	  			<input type="radio" name="boxFlag" VALUE="H" <c:if test="${boxFlag eq 'H'}" > checked='checked' </c:if>/><spring:message code="box.code.flag4"/> &nbsp;
 	  			<input type="radio" name="boxFlag" VALUE="X" <c:if test="${boxFlag eq 'X'}" > checked='checked' </c:if>/><spring:message code="box.code.flag5"/> &nbsp;
-	   			<a class="btn02" onclick="status_update()">상태값 변경</a>
+	   			<a class="btn02" onclick="status_update()"><spring:message code="box.button.status"/></a>
 			</td>
 		</tr>
 		
@@ -434,9 +405,9 @@ String.prototype.replaceAll = function(src, repl){
 			<th>${title}<span class="pilsu">*</span></th>
 			<td class="left">
 				<c:set var="chk1"><c:if test="${boxNumRentDetail.rentType eq 'ON'}" >checked</c:if></c:set>
-				<c:set var="chk2"><c:if test="${boxNumRentDetail.rentType eq 'OFF'}" >checked</c:if></c:set>
+				<c:set var="chk2"><c:if test="${boxNumRentDetail.rentType eq 'OF'}" >checked</c:if></c:set>
 			    <form:radiobutton path="rentType" title="${title} ${inputTxt}" value="ON" checked="${chk1}" /><spring:message code="box.code.rentType.On"/>&nbsp;
-			    <form:radiobutton path="rentType" title="${title} ${inputTxt}" value="OFF"  checked="${chk2}" /><spring:message code="box.code.rentType.Off"/>&nbsp;
+			    <form:radiobutton path="rentType" title="${title} ${inputTxt}" value="OF"  checked="${chk2}" /><spring:message code="box.code.rentType.Off"/>&nbsp;
 				<div><form:errors path="rentType"/></div>
 			</td>
 		</tr>
@@ -489,10 +460,59 @@ String.prototype.replaceAll = function(src, repl){
 	<!-- 목록버튼 -->	
 	<span class="btn_s"><a href="javascript:fn_List();"   title="<spring:message code='button.list' />  <spring:message code='input.button' />"><spring:message code="button.list" /></a></span>
     <c:if test="${!empty boxNumRentOrderDetail.orderno}">
-	<span class="btn_s"><a href="javascript:fn_Extend();" title="<spring:message code='button.list' />  <spring:message code='input.button' />">연장<spring:message code="button.list" /></a></span>
+	<span class="btn_s"><a href="javascript:fn_Extend();" title="<spring:message code='button.list' />  <spring:message code='input.button' />"><spring:message code="box.button.extend" /></a></span>
     </c:if>
 </div><div style="clear:both;"></div>
 </form:form>
+</div>
+
+   	<!-- 사물함 loop -->
+	<table class="board_list" summary="<spring:message code='common.summary.list' arguments='${pageTitle}' />">
+	<caption>${pageTitle} <spring:message code="title.list" /></caption>
+	<colgroup>
+		<col style="width: 10%;">
+		<col style="width: ;">
+		<col style="width: 15%;">
+		<col style="width: 15%;">
+		<col style="width: 10%;">
+		<col style="width: 10%;">
+		<col style="width: 10%;">
+		<col style="width: 10%;">
+		<col style="width: 10%;">
+	</colgroup>
+	<thead>
+		<tr>
+			<th><spring:message code="member.userId" /></th>
+			<th><spring:message code="member.userNm" /></th>
+			<th><spring:message code="box.rentStart" /></th>
+			<th><spring:message code="box.rentEnd" /></th>
+			<th><spring:message code="box.depositYn" /></th>
+			<th><spring:message code="box.keyYn" /></th>
+			<th><spring:message code="box.extendYn" /></th>
+			<th><spring:message code="box.rentType" /></th>
+			<th><spring:message code="box.payGubun" /></th>
+		</tr>
+		<tbody>
+		<c:if test="${fn:length(boxNumRentOrderList) == 0}">
+		<tr>
+			<td colspan="9"><spring:message code="common.nodata.msg" /></td>
+		</tr>
+		</c:if>
+		<c:forEach items="${boxNumRentOrderList}" var="list" varStatus="status">
+		<tr>
+			<td>${list.userId}</td>
+			<td><a href="javascript:fn_view('${list.orderno}')">${list.userNm}</a></td>
+			<td>${list.rentStart}</td>
+			<td>${list.rentEnd}</td>
+			<td>${list.depositYn}</td>
+			<td>${list.keyYn}</td>
+			<td>${list.extendYn}</td>
+			<td>${list.rentType}</td>
+			<td>${list.payGubun}</td>
+		</tr>
+		</c:forEach>
+	</table>
+
 </div>
 </body>
 </html>

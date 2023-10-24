@@ -124,6 +124,11 @@ public class BoxManageServiceImpl extends EgovAbstractServiceImpl implements Box
 	}
 
 	@Override
+	public void updateApprovals(BoxVO BoxVO) throws Exception {
+		boxManageDAO.updateApprovals(BoxVO);
+	}
+
+	@Override
 	public void insertBoxRent(BoxVO BoxVO) throws Exception {
 		boxManageDAO.insertBoxRent(BoxVO);
 	}
@@ -135,6 +140,11 @@ public class BoxManageServiceImpl extends EgovAbstractServiceImpl implements Box
 	@Override
 	public void updateBoxNum(BoxVO BoxVO) throws Exception {
 		boxManageDAO.updateBoxNum(BoxVO);
+	}
+
+	@Override
+	public void updateBoxNumRent(BoxVO BoxVO) throws Exception {
+		boxManageDAO.updateBoxNumRent(BoxVO);
 	}
 	
 }

@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import egovframework.com.academy.box.service.BoxVO;
-import egovframework.com.academy.lecture.service.LectureVO;
 import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 /**
@@ -94,6 +93,10 @@ public class BoxManageDAO extends EgovComAbstractDAO{
         insert("box.insertApprovals", BoxVO);
     }
 
+    public void updateApprovals(BoxVO BoxVO) throws Exception{
+        update("box.updateApprovals", BoxVO);
+    }
+
     public void insertBoxRent(BoxVO BoxVO) throws Exception{
         insert("box.insertBoxRent", BoxVO);
     }
@@ -104,6 +107,10 @@ public class BoxManageDAO extends EgovComAbstractDAO{
 
     public void updateBoxNum(BoxVO BoxVO) throws Exception{
         update("box.updateBoxNum", BoxVO);
+    }
+
+    public void updateBoxNumRent(BoxVO BoxVO) throws Exception{
+        update("box.updateBoxNumRent", BoxVO);
     }
 	
 }

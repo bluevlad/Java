@@ -73,11 +73,15 @@ public interface BoxManageService {
 	void insertOrders(BoxVO BoxVO) throws Exception;
 	
 	void insertApprovals(BoxVO BoxVO) throws Exception;
+
+	void updateApprovals(BoxVO BoxVO) throws Exception;
 	
 	void insertBoxRent(BoxVO BoxVO) throws Exception;
 	
 	int getBoxRentSeq(BoxVO BoxVO) throws Exception;
 
 	void updateBoxNum(BoxVO BoxVO) throws Exception;
+
+	void updateBoxNumRent(BoxVO BoxVO) throws Exception;
 
 }

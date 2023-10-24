@@ -5,12 +5,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,12 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import egovframework.com.academy.box.service.BoxManageService;
 import egovframework.com.academy.box.service.BoxVO;
-import egovframework.com.academy.exam.service.ExamVO;
-import egovframework.com.academy.member.service.MemberVO;
-import egovframework.com.academy.survey.service.SurveyVO;
 import egovframework.com.api.util.CommonUtil;
-import egovframework.com.cmm.ComDefaultCodeVO;
-import egovframework.com.cmm.ComDefaultVO;
 import egovframework.com.cmm.EgovMessageSource;
 import egovframework.com.cmm.LoginVO;
 import egovframework.com.cmm.util.EgovUserDetailsHelper;
@@ -36,7 +28,7 @@ import egovframework.com.utl.fcc.service.EgovStringUtil;
 import egovframework.rte.fdl.property.EgovPropertyService;
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 /**
- * 시험문제정보 처리를  비지니스 클래스로 전달하고 처리된결과를  해당 웹 화면으로 전달하는 Controller를 정의한다
+ * 사물함 관리를  비지니스 클래스로 전달하고 처리된결과를  해당 웹 화면으로 전달하는 Controller를 정의한다
  * @author rainend
  * @version 1.0
  * @see
@@ -44,7 +36,7 @@ import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
  * << 개정이력(Modification Information) >>
  *   수정일      			수정자           수정내용
  *  ----------------    --------------    ---------------------------
- *  2021.08.00  			rainend          최초 생성
+ *  2023.10.00  			rainend          최초 생성
  * </pre>
  */
 
@@ -267,20 +259,21 @@ public class BoxManageController {
 	 * @작성일 : 2023. 09
 	 * @Method 설명 : 사물함 대여 연장 처리
 	 * - 신청구분: DE (데스크 접수)
-     * - 주문번호 생성(TB_OFF_ORDERS에서 max(seq) + 1)
+     * - 주문번호 생성(acm_orders에서 max(seq) + 1)
      * - 연장 기간 변경 : 시작일(기존 종료일+1),  종료일(기존종료일+2개월)
-     * - TB_OFF_ORDERS 에 기존대여정보를 신규로 인서트한다.
-     * - TB_OFF_ORDER_MGNT_NO 에 신규로 인서트 한다.  (obj_type='B')
-     * - TB_OFF_APPROVALS 에 신규로 인서트 한다. (price_discount_type = 'W')
-     * - TB_OFF_BOX_NUM 에 최종 정보로 업데이트한다.
-     * - TB_OFF_BOX_RENT 에 신규로 인서트한다.
-     *   (extend_yn='Y', key_yn='N', rent_type='OFF', deposit=10000,  2개월)
+     * - acm_orders 에 기존대여정보를 신규로 인서트한다.
+     * - acm_order_item 에 신규로 인서트 한다.  (obj_type='B')
+     * - acm_order_approvals 에 신규로 인서트 한다. (price_discount_type = 'W')
+     * - acm_box_num 에 최종 정보로 업데이트한다.
+     * - acm_box_rent 에 신규로 인서트한다.
+     *   (extend_yn='Y', key_yn='N', rent_type='OF', deposit=10000,  2개월)
 	 * @param model
 	 * @param request
 	 * @return String
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/academy/box/ExtendOrder.do")
+	@Transactional( readOnly=false,  rollbackFor=Exception.class)
 	public String ExtendOrder(@ModelAttribute("BoxVO") BoxVO BoxVO, @RequestParam Map<?, ?> commandMap, BindingResult bindingResult, ModelMap model) throws Exception {
     	// 0. Spring Security 사용자권한 처리
     	Boolean isAuthenticated = EgovUserDetailsHelper.isAuthenticated();
@@ -302,12 +295,22 @@ public class BoxManageController {
 		String Orderno = boxManageService.selectOrderno(BoxVO);
 		
 		BoxVO.setOrderno(Orderno);
-		boxManageService.insertOrderItem(BoxVO);
+		BoxVO.setItemno(BoxVO.getBoxCd()+"-"+BoxVO.getBoxNum());
+
+		if ("PAY140".equals(BoxVO.getPayGubun())){
+			BoxVO.setPriceCard(0);
+			BoxVO.setPriceCash(10000);
+		} else {
+			BoxVO.setPriceCard(10000);
+			BoxVO.setPriceCash(0);
+		}
 
 		boxManageService.insertOrders(BoxVO);
 
 		// 3. 오프라인 사물함 대여 결제정보 등록처리
 		boxManageService.insertApprovals(BoxVO);
+
+		boxManageService.insertOrderItem(BoxVO);
 
 		// 4. 사물함 대여정보테이블(TB_OFF_BOX_RENT)에 추가
 		// 기간을 연장한다. = 기존 종료일 + 2개월
@@ -339,21 +342,113 @@ public class BoxManageController {
 
 		BoxVO.setKeyYn("N");  // 키 = 미반납
 		BoxVO.setExtendYn("Y");  // 연장
-		BoxVO.setRentType("OFF");  // 오프라인
+		BoxVO.setRentType("OF");  // 오프라인
 		
 		boxManageService.insertBoxRent(BoxVO);
 
 		boxManageService.updateBoxNum(BoxVO);
 
-		if ("PAY140".equals(BoxVO.getPayGubun())){
-			BoxVO.setPriceCard(0);
-			BoxVO.setPriceCash(10000);
-		} else {
-			BoxVO.setPriceCard(10000);
-			BoxVO.setPriceCash(0);
+		return "redirect:/academy/box/List.do";
+	}
+
+	/**
+	 * @Method Name : boxRentOrderProcess
+	 * @작성일 : 2013. 11.12
+	 * @Method 설명 : 사물함 대여 신청/수정 저장 처리
+	 * ① 사물함 대여(신청) 정보가 1개 이상 존재하면 사물함갯수, 시작번호, 종료번호를 제외한 항목만 수정한다.
+	 * ② 사물함 대여정보가 없다면 대여(신청)정보 테이블(TB_OFF_BOX_NUM)에서 해당 사물함코드를 삭제한 후 새로 생성한다.
+	 * @param model
+	 * @param request
+	 * @return String
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/academy/box/RentOrder.do")
+	@Transactional( readOnly=false,  rollbackFor=Exception.class)
+	public String RentOrder(@ModelAttribute("BoxVO") BoxVO BoxVO, @RequestParam Map<?, ?> commandMap, BindingResult bindingResult, ModelMap model) throws Exception {
+
+		// 0. Spring Security 사용자권한 처리
+    	Boolean isAuthenticated = EgovUserDetailsHelper.isAuthenticated();
+    	if(!isAuthenticated) {
+    		model.addAttribute("message", egovMessageSource.getMessage("fail.common.login"));
+        	return "egovframework/com/uat/uia/EgovLoginUsr";
+    	}
+
+		//로그인 객체 선언
+		LoginVO loginVO = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+		//아이디 설정
+		BoxVO.setRegId(loginVO == null ? "" : EgovStringUtil.isNullToString(loginVO.getUniqId()));
+		BoxVO.setUpdId(loginVO == null ? "" : EgovStringUtil.isNullToString(loginVO.getUniqId()));
+
+		// 사물함 관리 모드를 확인한다.
+        model.addAttribute("WMODE", commandMap.get("WMODE") == null ? "" : (String)commandMap.get("WMODE"));
+
+        if (BoxVO.getBoxFlag() == null) {
+        	BoxVO.setBoxFlag("Y");
+        }
+        if (BoxVO.getKeyYn() == null) {
+        	BoxVO.setKeyYn("R");
+        }
+        if (BoxVO.getRentType() == null) {
+        	BoxVO.setRentType("OF");
+        }
+        if (BoxVO.getDepositYn() == null) {
+        	BoxVO.setDepositYn("N");
+        }
+        if (BoxVO.getExtendYn() == null) {
+        	BoxVO.setExtendYn("N");
+        }
+        if (BoxVO.getPayGubun() == null) {
+        	BoxVO.setPayGubun("PAY140");
+        }
+        
+
+		if ("INS".equals(model.get("WMODE"))) {
+			// 사물함 신규 등록 처리
+			// 1. 수강신청시에 사용할 새로운 주문번호를 생성한다.
+			String Orderno = boxManageService.selectOrderno(BoxVO);
+			BoxVO.setOrderno(Orderno);
+			
+			// 2. 오프라인 사물함 대여 주문 세부정보 등록 처리
+			BoxVO.setIsCancel("0");
+			BoxVO.setStatuscode("DLV105");
+			boxManageService.insertOrderItem(BoxVO);
+
+			// 3. 오프라인 사물함 대여 주문 등록 처리
+			if ("OF".equals(BoxVO.getRentType())){
+				BoxVO.setOrderType("1");
+			} else{
+				BoxVO.setOrderType("0");
+			}
+
+			boxManageService.insertOrders(BoxVO);
+
+			// 3. 오프라인 사물함 대여 결제정보 등록처리
+			boxManageService.insertApprovals(BoxVO);
+
+			int rentSeq = boxManageService.getBoxRentSeq(BoxVO);
+			BoxVO.setRentSeq(rentSeq);
+			// 4. 사물함 대여정보테이블(acm_box_rent)에 추가
+			boxManageService.insertBoxRent(BoxVO);
+
+			// 5. 사물함 세부정보(acm_box_num) 업데이트 boxNumUpdate
+			BoxVO.setBoxFlag("Y");  // 처음 등록할 때는 무조건 사용(Y)으로 저장한다.
+			boxManageService.updateBoxNum(BoxVO);
 		}
 
-		return "redirect:/academy/box/RentWrite.do";
+		if ("EDT".equals(model.get("WMODE"))) {
+			// 사물함 대여 수정 처리
+
+			// 1. 사물함 세부정보(acm_box_num) 업데이트 boxNumUpdate
+			boxManageService.updateBoxNum(BoxVO);
+
+			// 2. 사물함 대여정보(acm_box_rent) 업데이트 boxNumRentUpdate
+			boxManageService.updateBoxNumRent(BoxVO);
+
+			// 3. 사물함 주문 결제내역(acm_order_approvals) 업데이트 offPayUpdateProcess
+			boxManageService.updateApprovals(BoxVO);
+		}
+
+		return "redirect:/academy/box/List.do";
 	}
 	
 }

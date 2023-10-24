@@ -1,6 +1,6 @@
 package egovframework.com.academy.box.service;
 
-import java.io.Serializable;
+import egovframework.com.academy.member.service.OrdersVO;
 
 /**
 *
@@ -17,38 +17,9 @@ import java.io.Serializable;
 * </pre>
 */
 
-public class BoxVO implements Serializable {
+public class BoxVO extends OrdersVO {
 
 	private static final long serialVersionUID = 638950577710720796L;
-
-	/** 검색조건 */
-    private String searchCondition = "";
-    /** 검색Keyword */
-    private String searchKeyword = "";
-    /** 검색사용여부 */
-    private String searchUseYn = "";
-    /** 현재페이지 */
-    private int pageIndex = 1;
-    /** 페이지갯수 */
-    private int pageUnit = 10;
-    /** 페이지사이즈 */
-    private int pageSize = 10;
-    /** firstIndex */
-    private int firstIndex = 1;
-    /** lastIndex */
-    private int lastIndex = 1;
-    /** recordCountPerPage */
-    private int recordCountPerPage = 10;
-    /** 등록일시 */
-    private String regDt;
-    /** 등록자ID */
-    private String regId;
-    /** 수정일시 */
-    private String updDt;
-    /** 수정자ID */
-    private String updId;
-    /** 사용 여부 */
-    private String isUse;
 
 	/** 사물함코드 */
 	private String boxCd;
@@ -81,14 +52,6 @@ public class BoxVO implements Serializable {
 	private int rentSeq;
 	/** 대여정보 */
 	private String rentMemo;
-    /** 대여자ID */
-    private String userId;
-    /** 대여자ID */
-    private String userNm;
-    /** 주문번호 */
-    private String orderno;
-    /** 주문상태 */
-    private String statuscode;
     /** 대여시작일 */
     private String rentStart;
     /** 대여종료일 */
@@ -101,234 +64,10 @@ public class BoxVO implements Serializable {
     private String keyYn;
     /** 신청구분 */
     private String rentType;
-    /** 결제구분 */
-    private String payGubun;
 	/** 예치금환불 */
 	private int depositRefund;
-	/** 예치금환불 */
-	private int payTotal;
-	/** 할인금액 */
-	private int priceDiscount;
-	/** 카드결제금액 */
-	private int priceCard;
-	/** 현금결제금액 */
-	private int priceCash;
-    /** 할인사유 */
-    private String priceDiscountReason;
-    /** 취소일시 */
-    private String cancelDt;
 
     
-	/**
-	 * searchCondition attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getSearchCondition() {
-		return searchCondition;
-	}
-	/**
-	 * searchCondition attribute 값을 설정한다.
-	 * @param searchCondition String
-	 */
-	public void setSearchCondition(String searchCondition) {
-		this.searchCondition = searchCondition;
-	}
-
-	/**
-	 * searchKeyword attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getSearchKeyword() {
-		return searchKeyword;
-	}
-	/**
-	 * searchKeyword attribute 값을 설정한다.
-	 * @param searchKeyword String
-	 */
-	public void setSearchKeyword(String searchKeyword) {
-		this.searchKeyword = searchKeyword;
-	}
-
-	/**
-	 * searchUse attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getSearchUseYn() {
-		return searchUseYn;
-	}
-	/**
-	 * searchUseYn attribute 값을 설정한다.
-	 * @param searchUseYn String
-	 */
-	public void setSearchUseYn(String searchUseYn) {
-		this.searchUseYn = searchUseYn;
-	}
-
-	/**
-	 * pageIndex attribute 를 리턴한다.
-	 * @return int
-	 */
-	public int getPageIndex() {
-		return pageIndex;
-	}
-	/**
-	 * pageIndex attribute 값을 설정한다.
-	 * @param pageIndex int
-	 */
-	public void setPageIndex(int pageIndex) {
-		this.pageIndex = pageIndex;
-	}
-
-	/**
-	 * pageUnit attribute 를 리턴한다.
-	 * @return int
-	 */
-	public int getPageUnit() {
-		return pageUnit;
-	}
-	/**
-	 * pageUnit attribute 값을 설정한다.
-	 * @param pageUnit int
-	 */
-	public void setPageUnit(int pageUnit) {
-		this.pageUnit = pageUnit;
-	}
-
-	/**
-	 * pageSize attribute 를 리턴한다.
-	 * @return int
-	 */
-	public int getPageSize() {
-		return pageSize;
-	}
-	/**
-	 * pageSize attribute 값을 설정한다.
-	 * @param pageSize int
-	 */
-	public void setPageSize(int pageSize) {
-		this.pageSize = pageSize;
-	}
-
-	/**
-	 * firstIndex attribute 를 리턴한다.
-	 * @return int
-	 */
-	public int getFirstIndex() {
-		return firstIndex;
-	}
-	/**
-	 * firstIndex attribute 값을 설정한다.
-	 * @param firstIndex int
-	 */
-	public void setFirstIndex(int firstIndex) {
-		this.firstIndex = firstIndex;
-	}
-
-	/**
-	 * lastIndex attribute 를 리턴한다.
-	 * @return int
-	 */
-	public int getLastIndex() {
-		return lastIndex;
-	}
-	/**
-	 * lastIndex attribute 값을 설정한다.
-	 * @param lastIndex int
-	 */
-	public void setLastIndex(int lastIndex) {
-		this.lastIndex = lastIndex;
-	}
-
-	/**
-	 * recordCountPerPage attribute 를 리턴한다.
-	 * @return int
-	 */
-	public int getRecordCountPerPage() {
-		return recordCountPerPage;
-	}
-	/**
-	 * recordCountPerPage attribute 값을 설정한다.
-	 * @param recordCountPerPage int
-	 */
-	public void setRecordCountPerPage(int recordCountPerPage) {
-		this.recordCountPerPage = recordCountPerPage;
-	}
-
-	/**
-	 * regDt attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getRegDt() {
-		return regDt;
-	}
-	/**
-	 * regDt attribute 값을 설정한다.
-	 * @param regDt String
-	 */
-	public void setRegDt(String regDt) {
-		this.regDt = regDt;
-	}
-
-	/**
-	 * regId attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getRegId() {
-		return regId;
-	}
-	/**
-	 * regId attribute 값을 설정한다.
-	 * @param regId String
-	 */
-	public void setRegId(String regId) {
-		this.regId = regId;
-	}
-
-	/**
-	 * uptDt attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getUpdDt() {
-		return updDt;
-	}
-	/**
-	 * uptDt attribute 값을 설정한다.
-	 * @param uptDt String
-	 */
-	public void setUpdDt(String updDt) {
-		this.updDt = updDt;
-	}
-
-	/**
-	 * uptId attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getUpdId() {
-		return updId;
-	}
-	/**
-	 * uptId attribute 값을 설정한다.
-	 * @param uptId String
-	 */
-	public void setUpdId(String updId) {
-		this.updId = updId;
-	}
-	
-	/**
-	 * isUse attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getIsUse() {
-		return isUse;
-	}
-	/**
-	 * isUSe attribute 값을 설정한다.
-	 * @param isUse String
-	 */
-	public void setIsUse(String isUse) {
-		this.isUse = isUse;
-	}
-	
 	/**
 	 * boxCd attribute 를 리턴한다.
 	 * @return String
@@ -546,62 +285,6 @@ public class BoxVO implements Serializable {
 		this.rentMemo = rentMemo;
 	}
 	/**
-	 * userId attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getUserId() {
-		return userId;
-	}
-	/**
-	 * userId attribute 값을 설정한다.
-	 * @param userId String
-	 */
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-	/**
-	 * userNm attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getUserNm() {
-		return userNm;
-	}
-	/**
-	 * userNm attribute 값을 설정한다.
-	 * @param userNm String
-	 */
-	public void setUserNm(String userNm) {
-		this.userNm = userNm;
-	}
-	/**
-	 * orderno attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getOrderno() {
-		return orderno;
-	}
-	/**
-	 * orderno attribute 값을 설정한다.
-	 * @param orderno String
-	 */
-	public void setOrderno(String orderno) {
-		this.orderno = orderno;
-	}
-	/**
-	 * statuscode attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getStatuscode() {
-		return statuscode;
-	}
-	/**
-	 * statuscode attribute 값을 설정한다.
-	 * @param statuscode String
-	 */
-	public void setStatuscode(String statuscode) {
-		this.statuscode = statuscode;
-	}
-	/**
 	 * rentStart attribute 를 리턴한다.
 	 * @return String
 	 */
@@ -686,20 +369,6 @@ public class BoxVO implements Serializable {
 		this.rentType = rentType;
 	}
 	/**
-	 * payGubun attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getPayGubun() {
-		return payGubun;
-	}
-	/**
-	 * payGubun attribute 값을 설정한다.
-	 * @param payGubun String
-	 */
-	public void setPayGubun(String payGubun) {
-		this.payGubun = payGubun;
-	}
-	/**
 	 * depositRefund attribute 를 리턴한다.
 	 * @return int
 	 */
@@ -712,90 +381,6 @@ public class BoxVO implements Serializable {
 	 */
 	public void setDepositRefund(int depositRefund) {
 		this.depositRefund = depositRefund;
-	}
-	/**
-	 * payTotal attribute 를 리턴한다.
-	 * @return int
-	 */
-	public int getPayTotal() {
-		return payTotal;
-	}
-	/**
-	 * payTotal attribute 값을 설정한다.
-	 * @param payTotal int
-	 */
-	public void setPayTotal(int payTotal) {
-		this.payTotal = payTotal;
-	}
-	/**
-	 * priceDiscount attribute 를 리턴한다.
-	 * @return int
-	 */
-	public int getPriceDiscount() {
-		return priceDiscount;
-	}
-	/**
-	 * priceDiscount attribute 값을 설정한다.
-	 * @param priceDiscount int
-	 */
-	public void setPriceDiscount(int priceDiscount) {
-		this.priceDiscount = priceDiscount;
-	}
-	/**
-	 * priceCard attribute 를 리턴한다.
-	 * @return int
-	 */
-	public int getPriceCard() {
-		return priceCard;
-	}
-	/**
-	 * priceCard attribute 값을 설정한다.
-	 * @param priceCard int
-	 */
-	public void setPriceCard(int priceCard) {
-		this.priceCard = priceCard;
-	}
-	/**
-	 * priceCash attribute 를 리턴한다.
-	 * @return int
-	 */
-	public int getPriceCash() {
-		return priceCash;
-	}
-	/**
-	 * priceCash attribute 값을 설정한다.
-	 * @param priceCash int
-	 */
-	public void setPriceCash(int priceCash) {
-		this.priceCash = priceCash;
-	}
-	/**
-	 * priceDiscountReason attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getPriceDiscountReason() {
-		return priceDiscountReason;
-	}
-	/**
-	 * priceDiscountReason attribute 값을 설정한다.
-	 * @param priceDiscountReason String
-	 */
-	public void setPriceDiscountReason(String priceDiscountReason) {
-		this.priceDiscountReason = priceDiscountReason;
-	}
-	/**
-	 * cancelDt attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getCancelDt() {
-		return cancelDt;
-	}
-	/**
-	 * cancelDt attribute 값을 설정한다.
-	 * @param cancelDt String
-	 */
-	public void setCancelDt(String cancelDt) {
-		this.cancelDt = cancelDt;
 	}
 
 }
