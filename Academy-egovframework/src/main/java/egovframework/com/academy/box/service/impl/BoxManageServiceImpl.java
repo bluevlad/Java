@@ -110,7 +110,7 @@ public class BoxManageServiceImpl extends EgovAbstractServiceImpl implements Box
 
 	@Override
 	public void insertOrderItem(BoxVO BoxVO) throws Exception {
-		boxManageDAO.insertBoxNum(BoxVO);
+		boxManageDAO.insertOrderItem(BoxVO);
 	}
 
 	@Override

@@ -68,6 +68,8 @@ public class OrdersVO implements Serializable {
     private String isCancel;
     /** 주문방법 */
     private String orderType;
+	/** 상품금액 */
+	private int price;
 	/** 결제금액 */
 	private int payTotal;
 	/** 할인금액 */
@@ -80,6 +82,8 @@ public class OrdersVO implements Serializable {
     private String priceDiscountReason;
     /** 결제구분 */
     private String payGubun;
+    /** 주문상품정보 */
+    private String memo;
 
 	/**
 	 * searchCondition attribute 를 리턴한다.
@@ -405,6 +409,20 @@ public class OrdersVO implements Serializable {
 		this.orderType = orderType;
 	}
 	/**
+	 * price attribute 를 리턴한다.
+	 * @return int
+	 */
+	public int getPrice() {
+		return price;
+	}
+	/**
+	 * price attribute 값을 설정한다.
+	 * @param price int
+	 */
+	public void setPrice(int price) {
+		this.price = price;
+	}
+	/**
 	 * payTotal attribute 를 리턴한다.
 	 * @return int
 	 */
@@ -487,6 +505,20 @@ public class OrdersVO implements Serializable {
 	 */
 	public void setPayGubun(String payGubun) {
 		this.payGubun = payGubun;
+	}
+	/**
+	 * memo attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getMemo() {
+		return memo;
+	}
+	/**
+	 * memo attribute 값을 설정한다.
+	 * @param memo String
+	 */
+	public void setMemo(String memo) {
+		this.memo = memo;
 	}
 	
 }

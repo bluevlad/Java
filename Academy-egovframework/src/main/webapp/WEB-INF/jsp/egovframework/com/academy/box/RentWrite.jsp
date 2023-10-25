@@ -222,24 +222,11 @@ String.prototype.replaceAll = function(src, repl){
 
 <form:form commandName="BoxVO" name="BoxVO" action="" method="post" onSubmit="fn_save(document.forms[0]); return false;">
 <input type="hidden" name="WMODE" value="${WMODE}">
-<input type="hidden" id="CALLPOSITION" name="CALLPOSITION" value="BOXRENTWRITE">
-<input type="hidden" id="CHECKID" name="CHECKID" value="${BoxVO.userId}">
-<input type="hidden" id="boxCd" name="boxCd" value="${boxNumRentDetail.boxCd}">
-<input type="hidden" id="boxNum" name="boxNum" value="${boxNumRentDetail.boxNum}">
-<input type="hidden" id="boxNm" name="boxNm" value="${boxNumRentDetail.boxNm}">
+<input type="hidden" id="boxCd" name="boxCd" value="${BoxVO.boxCd}">
+<input type="hidden" id="boxNum" name="boxNum" value="${BoxVO.boxNum}">
+<input type="hidden" id="boxNm" name="boxNm" value="${BoxVO.boxNm}">
 <input type="hidden" id="rentSeq" name="rentSeq" value="${boxNumRentDetail.rentSeq}">
 <input type="hidden" id="orderno" name="orderno" value="${boxNumRentDetail.orderno}">
-<c:choose>
-<c:when test="${WMODE == 'EDT'}">
-	<c:set var="PRICE_GET_TOTAL" value="${boxNumRentOrderDetail.price}"/>
-	<c:set var="DEPOSIT" value="${boxNumRentDetail.deposit}"/>
-</c:when>
-<c:otherwise>
-	<c:set var="PRICE_GET_TOTAL" value="${boxDetail.boxPrice}"/>
-	<c:set var="DEPOSIT" value="${boxDetail.deposit}"/>
-</c:otherwise>
-</c:choose>
-	
 	
 <!-- 타이틀 -->
 <h2>${pageTitle} <spring:message code="title.update" /></h2>
@@ -262,8 +249,8 @@ String.prototype.replaceAll = function(src, repl){
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
 			<td class="left">
-	   			${boxNumRentDetail.boxNm} (${boxNumRentDetail.boxNum}번) &nbsp;
-	   			<a class="btn02" onclick="change_box('${boxNumRentDetail.boxCd}','${boxNumRentDetail.boxNum}','${boxNumRentDetail.rentSeq}'); return false;"><spring:message code="box.button.exchange" /></a>
+	   			${BoxVO.boxNm} (${BoxVO.boxNum}번) &nbsp;
+	   			<a class="btn02" onclick="change_box('${BoxVO.boxCd}','${BoxVO.boxNum}','${boxNumRentDetail.rentSeq}'); return false;"><spring:message code="box.button.exchange" /></a>
 		</tr>
 		
 		<!-- 사용자정보 -->
@@ -278,17 +265,21 @@ String.prototype.replaceAll = function(src, repl){
 		
 		<!-- 사물함상태 -->
 		<c:set var="title"><spring:message code="box.boxFlag"/></c:set>
-		<c:if test="${empty boxNumRentDetail}"> <c:set var="boxFlag" value="N"> </c:set></c:if>
-		<c:if test="${!empty boxNumRentDetail}"> <c:set var="boxFlag" value="${boxNumRentDetail.boxFlag}"> </c:set></c:if>
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
 			<td class="left">
-	  			<input type="radio" name="boxFlag" VALUE="Y" <c:if test="${boxFlag eq 'Y'}" > checked='checked' </c:if>/><spring:message code="box.code.flag2"/> &nbsp;
-	  			<input type="radio" name="boxFlag" VALUE="N" <c:if test="${boxFlag eq 'N'}" > checked='checked' </c:if>/><spring:message code="box.code.flag1"/> &nbsp;
-	  			<input type="radio" name="boxFlag" VALUE="D" <c:if test="${boxFlag eq 'D'}" > checked='checked' </c:if>/><spring:message code="box.code.flag3"/> &nbsp;
-	  			<input type="radio" name="boxFlag" VALUE="H" <c:if test="${boxFlag eq 'H'}" > checked='checked' </c:if>/><spring:message code="box.code.flag4"/> &nbsp;
-	  			<input type="radio" name="boxFlag" VALUE="X" <c:if test="${boxFlag eq 'X'}" > checked='checked' </c:if>/><spring:message code="box.code.flag5"/> &nbsp;
+				<c:set var="chk1"><c:if test="${boxNumRentDetail.boxFlag eq 'Y'}" >checked</c:if></c:set>
+				<c:set var="chk2"><c:if test="${boxNumRentDetail.boxFlag eq 'N'}" >checked</c:if></c:set>
+				<c:set var="chk3"><c:if test="${boxNumRentDetail.boxFlag eq 'D'}" >checked</c:if></c:set>
+				<c:set var="chk4"><c:if test="${boxNumRentDetail.boxFlag eq 'H'}" >checked</c:if></c:set>
+				<c:set var="chk5"><c:if test="${boxNumRentDetail.boxFlag eq 'X'}" >checked</c:if></c:set>
+	  			<form:radiobutton path="boxFlag" title="${title} ${inputTxt}" value="Y" checked="${chk1}"/><spring:message code="box.code.flag2"/> &nbsp;
+	  			<form:radiobutton path="boxFlag" title="${title} ${inputTxt}" value="N" checked="${chk2}"/><spring:message code="box.code.flag1"/> &nbsp;
+	  			<form:radiobutton path="boxFlag" title="${title} ${inputTxt}" value="D" checked="${chk3}"/><spring:message code="box.code.flag3"/> &nbsp;
+	  			<form:radiobutton path="boxFlag" title="${title} ${inputTxt}" value="H" checked="${chk4}"/><spring:message code="box.code.flag4"/> &nbsp;
+	  			<form:radiobutton path="boxFlag" title="${title} ${inputTxt}" value="X" checked="${chk5}"/><spring:message code="box.code.flag5"/> &nbsp;
 	   			<a class="btn02" onclick="status_update()"><spring:message code="box.button.status"/></a>
+    			<div><form:errors path="boxFlag"/></div>
 			</td>
 		</tr>
 		
@@ -314,12 +305,22 @@ String.prototype.replaceAll = function(src, repl){
 			</td>
 		</tr>
 		
+		<!-- 예치금 -->
+		<c:set var="title"><spring:message code="box.deposit"/></c:set>
+		<tr>
+			<th>${title}<span class="pilsu">*</span></th>
+			<td class="left">
+  				<form:input path="deposit" title="${title} ${inputTxt}" style="width:120px;" value="${BoxVO.deposit}" />원
+    			<div><form:errors path="deposit" cssClass="error" /></div>
+			</td>
+		</tr>
+		
 		<!-- 결제금액 -->
 		<c:set var="title"><spring:message code="box.pay.Total"/></c:set>
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
 			<td class="left">
-  				<form:input path="payTotal" title="${title} ${inputTxt}" style="width:120px;" value="${boxNumRentOrderDetail.payTotal}" />원
+  				<form:input path="payTotal" title="${title} ${inputTxt}" style="width:120px;" value="${boxNumRentOrderDetail.price}" />원
     			<div><form:errors path="payTotal" cssClass="error" /></div>
 			</td>
 		</tr>
@@ -358,18 +359,8 @@ String.prototype.replaceAll = function(src, repl){
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
 			<td class="left">
-  				<form:textarea path="priceDiscountReason" rows="3" style="width:95%;" value="${boxNumRentOrderDetail.priceDiscountReason}" cssClass="txaClass" title="<spring:message code='box.priceDiscountReason'/><spring:message code='input.input'/>"/>
+  				<form:textarea path="priceDiscountReason" title="${title} ${inputTxt}" rows="3" style="width:95%;"/>
     			<form:errors path="priceDiscountReason"/>
-			</td>
-		</tr>
-		
-		<!-- 예치금 -->
-		<c:set var="title"><spring:message code="box.deposit"/></c:set>
-		<tr>
-			<th>${title}<span class="pilsu">*</span></th>
-			<td class="left">
-  				<form:input path="deposit" title="${title} ${inputTxt}" style="width:120px;" value="${BoxVO.deposit}" />원
-    			<div><form:errors path="priceCash" cssClass="error" /></div>
 			</td>
 		</tr>
 		
@@ -407,7 +398,7 @@ String.prototype.replaceAll = function(src, repl){
 				<c:set var="chk1"><c:if test="${boxNumRentDetail.rentType eq 'ON'}" >checked</c:if></c:set>
 				<c:set var="chk2"><c:if test="${boxNumRentDetail.rentType eq 'OF'}" >checked</c:if></c:set>
 			    <form:radiobutton path="rentType" title="${title} ${inputTxt}" value="ON" checked="${chk1}" /><spring:message code="box.code.rentType.On"/>&nbsp;
-			    <form:radiobutton path="rentType" title="${title} ${inputTxt}" value="OF"  checked="${chk2}" /><spring:message code="box.code.rentType.Off"/>&nbsp;
+			    <form:radiobutton path="rentType" title="${title} ${inputTxt}" value="OF" checked="${chk2}" /><spring:message code="box.code.rentType.Off"/>&nbsp;
 				<div><form:errors path="rentType"/></div>
 			</td>
 		</tr>
@@ -445,7 +436,7 @@ String.prototype.replaceAll = function(src, repl){
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
 			<td class="left">
-  				<form:textarea path="rentMemo" rows="3" style="width:98%;" value="${boxNumRentOrderDetail.rentMemo}" cssClass="txaClass" title="<spring:message code='box.rentMemo'/><spring:message code='input.input'/>"/>
+  				<form:textarea path="rentMemo" title="${title} ${inputTxt}" rows="3" style="width:98%;" value="${boxNumRentOrderDetail.rentMemo}" />
     			<form:errors path="rentMemo"/>
 			</td>
 		</tr>

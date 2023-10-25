@@ -26,7 +26,7 @@
 	<!-- 사물함정보 한개를 가져온다.  -->
 	<select id="selectBoxDetail" parameterType="egovframework.com.academy.box.service.BoxVO" 
 										resultType="egovframework.com.academy.box.service.BoxVO">
-		SELECT BOX_CD, BOX_NM, BOX_COUNT, BOX_PRICE, DEPOSIT, ROW_COUNT, ROW_NUM, UPD_DT, UPD_ID, START_NUM, END_NUM,
+		SELECT BOX_CD, #{boxNum} BOX_NUM, BOX_NM, BOX_COUNT, BOX_PRICE, DEPOSIT, ROW_COUNT, ROW_NUM, UPD_DT, UPD_ID, START_NUM, END_NUM,
 		(SELECT COUNT(BOX_NUM) FROM ACM_BOX_NUM WHERE BOX_CD = AB.BOX_CD AND BOX_FLAG = 'Y') USE_CNT,
 		(SELECT COUNT(BOX_NUM) FROM ACM_BOX_NUM WHERE BOX_CD = AB.BOX_CD AND BOX_FLAG = 'N') NOT_CNT
 		FROM ACM_BOX AB
@@ -84,7 +84,7 @@
 	<!-- 사물함 대여 신청 결제정보를 한개 가져온다.  -->
 	<select id="selectBoxNumRentDetail" parameterType="egovframework.com.academy.box.service.BoxVO" 
 										resultType="egovframework.com.academy.box.service.BoxVO">
-		SELECT AB.BOX_NM, ABN.BOX_CD, ABN.BOX_NUM, ABN.USER_ID, ABN.BOX_FLAG, ABN.RENT_SEQ, ABR.RENT_MEMO,
+		SELECT ABN.BOX_CD, ABN.BOX_NUM, ABN.USER_ID, ABN.BOX_FLAG, ABN.RENT_SEQ, ABR.RENT_MEMO,
 				DATE_FORMAT(ABR.RENT_START, "%Y-%m-%d") RENT_START, DATE_FORMAT(ABR.RENT_END , "%Y-%m-%d") RENT_END,
 				ABR.DEPOSIT, ABR.DEPOSIT_YN, ABR.ORDERNO, ABR.EXTEND_YN, ABR.KEY_YN, ABR.RENT_TYPE, ABR.PAY_GUBUN, ABR.DEPOSIT_REFUND
 		FROM ACM_BOX AB INNER JOIN ACM_BOX_NUM ABN 
@@ -174,7 +174,7 @@
 	<insert id="insertOrderItem">
 		INSERT INTO ACM_ORDER_ITEM ( 
 			ORDERNO, ITEMNO, CNT, PRICE, STATUSCODE, ISCANCEL, CONFIRM_DT, MEMO,
-			CONFIRMID, OPEN_ADMIN_ID, PTYPE, REG_ID, REG_DT, UPD_DT, UPD_ID		
+			CONFIRMID, OPEN_ADMIN_ID, PTYPE, REG_DT, REG_ID, UPD_DT, UPD_ID		
 		) VALUES (
 			#{orderno}, #{itemno}, 1, #{payTotal}, 'DLV105', 0, now(), #{memo},
 			#{regId}, #{regId}, 'B', now(), #{regId}, now(), #{updId} 
@@ -283,7 +283,7 @@
 			</if>
 			UPD_DT      = now()
 		WHERE 
-			BOX_CD = #{boxCd} AND BOX_NUM = #{boxNum} AND SEQ = #{rentSeq}
+			BOX_CD = #{boxCd} AND BOX_NUM = #{boxNum} AND RENT_SEQ = #{rentSeq}
 	</update>
 
 

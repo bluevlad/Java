@@ -202,7 +202,7 @@ public class BoxManageController {
 
 		BoxVO boxNumRentDetail = null;
 		BoxVO boxNumRentOrderDetail = null;
-		if (!commandMap.get("rentSeq").toString().isEmpty()) {
+		if (BoxVO.getRentSeq() > 0) {
 			// 사물함 대여 신청 정보(현재)
 			boxNumRentDetail = boxManageService.selectBoxNumRentDetail(BoxVO);
 			
@@ -210,6 +210,7 @@ public class BoxManageController {
 			if (boxNumRentDetail != null){
 				BoxVO.setOrderno(boxNumRentDetail.getOrderno());
 				boxNumRentOrderDetail = boxManageService.selectBoxNumRentOrderDetail(BoxVO);
+				BoxVO.setBoxNum(boxNumRentOrderDetail.getBoxNum());
 			}
 		}
 
@@ -288,7 +289,6 @@ public class BoxManageController {
 		BoxVO.setRegId(loginVO == null ? "" : EgovStringUtil.isNullToString(loginVO.getUniqId()));
 		BoxVO.setUpdId(loginVO == null ? "" : EgovStringUtil.isNullToString(loginVO.getUniqId()));
 
-		BoxVO.setDeposit(10000);
 		BoxVO.setRentMemo("사물함 데스크에서 연장");
 		BoxVO.setPriceDiscountReason("사물함 데스크에서 연장");
 
@@ -296,14 +296,6 @@ public class BoxManageController {
 		
 		BoxVO.setOrderno(Orderno);
 		BoxVO.setItemno(BoxVO.getBoxCd()+"-"+BoxVO.getBoxNum());
-
-		if ("PAY140".equals(BoxVO.getPayGubun())){
-			BoxVO.setPriceCard(0);
-			BoxVO.setPriceCash(10000);
-		} else {
-			BoxVO.setPriceCard(10000);
-			BoxVO.setPriceCash(0);
-		}
 
 		boxManageService.insertOrders(BoxVO);
 
@@ -407,6 +399,9 @@ public class BoxManageController {
 			// 1. 수강신청시에 사용할 새로운 주문번호를 생성한다.
 			String Orderno = boxManageService.selectOrderno(BoxVO);
 			BoxVO.setOrderno(Orderno);
+
+			BoxVO.setItemno(BoxVO.getBoxCd()+"-"+BoxVO.getBoxNum());
+			BoxVO.setMemo("사물함 데스크에서 신청");
 			
 			// 2. 오프라인 사물함 대여 주문 세부정보 등록 처리
 			BoxVO.setIsCancel("0");
