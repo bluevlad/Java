@@ -5,9 +5,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -445,5 +448,76 @@ public class BoxManageController {
 
 		return "redirect:/academy/box/List.do";
 	}
+
+	/**
+	 * @Method Name : boxChangePop
+	 * @작성일 : 2023. 10.
+	 * @Method 설명 : 사물함 변경 처리
+	 * - 기존 사물함 정보를 가져와서 팝업으로 표시한다.
+	 * @param model
+	 * @param request
+	 * @return String
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/academy/box/Change.pop")
+	public String boxChange(@ModelAttribute("BoxVO") BoxVO BoxVO, @RequestParam Map<?, ?> commandMap, ModelMap model) throws Exception {
+
+		// 사물함 기존 정보
+        model.addAttribute("usedBoxCd", commandMap.get("usedBoxCd") == null ? "" : (String)commandMap.get("usedBoxCd"));
+        model.addAttribute("usedBoxNum", commandMap.get("usedBoxNum") == null ? "" : (String)commandMap.get("usedBoxNum"));
+        model.addAttribute("usedRentSeq", commandMap.get("usedRentSeq") == null ? "" : (String)commandMap.get("usedRentSeq"));
+        model.addAttribute("BoxCd", commandMap.get("BoxCd") == null ? "" : (String)commandMap.get("BoxCd"));
+
+		model.addAttribute("boxlist", boxManageService.selectBoxList(BoxVO));
+		model.addAttribute("boxnumList", boxManageService.selectBoxNumList(BoxVO));
+
+		return "egovframework/com/academy/box/change_pop";
+	}
+
+	/**
+	 * @Method Name : boxChangePopProcess
+	 * @작성일 : 2013. 11.25
+	 * @Method 설명 : 사물함 변경 처리
+     * - TB_OFF_BOX_NUM 테이블을 업데이트한다. (신규 선택한 곳에 기존 자료를 업데이트한다)
+     * - TB_OFF_BOX_NUM 테이블을 업데이트한다. (기존 자료 공간을 초기화 업데이트한다)
+     * - TB_OFF_BOX_RENT 테이블을 업데이트한다. (기존 자료에 신규 사물함번호를 저장한다)
+	 * @param model
+	 * @param request
+	 * @return String
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/academy/box/ChangePop.do")
+	@Transactional( readOnly=false,  rollbackFor=Exception.class)
+	public String changePop(@ModelAttribute("BoxVO") BoxVO BoxVO, @RequestParam Map<?, ?> commandMap, BindingResult bindingResult, ModelMap model) throws Exception {
+
+		// 사물함 기존 정보
+        model.addAttribute("usedBoxCd", commandMap.get("usedBoxCd") == null ? "" : (String)commandMap.get("usedBoxCd"));
+        model.addAttribute("usedBoxNum", commandMap.get("usedBoxNum") == null ? "" : (String)commandMap.get("usedBoxNum"));
+        model.addAttribute("usedRentSeq", commandMap.get("usedRentSeq") == null ? "" : (String)commandMap.get("usedRentSeq"));
+
+		// 사물함 신규 번호
+        model.addAttribute("boxCd", commandMap.get("boxCd") == null ? "" : (String)commandMap.get("boxCd"));
+        model.addAttribute("boxNum", commandMap.get("boxNum") == null ? "" : (String)commandMap.get("boxNum"));
+        model.addAttribute("rentSeq", commandMap.get("usedRentSeq") == null ? "" : (String)commandMap.get("usedRentSeq"));
+
+        model.addAttribute("newBoxCd", commandMap.get("boxCd") == null ? "" : (String)commandMap.get("boxCd"));
+        model.addAttribute("newBoxNum", commandMap.get("boxNum") == null ? "" : (String)commandMap.get("boxNum"));
+
+		// 1. TB_OFF_BOX_NUM 테이블을 업데이트한다. (신규 선택한 곳에 기존 자료를 업데이트한다)
+        boxManageService.updateboxNumChange(BoxVO);
+
+		// 2. TB_OFF_BOX_NUM 테이블을 업데이트한다. (기존 자료 공간을 초기화 업데이트한다)
+		BoxVO.setBoxCd(model.get("usedBoxCd").toString());
+		BoxVO.setBoxNum(CommonUtil.parseInt(model.get("usedBoxNum").toString()));
+		boxManageService.updateboxNumReset(BoxVO);
+
+	    // 3. TB_OFF_BOX_RENT 테이블을 업데이트한다. (기존 자료에 신규 사물함번호를 저장한다)
+		BoxVO.setBoxCd(model.get("newBoxCd").toString());
+		BoxVO.setBoxNum(CommonUtil.parseInt(model.get("newBoxNum").toString()));
+		boxManageService.updateBoxRentChange(BoxVO);
+
+		return "redirect:/academy/box/List.do";
+	}
+
 	
 }

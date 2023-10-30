@@ -112,5 +112,17 @@ public class BoxManageDAO extends EgovComAbstractDAO{
     public void updateBoxNumRent(BoxVO BoxVO) throws Exception{
         update("box.updateBoxNumRent", BoxVO);
     }
+
+    public void updateboxNumChange(BoxVO BoxVO) throws Exception{
+        update("box.updateboxNumChange", BoxVO);
+    }
+
+    public void updateboxNumReset(BoxVO BoxVO) throws Exception{
+        update("box.updateboxNumReset", BoxVO);
+    }
+
+    public void updateBoxRentChange(BoxVO BoxVO) throws Exception{
+        update("box.updateBoxRentChange", BoxVO);
+    }
 	
 }

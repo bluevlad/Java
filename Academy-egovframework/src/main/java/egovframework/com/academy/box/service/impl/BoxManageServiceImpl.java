@@ -146,5 +146,20 @@ public class BoxManageServiceImpl extends EgovAbstractServiceImpl implements Box
 	public void updateBoxNumRent(BoxVO BoxVO) throws Exception {
 		boxManageDAO.updateBoxNumRent(BoxVO);
 	}
+
+	@Override
+	public void updateboxNumChange(BoxVO BoxVO) throws Exception {
+		boxManageDAO.updateboxNumChange(BoxVO);
+	}
+
+	@Override
+	public void updateboxNumReset(BoxVO BoxVO) throws Exception {
+		boxManageDAO.updateboxNumReset(BoxVO);
+	}
+
+	@Override
+	public void updateBoxRentChange(BoxVO BoxVO) throws Exception {
+		boxManageDAO.updateBoxRentChange(BoxVO);
+	}
 	
 }

@@ -84,4 +84,10 @@ public interface BoxManageService {
 
 	void updateBoxNumRent(BoxVO BoxVO) throws Exception;
 
+	void updateboxNumChange(BoxVO BoxVO) throws Exception;
+
+	void updateboxNumReset(BoxVO BoxVO) throws Exception;
+
+	void updateBoxRentChange(BoxVO BoxVO) throws Exception;
+
 }
