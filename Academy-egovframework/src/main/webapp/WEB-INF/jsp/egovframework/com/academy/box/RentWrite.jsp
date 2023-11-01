@@ -171,7 +171,7 @@ function fn_save(form) {
  * 사물함 변경 처리화면
  ******************************************************** */
 function change_box(box_cd, box_num, rent_seq) {
-   	window.open('<c:url value="/box/boxChange.pop"/>?USED_BOX_CD='+box_cd+'&BOX_CD='+box_cd+'&USED_BOX_NUM='+box_num+'&USED_RENT_SEQ='+rent_seq+'&TOP_MENU_ID=<c:out value="${params.TOP_MENU_ID}"/>&MENU_ID=<c:out value="${params.MENU_ID}"/>', '_boxChangeFrm', 'location=no,resizable=yes,width=800,height=500,top=0,left=0,scrollbars=yes,location=no');
+   	window.open('<c:url value="/academy/box/Change.pop"/>?usedBoxCd='+box_cd+'&boxCd='+box_cd+'&usedBoxNum='+box_num+'&usedRentSeq='+rent_seq, '_boxChangeFrm', 'location=no,resizable=yes,width=800,height=500,top=0,left=0,scrollbars=yes,location=no');
 }
 
 /* ********************************************************

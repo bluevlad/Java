@@ -319,11 +319,12 @@
 	<!-- 사물함 상세 테이블에 사물함 변경하기 업데이트한다. -->
 	<update id="updateboxNumChange">
 		UPDATE ACM_BOX_NUM
-		SET (USERID, BOX_FLAG, RENT_SEQ, RENT_MEMO) = 
-		  	(SELECT USER_ID, BOX_FLAG, RENT_SEQ, RENT_MEMO 
-	  		FROM TB_OFF_BOX_NUM 
-		  	WHERE BOX_CD = #{USED_BOX_CD} AND BOX_NUM = #{USED_BOX_NUM})
-		WHERE BOX_CD = #{BOX_CD} AND BOX_NUM = #{BOX_NUM}
+		SET USER_ID = #{userId}, 
+		BOX_FLAG = #{boxFlag}, 
+		RENT_SEQ = #{rentSeq}, 
+		RENT_MEMO = #{rentMemo}
+		WHERE BOX_CD = #{boxCd}
+		AND BOX_NUM = #{boxNum}
 	</update>
 
 	<!-- 사물함 상세 테이블에 환불정보를 업데이트한다. -->
@@ -334,25 +335,25 @@
 			BOX_FLAG  = 'N',
 			RENT_SEQ  = NULL,
 			RENT_MEMO = '',
-			UPD_DT = SYSDATE,
-			UPD_ID = #{UPD_ID}
+			UPD_DT = now(),
+			UPD_ID = #{updId}
 		WHERE 
-			BOX_CD = #{BOX_CD} AND BOX_NUM = #{BOX_NUM}
-			<if test="RENT_SEQ !=null and RENT_SEQ != '' ">
-			AND RENT_SEQ = #{RENT_SEQ}
+			BOX_CD = #{boxCd} AND BOX_NUM = #{boxNum}
+			<if test="rentSeq !=null and rentSeq != '' ">
+			AND RENT_SEQ = #{rentSeq}
 			</if>
 	</update>
 
 	<!-- 사물함 변경시 정보를 업데이트한다. -->
 	<update id="updateBoxRentChange">
-		UPDATE TB_OFF_BOX_RENT 
+		UPDATE ACM_BOX_RENT 
 		SET 
-			BOX_CD		= #{BOX_CD}, 
-			BOX_NUM		= #{BOX_NUM}, 
-			UPD_ID   = #{UPD_ID},
-			UPD_DT   = SYSDATE
+			BOX_CD		= #{boxCd}, 
+			BOX_NUM		= #{boxNum}, 
+			UPD_ID   = #{updId},
+			UPD_DT   = now()
 		WHERE 
-			RENT_SEQ = #{RENT_SEQ}
+			RENT_SEQ = #{rentSeq}
 	</update>
 
 </mapper>

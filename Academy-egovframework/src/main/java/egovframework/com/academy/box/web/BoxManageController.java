@@ -213,7 +213,6 @@ public class BoxManageController {
 			if (boxNumRentDetail != null){
 				BoxVO.setOrderno(boxNumRentDetail.getOrderno());
 				boxNumRentOrderDetail = boxManageService.selectBoxNumRentOrderDetail(BoxVO);
-				BoxVO.setBoxNum(boxNumRentOrderDetail.getBoxNum());
 			}
 		}
 
@@ -223,10 +222,12 @@ public class BoxManageController {
 			model.addAttribute("WMODE", "INS");
 		}
 
+		BoxVO BoxDetail = boxManageService.selectBoxDetail(BoxVO);
+		BoxDetail.setBoxNum(BoxVO.getBoxNum());
+        model.addAttribute("BoxVO", BoxDetail);
+		
 		// 사물함 대여 결제 이력들
 		model.addAttribute("boxNumRentOrderList", boxManageService.selectBoxNumRentOrderList(BoxVO));
-
-        model.addAttribute("BoxVO", boxManageService.selectBoxDetail(BoxVO));
 		model.addAttribute("boxNumRentDetail", boxNumRentDetail);
 		model.addAttribute("boxNumRentOrderDetail", boxNumRentOrderDetail);
 
@@ -462,11 +463,22 @@ public class BoxManageController {
 	@RequestMapping(value = "/academy/box/Change.pop")
 	public String boxChange(@ModelAttribute("BoxVO") BoxVO BoxVO, @RequestParam Map<?, ?> commandMap, ModelMap model) throws Exception {
 
+		BoxVO.setPageUnit(propertyService.getInt("pageUnit"));
+		BoxVO.setPageSize(propertyService.getInt("pageSize"));
+		/** paging */
+		PaginationInfo paginationInfo = new PaginationInfo();
+		paginationInfo.setCurrentPageNo(BoxVO.getPageIndex());
+		paginationInfo.setRecordCountPerPage(BoxVO.getPageUnit());
+		paginationInfo.setPageSize(BoxVO.getPageSize());
+
+		BoxVO.setFirstIndex(paginationInfo.getFirstRecordIndex());
+		BoxVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
+
 		// 사물함 기존 정보
         model.addAttribute("usedBoxCd", commandMap.get("usedBoxCd") == null ? "" : (String)commandMap.get("usedBoxCd"));
         model.addAttribute("usedBoxNum", commandMap.get("usedBoxNum") == null ? "" : (String)commandMap.get("usedBoxNum"));
         model.addAttribute("usedRentSeq", commandMap.get("usedRentSeq") == null ? "" : (String)commandMap.get("usedRentSeq"));
-        model.addAttribute("BoxCd", commandMap.get("BoxCd") == null ? "" : (String)commandMap.get("BoxCd"));
+        model.addAttribute("boxCd", commandMap.get("boxCd") == null ? "" : (String)commandMap.get("boxCd"));
 
 		model.addAttribute("boxlist", boxManageService.selectBoxList(BoxVO));
 		model.addAttribute("boxnumList", boxManageService.selectBoxNumList(BoxVO));
@@ -486,37 +498,47 @@ public class BoxManageController {
 	 * @return String
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/academy/box/ChangePop.do")
-	@Transactional( readOnly=false,  rollbackFor=Exception.class)
-	public String changePop(@ModelAttribute("BoxVO") BoxVO BoxVO, @RequestParam Map<?, ?> commandMap, BindingResult bindingResult, ModelMap model) throws Exception {
+	@RequestMapping(value = "/academy/box/ChangePop")
+	@ResponseBody
+	public String changePop(@ModelAttribute("BoxVO") BoxVO BoxVO, @RequestParam Map<?, ?> commandMap) throws Exception {
 
 		// 사물함 기존 정보
-        model.addAttribute("usedBoxCd", commandMap.get("usedBoxCd") == null ? "" : (String)commandMap.get("usedBoxCd"));
-        model.addAttribute("usedBoxNum", commandMap.get("usedBoxNum") == null ? "" : (String)commandMap.get("usedBoxNum"));
-        model.addAttribute("usedRentSeq", commandMap.get("usedRentSeq") == null ? "" : (String)commandMap.get("usedRentSeq"));
+        String usedBoxCd = commandMap.get("usedBoxCd") == null ? "" : (String)commandMap.get("usedBoxCd");
+        String usedBoxNum = commandMap.get("usedBoxNum") == null ? "" : (String)commandMap.get("usedBoxNum");
 
 		// 사물함 신규 번호
-        model.addAttribute("boxCd", commandMap.get("boxCd") == null ? "" : (String)commandMap.get("boxCd"));
-        model.addAttribute("boxNum", commandMap.get("boxNum") == null ? "" : (String)commandMap.get("boxNum"));
-        model.addAttribute("rentSeq", commandMap.get("usedRentSeq") == null ? "" : (String)commandMap.get("usedRentSeq"));
+        String boxCd = commandMap.get("boxCd") == null ? "" : (String)commandMap.get("boxCd");
+        String boxNum = commandMap.get("boxNum") == null ? "" : (String)commandMap.get("boxNum");
+        String rentSeq = commandMap.get("usedRentSeq") == null ? "" : (String)commandMap.get("usedRentSeq");
 
-        model.addAttribute("newBoxCd", commandMap.get("boxCd") == null ? "" : (String)commandMap.get("boxCd"));
-        model.addAttribute("newBoxNum", commandMap.get("boxNum") == null ? "" : (String)commandMap.get("boxNum"));
+		//로그인 객체 선언
+		LoginVO loginVO = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+		//아이디 설정
+		BoxVO.setRegId(loginVO == null ? "" : EgovStringUtil.isNullToString(loginVO.getUniqId()));
+		BoxVO.setUpdId(loginVO == null ? "" : EgovStringUtil.isNullToString(loginVO.getUniqId()));
 
+		BoxVO.setBoxCd(boxCd);
+		BoxVO.setBoxNum(CommonUtil.parseInt(boxNum));
+		BoxVO.setRentSeq(CommonUtil.parseInt(rentSeq));
+
+		BoxVO boxNumChange = boxManageService.selectBoxNumRentDetail(BoxVO);
+		BoxVO.setUserId(boxNumChange.getUserId());
+		BoxVO.setBoxFlag(boxNumChange.getBoxFlag());
+		BoxVO.setRentSeq(boxNumChange.getRentSeq());
+		BoxVO.setRentMemo(boxNumChange.getRentMemo());
+		
 		// 1. TB_OFF_BOX_NUM 테이블을 업데이트한다. (신규 선택한 곳에 기존 자료를 업데이트한다)
         boxManageService.updateboxNumChange(BoxVO);
 
 		// 2. TB_OFF_BOX_NUM 테이블을 업데이트한다. (기존 자료 공간을 초기화 업데이트한다)
-		BoxVO.setBoxCd(model.get("usedBoxCd").toString());
-		BoxVO.setBoxNum(CommonUtil.parseInt(model.get("usedBoxNum").toString()));
+		BoxVO.setBoxCd(usedBoxCd);
+		BoxVO.setBoxNum(CommonUtil.parseInt(usedBoxNum));
 		boxManageService.updateboxNumReset(BoxVO);
 
 	    // 3. TB_OFF_BOX_RENT 테이블을 업데이트한다. (기존 자료에 신규 사물함번호를 저장한다)
-		BoxVO.setBoxCd(model.get("newBoxCd").toString());
-		BoxVO.setBoxNum(CommonUtil.parseInt(model.get("newBoxNum").toString()));
 		boxManageService.updateBoxRentChange(BoxVO);
 
-		return "redirect:/academy/box/List.do";
+		return "OK";
 	}
 
 	

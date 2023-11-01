@@ -25,6 +25,8 @@ public class BoxVO extends OrdersVO {
 	private String boxCd;
 	/** 사물함명칭 */
 	private String boxNm;
+	/** 사물함코드 */
+	private String usedBoxCd;
 	/** 사물함갯수 */
 	private int boxCount;
 	/** 사물함사용금액 */
@@ -46,6 +48,8 @@ public class BoxVO extends OrdersVO {
 
 	/** 사물함번호 */
 	private int boxNum;
+	/** 사물함번호 */
+	private int usedBoxNum;
 	/** 사물함상태 */
 	private String boxFlag;
 	/** 사물함대여번호 */
@@ -81,6 +85,20 @@ public class BoxVO extends OrdersVO {
 	 */
 	public void setBoxCd(String boxCd) {
 		this.boxCd = boxCd;
+	}
+	/**
+	 * usedBoxCd attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getUsedBoxCd() {
+		return usedBoxCd;
+	}
+	/**
+	 * usedBoxCd attribute 값을 설정한다.
+	 * @param usedBoxCd String
+	 */
+	public void setUsedBoxCd(String usedBoxCd) {
+		this.usedBoxCd = usedBoxCd;
 	}
 	
 	/**
@@ -241,6 +259,20 @@ public class BoxVO extends OrdersVO {
 	 */
 	public void setBoxNum(int boxNum) {
 		this.boxNum = boxNum;
+	}
+	/**
+	 * usedBoxNum attribute 를 리턴한다.
+	 * @return int
+	 */
+	public int getUsedBoxNum() {
+		return usedBoxNum;
+	}
+	/**
+	 * usedBoxNum attribute 값을 설정한다.
+	 * @param usedBoxNum int
+	 */
+	public void setUsedBoxNum(int usedBoxNum) {
+		this.usedBoxNum = usedBoxNum;
 	}
 	/**
 	 * boxFlag attribute 를 리턴한다.
