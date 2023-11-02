@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import egovframework.com.academy.box.service.BoxManageService;
 import egovframework.com.academy.box.service.BoxVO;
@@ -27,6 +28,7 @@ import egovframework.com.api.util.CommonUtil;
 import egovframework.com.cmm.EgovMessageSource;
 import egovframework.com.cmm.LoginVO;
 import egovframework.com.cmm.util.EgovUserDetailsHelper;
+import egovframework.com.cop.bbs.service.BlogVO;
 import egovframework.com.utl.fcc.service.EgovStringUtil;
 import egovframework.rte.fdl.property.EgovPropertyService;
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
@@ -498,9 +500,10 @@ public class BoxManageController {
 	 * @return String
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/academy/box/ChangePop")
-	@ResponseBody
-	public String changePop(@ModelAttribute("BoxVO") BoxVO BoxVO, @RequestParam Map<?, ?> commandMap) throws Exception {
+	@RequestMapping("/academy/box/ChangePop")
+	public ModelAndView changePop(@ModelAttribute("BoxVO") BoxVO BoxVO, @RequestParam Map<?, ?> commandMap) throws Exception {
+
+    	ModelAndView ret = new ModelAndView("jsonView");
 
 		// 사물함 기존 정보
         String usedBoxCd = commandMap.get("usedBoxCd") == null ? "" : (String)commandMap.get("usedBoxCd");
@@ -517,8 +520,8 @@ public class BoxManageController {
 		BoxVO.setRegId(loginVO == null ? "" : EgovStringUtil.isNullToString(loginVO.getUniqId()));
 		BoxVO.setUpdId(loginVO == null ? "" : EgovStringUtil.isNullToString(loginVO.getUniqId()));
 
-		BoxVO.setBoxCd(boxCd);
-		BoxVO.setBoxNum(CommonUtil.parseInt(boxNum));
+		BoxVO.setBoxCd(usedBoxCd);
+		BoxVO.setBoxNum(CommonUtil.parseInt(usedBoxNum));
 		BoxVO.setRentSeq(CommonUtil.parseInt(rentSeq));
 
 		BoxVO boxNumChange = boxManageService.selectBoxNumRentDetail(BoxVO);
@@ -528,17 +531,20 @@ public class BoxManageController {
 		BoxVO.setRentMemo(boxNumChange.getRentMemo());
 		
 		// 1. TB_OFF_BOX_NUM 테이블을 업데이트한다. (신규 선택한 곳에 기존 자료를 업데이트한다)
+		BoxVO.setBoxCd(boxCd);
+		BoxVO.setBoxNum(CommonUtil.parseInt(boxNum));
         boxManageService.updateboxNumChange(BoxVO);
 
 		// 2. TB_OFF_BOX_NUM 테이블을 업데이트한다. (기존 자료 공간을 초기화 업데이트한다)
-		BoxVO.setBoxCd(usedBoxCd);
-		BoxVO.setBoxNum(CommonUtil.parseInt(usedBoxNum));
+		BoxVO.setUsedBoxCd(usedBoxCd);
+		BoxVO.setUsedBoxNum(CommonUtil.parseInt(usedBoxNum));
 		boxManageService.updateboxNumReset(BoxVO);
 
 	    // 3. TB_OFF_BOX_RENT 테이블을 업데이트한다. (기존 자료에 신규 사물함번호를 저장한다)
 		boxManageService.updateBoxRentChange(BoxVO);
 
-		return "OK";
+		ret.addObject("ret", "OK");
+		return ret;
 	}
 
 	

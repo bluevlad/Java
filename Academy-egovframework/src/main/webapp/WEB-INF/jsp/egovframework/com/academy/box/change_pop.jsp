@@ -39,21 +39,19 @@ function change_boxnum(boxnum) {
 	var boxCd = varFrom.boxCd.value;
 	var boxNum = boxnum;
 	
-	if (confirm("사물함 번호 [" + boxnum + "]를 선택했습니다. 이 번호로 변경하겠습니까?")) {
+	if (confirm(<spring:message code="box.change.num" /> "사물함 번호 [" + boxnum + "]를 선택했습니다. 이 번호로 변경하겠습니까?")) {
 	
 		$.ajax({
 			url : "<c:url value='/academy/box/ChangePop' />",
 			type: "POST", 
-        	data : {"boxNum":boxnum, "usedBoxCd":usedBoxCd, "usedRentSeq":usedRentSeq, "boxCd":boxCd, "boxNum":boxNum},
+        	data : {"usedBoxNum":usedBoxNum, "usedBoxCd":usedBoxCd, "usedRentSeq":usedRentSeq, "boxCd":boxCd, "boxNum":boxNum},
 	        dataType: 'json',
-			async : false,
-			success: function(RES) {
-				alert("등록된 사용자 아이디입니다. 사물함 대여 신청할 수 있습니다.");
+			success: function(data) {
+				alert("정상적으로 자리가 변경되었습니다.");
 				window.opener.document.location.href="<c:url value='/academy/box/Detail.do' />?boxCd="+varFrom.boxCd.value;
 				window.close();
 			},error: function(){
 				alert("자리이동실패");
-				return;
 			}
 		});		
 	

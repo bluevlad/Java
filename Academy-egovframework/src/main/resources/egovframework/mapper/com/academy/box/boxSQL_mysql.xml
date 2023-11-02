@@ -286,20 +286,6 @@
 			BOX_CD = #{boxCd} AND BOX_NUM = #{boxNum} AND RENT_SEQ = #{rentSeq}
 	</update>
 
-
-	<!-- 환불시 사물함 대여 신청 정보를 업데이트한다. -->
-	<update id="updateBoxNumRentRefund">
-		UPDATE ACM_BOX_RENT 
-		SET 
-			RENT_END       = now(),
-			DEPOSIT_YN      = 'Y',
-			KEY_YN	       = 'Y',
-			UPD_ID      = #{updId},
-			UPD_DT      = now()
-		WHERE 
-			BOX_CD=#{BOX_CD} AND BOX_NUM=#{BOX_NUM} AND RENT_SEQ=#{RENT_SEQ}
-	</update>
-
 	<!-- 사물함 대여신청 결제정보를 업데이트한다. -->
 	<update id="updateApprovals">
 		UPDATE acm_order_approvals 
@@ -338,7 +324,7 @@
 			UPD_DT = now(),
 			UPD_ID = #{updId}
 		WHERE 
-			BOX_CD = #{boxCd} AND BOX_NUM = #{boxNum}
+			BOX_CD = #{usedBoxCd} AND BOX_NUM = #{usedBoxNum}
 			<if test="rentSeq !=null and rentSeq != '' ">
 			AND RENT_SEQ = #{rentSeq}
 			</if>
@@ -346,14 +332,27 @@
 
 	<!-- 사물함 변경시 정보를 업데이트한다. -->
 	<update id="updateBoxRentChange">
-		UPDATE ACM_BOX_RENT 
+		UPDATE ACM_BOX_RENT
 		SET 
 			BOX_CD		= #{boxCd}, 
-			BOX_NUM		= #{boxNum}, 
+			BOX_NUM		= #{boxNum},
 			UPD_ID   = #{updId},
 			UPD_DT   = now()
 		WHERE 
 			RENT_SEQ = #{rentSeq}
+	</update>
+
+	<!-- 환불시 사물함 대여 신청 정보를 업데이트한다. -->
+	<update id="updateBoxNumRentRefund">
+		UPDATE ACM_BOX_RENT 
+		SET 
+			RENT_END       = now(),
+			DEPOSIT_YN      = 'Y',
+			KEY_YN	       = 'Y',
+			UPD_ID      = #{updId},
+			UPD_DT      = now()
+		WHERE 
+			BOX_CD=#{BOX_CD} AND BOX_NUM=#{BOX_NUM} AND RENT_SEQ=#{RENT_SEQ}
 	</update>
 
 </mapper>
