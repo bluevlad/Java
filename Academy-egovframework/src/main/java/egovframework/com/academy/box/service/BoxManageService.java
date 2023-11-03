@@ -29,6 +29,8 @@ public interface BoxManageService {
 
 	public BoxVO selectBoxNumRentDetail(BoxVO BoxVO) throws Exception;
 
+	public BoxVO selectBoxOrderDetail(BoxVO BoxVO) throws Exception;
+
 	/**
 	 * 사물함정보를 신규로 등록한다.
 	 * @param BoxVO

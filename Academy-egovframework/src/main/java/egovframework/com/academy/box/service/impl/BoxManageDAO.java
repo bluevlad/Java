@@ -69,6 +69,10 @@ public class BoxManageDAO extends EgovComAbstractDAO{
 		return getSqlSession().selectOne("box.selectBoxNumRentOrderDetail", BoxVO);
 	}
 
+	public BoxVO selectBoxOrderDetail(BoxVO BoxVO) {
+		return getSqlSession().selectOne("box.selectBoxOrderDetail", BoxVO);
+	}
+
 	public List<?> selectBoxNumRentOrderList(BoxVO BoxVO) {
 		return selectList("box.selectBoxNumRentOrderList", BoxVO);
 	}

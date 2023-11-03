@@ -53,7 +53,7 @@ function change_boxnum(boxnum) {
 			},error: function(){
 				alert("자리이동실패");
 			}
-		});		
+		});		                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
 	
 	}
 }

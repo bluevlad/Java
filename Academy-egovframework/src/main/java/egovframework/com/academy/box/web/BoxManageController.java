@@ -547,5 +547,40 @@ public class BoxManageController {
 		return ret;
 	}
 
+	/**
+	 * @Method Name : boxOrderView
+	 * @작성일 : 2013. 11.22
+	 * @Method 설명 : 사물함 대여 결제 및 환불 내역 보기
+	 * @param model
+	 * @param request
+	 * @return String
+	 * @throws Exception
+	 */
+
+	@RequestMapping(value = "/academy/box/OrderView.do")
+	public String boxOrderView(@ModelAttribute("BoxVO") BoxVO BoxVO, @RequestParam Map<?, ?> commandMap, ModelMap model) throws Exception {
+
+        String orderno = commandMap.get("orderno") == null ? "" : (String)commandMap.get("orderno");
+        String statuscode = commandMap.get("statuscode") == null ? "" : (String)commandMap.get("statuscode");
+		
+		BoxVO.setOrderno(orderno);
+		BoxVO.setStatuscode(statuscode);
+       
+		
+//		params.put("CALLPOSITION", CommonUtil.isNull(request.getParameter("CALLPOSITION"), "ORDERLIST"));
+
+		if (!orderno.isEmpty()) {
+			// 사물함 대여 신청 정보(현재)
+			BoxVO boxOrderDetail  = boxManageService.selectBoxOrderDetail(BoxVO);
+
+			model.addAttribute("boxOrderDetail", boxOrderDetail);
+
+			return "egovframework/com/academy/box/OrderView";
+
+		} else {
+			return "redirect:/academy/box/RentWrite.do";
+		}
+	}
+
 	
 }

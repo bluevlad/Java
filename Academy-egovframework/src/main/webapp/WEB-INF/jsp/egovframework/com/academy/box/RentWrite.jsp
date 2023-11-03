@@ -99,16 +99,15 @@ function fn_IdCheck(){
 		async : false,
 		success: function(RES) {
 			if($.trim(RES)=="Y"){
-				alert("등록된 사용자 아이디입니다. 사물함 대여 신청할 수 있습니다.");
-				varFrom.CHECKID.val(varFrom.userId.value);
+				alert('<spring:message code="member.req.ok" />');
 				return;
 			}else{
-				alert("등록되지 않은 아이디 입니다. 사물함 대여 신청 불가합니다.");
-				varFrom.CHECKID.val("");
+				alert('<spring:message code="member.req.fail" />');
+				varFrom.userId.val("");
 				return;
 			}
 		},error: function(){
-			alert("아이디 등록 체크 실패");
+			alert('<spring:message code="member.reg.fail" />');
 			return;
 		}
 	});		
@@ -165,6 +164,17 @@ function fn_save(form) {
 			form.submit();
 		}
 	}
+}
+
+/* ********************************************************
+ * 사물함 주문정보 조회
+ ******************************************************** */
+function fn_view(orderId){
+	var varFrom = document.getElementById("BoxVO");
+	
+	varFrom.orderno.value = orderId;
+	varFrom.action = "<c:url value='/academy/box/OrderView.do' />";
+	varFrom.submit();
 }
 	
 /* ********************************************************
@@ -250,7 +260,7 @@ String.prototype.replaceAll = function(src, repl){
 			<th>${title}<span class="pilsu">*</span></th>
 			<td class="left">
 	   			${BoxVO.boxNm} (${BoxVO.boxNum}번) &nbsp;
-	   			<a class="btn02" onclick="change_box('${BoxVO.boxCd}','${BoxVO.boxNum}','${boxNumRentDetail.rentSeq}'); return false;"><spring:message code="box.button.exchange" /></a>
+	   			<a class="btn02" onclick="change_box('${BoxVO.boxCd}','${BoxVO.boxNum}','${boxNumRentDetail.rentSeq}'); return false;"><spring:message code="box.button.exchange" /></a></td>
 		</tr>
 		
 		<!-- 사용자정보 -->

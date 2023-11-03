@@ -56,6 +56,8 @@ public class OrdersVO implements Serializable {
 	private String userId;
 	/** 성명 */
 	private String userNm;
+	/** 이메일 */
+	private String email;
     /** 주문번호 */
     private String orderno;
     /** 주문번호 */
@@ -84,6 +86,10 @@ public class OrdersVO implements Serializable {
     private String payGubun;
     /** 주문상품정보 */
     private String memo;
+	/** 환불금액 */
+	private int refundPrice;
+    /** 환불일시 */
+    private String refundDt;
 
 	/**
 	 * searchCondition attribute 를 리턴한다.
@@ -325,6 +331,20 @@ public class OrdersVO implements Serializable {
 		this.userNm = userNm;
 	}
 	/**
+	 * email attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getEmail() {
+		return email;
+	}
+	/**
+	 * email attribute 값을 설정한다.
+	 * @param email String
+	 */
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	/**
 	 * orderno attribute 를 리턴한다.
 	 * @return String
 	 */
@@ -519,6 +539,34 @@ public class OrdersVO implements Serializable {
 	 */
 	public void setMemo(String memo) {
 		this.memo = memo;
+	}
+	/**
+	 * refundPrice attribute 를 리턴한다.
+	 * @return int
+	 */
+	public int getRefundPrice() {
+		return refundPrice;
+	}
+	/**
+	 * refundPrice attribute 값을 설정한다.
+	 * @param refundPrice int
+	 */
+	public void setRefundPrice(int refundPrice) {
+		this.refundPrice = refundPrice;
+	}
+	/**
+	 * refundDt attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getRefundDt() {
+		return refundDt;
+	}
+	/**
+	 * refundDt attribute 값을 설정한다.
+	 * @param refundDt String
+	 */
+	public void setRefundDt(String refundDt) {
+		this.refundDt = refundDt;
 	}
 	
 }
