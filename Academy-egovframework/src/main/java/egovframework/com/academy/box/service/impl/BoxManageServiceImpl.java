@@ -137,6 +137,7 @@ public class BoxManageServiceImpl extends EgovAbstractServiceImpl implements Box
 	public void insertBoxRent(BoxVO BoxVO) throws Exception {
 		boxManageDAO.insertBoxRent(BoxVO);
 	}
+	
 	@Override
 	public int getBoxRentSeq(BoxVO BoxVO) throws Exception {
 		return boxManageDAO.getBoxRentSeq(BoxVO);
@@ -165,6 +166,36 @@ public class BoxManageServiceImpl extends EgovAbstractServiceImpl implements Box
 	@Override
 	public void updateBoxRentChange(BoxVO BoxVO) throws Exception {
 		boxManageDAO.updateBoxRentChange(BoxVO);
+	}
+
+	@Override
+	public void deleteBoxRentByOrderId(BoxVO BoxVO) throws Exception {
+		boxManageDAO.deleteBoxRentByOrderId(BoxVO);
+	}
+
+	@Override
+	public void deleteBoxOrder(BoxVO BoxVO) throws Exception {
+		boxManageDAO.deleteBoxOrder(BoxVO);
+	}
+
+	@Override
+	public void insertOrderRefund(BoxVO BoxVO) throws Exception {
+		boxManageDAO.insertOrderRefund(BoxVO);
+	}
+
+	@Override
+	public void insertOrderItemBox(BoxVO BoxVO) throws Exception {
+		boxManageDAO.insertOrderItemBox(BoxVO);
+	}
+
+	@Override
+	public void updateOrderApprovalsRefund(BoxVO BoxVO) throws Exception {
+		boxManageDAO.updateOrderApprovalsRefund(BoxVO);
+	}
+
+	@Override
+	public void updateBoxNumRentRefund(BoxVO BoxVO) throws Exception {
+		boxManageDAO.updateBoxNumRentRefund(BoxVO);
 	}
 	
 }

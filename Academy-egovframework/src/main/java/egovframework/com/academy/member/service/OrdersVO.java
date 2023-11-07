@@ -86,10 +86,22 @@ public class OrdersVO implements Serializable {
     private String payGubun;
     /** 주문상품정보 */
     private String memo;
+	/** 결제승인 id */
+	private String confirmid;
 	/** 환불금액 */
 	private int refundPrice;
     /** 환불일시 */
     private String refundDt;
+	/** 환불은행명 */
+	private String accBankName;
+	/** 환불은행계좌 */
+	private String accBankNum;
+	/** 환불카드금액 */
+	private int refundCard;
+	/** 환불현금금액 */
+	private int refundCash;
+    /** 환불내용 */
+    private String refundMemo;
 
 	/**
 	 * searchCondition attribute 를 리턴한다.
@@ -541,6 +553,20 @@ public class OrdersVO implements Serializable {
 		this.memo = memo;
 	}
 	/**
+	 * confirmid attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getConfirmid() {
+		return confirmid;
+	}
+	/**
+	 * confirmid attribute 값을 설정한다.
+	 * @param confirmid String
+	 */
+	public void setConfirmid(String confirmid) {
+		this.confirmid = confirmid;
+	}
+	/**
 	 * refundPrice attribute 를 리턴한다.
 	 * @return int
 	 */
@@ -567,6 +593,76 @@ public class OrdersVO implements Serializable {
 	 */
 	public void setRefundDt(String refundDt) {
 		this.refundDt = refundDt;
+	}
+	/**
+	 * accBankName attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getAccBankName() {
+		return accBankName;
+	}
+	/**
+	 * accBankName attribute 값을 설정한다.
+	 * @param accBankName String
+	 */
+	public void setAccBankName(String accBankName) {
+		this.accBankName = accBankName;
+	}
+	/**
+	 * accBankNum attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getAccBankNum() {
+		return accBankNum;
+	}
+	/**
+	 * accBankNum attribute 값을 설정한다.
+	 * @param accBankNum String
+	 */
+	public void setAccBankNum(String accBankNum) {
+		this.accBankNum = accBankNum;
+	}
+	/**
+	 * refundCard attribute 를 리턴한다.
+	 * @return int
+	 */
+	public int getRefundCard() {
+		return refundCard;
+	}
+	/**
+	 * refundCard attribute 값을 설정한다.
+	 * @param refundCard int
+	 */
+	public void setRefundCard(int refundCard) {
+		this.refundCard = refundCard;
+	}
+	/**
+	 * refundCash attribute 를 리턴한다.
+	 * @return int
+	 */
+	public int getRefundCash() {
+		return refundCash;
+	}
+	/**
+	 * refundCash attribute 값을 설정한다.
+	 * @param refundCash int
+	 */
+	public void setRefundCash(int refundCash) {
+		this.refundCash = refundCash;
+	}
+	/**
+	 * refundMemo attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getRefundMemo() {
+		return refundMemo;
+	}
+	/**
+	 * refundMemo attribute 값을 설정한다.
+	 * @param refundMemo String
+	 */
+	public void setRefundMemo(String refundMemo) {
+		this.refundMemo = refundMemo;
 	}
 	
 }

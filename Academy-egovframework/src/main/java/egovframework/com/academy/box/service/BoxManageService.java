@@ -92,4 +92,16 @@ public interface BoxManageService {
 
 	void updateBoxRentChange(BoxVO BoxVO) throws Exception;
 
+	void deleteBoxRentByOrderId(BoxVO BoxVO) throws Exception;
+
+	void deleteBoxOrder(BoxVO BoxVO) throws Exception;
+	
+	void insertOrderItemBox(BoxVO BoxVO) throws Exception;
+	
+	void insertOrderRefund(BoxVO BoxVO) throws Exception;
+
+	void updateOrderApprovalsRefund(BoxVO BoxVO) throws Exception;
+
+	void updateBoxNumRentRefund(BoxVO BoxVO) throws Exception;
+
 }

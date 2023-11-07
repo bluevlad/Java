@@ -114,8 +114,8 @@
 	<select id="selectBoxOrderDetail" parameterType="egovframework.com.academy.box.service.BoxVO" 
 										resultType="egovframework.com.academy.box.service.BoxVO">
          SELECT A.ORDERNO, A.USER_ID, A.USER_NM, A.EMAIL, A.REG_DT, A.ORDER_TYPE,
-              B.ITEMNO, B.PRICE, B.STATUSCODE, B.ISCANCEL,  
-              C.PRICE, C.PRICE_CARD, C.PRICE_CASH, C.PRICE_BANK, C.PRICE_UNPAID, C.PRICE_DISCOUNT, C.PRICE_DISCOUNT_TYPE, C.PRICE_DISCOUNT_REASON,
+              B.ITEMNO, B.STATUSCODE, B.ISCANCEL, E.BOX_PRICE,
+              C.PRICE PAY_TOTAL, C.PRICE_CARD, C.PRICE_CASH, C.PRICE_BANK, C.PRICE_UNPAID, C.PRICE_DISCOUNT, C.PRICE_DISCOUNT_TYPE, C.PRICE_DISCOUNT_REASON,
               D.BOX_NUM, D.RENT_TYPE, E.BOX_NM, E.BOX_CD, D.RENT_MEMO, D.RENT_SEQ,
               DATE_FORMAT(D.RENT_START, "%Y-%m-%d") RENT_START, DATE_FORMAT(D.RENT_END, "%Y-%m-%d") RENT_END
          FROM ACM_ORDERS A, ACM_ORDER_ITEM B, ACM_ORDER_APPROVALS C, ACM_BOX_RENT D, ACM_BOX E
@@ -352,7 +352,70 @@
 			UPD_ID      = #{updId},
 			UPD_DT      = now()
 		WHERE 
-			BOX_CD=#{BOX_CD} AND BOX_NUM=#{BOX_NUM} AND RENT_SEQ=#{RENT_SEQ}
+			BOX_CD = #{boxCd} AND BOX_NUM = #{boxNum} AND RENT_SEQ = #{rentSeq}
+	</update>
+
+	<!-- 사물함 대여 이력정보 삭제 (주문번호 이용) -->
+    <delete id="deleteBoxRentByOrderId">
+   		DELETE 
+   			FROM ACM_BOX_RENT 
+   			WHERE ORDERNO = #{orderno} 
+   	</delete>
+	
+	<update id="deleteBoxOrder" statementType="CALLABLE">
+		CALL SP_DELETE_ORDER(
+		        #{orderno, mode=IN}
+		)
+	</update>
+	
+	<!-- 사물함 환불 처리 -->
+	<insert id="insertOrderRefund">
+		INSERT INTO ACM_ORDER_REFUND(
+			ORDERNO, REFUND_PAY, REFUND_DT,
+			<if test="accBankName !=null and accBankName != '' ">
+			ACC_BANK_NAME,
+			</if>
+			<if test="accBankNum !=null and accBankNum != '' ">
+			ACC_BANK_NUM,
+			</if>
+			REG_DT
+		)VALUES(
+			#{orderno}, #{refundPrice}, #{refundDt},
+			<if test="accBankName !=null and accBankName != '' ">
+			#{accBankName},
+			</if>
+			<if test="accBankNum !=null and accBankNum != '' ">
+			#{accBankNum},
+			</if>
+			now()
+		)
+	</insert>
+	 
+	<!--  오프라인 사물함 대여 주문 세부정보 등록 처리-->
+	<insert id="insertOrderItemBox">
+		INSERT INTO ACM_ORDER_ITEM ( 
+			ORDERNO, ITEMNO, CNT, ISCANCEL,
+			<if test="cancelDt != null and cancelDt != '' ">
+			CANCEL_DT, 
+			</if>
+			PRICE, STATUSCODE, PTYPE, CONFIRM_DT, CONFIRMID, REG_ID, REG_DT
+		) VALUES (
+			#{orderno}, #{orderno}, 1, #{isCancel},
+			<if test="cancelDt != null and cancelDt != '0' ">
+			#{cancelDt}, 
+			</if>
+			#{payTotal}, #{statuscode}, 'S', now(), #{regId}, #{regId}, now()
+		)
+	</insert>
+
+	<!-- 사물함 대여신청 결제정보를 업데이트한다. -->
+	<update id="updateOrderApprovalsRefund">
+		UPDATE ACM_ORDER_APPROVALS
+		SET 
+			REFUND_PAY	= #{refundPrice},
+			REFUND_DT = TO_DATE(#{refundDt}, 'MM/DD/YYYY HH24:MI:SS')
+		WHERE 
+			ORDERNO = #{orderno}
 	</update>
 
 </mapper>

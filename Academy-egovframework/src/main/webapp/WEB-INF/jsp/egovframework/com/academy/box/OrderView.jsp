@@ -32,18 +32,18 @@
 <script type="text/javaScript" language="javascript">
 $(function() {
 	$("#refundDt").datepicker(  
-	        {dateFormat:'yy-mm-dd'
-	         , showOn: 'button'
-	         , buttonImage: '<c:url value='/images/egovframework/com/cmm/icon/bu_icon_carlendar.gif'/>'
-	         , buttonImageOnly: true
-	         
-	         , showMonthAfterYear: true
-	         , showOtherMonths: true
-		     , selectOtherMonths: true
-				
-	         , changeMonth: true // 월선택 select box 표시 (기본은 false)
-	         , changeYear: true  // 년선택 selectbox 표시 (기본은 false)
-	         , showButtonPanel: true // 하단 today, done  버튼기능 추가 표시 (기본은 false)
+        {dateFormat:'yy-mm-dd'
+         , showOn: 'button'
+         , buttonImage: '<c:url value='/images/egovframework/com/cmm/icon/bu_icon_carlendar.gif'/>'
+         , buttonImageOnly: true
+         
+         , showMonthAfterYear: true
+         , showOtherMonths: true
+	     , selectOtherMonths: true
+			
+         , changeMonth: true // 월선택 select box 표시 (기본은 false)
+         , changeYear: true  // 년선택 selectbox 표시 (기본은 false)
+         , showButtonPanel: true // 하단 today, done  버튼기능 추가 표시 (기본은 false)
 	});
 });
 
@@ -52,33 +52,26 @@ $(function() {
  ******************************************************** */
 function fn_List() {
 	var varFrom = document.getElementById("BoxVO");
-	varFrom.action = "<c:url value='/academy/box/RentWrite.do' />";
+	varFrom.action = "<c:url value='/academy/box/RentWrite.do'/>";
 	varFrom.submit();
 }
 
 // 사물함 정보 삭제 
 function fn_DeleteOrder(){
+	var varFrom = document.getElementById("BoxVO");
+
 	if(confirm("사물함 주문정보를 삭제하겠습니까?")){
-		$("#frm").attr("action","<c:url value='/box/boxDeleteOrderProcess.do' />");
-		$("#frm").submit();
+		varFrom.action = "<c:url value='/academy/box/DeleteOrder.do'/>";
+		varFrom.submit();
 	}		
 }
 
 function fn_Refund() {
-	if($.trim($("#REFUND_PRICE").val())==""){
-		alert("환불 금액을 입력해 주세요");
-		$("#REFUND_PRICE").focus();
-		return;
-	}
-	if($.trim($("#REFUND_DATE").val())==""){
-		alert("환불 일자를 입력해 주세요");
-		$("#REFUND_DATE").focus();
-		return;
-	}
-
+	var varFrom = document.getElementById("BoxVO");
+	
 	if (confirm("사물함 대여 환불 정보를 저장하겠습니까?")) {
-		$("#frm").attr("action", "<c:url value='/box/boxRefundProcess.do' />");
-		$("#frm").submit();
+		varFrom.action = "<c:url value='/academy/box/Refund.do'/>";
+		varFrom.submit();
 	}
 }
 </script>
@@ -193,7 +186,7 @@ function fn_Refund() {
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
 			<td class="left">
-  				<form:input path="priceCard" title="${title} ${inputTxt}" style="width:120px;" value="${boxOrderDetail.refundPrice}" />원
+  				<form:input path="refundPrice" title="${title} ${inputTxt}" style="width:120px;" value="${boxOrderDetail.refundPrice}" />원
     			<div><form:errors path="refundPrice" cssClass="error" /></div>
   				<form:input path="refundDt" readonly="true" style="width:70px;" value="${boxOrderDetail.refundDt}" />
 				<form:errors path="refundDt" cssClass="error"/>

@@ -128,5 +128,29 @@ public class BoxManageDAO extends EgovComAbstractDAO{
     public void updateBoxRentChange(BoxVO BoxVO) throws Exception{
         update("box.updateBoxRentChange", BoxVO);
     }
+
+    public void deleteBoxRentByOrderId(BoxVO BoxVO) throws Exception{
+        delete("box.deleteBoxRentByOrderId", BoxVO);
+    }
+
+    public void deleteBoxOrder(BoxVO BoxVO) throws Exception{
+        update("box.deleteBoxOrder", BoxVO);
+    }
+
+    public void insertOrderRefund(BoxVO BoxVO) throws Exception{
+        insert("box.insertOrderRefund", BoxVO);
+    }
+
+    public void insertOrderItemBox(BoxVO BoxVO) throws Exception{
+        insert("box.insertOrderItemBox", BoxVO);
+    }
+
+    public void updateOrderApprovalsRefund(BoxVO BoxVO) throws Exception{
+        update("box.updateOrderApprovalsRefund", BoxVO);
+    }
+
+    public void updateBoxNumRentRefund(BoxVO BoxVO) throws Exception{
+        update("box.updateBoxNumRentRefund", BoxVO);
+    }
 	
 }

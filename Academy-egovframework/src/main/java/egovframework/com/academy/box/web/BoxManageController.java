@@ -5,12 +5,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +25,6 @@ import egovframework.com.api.util.CommonUtil;
 import egovframework.com.cmm.EgovMessageSource;
 import egovframework.com.cmm.LoginVO;
 import egovframework.com.cmm.util.EgovUserDetailsHelper;
-import egovframework.com.cop.bbs.service.BlogVO;
 import egovframework.com.utl.fcc.service.EgovStringUtil;
 import egovframework.rte.fdl.property.EgovPropertyService;
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
@@ -186,7 +182,7 @@ public class BoxManageController {
 
 		boxManageService.updateBox(BoxVO);
 
-		return "redirect:/academy/box/List.do";
+		return "forward:/academy/box/List.do";
 	}
 
 	/**
@@ -346,7 +342,7 @@ public class BoxManageController {
 
 		boxManageService.updateBoxNum(BoxVO);
 
-		return "redirect:/academy/box/List.do";
+		return "forward:/academy/box/List.do";
 	}
 
 	/**
@@ -449,7 +445,7 @@ public class BoxManageController {
 			boxManageService.updateApprovals(BoxVO);
 		}
 
-		return "redirect:/academy/box/List.do";
+		return "forward:/academy/box/List.do";
 	}
 
 	/**
@@ -578,9 +574,105 @@ public class BoxManageController {
 			return "egovframework/com/academy/box/OrderView";
 
 		} else {
-			return "redirect:/academy/box/RentWrite.do";
+			return "forward:/academy/box/RentWrite.do";
 		}
 	}
 
+	/**
+	 * @Method Name : DeleteOrder
+	 * @작성일 : 2023. 11.
+	 * @Method 설명 : 사물함 대여 주문정보 삭제 처리
+	 * @param model
+	 * @param request
+	 * @return String
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/academy/box/DeleteOrder.do")
+	@Transactional( readOnly=false,  rollbackFor=Exception.class)
+	public String DeleteOrder(@ModelAttribute("BoxVO") BoxVO BoxVO, @RequestParam Map<?, ?> commandMap, BindingResult bindingResult, ModelMap model) throws Exception {
+    	// 0. Spring Security 사용자권한 처리
+    	Boolean isAuthenticated = EgovUserDetailsHelper.isAuthenticated();
+    	if(!isAuthenticated) {
+    		model.addAttribute("message", egovMessageSource.getMessage("fail.common.login"));
+        	return "egovframework/com/uat/uia/EgovLoginUsr";
+    	}
+
+		//로그인 객체 선언
+		LoginVO loginVO = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+		//아이디 설정
+		BoxVO.setRegId(loginVO == null ? "" : EgovStringUtil.isNullToString(loginVO.getUniqId()));
+		BoxVO.setUpdId(loginVO == null ? "" : EgovStringUtil.isNullToString(loginVO.getUniqId()));
+
+		BoxVO boxOrderDetail  = boxManageService.selectBoxOrderDetail(BoxVO);
+
+		if (boxOrderDetail != null) {
+			// 사물함 정보 변경
+			boxManageService.updateboxNumReset(BoxVO);
+
+			// 사물함 대여정보 삭제 (주문번호 이용)
+			boxManageService.deleteBoxRentByOrderId(BoxVO);
+
+			// 사물함 주문정보 삭제 (주문번호 이용)
+			boxManageService.deleteBoxOrder(BoxVO);
+		}
+		
+			return "forward:/academy/box/boxRentWrite.do";
+
+	}
+
+
+	/**
+	 * @Method Name : boxRefundProcess
+	 * @작성일 : 2023. 11.
+	 * @Method 설명 : 사물함 대여 환불 처리
+     * - ACM_ORDER_REFUND 테이블에 환불 정보를 인서트한다.(환불금액, 환불일, 유저아이디)
+     * - ACM_ORDER_ITEM 테이블에 환불 정보를 인서트한다.
+     * - ACM_ORDER_APPROVALS 테이블의 REFUND_PRICE, REFUND_DATE 항목에 환불금액을 저장한다.
+     * - ACM_BOX_RENT에서 업데이트 ( RENT_END, 승인:1, 키반납:Y, 사물함사용상태: 미사용)
+     * - ACM_BOX_NUM 사물함 상세정보의 BOX_FLAG = N, USERID = "" 초기화한다.
+	 * @param model
+	 * @param request
+	 * @return String
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/academy/box/Refund.do")
+	@Transactional( readOnly=false,  rollbackFor=Exception.class)
+	public String boxRefund(@ModelAttribute("BoxVO") BoxVO BoxVO, @RequestParam Map<?, ?> commandMap, BindingResult bindingResult, ModelMap model) throws Exception {
+    	// 0. Spring Security 사용자권한 처리
+    	Boolean isAuthenticated = EgovUserDetailsHelper.isAuthenticated();
+    	if(!isAuthenticated) {
+    		model.addAttribute("message", egovMessageSource.getMessage("fail.common.login"));
+        	return "egovframework/com/uat/uia/EgovLoginUsr";
+    	}
+
+		//로그인 객체 선언
+		LoginVO loginVO = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+		//아이디 설정
+		BoxVO.setRegId(loginVO == null ? "" : EgovStringUtil.isNullToString(loginVO.getUniqId()));
+		BoxVO.setUpdId(loginVO == null ? "" : EgovStringUtil.isNullToString(loginVO.getUniqId()));
+		
+		// 1. 환불 테이블(TB_REFUND)에 삽입한다.
+		boxManageService.insertOrderRefund(BoxVO); //테스트중
+
+		// 2. TB_OFF_ORDER_MGNT_NO에 삽입한다.
+		BoxVO.setConfirmid(loginVO.getUniqId());
+		BoxVO.setIsCancel("2");
+		BoxVO.setStatuscode("DLV230"); // 환불완료
+
+		boxManageService.insertOrderItemBox(BoxVO);
+
+		// 3. 오프라인 사물함 대여 결제정보 등록처리
+		boxManageService.updateOrderApprovalsRefund(BoxVO);
+
+	    // 4. TB_OFF_BOX_RENT에서 업데이트 ( RENT_END, 승인:1, 키반납:Y, 사물함사용상태: 미사용)
+		boxManageService.updateBoxNumRentRefund(BoxVO);
+
+		// 5. TB_OFF_BOX_NUM 사물함 상세정보의 BOX_FLAG = N, USERID = "" 초기화한다.
+		BoxVO.setBoxFlag("N");
+
+		boxManageService.updateboxNumReset(BoxVO);
+
+		return "forward:/academy/box/boxRentWrite.do";
+	}
 	
 }
