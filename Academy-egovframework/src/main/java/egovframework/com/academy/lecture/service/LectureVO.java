@@ -58,6 +58,12 @@ public class LectureVO implements Serializable {
 	private String useOn;
     /** 오프라인 사용여부 */
     private String useOff;
+    /** 강의개설 구분 */
+    private String lecDiv;
+    /** 학습형태코드 */
+    private String formCode;
+    /** 학습형태명 */
+    private String formName;
  
 	/**
 	 * searchCondition attribute 를 리턴한다.
@@ -208,7 +214,6 @@ public class LectureVO implements Serializable {
 	public void setRegDt(String regDt) {
 		this.regDt = regDt;
 	}
-
 	/**
 	 * regId attribute 를 리턴한다.
 	 * @return String
@@ -238,7 +243,6 @@ public class LectureVO implements Serializable {
 	public void setUpdDt(String updDt) {
 		this.updDt = updDt;
 	}
-
 	/**
 	 * uptId attribute 를 리턴한다.
 	 * @return String
@@ -253,7 +257,6 @@ public class LectureVO implements Serializable {
 	public void setUpdId(String updId) {
 		this.updId = updId;
 	}
-	
 	/**
 	 * isUse attribute 를 리턴한다.
 	 * @return String
@@ -268,8 +271,6 @@ public class LectureVO implements Serializable {
 	public void setIsUse(String isUse) {
 		this.isUse = isUse;
 	}
-
-	
 	/**
 	 * subjectCd attribute 를 리턴한다.
 	 * @return String
@@ -299,7 +300,6 @@ public class LectureVO implements Serializable {
 	public void setSubjectNm(String subjectNm) {
 		this.subjectNm = subjectNm;
 	}
-	
 	/**
 	 * useOn attribute 를 리턴한다.
 	 * @return String
@@ -314,7 +314,6 @@ public class LectureVO implements Serializable {
 	public void setUseOn(String useOn) {
 		this.useOn = useOn;
 	}
-	
 	/**
 	 * useOff attribute 를 리턴한다.
 	 * @return String
@@ -328,6 +327,48 @@ public class LectureVO implements Serializable {
 	 */
 	public void setUseOff(String useOff) {
 		this.useOff = useOff;
+	}
+	/**
+	 * lecDiv attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getLecDiv() {
+		return lecDiv;
+	}
+	/**
+	 * lecDiv attribute 값을 설정한다.
+	 * @param lecDiv String
+	 */
+	public void setLecDiv(String lecDiv) {
+		this.lecDiv = lecDiv;
+	}
+	/**
+	 * formCode attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getFormCode() {
+		return formCode;
+	}
+	/**
+	 * formCode attribute 값을 설정한다.
+	 * @param formCode String
+	 */
+	public void setFormCode(String formCode) {
+		this.formCode = formCode;
+	}
+	/**
+	 * formName attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getFormName() {
+		return formName;
+	}
+	/**
+	 * formName attribute 값을 설정한다.
+	 * @param formName String
+	 */
+	public void setFormName(String formName) {
+		this.formName = formName;
 	}
 	
 }
