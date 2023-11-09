@@ -60,6 +60,8 @@ public class LectureVO implements Serializable {
     private String useOff;
     /** 강의개설 구분 */
     private String lecDiv;
+    /** 강의개설 구분명 */
+    private String lecDivNm;
     /** 학습형태코드 */
     private String formCode;
     /** 학습형태명 */
@@ -341,6 +343,20 @@ public class LectureVO implements Serializable {
 	 */
 	public void setLecDiv(String lecDiv) {
 		this.lecDiv = lecDiv;
+	}
+	/**
+	 * lecDivNm attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getLecDivNm() {
+		return lecDivNm;
+	}
+	/**
+	 * lecDivNm attribute 값을 설정한다.
+	 * @param lecDivNm String
+	 */
+	public void setLecDivNm(String lecDivNm) {
+		this.lecDivNm = lecDivNm;
 	}
 	/**
 	 * formCode attribute 를 리턴한다.

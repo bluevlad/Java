@@ -1,10 +1,8 @@
 package egovframework.com.academy.lecture.web;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -56,7 +54,7 @@ public class LecFormController {
 	 * @exception Exception
 	 */
 	@RequestMapping(value = "/academy/leture/form/List.do")
-	public String SubjectList(@ModelAttribute("LectureVO") LectureVO LectureVO, ModelMap model) throws Exception {
+	public String List(@ModelAttribute("LectureVO") LectureVO LectureVO, ModelMap model) throws Exception {
 
 		LectureVO.setPageUnit(propertyService.getInt("pageUnit"));
 		LectureVO.setPageSize(propertyService.getInt("pageSize"));
@@ -88,10 +86,10 @@ public class LecFormController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/academy/leture/form/Detail.do")
-	public String SubjectDetail(@ModelAttribute("LectureVO") LectureVO LectureVO, @RequestParam Map<?, ?> commandMap, ModelMap model) throws Exception {
+	public String Detail(@ModelAttribute("LectureVO") LectureVO LectureVO, @RequestParam Map<?, ?> commandMap, ModelMap model) throws Exception {
 	
-        model.addAttribute("subjectCd", commandMap.get("subjectCd") == null ? "" : (String)commandMap.get("subjectCd"));
-        LectureVO.setSubjectCd((String) commandMap.get("subjectCd"));
+        model.addAttribute("formCode", commandMap.get("formCode") == null ? "" : (String)commandMap.get("formCode"));
+        LectureVO.setFormCode((String) commandMap.get("formCode"));
 
         LectureVO = lecFormService.selectFormDetail(LectureVO);
         model.addAttribute("LectureVO", LectureVO);
@@ -107,7 +105,7 @@ public class LecFormController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/academy/leture/form/Regist.do")
-	public String SubjectRegist(@ModelAttribute("LectureVO") LectureVO LectureVO) throws Exception {
+	public String Regist(@ModelAttribute("LectureVO") LectureVO LectureVO) throws Exception {
 	
 		return "egovframework/com/academy/leture/form/Regist";
 	}
@@ -138,16 +136,18 @@ public class LecFormController {
 	 * @return String - 리턴 Url
 	 */
 	@RequestMapping(value = "/academy/leture/form/Insert.do")
-	public String insertSubject(@ModelAttribute("LectureVO") LectureVO LectureVO, BindingResult bindingResult,  ModelMap model) throws Exception {
+	public String insert(@ModelAttribute("LectureVO") LectureVO LectureVO, BindingResult bindingResult,  ModelMap model) throws Exception {
 
 		LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
 
 		if (bindingResult.hasErrors()) {
-			return "egovframework/com/academy/lecture/subject/Regist";
+			return "egovframework/com/academy/lecture/form/Regist";
 		} else {
 			LectureVO.setRegId(user == null ? "" : EgovStringUtil.isNullToString(user.getUniqId()));
 			LectureVO.setUpdId(user == null ? "" : EgovStringUtil.isNullToString(user.getUniqId()));
+			
 			lecFormService.insertForm(LectureVO);
+			
 			model.addAttribute("message", egovMessageSource.getMessage("success.common.insert"));
 			
 			return "forward:/academy/leture/form/List.do";
@@ -160,15 +160,17 @@ public class LecFormController {
 	 * @return String - 리턴 Url
 	 */
 	@RequestMapping(value = "/academy/leture/form/Update.do")
-	public String updateSubjct(@ModelAttribute("LectureVO") LectureVO LectureVO, BindingResult bindingResult, ModelMap model) throws Exception {
+	public String update(@ModelAttribute("LectureVO") LectureVO LectureVO, BindingResult bindingResult, ModelMap model) throws Exception {
 		
 		LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
 		
 		if (bindingResult.hasErrors()) {
-			return "egovframework/com/academy/lecture/subject/Detail";
+			return "egovframework/com/academy/lecture/form/Detail";
 		} else {
 			LectureVO.setUpdId(user == null ? "" : EgovStringUtil.isNullToString(user.getUniqId()));
+			
 			lecFormService.updateForm(LectureVO);
+			
 			model.addAttribute("message", egovMessageSource.getMessage("success.common.update"));
 
 			return "forward:/academy/leture/form/List.do";
@@ -180,19 +182,21 @@ public class LecFormController {
 	 * @param LectureVO
 	 * @return String - 리턴 Url
 	 */
-	@RequestMapping(value = "/academy/leture/subject/Delete.do")
-	public String deleteSubject(@ModelAttribute("LectureVO") LectureVO LectureVO, BindingResult bindingResult, ModelMap model) throws Exception {
+	@RequestMapping(value = "/academy/leture/form/Delete.do")
+	public String delete(@ModelAttribute("LectureVO") LectureVO LectureVO, BindingResult bindingResult, ModelMap model) throws Exception {
 		
 		LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
 		
 		if (bindingResult.hasErrors()) {
-			return "egovframework/com/academy/lecture/subject/Detail";
+			return "egovframework/com/academy/lecture/form/Detail";
 		} else {
 			LectureVO.setUpdId(user == null ? "" : EgovStringUtil.isNullToString(user.getUniqId()));
+			
 			lecFormService.deleteForm(LectureVO);
-			model.addAttribute("message", egovMessageSource.getMessage("success.common.update"));
+			
+			model.addAttribute("message", egovMessageSource.getMessage("success.common.delete"));
 
-			return "forward:/academy/leture/subject/List.do";
+			return "forward:/academy/leture/form/List.do";
 		}
 	}
 

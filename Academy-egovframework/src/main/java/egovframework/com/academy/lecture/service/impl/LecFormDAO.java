@@ -1,6 +1,5 @@
 package egovframework.com.academy.lecture.service.impl;
 
-import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -26,40 +25,40 @@ import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 @Repository("lecFormDAO")
 public class LecFormDAO extends EgovComAbstractDAO{
 
-	public List<?> selectFormList(LectureVO LectureVO){
-		return getSqlSession().selectList("lectureForm.selectFormList", LectureVO);
+	public List<?> selectFormList(LectureVO LectureVO) throws Exception{
+		return selectList("lectureForm.selectFormList", LectureVO);
 	}
 
-	public int selectFormListCount(LectureVO LectureVO){
-		return getSqlSession().selectOne("lectureForm.selectFormListCount", LectureVO);
+	public int selectFormListCount(LectureVO LectureVO) throws Exception{
+		return (Integer)selectOne("lectureForm.selectFormListCount", LectureVO);
 	}
 
-	public String selectFormGetCode(LectureVO LectureVO){
-		return getSqlSession().selectOne("lectureForm.selectFormGetCode", LectureVO);
+	public String selectFormGetCode(LectureVO LectureVO) throws Exception{
+		return selectOne("lectureForm.selectFormGetCode", LectureVO);
 	}
 
-	public LectureVO selectFormDetail(LectureVO LectureVO){
-		return getSqlSession().selectOne("lectureForm.selectFormDetail", LectureVO);
+	public LectureVO selectFormDetail(LectureVO LectureVO) throws Exception{
+		return selectOne("lectureForm.selectFormDetail", LectureVO);
 	}
 
-	public List<?> selectCodeList(LectureVO LectureVO){
-		return getSqlSession().selectList("lectureForm.selectCodeList", LectureVO);
+	public List<?> selectCodeList(LectureVO LectureVO) throws Exception{
+		return selectList("lectureForm.selectCodeList", LectureVO);
 	}
 
-	public void insertForm(LectureVO LectureVO){
-		getSqlSession().insert("lectureForm.insertForm", LectureVO);
+	public void insertForm(LectureVO LectureVO) throws Exception{
+		insert("lectureForm.insertForm", LectureVO);
 	}
 
-	public void updateForm(LectureVO LectureVO){
-		getSqlSession().update("lectureForm.updateForm", LectureVO);
+	public void updateForm(LectureVO LectureVO) throws Exception{
+		update("lectureForm.updateForm", LectureVO);
 	}
 
-	public void deleteForm(LectureVO LectureVO){
-		getSqlSession().delete("lectureForm.deleteForm", LectureVO);
+	public void deleteForm(LectureVO LectureVO) throws Exception{
+		delete("lectureForm.deleteForm", LectureVO);
 	}
 
-	public int selectFormCheck(LectureVO LectureVO){
-		return getSqlSession().selectOne("lectureForm.selectFormCheck", LectureVO);
+	public int selectFormCheck(LectureVO LectureVO) throws Exception{
+		return selectOne("lectureForm.selectFormCheck", LectureVO);
 	}
 
 }
