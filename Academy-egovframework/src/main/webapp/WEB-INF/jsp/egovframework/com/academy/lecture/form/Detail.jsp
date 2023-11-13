@@ -1,104 +1,126 @@
-<%@ page language="java" isELIgnored="false" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@ include file="/WEB-INF/views/common/topInclude.jsp" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head></head>
-<body>
+<%--
+  Class Name : Detail.jsp
+  Description : 학습형태 상세 페이지
+  Modification Information
 
-<!--content -->
-<div id="content">
-<form name="frm" id="frm" method="post" action="">
-<input type="hidden" id="TOP_MENU_ID" name="TOP_MENU_ID" value="${TOP_MENU_ID}">
-<input type="hidden" id="MENUTYPE" name="MENUTYPE" value="${MENUTYPE}">
-<input type="hidden" id="L_MENU_NM" name="L_MENU_NM" value="${L_MENU_NM}">
-<input type="hidden" id="SEARCHTYPE" name="SEARCHTYPE" value="${params.SEARCHTYPE}"/>
-<input type="hidden" id="SEARCHTEXT" name="SEARCHTEXT" value="${params.SEARCHTEXT}"/>
-<input type="hidden" id="currentPage" name="currentPage" value="${params.currentPage}">
-<input type="hidden" id="pageRow" name="pageRow" value="${params.pageRow}">
-<input type="hidden" id="CODE" name="CODE" value="${list[0].CODE}"/>
+       수정일               수정자            수정내용
+    ----------   --------   ---------------------------
+    2023.11.01   KYK        학습형태관리 리스트 등록
+--%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="validator" uri="http://www.springmodules.org/tags/commons-validator" %>
+<c:set var="pageTitle"><spring:message code="lec.form.title"/></c:set>
+<!DOCTYPE html>
+<html>
+<head>
+<title>${pageTitle} <spring:message code="title.update" /></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
+<script type="text/javascript" src="<c:url value='/validator.do'/>"></script>
+<validator:javascript formName="LectureVO" staticJavascript="false" xhtml="true" cdata="false"/>
 
-	<h2>● 강의 관리 > <strong>학습형태관리</strong></h2>
-   	<table class="table01">
-		<tr>
-   			<th>코드</th>
-  			<td>
-	   			${list[0].CODE}
-  			</td>
-  		</tr>
-		<tr>
-  			<th>분류</th>
-  			<td>
-				<select id="LEC_DIV" name="LEC_DIV">
-				<c:forEach items="${codelist}" var="item" varStatus="loop">
-					<option value="${item.CODE_CD}" <c:if test="${list[0].LEC_DIV eq item.CODE_CD}">selected="selected"</c:if>>${item.CODE_NM}</option>
-				</c:forEach>
-				</select>
-  			</td>
-  		</tr>
-   		<tr>
-   			<th>학습형태명</th>
-  			<td>
-	   			<input type="text" id="NAME" name="NAME" value="${list[0].NAME}" size="20"  maxlength="25" title="카테고리명" style="width:28%;background:#FFECEC;"/>
-  			</td>
-  		</tr>
-		<tr>
-  			<th>상태</th>
-  			<td>
-				<select id="ISUSE" name="ISUSE">
-   					<option value="Y" <c:if test="${list[0].ISUSE eq 'Y'}">selected="selected"</c:if>>활성</option>
-					<option value="N" <c:if test="${list[0].ISUSE eq 'N'}">selected="selected"</c:if>>비활성</option>
-				</select>
-  			</td>
-  		</tr>
-	</table>
+<script type="text/javaScript" language="javascript">
+/* ********************************************************
+ * 목록 으로 가기
+ ******************************************************** */
+function fn_list(){
 
-    <!--버튼-->
-	<ul class="boardBtns">
-    	<li><a href="javascript:fn_Submit()">수정</a></li>
-    	<li><a href="javascript:fn_List();">목록</a></li>
-    	<li><a href="javascript:fn_Delete();">삭제</a></li>
-    </ul>
-    <!--//버튼-->
-
-</form>
-</div>
-<!--//content -->
-
-<script type="text/javascript">
-// 목록으로
-function fn_List(){
-	$("#frm").attr("action","<c:url value='/form/list.do' />");
-	$("#frm").submit();
+	var varFrom = document.getElementById("LectureVO");
+	varFrom.action = "<c:url value='/academy/lecture/form/List.do' />";
+	varFrom.submit();
 }
+/* ********************************************************
+ * 저장처리화면
+ ******************************************************** */
+function fn_save(){
+	var varFrom = document.getElementById("LectureVO");
 
-// 등록
-function fn_Submit(){
-	if($.trim($("#LEC_DIV option:selected").val())==""){
-		alert("분류를 선택해주세요");
-		$("#LEC_DIV").focus();
-		return;
-	}
-	if($.trim($("#NAME").val())==""){
-		alert("코드명을 입력해주세요");
-		$("#NAME").focus();
-		return;
-	}
-	if(confirm("학습형태를 수정하시겠습니까?")){
-		$("#frm").attr("action","<c:url value='/form/update.do' />");
-		$("#frm").submit();
+	if(confirm("<spring:message code='common.save.msg' />")){
+		varFrom.action =  "<c:url value='/academy/lecture/form/Update.do' />";
+		varFrom.submit();
 	}
 }
+/* ********************************************************
+ * 저장처리화면
+ ******************************************************** */
+function fn_delete(){
+	var varFrom = document.getElementById("LectureVO");
 
-// 삭제
-function fn_Delete(){
-	if(confirm("정말 삭제하시겠습니까?")){
-		$("#frm").attr("action","<c:url value='/form/delete.do' />");
-		$("#frm").submit();
+	if(confirm("<spring:message code='common.delete.msg' />")){
+		varFrom.action =  "<c:url value='/academy/lecture/form/Delete.do' />";
+		varFrom.submit();
 	}
 }
 </script>
+</head>
+<body>
+
+<!-- javascript warning tag  -->
+<noscript class="noScriptTitle"><spring:message code="common.noScriptTitle.msg" /></noscript>
+
+<div class="wTableFrm">
+<!-- 상단타이틀 -->
+<form:form commandName="LectureVO" name="LectureVO" action="" method="post" onSubmit="fn_save(document.forms[0]); return false;">
+	
+<!-- 타이틀 -->
+<h2>${pageTitle} <spring:message code="title.update" /></h2>
+	
+	<!-- 등록폼 -->
+	<table class="wTable" summary="<spring:message code='common.summary.inqire' arguments='${pageTitle}' />">
+	<caption>${pageTitle} <spring:message code="title.update" /></caption>
+	<colgroup>
+		<col style="width:20%;">
+		<col style="width: ;">		
+	</colgroup>
+	<tbody >
+		<!-- 입력 -->
+		<c:set var="inputTxt"><spring:message code="input.input" /></c:set>
+		<c:set var="inputYes"><spring:message code="input.yes" /></c:set>
+		<c:set var="inputNo"><spring:message code="input.no" /></c:set>
+		<!-- 학습형태코드 -->
+		<c:set var="title"><spring:message code="lec.form.code"/></c:set>
+		<tr>
+			<th>${title}<span class="pilsu">*</span></th>
+			<td class="left" colspan="3"><input name="formCode" type="text" value="${LectureVO.formCode}" style="width:90%;"></td>
+		</tr>
+		<!-- 학습형태명 -->
+		<c:set var="title"><spring:message code="lec.form.name"/></c:set>
+		<tr>
+			<th>${title}<span class="pilsu">*</span></th>
+			<td class="left" colspan="3"><input name="formName" type="text" value="${LectureVO.formName}" style="width:90%;"></td>
+		</tr>
+		<!-- 사용여부 -->
+		<c:set var="title"><spring:message code="lec.isUse"/></c:set>
+		<tr>
+			<th><label for="isUse">${title}</label></th>
+			<td class="left">
+				<form:select path="isUse" id="isUse" title="${title} ${inputTxt}">
+                    <form:option value="Y" label="${inputYes}"/>
+                    <form:option value="N" label="${inputNo}"/>
+                </form:select>
+                <div><form:errors path="isUse" cssClass="error"/></div>
+			</td>
+		</tr>
+  		
+	</tbody>
+	</table>
+
+	<!-- 하단 버튼 -->
+	<div class="btn">
+		<!-- 저장버튼 -->
+		<input type="submit" class="s_submit" value="<spring:message code='button.save' />" title="<spring:message code='button.save' /> <spring:message code='input.button' />" onclick="fn_save(this.form); return false;"/>
+		<!-- 삭제버튼 -->
+		<input type="button" class="s_submit" value="<spring:message code='button.delete' />" title="<spring:message code='button.delete' /> <spring:message code='input.button' />" onclick="fn_delete(this.form);"/>
+		<!-- 목록버튼 -->	
+		<span class="btn_s"><a href="<c:url value='/academy/lecture/form/List.do' />"   title="<spring:message code='button.list' />  <spring:message code='input.button' />"><spring:message code="button.list" /></a></span>
+	</div><div style="clear:both;"></div>
+</form:form>
+</div>
 </body>
 </html>

@@ -1,6 +1,6 @@
 <%--
   Class Name : List.jsp
-  Description : 과목 목록 페이지
+  Description : 학습형태 목록 페이지
   Modification Information
 
        수정일               수정자            수정내용
@@ -29,7 +29,7 @@
  ******************************************************** */
 function linkPage(pageNo){
 	document.listForm.pageIndex.value = pageNo;
-	document.listForm.action = "<c:url value='/academy/leture/form/List.do'/>";
+	document.listForm.action = "<c:url value='/academy/lecture/form/List.do'/>";
    	document.listForm.submit();
 }
 /* ********************************************************
@@ -38,7 +38,7 @@ function linkPage(pageNo){
 function fn_regist(){
 	var vFrom = document.listForm;
 	vFrom.cmd.value = '';
-	vFrom.action = "<c:url value='/academy/leture/form/Regist.do' />";
+	vFrom.action = "<c:url value='/academy/lecture/form/Regist.do' />";
 	vFrom.submit();
 }
 /* ********************************************************
@@ -46,7 +46,7 @@ function fn_regist(){
  ******************************************************** */
 function fn_search(){
 	var vFrom = document.listForm;
-	vFrom.action = "<c:url value='/academy/leture/form/List.do' />";
+	vFrom.action = "<c:url value='/academy/lecture/form/List.do' />";
 	vFrom.submit();
 }
 </script>
@@ -68,7 +68,7 @@ function fn_search(){
 				<input class="s_input" name="searchKeyword" type="text"  size="35" title="<spring:message code='title.search' /> <spring:message code='input.input' />" value="<c:out value='${searchKeyword}'/>"  maxlength="155" >
 				<input type="submit" class="s_btn" value="<spring:message code='button.inquire' />" title="<spring:message code='title.inquire' /> <spring:message code='input.button' />" onclick="fn_search(); return false;" />
 				<!-- 등록버튼 -->
-				<span class="btn_b"> <a href="<c:url value='/academy/leture/form/Regist.do'/>" title="<spring:message code='button.create' /> <spring:message code='input.button' />"><spring:message code="button.create" /></a></span> 
+				<span class="btn_b"> <a href="<c:url value='/academy/lecture/form/Regist.do'/>" title="<spring:message code='button.create' /> <spring:message code='input.button' />"><spring:message code="button.create" /></a></span> 
 			</li>
 		</ul>
 	</div>
@@ -89,7 +89,6 @@ function fn_search(){
 	<thead>
 	<tr>
 		<th><spring:message code="table.num" /></th><!-- 번호 -->
-		<th><spring:message code="lec.form.div" /></th><!-- 분류 -->
 		<th><spring:message code="lec.form.code" /></th><!-- 코드 -->
 		<th class="board_th_link"><spring:message code="lec.form.name" /></th><!-- 학습형태명 -->
 		<th><spring:message code="lec.isUse" /></th><!--상태 -->
@@ -109,12 +108,10 @@ function fn_search(){
 	  	<!-- 번호 -->
 		<td class="lt_text3">${(LectureVO.pageIndex-1) * LectureVO.pageSize + status.count}</td>
 		<!-- 과목코드 -->
-		<td class="lt_text3"><c:out value="${resultInfo.lecDiv}"/></td>
-		<!-- 과목코드 -->
 		<td class="lt_text3"><c:out value="${resultInfo.formCode}"/></td>
 		<!-- 과목명  -->
 		<td class="lt_text3L">
-			<a href="<c:url value='/academy/leture/form/Detail.do'/>?formCode=${resultInfo.formCode}"><c:out value='${resultInfo.formName}'/></a>
+			<a href="<c:url value='/academy/lecture/form/Detail.do'/>?formCode=${resultInfo.formCode}"><c:out value='${resultInfo.formName}'/></a>
     	</td>
 		<!-- 사용여부 -->
 		<td class="lt_text3"><c:out value="${resultInfo.isUse}"/></td>

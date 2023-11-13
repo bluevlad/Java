@@ -11,7 +11,7 @@ import egovframework.com.academy.lecture.service.LectureVO;
 import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
 
 /**
- * 과목관리에 관한 비지니스 클래스를 정의한다.
+ * 학습형태관리에 관한 비지니스 클래스를 정의한다.
  * @author rainend
  * @version 1.0
  * @see
@@ -19,7 +19,7 @@ import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
  * << 개정이력(Modification Information) >>
  *   수정일      			수정자           수정내용
  *  ----------------    --------------    ---------------------------
- *  2023.08.00  			rainend          최초 생성
+ *  2023.11.00  			rainend          최초 생성
  * </pre>
  */
 @Service("lecFormService")
@@ -30,7 +30,7 @@ public class LecFormServiceImpl extends EgovAbstractServiceImpl implements LecFo
 
 	/**
 	 * @param LectureVO 검색조건
-	 * @return List<?> 과목 목록정보
+	 * @return List<?> 학습형태 목록정보
 	 * @throws Exception
 	 */
 	@Override
@@ -40,7 +40,7 @@ public class LecFormServiceImpl extends EgovAbstractServiceImpl implements LecFo
 
 	/**
 	 * @param LectureVO 검색조건
-	 * @return 총 과목 갯수(int)
+	 * @return 총 학습형태 갯수(int)
 	 * @throws Exception
 	 */
 	@Override
@@ -48,26 +48,11 @@ public class LecFormServiceImpl extends EgovAbstractServiceImpl implements LecFo
 		return lecFormDAO.selectFormListCount(LectureVO);
 	}
 
-	/**
-	 * @param subjectCd 상세조회대상 과목코드
-	 * @return LectureVO 과목 상세정보
-	 * @throws Exception
-	 */
-	@Override
-	public String selectFormGetCode(LectureVO LectureVO) throws Exception {
-		return lecFormDAO.selectFormGetCode(LectureVO);
-	}
-	
 	@Override
 	public LectureVO selectFormDetail(LectureVO LectureVO) throws Exception {
 		return lecFormDAO.selectFormDetail(LectureVO);
 	}
 	
-	@Override
-	public List<?> selectCodeList(LectureVO LectureVO) throws Exception {
-		return lecFormDAO.selectCodeList(LectureVO);
-	}
-
 	/**
 	 * @param LectureVO 과목 등록정보
 	 * @throws Exception

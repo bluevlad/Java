@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
 *
-* 강의정보 VO 클래스
+* 강의형태 VO 클래스
 * @author rainend
 * @version 1.0
 * @see
@@ -13,7 +13,7 @@ import java.io.Serializable;
 *
 *  	  수정일           수정자                수정내용
 *  ---------------    --------------    ---------------------------
-*  2023.08.00			rainend			강의정보 등록
+*  2023.11.00			rainend			강의형태 등록
 * </pre>
 */
 
@@ -58,10 +58,6 @@ public class LectureVO implements Serializable {
 	private String useOn;
     /** 오프라인 사용여부 */
     private String useOff;
-    /** 강의개설 구분 */
-    private String lecDiv;
-    /** 강의개설 구분명 */
-    private String lecDivNm;
     /** 학습형태코드 */
     private String formCode;
     /** 학습형태명 */
@@ -329,34 +325,6 @@ public class LectureVO implements Serializable {
 	 */
 	public void setUseOff(String useOff) {
 		this.useOff = useOff;
-	}
-	/**
-	 * lecDiv attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getLecDiv() {
-		return lecDiv;
-	}
-	/**
-	 * lecDiv attribute 값을 설정한다.
-	 * @param lecDiv String
-	 */
-	public void setLecDiv(String lecDiv) {
-		this.lecDiv = lecDiv;
-	}
-	/**
-	 * lecDivNm attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getLecDivNm() {
-		return lecDivNm;
-	}
-	/**
-	 * lecDivNm attribute 값을 설정한다.
-	 * @param lecDivNm String
-	 */
-	public void setLecDivNm(String lecDivNm) {
-		this.lecDivNm = lecDivNm;
 	}
 	/**
 	 * formCode attribute 를 리턴한다.

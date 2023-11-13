@@ -19,7 +19,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>${pageTitle} <spring:message code="title.update" /></title>
+<title>${pageTitle} <spring:message code="title.create" /></title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
 <script type="text/javascript" src="<c:url value='/validator.do'/>"></script>

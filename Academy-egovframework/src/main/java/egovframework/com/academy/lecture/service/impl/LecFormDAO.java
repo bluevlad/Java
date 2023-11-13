@@ -8,7 +8,7 @@ import egovframework.com.academy.lecture.service.LectureVO;
 import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
 /**
- * 과목정보에 관한 데이터 접근 클래스를 정의한다.
+ * 학습형태에 관한 데이터 접근 클래스를 정의한다.
  * @author rainend
  * @since 2023.11.10
  * @version 1.0
@@ -33,16 +33,8 @@ public class LecFormDAO extends EgovComAbstractDAO{
 		return (Integer)selectOne("lectureForm.selectFormListCount", LectureVO);
 	}
 
-	public String selectFormGetCode(LectureVO LectureVO) throws Exception{
-		return selectOne("lectureForm.selectFormGetCode", LectureVO);
-	}
-
 	public LectureVO selectFormDetail(LectureVO LectureVO) throws Exception{
 		return selectOne("lectureForm.selectFormDetail", LectureVO);
-	}
-
-	public List<?> selectCodeList(LectureVO LectureVO) throws Exception{
-		return selectList("lectureForm.selectCodeList", LectureVO);
 	}
 
 	public void insertForm(LectureVO LectureVO) throws Exception{
