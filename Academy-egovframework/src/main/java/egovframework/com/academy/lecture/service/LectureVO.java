@@ -67,10 +67,14 @@ public class LectureVO implements Serializable {
     private String leccode;
     /** 직종코드 */
     private String categoryCd;
+    /** 직종명 */
+    private String categoryNm;
     /** 학습형태코드 단과반 (이론단과[M0101],문풀단과[M0102],유료특강[M0103],무료특강[M0104]) */
     private String learningCd;
     /** 담당교수아이디 */
     private String subjectTeacher;
+    /** 담당교수명 */
+    private String subjectTeacherNm;
     /** 담당교수 강사료 지급률 */
     private String subjectTeacherPayment;
     /** 단과명 */
@@ -103,7 +107,9 @@ public class LectureVO implements Serializable {
     private String lecCount;
     /** 복사원본 강의코드 */
     private String orgLeccode;
-    
+    /** 패키지 연결 강의코드 */
+    private String bridgeLeccode;
+
 	/**
 	 * searchCondition attribute 를 리턴한다.
 	 * @return String
@@ -425,6 +431,20 @@ public class LectureVO implements Serializable {
 		this.categoryCd = categoryCd;
 	}
 	/**
+	 * categoryNm attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getCategoryNm() {
+		return categoryNm;
+	}
+	/**
+	 * categoryNm attribute 값을 설정한다.
+	 * @param categoryNm String
+	 */
+	public void setCategoryNm(String categoryNm) {
+		this.categoryNm = categoryNm;
+	}
+	/**
 	 * learningCd attribute 를 리턴한다.
 	 * @return String
 	 */
@@ -451,6 +471,20 @@ public class LectureVO implements Serializable {
 	 */
 	public void setSubjectTeacher(String subjectTeacher) {
 		this.subjectTeacher = subjectTeacher;
+	}
+	/**
+	 * subjectTeacherNm attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getSubjectTeacherNm() {
+		return subjectTeacherNm;
+	}
+	/**
+	 * subjectTeacherNm attribute 값을 설정한다.
+	 * @param subjectTeacherNm String
+	 */
+	public void setSubjectTeacherNm(String subjectTeacherNm) {
+		this.subjectTeacherNm = subjectTeacherNm;
 	}
 	/**
 	 * subjectTeacherPayment attribute 를 리턴한다.
@@ -675,6 +709,20 @@ public class LectureVO implements Serializable {
 	 */
 	public void setOrgLeccode(String orgLeccode) {
 		this.orgLeccode = orgLeccode;
+	}
+	/**
+	 * bridgeLeccode attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getBridgeLeccode() {
+		return bridgeLeccode;
+	}
+	/**
+	 * bridgeLeccode attribute 값을 설정한다.
+	 * @param bridgeLeccode String
+	 */
+	public void setBridgeLeccode(String bridgeLeccode) {
+		this.bridgeLeccode = bridgeLeccode;
 	}
 	
 }

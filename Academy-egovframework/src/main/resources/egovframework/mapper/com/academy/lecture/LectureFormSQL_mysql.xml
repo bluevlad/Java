@@ -4,27 +4,27 @@
 
 	<select id="selectFormList" parameterType="egovframework.com.academy.lecture.service.LectureVO" 
 										resultType="egovframework.com.academy.lecture.service.LectureVO">
-					SELECT
-						FORM_CODE, FORM_NAME, IS_USE, REG_DT, REG_ID, UPD_DT, UPD_ID
-					FROM ACM_LEARNING_FORM_INFO AA
-					WHERE 1 = 1
-				 	<if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchKeyword)">
-						<if test="searchCondition != null and searchCondition != ''">
-							<if test="searchCondition == 1">
-								AND FORM_CODE LIKE '%' #{searchKeyword} '%'
-							</if>
-							<if test="searchCondition == 2">
-								AND FORM_NAME LIKE '%' #{searchKeyword} '%'
-							</if>
-						</if>
-						<if test="searchCondition == null or searchCondition == ''">
-							AND (
-								FORM_CODE LIKE '%' #{searchKeyword} '%'
-								OR FORM_NAME LIKE '%' #{searchKeyword} '%'
-							)
-						</if>
-					</if>
-				 	ORDER BY UPD_DT DESC
+		SELECT
+			FORM_CODE, FORM_NAME, IS_USE, REG_DT, REG_ID, UPD_DT, UPD_ID
+		FROM ACM_LEARNING_FORM_INFO AA
+		WHERE 1 = 1
+	 	<if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchKeyword)">
+			<if test="searchCondition != null and searchCondition != ''">
+				<if test="searchCondition == 1">
+					AND FORM_CODE LIKE '%' #{searchKeyword} '%'
+				</if>
+				<if test="searchCondition == 2">
+					AND FORM_NAME LIKE '%' #{searchKeyword} '%'
+				</if>
+			</if>
+			<if test="searchCondition == null or searchCondition == ''">
+				AND (
+					FORM_CODE LIKE '%' #{searchKeyword} '%'
+					OR FORM_NAME LIKE '%' #{searchKeyword} '%'
+				)
+			</if>
+		</if>
+	 	ORDER BY UPD_DT DESC
         LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
 	</select>
 
