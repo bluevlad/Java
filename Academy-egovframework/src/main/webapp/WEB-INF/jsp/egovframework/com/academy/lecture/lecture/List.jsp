@@ -133,14 +133,14 @@ function fn_MovieDataViewPop(val1, val2, val3){
 	<caption>${pageTitle} <spring:message code="title.list" /></caption>
 	<colgroup>
 		<col style="width: 5%;">
-		<col style="width: 10%;">
-		<col style="width: 10%;">
-		<col style="width: 10%;">
-		<col style="width: 10%;">
+		<col style="width: 7%;">
+		<col style="width: 7%;">
+		<col style="width: 7%;">
+		<col style="width: 7%;">
 		<col style="width: ;">
+		<col style="width: 7%;">
 		<col style="width: 10%;">
-		<col style="width: 10%;">
-		<col style="width: 10%;">
+		<col style="width: 5%;">
 	</colgroup>
 	<thead>
 	<tr>

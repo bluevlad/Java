@@ -109,6 +109,10 @@ public class LectureVO implements Serializable {
     private String orgLeccode;
     /** 패키지 연결 강의코드 */
     private String bridgeLeccode;
+    /** 유료 수강생수  */
+    private int yCnt;
+    /** 무료 수강생수 */
+    private int nCnt;
 
 	/**
 	 * searchCondition attribute 를 리턴한다.
@@ -723,6 +727,34 @@ public class LectureVO implements Serializable {
 	 */
 	public void setBridgeLeccode(String bridgeLeccode) {
 		this.bridgeLeccode = bridgeLeccode;
+	}
+	/**
+	 * yCnt attribute 를 리턴한다.
+	 * @return int
+	 */
+	public int getYCnt() {
+		return yCnt;
+	}
+	/**
+	 * yCnt attribute 값을 설정한다.
+	 * @param yCnt int
+	 */
+	public void setYCnt(int yCnt) {
+		this.yCnt = yCnt;
+	}
+	/**
+	 * nCnt attribute 를 리턴한다.
+	 * @return int
+	 */
+	public int getNCnt() {
+		return nCnt;
+	}
+	/**
+	 * nCnt attribute 값을 설정한다.
+	 * @param nCnt int
+	 */
+	public void setNCnt(int nCnt) {
+		this.nCnt = nCnt;
 	}
 	
 }

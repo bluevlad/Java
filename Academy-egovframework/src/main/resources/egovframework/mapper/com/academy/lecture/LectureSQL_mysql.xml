@@ -11,63 +11,71 @@
 <!-- 단과 start -->
 	<select id="selectLectureList" parameterType="egovframework.com.academy.lecture.service.LectureVO" 
 										resultType="egovframework.com.academy.lecture.service.LectureVO">
-<!-- 
-	          SELECT TBL.*, 
-	                             NVL(YY.Y_CNT, 0) Y_CNT, NVL(YY.N_CNT, 0) N_CNT 
-	                FROM (SELECT LM.SEQ, LM.LEC_TYPE_CHOICE, LM.LECCODE, AA.BRIDGE_LECCODE, LM.SUBJECT_OPTION,
-	                             LM.CATEGORY_CD, (SELECT NAME FROM ACM_CATEGORY_INFO WHERE CODE = LM.CATEGORY_CD) AS CATEGORY_NM,
-	                             LM.SUBJECT_SJT_CD, (SELECT SUBJECT_NM FROM ACM_SUBJECT_INFO WHERE SUBJECT_CD = LM.SUBJECT_SJT_CD) AS SUBJECT_NM,
-	                             LM.SUBJECT_TEACHER, (SELECT USER_NM FROM ACM_MEMBER WHERE USER_ID = LM.SUBJECT_TEACHER) AS SUBJECT_TEACHER_NM,
-	                             LM.SUBJECT_TITLE, 
-	                             LM.LEARNING_CD, (SELECT FORM_NAME FROM ACM_LEARNING_FORM_INFO WHERE FORM_CODE = LM.LEARNING_CD) AS LEARNING_NM,
-	                             LM.REG_DT, LM.SUBJECT_ISUSE
-	                      FROM ACM_LECTURE_MST LM, (SELECT A.LECCODE, B.BRIDGE_LECCODE, RANK() OVER(ORDER BY A.LECCODE ASC, A.SEQ ASC) RANK
-	                                           FROM ACM_LECTURE_MST A, ACM_LECTURE_BRIDGE B
-	                                           WHERE A.LECCODE = B.LECCODE
-	                                           ) AA
-	                      WHERE LM.LECCODE = AA.LECCODE       
-	                      AND AA.RANK = 1) TBL LEFT OUTER JOIN
-	                     (SELECT ZZ.LECCODE, 
-	                             NVL(SUM(N_CNT),0) Y_CNT, NVL(SUM(Y_CNT),0) N_CNT
-	                      FROM (SELECT CC.LECCODE, MM.BRIDGE_LECCODE, 
-	                                   CASE WHEN MM.FREE = 'Y' THEN CNT END Y_CNT,
-	                                   CASE WHEN MM.FREE = 'N' THEN CNT END N_CNT,
-	                                   CNT
-	                            FROM (SELECT BB.BRIDGE_LECCODE, CASE OM.PRICE WHEN 0 THEN 'Y' ELSE 'N' END FREE, 
-	                                         COUNT(OM.ITEMNO) CNT
-	                                  FROM ACM_LECTURE_MST LM, ACM_ORDER_ITEM OM, 
-	                                      (SELECT B.ORDERNO, B.ITEMNO, C.BRIDGE_LECCODE
-	                                       FROM ACM_MYLECTURE A, ACM_ORDER_ITEM B, ACM_LECTURE_BRIDGE C
-	                                       WHERE A.ORDERNO = B.ORDERNO
-	                                       AND A.PACKAGE_NO = B.ITEMNO
-	                                       AND A.LECTURE_NO = C.LECCODE
-	                                       AND B.STATUSCODE = 'DLV105'
-                                           AND B.PTYPE = 'D'
-	                                       GROUP BY B.ORDERNO, B.ITEMNO, C.BRIDGE_LECCODE) BB
-	                                  WHERE OM.ORDERNO = BB.ORDERNO
-	                                  AND OM.ITEMNO = BB.ITEMNO
-	                                  AND LM.LECCODE = OM.ITEMNO
-	                                  GROUP BY BB.BRIDGE_LECCODE, CASE OM.PRICE WHEN  0 THEN 'Y' ELSE 'N' END) MM, ACM_LECTURE_BRIDGE CC
-	                            WHERE MM.BRIDGE_LECCODE = CC.BRIDGE_LECCODE) ZZ
-	                       GROUP BY LECCODE) YY
-	              ON TBL.LECCODE = YY.LECCODE
-	              WHERE 1 = 1 
-	              AND LEC_TYPE_CHOICE = 'D'
-	                     ORDER BY TBL.SEQ DESC
- -->	
-		SELECT LECCODE, CATEGORY_CD, (SELECT NAME FROM ACM_CATEGORY_INFO WHERE CODE = LM.CATEGORY_CD) AS CATEGORY_NM, 
-				LEARNING_CD, (SELECT FORM_NAME FROM ACM_LEARNING_FORM_INFO WHERE FORM_CODE = LM.LEARNING_CD) AS FORM_NAME,
-				SUBJECT_TEACHER, (SELECT USER_NM FROM ACM_MEMBER WHERE USER_ID = LM.SUBJECT_TEACHER) AS SUBJECT_TEACHER_NM,
-				SUBJECT_TEACHER_PAYMENT, SUBJECT_TITLE, SUBJECT_DESC, SUBJECT_KEYWORD, SUBJECT_PERIOD,
-				SUBJECT_DISCOUNT, SUBJECT_PRICE, SUBJECT_POINT, SUBJECT_MOVIE, SUBJECT_VOD_DEFAULT_PATH, SUBJECT_PASS, LEC_SCHEDULE, LEC_TYPE_CHOICE,
-				MOV_ING, LEC_COUNT, ORG_LECCODE, IS_USE, REG_DT, REG_ID, UPD_DT, UPD_ID 
-		FROM ACM_LECTURE_MST LM
+		SELECT TBL.LEC_TYPE_CHOICE, TBL.LECCODE, TBL.CATEGORY_CD, TBL.CATEGORY_NM, TBL.SUBJECT_CD, TBL.SUBJECT_NM, TBL.SUBJECT_TEACHER, TBL.SUBJECT_TEACHER_NM,
+               TBL.SUBJECT_TITLE, TBL.FORM_CODE, TBL.FORM_NAME, TBL.REG_DT, TBL.IS_USE,
+               NVL(YY.Y_CNT, 0) Y_CNT, NVL(YY.N_CNT, 0) N_CNT 
+        FROM (SELECT LM.LEC_TYPE_CHOICE, LM.LECCODE,
+	                 LM.CATEGORY_CD, (SELECT NAME FROM ACM_CATEGORY_INFO WHERE CODE = LM.CATEGORY_CD) AS CATEGORY_NM,
+	                 LM.SUBJECT_CD, (SELECT SUBJECT_NM FROM ACM_SUBJECT_INFO WHERE SUBJECT_CD = LM.SUBJECT_CD) AS SUBJECT_NM,
+	                 LM.SUBJECT_TEACHER, (SELECT USER_NM FROM ACM_MEMBER WHERE USER_ID = LM.SUBJECT_TEACHER) AS SUBJECT_TEACHER_NM,
+	                 LM.FORM_CODE, (SELECT FORM_NAME FROM ACM_LEARNING_FORM_INFO WHERE FORM_CODE = LM.FORM_CODE) AS FORM_NAME,
+	                 LM.SUBJECT_TITLE, LM.REG_DT, LM.IS_USE
+	           FROM ACM_LECTURE_MST LM) TBL LEFT OUTER JOIN
+	           (SELECT ZZ.LECCODE, NVL(SUM(Y_CNT),0) Y_CNT, NVL(SUM(N_CNT),0) N_CNT
+				FROM (SELECT MM.LECCODE, 
+            				CASE WHEN MM.FREE = 'Y' THEN CNT END Y_CNT,
+            				CASE WHEN MM.FREE = 'N' THEN CNT END N_CNT
+      					FROM (SELECT LM.LECCODE, CASE OM.PRICE WHEN 0 THEN 'Y' ELSE 'N' END FREE, COUNT(LM.LECCODE) CNT
+            					FROM ACM_LECTURE_MST LM, ACM_ORDER_ITEM OM, 
+	              				(SELECT A.LECTURE_NO, B.ORDERNO, B.ITEMNO
+                  					FROM ACM_MYLECTURE A, ACM_ORDER_ITEM B
+                  					WHERE A.ORDERNO = B.ORDERNO
+                  					AND A.PACKAGE_NO = B.ITEMNO
+                  					AND B.STATUSCODE = 'DLV105'
+                  					AND B.PTYPE = 'D'
+                  					GROUP BY A.LECTURE_NO, B.ORDERNO, B.ITEMNO) BB
+            					WHERE OM.ORDERNO = BB.ORDERNO
+            					AND OM.ITEMNO = BB.ITEMNO
+            					AND LM.LECCODE = OM.ITEMNO
+            					GROUP BY LM.LECCODE, CASE OM.PRICE WHEN  0 THEN 'Y' ELSE 'N' END) MM
+      				) ZZ
+		GROUP BY LECCODE) YY
+	    ON TBL.LECCODE = YY.LECCODE
+	    WHERE TBL.LEC_TYPE_CHOICE = 'D'
+		ORDER BY LECCODE DESC  
 		LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
 	</select>
 	
 	<select id="selectLectureListCount" parameterType="egovframework.com.academy.lecture.service.LectureVO" resultType="int">
-		SELECT COUNT(LECCODE)
-		FROM ACM_LECTURE_MST
+		SELECT COUNT(TBL.LECCODE)
+        FROM (SELECT LM.LEC_TYPE_CHOICE, LM.LECCODE,
+	                 LM.CATEGORY_CD, (SELECT NAME FROM ACM_CATEGORY_INFO WHERE CODE = LM.CATEGORY_CD) AS CATEGORY_NM,
+	                 LM.SUBJECT_CD, (SELECT SUBJECT_NM FROM ACM_SUBJECT_INFO WHERE SUBJECT_CD = LM.SUBJECT_CD) AS SUBJECT_NM,
+	                 LM.SUBJECT_TEACHER, (SELECT USER_NM FROM ACM_MEMBER WHERE USER_ID = LM.SUBJECT_TEACHER) AS SUBJECT_TEACHER_NM,
+	                 LM.FORM_CODE, (SELECT FORM_NAME FROM ACM_LEARNING_FORM_INFO WHERE FORM_CODE = LM.FORM_CODE) AS FORM_NAME,
+	                 LM.SUBJECT_TITLE, LM.REG_DT, LM.IS_USE
+	           FROM ACM_LECTURE_MST LM) TBL LEFT OUTER JOIN
+	           (SELECT ZZ.LECCODE, NVL(SUM(Y_CNT),0) Y_CNT, NVL(SUM(N_CNT),0) N_CNT
+				FROM (SELECT MM.LECCODE, 
+            				CASE WHEN MM.FREE = 'Y' THEN CNT END Y_CNT,
+            				CASE WHEN MM.FREE = 'N' THEN CNT END N_CNT
+      					FROM (SELECT LM.LECCODE, CASE OM.PRICE WHEN 0 THEN 'Y' ELSE 'N' END FREE, COUNT(LM.LECCODE) CNT
+            					FROM ACM_LECTURE_MST LM, ACM_ORDER_ITEM OM, 
+	              				(SELECT A.LECTURE_NO, B.ORDERNO, B.ITEMNO
+                  					FROM ACM_MYLECTURE A, ACM_ORDER_ITEM B
+                  					WHERE A.ORDERNO = B.ORDERNO
+                  					AND A.PACKAGE_NO = B.ITEMNO
+                  					AND B.STATUSCODE = 'DLV105'
+                  					AND B.PTYPE = 'D'
+                  					GROUP BY A.LECTURE_NO, B.ORDERNO, B.ITEMNO) BB
+            					WHERE OM.ORDERNO = BB.ORDERNO
+            					AND OM.ITEMNO = BB.ITEMNO
+            					AND LM.LECCODE = OM.ITEMNO
+            					GROUP BY LM.LECCODE, CASE OM.PRICE WHEN  0 THEN 'Y' ELSE 'N' END) MM
+      				) ZZ
+		GROUP BY LECCODE) YY
+	    ON TBL.LECCODE = YY.LECCODE
+	    WHERE TBL.LEC_TYPE_CHOICE = 'D'
 	</select>
 	
 <!-- 등록완료 -->
