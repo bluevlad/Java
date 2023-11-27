@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import egovframework.com.academy.lecture.service.BookVO;
 import egovframework.com.academy.lecture.service.LectureVO;
 import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 
@@ -18,6 +19,16 @@ public class LectureDAO extends EgovComAbstractDAO {
 		return (Integer)selectOne("lecture.selectLectureListCount", LectureVO);
 	}
 
+	public LectureVO selectLectureDetail(LectureVO LectureVO) throws Exception{
+		return selectOne("lecture.selectLectureDetail", LectureVO);
+	}
+
+	public BookVO selectLectureViewList(LectureVO LectureVO) throws Exception{
+		return selectOne("lecture.selectLectureViewList", LectureVO);
+	}
+
+	
+	
 	public List<HashMap<String, String>> bookList(HashMap<String, String> params) throws Exception{
 		return selectList("lecture.bookList", params);
 	}
@@ -61,14 +72,6 @@ public class LectureDAO extends EgovComAbstractDAO {
 
 	public void lectureBookInsert2(HashMap<String, String> params) throws Exception{
 		insert("lecture.lectureBookInsert2", params);
-	}
-
-	public List<HashMap<String, String>> lectureViewList(HashMap<String, String> params) throws Exception{
-		return selectList("lecture.lectureViewList", params);
-	}
-
-	public List<HashMap<String, String>> lectureView(HashMap<String, String> params) throws Exception{
-		return selectList("lecture.lectureView", params);
 	}
 
 	public List<HashMap<String, String>> lectureViewBookList(HashMap<String, String> params) throws Exception{

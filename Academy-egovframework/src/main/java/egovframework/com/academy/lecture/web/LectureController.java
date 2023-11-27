@@ -69,9 +69,9 @@ public class LectureController {
 		LectureVO.setLastIndex(paginationInfo.getLastRecordIndex());
 		LectureVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
 
-//		params.put("SEARCHGUBN", "T");
+        model.addAttribute("SEARCHGUBN", "T");
 //		List<HashMap<String, String>> kindlist = teacherservice.getKindList(params);
-//		params.put("SEARCHCODEISUSE", "Y");
+        model.addAttribute("SEARCHCODEISUSE", "T");
 //		List<HashMap<String, String>> formlist = bookservice.getLearningFormList(params);
 		model.addAttribute("resultList", lectureservice.selectLectureList(LectureVO));
 		
@@ -85,122 +85,169 @@ public class LectureController {
 		return "egovframework/com/academy/lecture/lecture/List";
 	}
 
-	/*
-	 * @RequestMapping(value="/listpop.pop") public String list_pop(ModelMap model,
-	 * HttpServletRequest request) throws Exception {
-	 * 
-	 * HashMap<String, String> params = new HashMap<String, String>();
-	 * setParam(params, request, model); 페이징 int currentPage =
-	 * Integer.parseInt(params.get("currentPage")); int pageRow = 4;
-	 * params.put("pageRow", "4"); int startNo = (currentPage - 1) * pageRow; int
-	 * endNo = startNo + pageRow; params.put("startNo", String.valueOf(startNo));
-	 * params.put("endNo", String.valueOf(endNo)); 페이징
-	 * 
-	 * params.put("SEARCHGUBN", "T"); List<HashMap<String, String>> kindlist =
-	 * teacherservice.getKindList(params); params.put("SEARCHCODEISUSE", "Y");
-	 * List<HashMap<String, String>> formlist =
-	 * bookservice.getLearningFormList(params); List<HashMap<String, String>> list =
-	 * lectureservice.lectureList(params); int listCount =
-	 * lectureservice.lectureListCount(params); String pagingHtml = new
-	 * Paging(currentPage, listCount, pageRow).getPagingHtml().toString();
-	 * 
-	 * model.addAttribute("kindlist", kindlist); model.addAttribute("formlist",
-	 * formlist); model.addAttribute("list", list); model.addAttribute("totalCount",
-	 * listCount); model.addAttribute("pagingHtml", pagingHtml);
-	 * model.addAttribute("params", params); model.addAttribute("totalPage", (int)
-	 * Math.ceil((double) listCount / pageRow)); return "/lecture/lecture/listpop";
-	 * }
-	 * 
-	 * @RequestMapping(value="/couponpop.pop") public String coupon_pop(ModelMap
-	 * model, HttpServletRequest request) throws Exception {
-	 * 
-	 * HashMap<String, String> params = new HashMap<String, String>();
-	 * setParam(params, request, model); 페이징 int currentPage =
-	 * Integer.parseInt(params.get("currentPage")); int pageRow = 4;
-	 * params.put("pageRow", "4"); int startNo = (currentPage - 1) * pageRow; int
-	 * endNo = startNo + pageRow; params.put("startNo", String.valueOf(startNo));
-	 * params.put("endNo", String.valueOf(endNo)); 페이징
-	 * 
-	 * List<HashMap<String, String>> list =
-	 * productOrderService.getTmCouponList(params);
-	 * 
-	 * // 쿠폰발행 팝업 총 건수 int listCount = productOrderService.getTmCouponCount(params);
-	 * 
-	 * String pagingHtml = new Paging(currentPage, listCount,
-	 * pageRow).getPagingHtml().toString(); model.addAttribute("list", list);
-	 * model.addAttribute("totalCount", listCount); //
-	 * model.addAttribute("pagingHtml", pagingHtml); model.addAttribute("params",
-	 * params); model.addAttribute("totalPage", (int) Math.ceil((double) listCount /
-	 * pageRow)); return "/lecture/lecture/couponpop"; }
-	 * 
-	 * @RequestMapping(value="/mo_couponpop.pop") public String
-	 * mu_coupon_pop(ModelMap model, HttpServletRequest request) throws Exception {
-	 * 
-	 * HashMap<String, String> params = new HashMap<String, String>();
-	 * setParam(params, request, model); 페이징 int currentPage =
-	 * Integer.parseInt(params.get("currentPage")); int pageRow = 4;
-	 * params.put("pageRow", "4"); int startNo = (currentPage - 1) * pageRow; int
-	 * endNo = startNo + pageRow; params.put("startNo", String.valueOf(startNo));
-	 * params.put("endNo", String.valueOf(endNo));
-	 * 
-	 * 페이징
-	 * 
-	 * List<HashMap<String, String>> list =
-	 * productOrderService.getTmMoCouponList(params);
-	 * 
-	 * // 쿠폰발행 팝업 총 건수 int listCount =
-	 * productOrderService.getTmMoCouponCount(params);
-	 * 
-	 * String pagingHtml = new Paging(currentPage, listCount,
-	 * pageRow).getPagingHtml().toString(); model.addAttribute("list", list);
-	 * model.addAttribute("totalCount", listCount); //
-	 * model.addAttribute("pagingHtml", pagingHtml); model.addAttribute("params",
-	 * params); model.addAttribute("totalPage", (int) Math.ceil((double) listCount /
-	 * pageRow)); return "/lecture/lecture/mo_couponpop"; }
-	 * 
-	 * @RequestMapping(value="/Modify_Lecture_On_Off.do")
-	 * 
-	 * @ResponseBody
-	 * 
-	 * @Transactional(readOnly=false,rollbackFor=Exception.class) public String
-	 * Modify_Lecture_On_Off(ModelMap model, HttpServletRequest request) throws
-	 * Exception {
-	 * 
-	 * HashMap<String, String> params = new HashMap<String, String>();
-	 * setParam(params, request, model);
-	 * 
-	 * 페이징 int currentPage = Integer.parseInt(params.get("currentPage")); int
-	 * pageRow = Integer.parseInt(params.get("pageRow")); int startNo = (currentPage
-	 * - 1) * pageRow; int endNo = startNo + pageRow; String flag =
-	 * CommonUtil.isNull(request.getParameter("flag"), ""); String flag2 =
-	 * CommonUtil.isNull(request.getParameter("flag2"), "");
-	 * 
-	 * params.put("startNo", String.valueOf(startNo)); params.put("endNo",
-	 * String.valueOf(endNo)); params.put("flag2", flag2); 페이징
-	 * 
-	 * if(flag.equals("ON")){ params.put("FLAG", "Y"); }else{ params.put("FLAG",
-	 * "N"); }
-	 * 
-	 * 
-	 * if(flag2.equals("list")){ // 단과 강의관리 리스트에서 개설여부 수정시 params.put("RCODE",
-	 * CommonUtil.isNull(request.getParameter("Rcode"), "")); List<HashMap<String,
-	 * String>> BridgeLeccode = lectureservice.BridgeLeccode(params);
-	 * 
-	 * if(BridgeLeccode.size() > 0){ for(int i = 0; i < BridgeLeccode.size(); i++){
-	 * String GET_CODE = String.valueOf(BridgeLeccode.get(i)).substring(9, 19);
-	 * params.put("GET_CODE", GET_CODE);
-	 * lectureservice.Modify_Lecture_On_Off(params); } } }else
-	 * if(flag2.equals("jlist") || flag2.equals("ylist")){ // 종합반,패키지,연회원패키지 강의관리
-	 * 리스트에서 개설여부 수정시 params.put("GET_CODE",
-	 * CommonUtil.isNull(request.getParameter("Rcode"), ""));
-	 * lectureservice.Modify_Lecture_On_Off(params); }else{ // 단과 강의관리 상세페이지에서 개설여부
-	 * 수정시 params.put("GET_CODE", CommonUtil.isNull(request.getParameter("Rcode"),
-	 * "")); lectureservice.Modify_Lecture_On_Off(params); }
-	 * 
-	 * return flag; }
-	 * 
-	 * 
-	 *//**
+	/**
+	  @Method Name : modify
+	  @작성일 : 2013. 11.
+	  @Method 설명 : 단과 강의 수정폼
+	  @param model
+	  @param request
+	  @return String
+	  @throws Exception
+	*/
+	@RequestMapping(value="/academy/leture/lecture/Detail.do") 
+	public String detail(@ModelAttribute("LectureVO") LectureVO LectureVO, @RequestParam Map<?, ?> commandMap, ModelMap model) throws Exception { 
+
+		LectureVO = lectureservice.selectLectureDetail(LectureVO);
+		LectureVO viewlist = lectureservice.selectLectureViewList(LectureVO);
+		BookVO viewbooklist = lectureservice.selectLectureViewList(LectureVO);
+		
+		String sdelyn = "Y"; // 관련글  삭제 가능여부 
+		String rdelyn = "Y"; // 현재 선택글 삭제가능여부
+		  
+        model.addAttribute("SEARCHGUBN", "T");
+		List<HashMap<String, String>> kindlist = teacherservice.getKindList(params);
+        model.addAttribute("SEARCHCODEISUSE", "Y");
+		List<HashMap<String, String>> formlist =  bookservice.getLearningFormList(params); 
+		List<HashMap<String, String>> subjectteacherlist = bookservice.getCaSubjectTeacherList(params); 
+		int lectureOrderCount = lectureservice.lectureDeleteCheck(params);
+		  
+		Map<String, String> vo = new HashMap<String, String>(); 
+		vo.put("SYS_CD", "ICON_GUBUN"); 
+		List<HashMap<String, String>> ICON_GUBUNs = cmmUseService.selectCmmCodeMap(vo); 
+        model.addAttribute("ICON_GUBUNs", ICON_GUBUNs);
+		  
+		model.addAttribute("lectureOrderCount", lectureOrderCount);
+		model.addAttribute("kindlist", kindlist); 
+		model.addAttribute("formlist", formlist); 
+		model.addAttribute("subjectteacherlist", subjectteacherlist);
+		model.addAttribute("view", view); 
+		model.addAttribute("viewlist", viewlist);
+		model.addAttribute("viewbooklist", viewbooklist);
+		model.addAttribute("rdelyn", rdelyn); 
+		model.addAttribute("sdelyn", sdelyn);
+		model.addAttribute("params", params); 
+		  
+		  return "/lecture/lecture/modify"; 
+	  }
+		  
+		  
+		  /*
+		  
+		  @RequestMapping(value="/listpop.pop") public String list_pop(ModelMap model,
+		  HttpServletRequest request) throws Exception {
+		  
+		  HashMap<String, String> params = new HashMap<String, String>();
+		  setParam(params, request, model); 페이징 int currentPage =
+		  Integer.parseInt(params.get("currentPage")); int pageRow = 4;
+		  params.put("pageRow", "4"); int startNo = (currentPage - 1) * pageRow; int
+		  endNo = startNo + pageRow; params.put("startNo", String.valueOf(startNo));
+		  params.put("endNo", String.valueOf(endNo)); 페이징
+		  
+		  params.put("SEARCHGUBN", "T"); List<HashMap<String, String>> kindlist =
+		  teacherservice.getKindList(params); params.put("SEARCHCODEISUSE", "Y");
+		  List<HashMap<String, String>> formlist =
+		  bookservice.getLearningFormList(params); List<HashMap<String, String>> list =
+		  lectureservice.lectureList(params); int listCount =
+		  lectureservice.lectureListCount(params); String pagingHtml = new
+		  Paging(currentPage, listCount, pageRow).getPagingHtml().toString();
+		  
+		  model.addAttribute("kindlist", kindlist); model.addAttribute("formlist",
+		  formlist); model.addAttribute("list", list); model.addAttribute("totalCount",
+		  listCount); model.addAttribute("pagingHtml", pagingHtml);
+		  model.addAttribute("params", params); model.addAttribute("totalPage", (int)
+		  Math.ceil((double) listCount / pageRow)); return "/lecture/lecture/listpop";
+		  }
+		  
+		  @RequestMapping(value="/couponpop.pop") public String coupon_pop(ModelMap
+		  model, HttpServletRequest request) throws Exception {
+		  
+		  HashMap<String, String> params = new HashMap<String, String>();
+		  setParam(params, request, model); 페이징 int currentPage =
+		  Integer.parseInt(params.get("currentPage")); int pageRow = 4;
+		  params.put("pageRow", "4"); int startNo = (currentPage - 1) * pageRow; int
+		  endNo = startNo + pageRow; params.put("startNo", String.valueOf(startNo));
+		  params.put("endNo", String.valueOf(endNo)); 페이징
+		  
+		  List<HashMap<String, String>> list =
+		  productOrderService.getTmCouponList(params);
+		  
+		  // 쿠폰발행 팝업 총 건수 int listCount = productOrderService.getTmCouponCount(params);
+		  
+		  String pagingHtml = new Paging(currentPage, listCount,
+		  pageRow).getPagingHtml().toString(); model.addAttribute("list", list);
+		  model.addAttribute("totalCount", listCount); //
+		  model.addAttribute("pagingHtml", pagingHtml); model.addAttribute("params",
+		  params); model.addAttribute("totalPage", (int) Math.ceil((double) listCount /
+		  pageRow)); return "/lecture/lecture/couponpop"; }
+		  
+		  @RequestMapping(value="/mo_couponpop.pop") public String
+		  mu_coupon_pop(ModelMap model, HttpServletRequest request) throws Exception {
+		  
+		  HashMap<String, String> params = new HashMap<String, String>();
+		  setParam(params, request, model); 페이징 int currentPage =
+		  Integer.parseInt(params.get("currentPage")); int pageRow = 4;
+		  params.put("pageRow", "4"); int startNo = (currentPage - 1) * pageRow; int
+		  endNo = startNo + pageRow; params.put("startNo", String.valueOf(startNo));
+		  params.put("endNo", String.valueOf(endNo));
+		  
+		  페이징
+		  
+		  List<HashMap<String, String>> list =
+		  productOrderService.getTmMoCouponList(params);
+		  
+		  // 쿠폰발행 팝업 총 건수 int listCount =
+		  productOrderService.getTmMoCouponCount(params);
+		  
+		  String pagingHtml = new Paging(currentPage, listCount,
+		  pageRow).getPagingHtml().toString(); model.addAttribute("list", list);
+		  model.addAttribute("totalCount", listCount); //
+		  model.addAttribute("pagingHtml", pagingHtml); model.addAttribute("params",
+		  params); model.addAttribute("totalPage", (int) Math.ceil((double) listCount /
+		  pageRow)); return "/lecture/lecture/mo_couponpop"; }
+		  
+		  @RequestMapping(value="/Modify_Lecture_On_Off.do")
+		  
+		  @ResponseBody
+		  
+		  @Transactional(readOnly=false,rollbackFor=Exception.class) public String
+		  Modify_Lecture_On_Off(ModelMap model, HttpServletRequest request) throws
+		  Exception {
+		  
+		  HashMap<String, String> params = new HashMap<String, String>();
+		  setParam(params, request, model);
+		  
+		  페이징 int currentPage = Integer.parseInt(params.get("currentPage")); int
+		  pageRow = Integer.parseInt(params.get("pageRow")); int startNo = (currentPage
+		  - 1) * pageRow; int endNo = startNo + pageRow; String flag =
+		  CommonUtil.isNull(request.getParameter("flag"), ""); String flag2 =
+		  CommonUtil.isNull(request.getParameter("flag2"), "");
+		  
+		  params.put("startNo", String.valueOf(startNo)); params.put("endNo",
+		  String.valueOf(endNo)); params.put("flag2", flag2); 페이징
+		  
+		  if(flag.equals("ON")){ params.put("FLAG", "Y"); }else{ params.put("FLAG",
+		  "N"); }
+		  
+		  
+		  if(flag2.equals("list")){ // 단과 강의관리 리스트에서 개설여부 수정시 params.put("RCODE",
+		  CommonUtil.isNull(request.getParameter("Rcode"), "")); List<HashMap<String,
+		  String>> BridgeLeccode = lectureservice.BridgeLeccode(params);
+		  
+		  if(BridgeLeccode.size() > 0){ for(int i = 0; i < BridgeLeccode.size(); i++){
+		  String GET_CODE = String.valueOf(BridgeLeccode.get(i)).substring(9, 19);
+		  params.put("GET_CODE", GET_CODE);
+		  lectureservice.Modify_Lecture_On_Off(params); } } }else
+		  if(flag2.equals("jlist") || flag2.equals("ylist")){ // 종합반,패키지,연회원패키지 강의관리
+		  리스트에서 개설여부 수정시 params.put("GET_CODE",
+		  CommonUtil.isNull(request.getParameter("Rcode"), ""));
+		  lectureservice.Modify_Lecture_On_Off(params); }else{ // 단과 강의관리 상세페이지에서 개설여부
+		  수정시 params.put("GET_CODE", CommonUtil.isNull(request.getParameter("Rcode"),
+		  "")); lectureservice.Modify_Lecture_On_Off(params); }
+		  
+		  return flag; }
+		  
+		  
+		 /**
 		 * @Method Name : write
 		 * @작성일 : 2013. 11.
 		 * @Method 설명 : 단과 강의 등록폼
@@ -508,48 +555,6 @@ public class LectureController {
 	 * lectureservice.lectureBridgeDelete(params);
 	 * lectureservice.lectureBookDelete(params); } } return
 	 * "forward:/lecture/freelist.do"; }
-	 * 
-	 *//**
-		 * @Method Name : modify
-		 * @작성일 : 2013. 11.
-		 * @Method 설명 : 단과 강의 수정폼
-		 * @param model
-		 * @param request
-		 * @return String
-		 * @throws Exception
-		 */
-	/*
-	 * @RequestMapping(value="/modify.do") public String modify(ModelMap model,
-	 * HttpServletRequest request) throws Exception { HashMap<String, String> params
-	 * = new HashMap<String, String>(); setParam(params, request, model);
-	 * 
-	 * List<HashMap<String, String>> view = lectureservice.lectureView(params);
-	 * 
-	 * List<HashMap<String, String>> viewlist =
-	 * lectureservice.lectureViewList(params); List<HashMap<String, String>>
-	 * viewbooklist = lectureservice.lectureViewBookList(params); //HashMap<String,
-	 * String> vparams = new HashMap<String, String>(); String sdelyn = "Y"; // 관련글
-	 * 삭제 가능여부 String rdelyn = "Y"; // 현재 선택글 삭제가능여부
-	 * 
-	 * params.put("SEARCHGUBN", "T"); List<HashMap<String, String>> kindlist =
-	 * teacherservice.getKindList(params); params.put("SEARCHCODEISUSE", "Y");
-	 * List<HashMap<String, String>> formlist =
-	 * bookservice.getLearningFormList(params); List<HashMap<String, String>>
-	 * subjectteacherlist = bookservice.getCaSubjectTeacherList(params); int
-	 * lectureOrderCount = lectureservice.lectureDeleteCheck(params);
-	 * 
-	 * Map<String, String> vo = new HashMap<String, String>(); vo.put("SYS_CD",
-	 * "ICON_GUBUN"); List<HashMap<String, String>> ICON_GUBUNs =
-	 * cmmUseService.selectCmmCodeMap(vo); model.addAttribute("ICON_GUBUNs",
-	 * ICON_GUBUNs);
-	 * 
-	 * model.addAttribute("lectureOrderCount", lectureOrderCount);
-	 * model.addAttribute("kindlist", kindlist); model.addAttribute("formlist",
-	 * formlist); model.addAttribute("subjectteacherlist", subjectteacherlist);
-	 * model.addAttribute("view", view); model.addAttribute("viewlist", viewlist);
-	 * model.addAttribute("viewbooklist", viewbooklist);
-	 * model.addAttribute("rdelyn", rdelyn); model.addAttribute("sdelyn", sdelyn);
-	 * model.addAttribute("params", params); return "/lecture/lecture/modify"; }
 	 * 
 	 *//**
 		 * @Method Name : lecview

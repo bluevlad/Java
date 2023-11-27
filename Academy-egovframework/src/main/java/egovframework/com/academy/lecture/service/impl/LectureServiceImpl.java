@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import egovframework.com.academy.lecture.service.BookVO;
 import egovframework.com.academy.lecture.service.LectureService;
 import egovframework.com.academy.lecture.service.LectureVO;
 import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
@@ -21,12 +22,23 @@ public class LectureServiceImpl extends EgovAbstractServiceImpl implements Lectu
 	public List<?> selectLectureList(LectureVO LectureVO) throws Exception{
 		return lecturedao.selectLectureList(LectureVO);
 	}		
-
 	
 	@Override
 	public int selectLectureListCount(LectureVO LectureVO) throws Exception{
 		return lecturedao.selectLectureListCount(LectureVO);
 	}	
+	
+	@Override
+	public LectureVO selectLectureDetail(LectureVO LectureVO) throws Exception{
+		return lecturedao.selectLectureDetail(LectureVO);
+	}		
+	
+	@Override
+	public BookVO selectLectureViewList(LectureVO LectureVO) throws Exception{
+		return lecturedao.selectLectureViewList(LectureVO);
+	}	
+
+	
 	
 	@Override
 	public List<HashMap<String, String>> bookList(HashMap<String, String> params) throws Exception{
@@ -82,16 +94,6 @@ public class LectureServiceImpl extends EgovAbstractServiceImpl implements Lectu
 	public void lectureBookInsert(HashMap<String, String> params) throws Exception{
 		lecturedao.lectureBookInsert(params);
 	}	
-	
-	@Override
-	public List<HashMap<String, String>> lectureViewList(HashMap<String, String> params) throws Exception{
-		return lecturedao.lectureViewList(params);
-	}	
-	
-	@Override
-	public List<HashMap<String, String>> lectureView(HashMap<String, String> params) throws Exception{
-		return lecturedao.lectureView(params);
-	}		
 	
 	@Override
 	public List<HashMap<String, String>> lectureViewBookList(HashMap<String, String> params) throws Exception{
