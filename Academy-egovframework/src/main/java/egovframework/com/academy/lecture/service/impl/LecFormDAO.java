@@ -53,4 +53,8 @@ public class LecFormDAO extends EgovComAbstractDAO{
 		return selectOne("lectureForm.selectFormCheck", LectureVO);
 	}
 
+	public List<?> selectFormListAll(LectureVO LectureVO) throws Exception{
+		return selectList("lectureForm.selectFormListAll", LectureVO);
+	}
+
 }

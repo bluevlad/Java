@@ -87,4 +87,14 @@ public class SubjectServiceImpl extends EgovAbstractServiceImpl implements Subje
 		subjectDAO.deleteSubject(LectureVO);
 	}
 
+	/**
+	 * @param LectureVO 검색조건
+	 * @return List<?> 직렬정보
+	 * @throws Exception
+	 */
+	@Override
+	public List<?> selectCategoryList(LectureVO LectureVO) throws Exception {
+		return subjectDAO.selectCategoryList(LectureVO);
+	}
+
 }

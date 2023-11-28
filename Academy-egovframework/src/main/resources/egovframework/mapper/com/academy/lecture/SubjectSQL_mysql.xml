@@ -59,9 +59,9 @@
 
 	<select id="selectCategoryList" parameterType="egovframework.com.academy.lecture.service.LectureVO" 
 										resultType="egovframework.com.academy.lecture.service.LectureVO">
-		SELECT ID, CODE, NAME, IS_USE, REG_DT, REG_ID, UPD_DT, UPD_ID, USE_ON, USE_OFF, P_CODE, ORDR
+		SELECT ID, CATEGORY_CD, CATEGORY_NM, IS_USE, REG_DT, REG_ID, UPD_DT, UPD_ID, USE_ON, USE_OFF, P_CODE, ORDR
 		FROM ACM_CATEGORY_INFO
-		WEHRE IS_USE = 'Y' 
+		WHERE IS_USE = 'Y' 
 	</select>
 
 </mapper>

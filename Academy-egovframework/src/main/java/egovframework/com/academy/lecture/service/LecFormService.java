@@ -45,4 +45,11 @@ public interface LecFormService {
 
 	public int selectFormCheck(LectureVO LectureVO) throws Exception;
 
+	/**
+	 * 학습형태정보 전체 목록을 조회한다.
+	 * @param LectureVO
+	 * @return List - 목록
+	 */
+	List<?> selectFormListAll(LectureVO LectureVO) throws Exception;
+
 }

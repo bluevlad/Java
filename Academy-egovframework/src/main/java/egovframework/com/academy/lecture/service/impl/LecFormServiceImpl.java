@@ -54,7 +54,7 @@ public class LecFormServiceImpl extends EgovAbstractServiceImpl implements LecFo
 	}
 	
 	/**
-	 * @param LectureVO 과목 등록정보
+	 * @param LectureVO 강의정보
 	 * @throws Exception
 	 */
 	@Override
@@ -63,8 +63,8 @@ public class LecFormServiceImpl extends EgovAbstractServiceImpl implements LecFo
 	}
 
 	/**
-	 * LectureVO 과목정보 수정
-	 * @param LectureVO 시험정보
+	 * LectureVO 학습형태 수정
+	 * @param LectureVO 강의정보
 	 * @throws Exception
 	 */
 	@Override
@@ -73,8 +73,8 @@ public class LecFormServiceImpl extends EgovAbstractServiceImpl implements LecFo
 	}
 
 	/**
-	 * LectureVO 과목정보 삭제
-	 * @param LectureVO 시험정보
+	 * LectureVO 학습형태 삭제
+	 * @param LectureVO 강의정보
 	 * @throws Exception
 	 */
 	@Override
@@ -84,6 +84,16 @@ public class LecFormServiceImpl extends EgovAbstractServiceImpl implements LecFo
 	@Override
 	public int selectFormCheck(LectureVO LectureVO) throws Exception {
 		return lecFormDAO.selectFormCheck(LectureVO);
+	}
+
+	/**
+	 * @param LectureVO 
+	 * @return List<?> 학습형태 전체 리스트
+	 * @throws Exception
+	 */
+	@Override
+	public List<?> selectFormListAll(LectureVO LectureVO) throws Exception {
+		return lecFormDAO.selectFormListAll(LectureVO);
 	}
 
 }

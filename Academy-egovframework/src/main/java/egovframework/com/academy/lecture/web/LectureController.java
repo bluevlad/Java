@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import egovframework.com.academy.lecture.service.LecFormService;
 import egovframework.com.academy.lecture.service.LectureService;
 import egovframework.com.academy.lecture.service.LectureVO;
+import egovframework.com.academy.lecture.service.SubjectService;
 import egovframework.rte.fdl.property.EgovPropertyService;
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 
@@ -29,12 +31,12 @@ public class LectureController {
 //	private FileSystemResource fsResource;
 //	@Resource(name = "fileUtil")
 //	private FileUtil fileUtil;
-//	@Autowired
-//	private BookService bookservice;
 	@Resource(name = "lectureservice")
 	private LectureService lectureservice;
-//	@Autowired
-//	private TeacherService teacherservice;
+	@Resource(name = "subjectService")
+	private SubjectService subjectService;
+	@Resource(name = "lecFormService")
+	private LecFormService lecFormService;
 //	@Resource(name = "CmmUseService")
 //	private CmmUseService cmmUseService;
 //	@Autowired
@@ -94,40 +96,23 @@ public class LectureController {
 	  @return String
 	  @throws Exception
 	*/
-	@RequestMapping(value="/academy/leture/lecture/Detail.do") 
+	@RequestMapping(value="/academy/leture/lecture/Detail.do")
 	public String detail(@ModelAttribute("LectureVO") LectureVO LectureVO, @RequestParam Map<?, ?> commandMap, ModelMap model) throws Exception { 
 
 		LectureVO = lectureservice.selectLectureDetail(LectureVO);
-		LectureVO viewlist = lectureservice.selectLectureViewList(LectureVO);
-		BookVO viewbooklist = lectureservice.selectLectureViewList(LectureVO);
-		
-		String sdelyn = "Y"; // 관련글  삭제 가능여부 
-		String rdelyn = "Y"; // 현재 선택글 삭제가능여부
-		  
+		model.addAttribute("LectureVO", LectureVO); 
+		model.addAttribute("viewlist", lectureservice.selectLectureViewList(LectureVO));
+		model.addAttribute("viewbooklist", lectureservice.selectLectureViewBookList(LectureVO));
         model.addAttribute("SEARCHGUBN", "T");
-		List<HashMap<String, String>> kindlist = teacherservice.getKindList(params);
+		model.addAttribute("kindlist", subjectService.selectCategoryList(LectureVO));
         model.addAttribute("SEARCHCODEISUSE", "Y");
-		List<HashMap<String, String>> formlist =  bookservice.getLearningFormList(params); 
-		List<HashMap<String, String>> subjectteacherlist = bookservice.getCaSubjectTeacherList(params); 
-		int lectureOrderCount = lectureservice.lectureDeleteCheck(params);
+		model.addAttribute("formlist", lecFormService.selectFormListAll(LectureVO)); 
+		model.addAttribute("subjectteacherlist", lectureservice.selectSubjectTeacherList(LectureVO));
+		model.addAttribute("lectureOrderCount", lectureservice.selectLectureOrderCnt(LectureVO));
+		model.addAttribute("rdelyn", "Y"); // 현재 선택글 삭제가능여부
+		model.addAttribute("sdelyn", "Y"); // 관련글  삭제 가능여부 
 		  
-		Map<String, String> vo = new HashMap<String, String>(); 
-		vo.put("SYS_CD", "ICON_GUBUN"); 
-		List<HashMap<String, String>> ICON_GUBUNs = cmmUseService.selectCmmCodeMap(vo); 
-        model.addAttribute("ICON_GUBUNs", ICON_GUBUNs);
-		  
-		model.addAttribute("lectureOrderCount", lectureOrderCount);
-		model.addAttribute("kindlist", kindlist); 
-		model.addAttribute("formlist", formlist); 
-		model.addAttribute("subjectteacherlist", subjectteacherlist);
-		model.addAttribute("view", view); 
-		model.addAttribute("viewlist", viewlist);
-		model.addAttribute("viewbooklist", viewbooklist);
-		model.addAttribute("rdelyn", rdelyn); 
-		model.addAttribute("sdelyn", sdelyn);
-		model.addAttribute("params", params); 
-		  
-		  return "/lecture/lecture/modify"; 
+		  return "egovframework/com/academy/lecture/lecture/Detail"; 
 	  }
 		  
 		  

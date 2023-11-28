@@ -34,8 +34,23 @@ public class LectureServiceImpl extends EgovAbstractServiceImpl implements Lectu
 	}		
 	
 	@Override
-	public BookVO selectLectureViewList(LectureVO LectureVO) throws Exception{
+	public LectureVO selectLectureViewList(LectureVO LectureVO) throws Exception{
 		return lecturedao.selectLectureViewList(LectureVO);
+	}	
+	
+	@Override
+	public BookVO selectLectureViewBookList(LectureVO LectureVO) throws Exception{
+		return lecturedao.selectLectureViewBookList(LectureVO);
+	}	
+	
+	@Override
+	public List<?> selectSubjectTeacherList(LectureVO LectureVO) throws Exception{
+		return lecturedao.selectSubjectTeacherList(LectureVO);
+	}		
+	
+	@Override
+	public int selectLectureOrderCnt(LectureVO LectureVO) throws Exception{
+		return lecturedao.selectLectureOrderCnt(LectureVO);
 	}	
 
 	
@@ -93,11 +108,6 @@ public class LectureServiceImpl extends EgovAbstractServiceImpl implements Lectu
 	@Override
 	public void lectureBookInsert(HashMap<String, String> params) throws Exception{
 		lecturedao.lectureBookInsert(params);
-	}	
-	
-	@Override
-	public List<HashMap<String, String>> lectureViewBookList(HashMap<String, String> params) throws Exception{
-		return lecturedao.lectureViewBookList(params);
 	}	
 	
 	@Override

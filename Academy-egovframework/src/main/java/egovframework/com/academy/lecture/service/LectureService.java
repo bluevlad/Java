@@ -11,7 +11,13 @@ public interface LectureService {
 
 	LectureVO selectLectureDetail(LectureVO LectureVO) throws Exception;
 
-	BookVO selectLectureViewList(LectureVO LectureVO) throws Exception;
+	LectureVO selectLectureViewList(LectureVO LectureVO) throws Exception;
+
+	BookVO selectLectureViewBookList(LectureVO LectureVO) throws Exception;
+
+	List<?> selectSubjectTeacherList(LectureVO LectureVO) throws Exception;
+
+	int selectLectureOrderCnt(LectureVO LectureVO) throws Exception;
 
 	
 	
@@ -36,8 +42,6 @@ public interface LectureService {
 	void lectureBookInsert(HashMap<String, String> params) throws Exception;
 
 	void lectureBookInsert2(HashMap<String, String> params) throws Exception;
-
-	List<HashMap<String, String>> lectureViewBookList(HashMap<String, String> params) throws Exception;
 
 	void lectureBookDelete(HashMap<String, String> params) throws Exception;
 

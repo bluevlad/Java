@@ -23,8 +23,20 @@ public class LectureDAO extends EgovComAbstractDAO {
 		return selectOne("lecture.selectLectureDetail", LectureVO);
 	}
 
-	public BookVO selectLectureViewList(LectureVO LectureVO) throws Exception{
+	public LectureVO selectLectureViewList(LectureVO LectureVO) throws Exception{
 		return selectOne("lecture.selectLectureViewList", LectureVO);
+	}
+
+	public BookVO selectLectureViewBookList(LectureVO LectureVO) throws Exception{
+		return selectOne("lecture.selectLectureViewBookList", LectureVO);
+	}
+
+	public List<?> selectSubjectTeacherList(LectureVO LectureVO) throws Exception{
+		return selectList("lecture.selectSubjectTeacherList", LectureVO);
+	}
+
+	public int selectLectureOrderCnt(LectureVO LectureVO) throws Exception{
+		return (Integer)selectOne("lecture.selectLectureOrderCnt", LectureVO);
 	}
 
 	

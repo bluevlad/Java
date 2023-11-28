@@ -7,7 +7,7 @@ public interface SubjectService {
 	/**
 	 * 과목정보 목록을 조회한다.
 	 * @param LectureVO
-	 * @return List - 시험 목록
+	 * @return List - 과목 목록
 	 */
 	List<?> selectSubjectList(LectureVO LectureVO) throws Exception;
 
@@ -26,21 +26,28 @@ public interface SubjectService {
 	public LectureVO selectSubjectDetail(LectureVO LectureVO) throws Exception;
 
 	/**
-	 * 시험문제정보를 신규로 등록한다.
-	 * @param ExamVO
+	 * 과목정보를 신규로 등록한다.
+	 * @param LectureVO
 	 */
 	void insertSubject(LectureVO LectureVO) throws Exception;
 
 	/**
-	 * 기 등록된 시험문제정보를 수정한다.
-	 * @param ExamVO
+	 * 기 등록된 과목정보를 수정한다.
+	 * @param LectureVO
 	 */
 	void updateSubject(LectureVO LectureVO) throws Exception;
 
 	/**
-	 * 기 등록된 시험문제정보를 수정한다.
-	 * @param ExamVO
+	 * 기 등록된 과목정보를 삭제한다.
+	 * @param LectureVO
 	 */
 	void deleteSubject(LectureVO LectureVO) throws Exception;
+
+	/**
+	 * 과목정보 목록을 조회한다.
+	 * @param LectureVO
+	 * @return List - 직렬정보
+	 */
+	List<?> selectCategoryList(LectureVO LectureVO) throws Exception;
 
 }
