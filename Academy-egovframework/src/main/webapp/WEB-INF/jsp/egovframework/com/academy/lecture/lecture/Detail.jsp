@@ -145,6 +145,38 @@ function fn_save(){
 			<th>${title}<span class="pilsu">*</span></th>
 			<td class="left" colspan="3"><input name="subjectPoint" type="text" value="${LectureVO.subjectPoint}" style="width:90%;"></td>
 		</tr>
+		<!-- 주교재 -->
+		<c:set var="title"><spring:message code="lec.lecture.subjectVodDefaultPath"/></c:set>
+		<tr>
+			<th>${title}<span class="pilsu">*</span></th>
+			<td class="left" colspan="3">
+                <table class="tdTable" id="bookJuArea">
+                    <tr>
+                        <th width="15%">직급</th>
+                        <th width="15%">학습형태</th>
+                        <th>교재명</th>
+                        <th width="10%">삭제</th>
+                    </tr>
+                    <c:set var="CHECKBOOKSET" value="N" />
+                    <c:forEach items="${viewbooklist}" var="item" varStatus="loop">
+                        <c:if test="${item.bookFlag eq 'J'}">
+                        <c:set var="CHECKBOOKSET" value="Y" />
+                            <tr>
+                                <td>${item.categoryNm}</td>
+                                <td>${item.formName}</td>
+                                <td><a href="javascript:fn_summary('${item.RSC_ID}')">${item.BOOK_NM}</a></td>
+                                <td><input name="BTN_BOOKDEL" type="button" value="삭제"/><input type="hidden" name="RSC_ID" value="${item.RSC_ID}" /></td>
+                            </tr>
+                        </c:if>
+                    </c:forEach>
+                    <c:if test="${CHECKBOOKSET eq 'N'}">
+                        <tr class="basic_space">
+                            <td colspan="4">&nbsp;</td>
+                        </tr>
+                    </c:if>
+                </table>
+			</td>
+		</tr>
 		<!-- 동영상 기본경로 -->
 		<c:set var="title"><spring:message code="lec.lecture.subjectVodDefaultPath"/></c:set>
 		<tr>

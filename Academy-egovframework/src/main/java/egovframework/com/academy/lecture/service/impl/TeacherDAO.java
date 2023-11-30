@@ -25,12 +25,12 @@ import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
 @Repository("teacherDAO")
 public class TeacherDAO extends EgovComAbstractDAO{
 
-    public List<?> teacherList(MemberVO MemberVO) throws Exception{
-        return getSqlSession().selectList("teacher.teacherList", MemberVO);
+    public List<?> selectTeacherList(MemberVO MemberVO) throws Exception{
+        return getSqlSession().selectList("teacher.selectTeacherList", MemberVO);
     }
 
-    public int teacherListCount(MemberVO MemberVO) throws Exception{
-        return getSqlSession().selectOne("teacher.teacherListCount", MemberVO);
+    public int selectTeacherListCount(MemberVO MemberVO) throws Exception{
+        return getSqlSession().selectOne("teacher.selectTeacherListCount", MemberVO);
     }
 
     public MemberVO teacherDetail(MemberVO MemberVO) throws Exception{

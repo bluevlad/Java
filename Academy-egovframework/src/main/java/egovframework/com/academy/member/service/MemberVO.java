@@ -83,7 +83,13 @@ public class MemberVO implements Serializable {
     /**  자택주소 상세 */
     private String address2;
     /**  관심분야(직종코드 - 회원에 사용) */
-    private String categoryCode;
+    private String categoryCd;
+    /**  관심분야명(직종코드 - 회원에 사용) */
+    private String categoryNm;
+    /**  과목코드 */
+    private String subjectCd;
+    /**  과목명 */
+    private String subjectNm;
     /**  포인트 */
     private int userPoint;
     /**  특이사항 */
@@ -617,22 +623,62 @@ public class MemberVO implements Serializable {
 	public void setUserPoint(int userPoint) {
 		this.userPoint = userPoint;
 	}
-	
 	/**
-	 * categoryCode attribute 를 리턴한다.
+	 * categoryCd attribute 를 리턴한다.
 	 * @return String
 	 */
-	public String getCategoryCode() {
-		return categoryCode;
+	public String getCategoryCd() {
+		return categoryCd;
 	}
 	/**
-	 * categoryCode attribute 값을 설정한다.
-	 * @param categoryCode String
+	 * categoryCd attribute 값을 설정한다.
+	 * @param categoryCd String
 	 */
-	public void setCategoryCode(String categoryCode) {
-		this.categoryCode = categoryCode;
+	public void setCategoryCd(String categoryCd) {
+		this.categoryCd = categoryCd;
 	}
-	
+	/**
+	 * categoryNm attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getCategoryNm() {
+		return categoryNm;
+	}
+	/**
+	 * categoryNm attribute 값을 설정한다.
+	 * @param categoryNm String
+	 */
+	public void setCategoryNm(String categoryNm) {
+		this.categoryNm = categoryNm;
+	}
+	/**
+	 * subjectCd attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getSubjectCd() {
+		return subjectCd;
+	}
+	/**
+	 * subjectCd attribute 값을 설정한다.
+	 * @param subjectCd String
+	 */
+	public void setSubjectCd(String subjectCd) {
+		this.subjectCd = subjectCd;
+	}
+	/**
+	 * subjectNm attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getSubjectNm() {
+		return subjectNm;
+	}
+	/**
+	 * subjectNm attribute 값을 설정한다.
+	 * @param subjectNm String
+	 */
+	public void setSubjectNm(String subjectNm) {
+		this.subjectNm = subjectNm;
+	}
 	/**
 	 * memo attribute 를 리턴한다.
 	 * @return String

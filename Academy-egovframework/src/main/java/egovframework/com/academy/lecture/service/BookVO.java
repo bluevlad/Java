@@ -50,10 +50,8 @@ public class BookVO implements Serializable {
     /** 사용 여부 */
     private String isUse;
     
-	/** 순번 */
-	private int seq;
 	/** 교재코드(L + 현재날짜 + 시퀀스5자리, 시퀀스가 20일경우 앞의 3자리는 0으로 채운다) */
-	private String rscId;
+	private String bookCd;
 	/** 과목(과목코드#강사아이디로 입력)(과목을 두개 이상 추가할 경우,로 구분) */
 	private String subjectCd;
     /** 직종코드 */
@@ -327,34 +325,19 @@ public class BookVO implements Serializable {
 	public void setIsUse(String isUse) {
 		this.isUse = isUse;
 	}
-	
 	/**
-	 * seq attribute 를 리턴한다.
-	 * @return int
-	 */
-	public int getSeq() {
-		return seq;
-	}
-	/**
-	 * seq attribute 값을 설정한다.
-	 * @param seq int
-	 */
-	public void setSeq(int seq) {
-		this.seq = seq;
-	}
-	/**
-	 * rscId attribute 를 리턴한다.
+	 * bookCd attribute 를 리턴한다.
 	 * @return String
 	 */
-	public String getRscId() {
-		return rscId;
+	public String getBookCd() {
+		return bookCd;
 	}
 	/**
-	 * rscId attribute 값을 설정한다.
-	 * @param rscId String
+	 * bookCd attribute 값을 설정한다.
+	 * @param bookCd String
 	 */
-	public void setRscId(String rscId) {
-		this.rscId = rscId;
+	public void setBookCd(String bookCd) {
+		this.bookCd = bookCd;
 	}
 	
 	/**

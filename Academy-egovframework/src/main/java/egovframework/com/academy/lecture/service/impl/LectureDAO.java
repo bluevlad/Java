@@ -27,8 +27,8 @@ public class LectureDAO extends EgovComAbstractDAO {
 		return selectOne("lecture.selectLectureViewList", LectureVO);
 	}
 
-	public BookVO selectLectureViewBookList(LectureVO LectureVO) throws Exception{
-		return selectOne("lecture.selectLectureViewBookList", LectureVO);
+	public List<?> selectLectureViewBookList(LectureVO LectureVO) throws Exception{
+		return selectList("lecture.selectLectureViewBookList", LectureVO);
 	}
 
 	public List<?> selectSubjectTeacherList(LectureVO LectureVO) throws Exception{

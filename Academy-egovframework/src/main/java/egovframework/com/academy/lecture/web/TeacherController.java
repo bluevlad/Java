@@ -74,9 +74,9 @@ public class TeacherController {
 		MemberVO.setLastIndex(paginationInfo.getLastRecordIndex());
 		MemberVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
 
-		model.addAttribute("resultList", teacherService.teacherList(MemberVO));
+		model.addAttribute("resultList", teacherService.selectTeacherList(MemberVO));
 
-		int totCnt = teacherService.teacherListCount(MemberVO);
+		int totCnt = teacherService.selectTeacherListCount(MemberVO);
 		paginationInfo.setTotalRecordCount(totCnt);
 		model.addAttribute("paginationInfo", paginationInfo);
 		
@@ -97,11 +97,6 @@ public class TeacherController {
         MemberVO.setUserId((String) commandMap.get("userId"));
 
      	//공통코드 질문유형 조회
-    	ComDefaultCodeVO voComCode = new ComDefaultCodeVO();
-    	voComCode.setCodeId("USRGRP");
-    	List<?> listComCode = cmmUseService.selectCmmCodeDetail(voComCode);
-    	model.addAttribute("cmmCodeUSRGRP", listComCode);
-
         MemberVO = teacherService.teacherDetail(MemberVO);
         model.addAttribute("MemberVO", MemberVO);
         

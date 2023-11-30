@@ -91,47 +91,6 @@ function fn_save(){
 			<th>${title}<span class="pilsu">*</span></th>
 			<td class="left" colspan="3"><input name="userPwd" type="text" value="${MemberVO.userPwd}" style="width:90%;"></td>
 		</tr>
-		<!-- 직책 -->
-		<c:set var="title"><spring:message code="member.userRole"/></c:set>
-		<tr>
-			<th>${title}<span class="pilsu">*</span></th>
-			<td class="left" colspan="3">
-  				<select id="userRole" name="userRole" title="<spring:message code='member.userRole'/><spring:message code='input.cSelect'/>" style="width:200px;"><!-- title="질문유형 선택" -->
-				<c:forEach items="${cmmCodeUSRGRP}" var="comCodeList" varStatus="status">
-				<option value="${comCodeList.code}" <c:if test="${comCodeList.code eq MemberVO.userRole}">selected</c:if>>${comCodeList.codeNm}</option>
-				</c:forEach>
-				</select>
-			</td>
-		</tr>
-		<!-- 직책 -->
-		<c:set var="title"><spring:message code="member.sex"/></c:set>
-		<tr>
-			<th>${title}<span class="pilsu">*</span></th>
-			<td class="left" colspan="3"><input name="sex" type="text" value="${MemberVO.sex}" style="width:90%;"></td>
-		</tr>
-		<c:set var="title"><spring:message code="member.isokSms"/></c:set>
-		<tr>
-			<th><label for="isokSms">${title}</label></th>
-			<td class="left">
-				<form:select path="isokSms" id="isokSms" title="${title} ${inputTxt}">
-                    <form:option value="Y" label="${inputYes}"/>
-                    <form:option value="N" label="${inputNo}"/>
-                </form:select>
-                <div><form:errors path="isUse" cssClass="error"/></div>
-			</td>
-		</tr>
-
-		<c:set var="title"><spring:message code="member.isokEmail"/></c:set>
-		<tr>
-			<th><label for="isokEmail">${title}</label></th>
-			<td class="left">
-				<form:select path="isokEmail" id="isokEmail" title="${title} ${inputTxt}">
-                    <form:option value="Y" label="${inputYes}"/>
-                    <form:option value="N" label="${inputNo}"/>
-                </form:select>
-                <div><form:errors path="isUse" cssClass="error"/></div>
-			</td>
-		</tr>
 		<!-- 사용여부 -->
 		<c:set var="title"><spring:message code="member.isUse"/></c:set>
 		<tr>

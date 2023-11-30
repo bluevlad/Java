@@ -64,7 +64,7 @@ public class LectureVO implements Serializable {
     private String formName;
  
     /** 강의코드 (D-단과, J-종합반, N-선택형종합반,P-패키지) */
-    private String leccode;
+    private String lecCd;
     /** 직종코드 */
     private String categoryCd;
     /** 직종명 */
@@ -72,37 +72,37 @@ public class LectureVO implements Serializable {
     /** 학습형태코드 단과반 (이론단과[M0101],문풀단과[M0102],유료특강[M0103],무료특강[M0104]) */
     private String learningCd;
     /** 담당교수아이디 */
-    private String subjectTeacher;
+    private String lecTeacher;
     /** 담당교수명 */
-    private String subjectTeacherNm;
+    private String lecTeacherNm;
     /** 담당교수 강사료 지급률 */
-    private String subjectTeacherPayment;
+    private String lecTeacherPayment;
     /** 단과명 */
-    private String subjectTitle;
+    private String lecTitle;
     /** 단과 상세설명 */
-    private String subjectDesc;
+    private String lecDesc;
     /** 키워드 */
-    private String subjectKeyword;
+    private String lecKeyword;
     /** 기간 - 일수 */
-    private int subjectPeriod;
+    private int lecPeriod;
     /** 할인율 */
-    private int subjectDiscount;
+    private int lecDiscount;
     /** 원가 */
-    private int subjectPrice;
+    private int lecPrice;
     /** 포인트 */
-    private int subjectPoint;
+    private int lecPoint;
     /** 동영상 수강료 */
-    private int subjectMovie;
+    private int lecMovie;
     /** 동영상 기본경로(500K) */
-    private String subjectVodDefaultPath;
+    private String lecVodDefaultPath;
     /** 보강 비밀번호 */
-    private String subjectPass;
+    private String lecPass;
     /** 강의예정회차 */
     private String lecSchedule;
     /** 강의종류 (D-단과, J-종합반, N-선택형종합반,P-패키지) */
     private String lecTypeChoice;
     /** 강의등록상태 (C:업데이트 예정, I: 업데이트 중, E:업데이트 완료) */
-    private String movIng;
+    private String lecFlag;
     /** 강의수 */
     private String lecCount;
     /** 복사원본 강의코드 */
@@ -113,6 +113,12 @@ public class LectureVO implements Serializable {
     private int yCnt;
     /** 무료 수강생수 */
     private int nCnt;
+    /** 교재구분 */
+    private String bookFlag;
+	/** 교재코드 */
+	private String rscId;
+    /** 도서명 */
+    private String bookNm;
 
 	/**
 	 * searchCondition attribute 를 리턴한다.
@@ -407,18 +413,18 @@ public class LectureVO implements Serializable {
 	}
 	
 	/**
-	 * leccode attribute 를 리턴한다.
+	 * lecCd attribute 를 리턴한다.
 	 * @return String
 	 */
-	public String getLeccode() {
-		return leccode;
+	public String getLecCd() {
+		return lecCd;
 	}
 	/**
-	 * leccode attribute 값을 설정한다.
-	 * @param leccode String
+	 * lecCd attribute 값을 설정한다.
+	 * @param lecCd String
 	 */
-	public void setLeccode(String leccode) {
-		this.leccode = leccode;
+	public void setLecCd(String lecCd) {
+		this.lecCd = lecCd;
 	}
 	/**
 	 * categoryCd attribute 를 리턴한다.
@@ -463,186 +469,186 @@ public class LectureVO implements Serializable {
 		this.learningCd = learningCd;
 	}
 	/**
-	 * subjectTeacher attribute 를 리턴한다.
+lecTeacher attribute 를 리턴한다.
 	 * @return String
 	 */
-	public String getSubjectTeacher() {
-		return subjectTeacher;
+	public String getLecTeacher() {
+		return lecTeacher;
 	}
 	/**
-	 * subjectTeacher attribute 값을 설정한다.
-	 * @param subjectTeacher String
+	 * lecTeacher attribute 값을 설정한다.
+	 * @param lecTeacher String
 	 */
-	public void setSubjectTeacher(String subjectTeacher) {
-		this.subjectTeacher = subjectTeacher;
+	public void setLecTeacher(String lecTeacher) {
+		this.lecTeacher = lecTeacher;
 	}
 	/**
-	 * subjectTeacherNm attribute 를 리턴한다.
+	 * lecTeacherNm attribute 를 리턴한다.
 	 * @return String
 	 */
-	public String getSubjectTeacherNm() {
-		return subjectTeacherNm;
+	public String getLecTeacherNm() {
+		return lecTeacherNm;
 	}
 	/**
-	 * subjectTeacherNm attribute 값을 설정한다.
-	 * @param subjectTeacherNm String
+	 * lecTeacherNm attribute 값을 설정한다.
+	 * @param lecTeacherNm String
 	 */
-	public void setSubjectTeacherNm(String subjectTeacherNm) {
-		this.subjectTeacherNm = subjectTeacherNm;
+	public void setLecTeacherNm(String lecTeacherNm) {
+		this.lecTeacherNm = lecTeacherNm;
 	}
 	/**
-	 * subjectTeacherPayment attribute 를 리턴한다.
+	 * lecTeacherPayment attribute 를 리턴한다.
 	 * @return String
 	 */
-	public String getSubjectTeacherPayment() {
-		return subjectTeacherPayment;
+	public String getLecTeacherPayment() {
+		return lecTeacherPayment;
 	}
 	/**
-	 * subjectTeacherPayment attribute 값을 설정한다.
-	 * @param subjectTeacherPayment String
+	 * lecTeacherPayment attribute 값을 설정한다.
+	 * @param lecTeacherPayment String
 	 */
-	public void setSubjectTeacherPayment(String subjectTeacherPayment) {
-		this.subjectTeacherPayment = subjectTeacherPayment;
+	public void setLecTeacherPayment(String lecTeacherPayment) {
+		this.lecTeacherPayment = lecTeacherPayment;
 	}
 	/**
-	 * subjectTitle attribute 를 리턴한다.
+	 * lecTitle attribute 를 리턴한다.
 	 * @return String
 	 */
-	public String getSubjectTitle() {
-		return subjectTitle;
+	public String getLecTitle() {
+		return lecTitle;
 	}
 	/**
-	 * subjectTitle attribute 값을 설정한다.
+	 * lecTitle attribute 값을 설정한다.
 	 * @param subjectTitle String
 	 */
-	public void setSubjectTitle(String subjectTitle) {
-		this.subjectTitle = subjectTitle;
+	public void setLecTitle(String lecTitle) {
+		this.lecTitle = lecTitle;
 	}
 	/**
-	 * subjectDesc attribute 를 리턴한다.
+	 * lecDesc attribute 를 리턴한다.
 	 * @return String
 	 */
-	public String getSubjectDesc() {
-		return subjectDesc;
+	public String getLecDesc() {
+		return lecDesc;
 	}
 	/**
-	 * subjectDesc attribute 값을 설정한다.
-	 * @param subjectDesc String
+	 * lecDesc attribute 값을 설정한다.
+	 * @param lecDesc String
 	 */
-	public void setSubjectDesc(String subjectDesc) {
-		this.subjectDesc = subjectDesc;
+	public void setLecDesc(String lecDesc) {
+		this.lecDesc = lecDesc;
 	}
 	/**
-	 * subjectKeyword attribute 를 리턴한다.
+	 * lecKeyword attribute 를 리턴한다.
 	 * @return String
 	 */
-	public String getSubjectKeyword() {
-		return subjectKeyword;
+	public String getLecKeyword() {
+		return lecKeyword;
 	}
 	/**
-	 * subjectKeyword attribute 값을 설정한다.
-	 * @param subjectKeyword String
+	 * lecKeyword attribute 값을 설정한다.
+	 * @param lecKeyword String
 	 */
-	public void setSubjectKeyword(String subjectKeyword) {
-		this.subjectKeyword = subjectKeyword;
+	public void setLecKeyword(String lecKeyword) {
+		this.lecKeyword = lecKeyword;
 	}
 	/**
-	 * subjectPeriod attribute 를 리턴한다.
+	 * lecPeriod attribute 를 리턴한다.
 	 * @return int
 	 */
-	public int getSubjectPeriod() {
-		return subjectPeriod;
+	public int getLecPeriod() {
+		return lecPeriod;
 	}
 	/**
-	 * subjectPeriod attribute 값을 설정한다.
-	 * @param subjectPeriod int
+	 * lecPeriod attribute 값을 설정한다.
+	 * @param lecPeriod int
 	 */
-	public void setSubjectPeriod(int subjectPeriod) {
-		this.subjectPeriod = subjectPeriod;
+	public void setLecPeriod(int lecPeriod) {
+		this.lecPeriod = lecPeriod;
 	}
 	/**
-	 * subjectDiscount attribute 를 리턴한다.
+	 * lecDiscount attribute 를 리턴한다.
 	 * @return int
 	 */
-	public int getSubjectDiscount() {
-		return subjectDiscount;
+	public int getLecDiscount() {
+		return lecDiscount;
 	}
 	/**
-	 * subjectDiscount attribute 값을 설정한다.
-	 * @param subjectDiscount int
+	 * lecDiscount attribute 값을 설정한다.
+	 * @param lecDiscount int
 	 */
-	public void setSubjectDiscount(int subjectDiscount) {
-		this.subjectDiscount = subjectDiscount;
+	public void setLecDiscount(int lecDiscount) {
+		this.lecDiscount = lecDiscount;
 	}
 	/**
-	 * subjectPrice attribute 를 리턴한다.
+	 * lecPrice attribute 를 리턴한다.
 	 * @return int
 	 */
-	public int getSubjectPrice() {
-		return subjectPrice;
+	public int getLecPrice() {
+		return lecPrice;
 	}
 	/**
-	 * subjectPrice attribute 값을 설정한다.
-	 * @param subjectPrice int
+	 * lecPrice attribute 값을 설정한다.
+	 * @param lecPrice int
 	 */
-	public void setSubjectPrice(int subjectPrice) {
-		this.subjectPrice = subjectPrice;
+	public void setLecPrice(int lecPrice) {
+		this.lecPrice = lecPrice;
 	}
 	/**
-	 * subjectPoint attribute 를 리턴한다.
+	 * lecPoint attribute 를 리턴한다.
 	 * @return int
 	 */
-	public int getSubjectPoint() {
-		return subjectPoint;
+	public int getLecPoint() {
+		return lecPoint;
 	}
 	/**
-	 * subjectPoint attribute 값을 설정한다.
-	 * @param subjectPoint int
+	 * lecPoint attribute 값을 설정한다.
+	 * @param lecPoint int
 	 */
-	public void setSubjectPoint(int subjectPoint) {
-		this.subjectPoint = subjectPoint;
+	public void setLecPoint(int lecPoint) {
+		this.lecPoint = lecPoint;
 	}
 	/**
-	 * subjectMovie attribute 를 리턴한다.
+	 * lecMovie attribute 를 리턴한다.
 	 * @return int
 	 */
-	public int getSubjectMovie() {
-		return subjectMovie;
+	public int getLecMovie() {
+		return lecMovie;
 	}
 	/**
-	 * subjectMovie attribute 값을 설정한다.
-	 * @param subjectMovie int
+	 * lecMovie attribute 값을 설정한다.
+	 * @param lecMovie int
 	 */
-	public void setSubjectMovie(int subjectMovie) {
-		this.subjectMovie = subjectMovie;
+	public void setLecMovie(int lecMovie) {
+		this.lecMovie = lecMovie;
 	}
 	/**
-	 * subjectVodDefaultPath attribute 를 리턴한다.
+	 * lecVodDefaultPath attribute 를 리턴한다.
 	 * @return String
 	 */
-	public String getSubjectVodDefaultPath() {
-		return subjectVodDefaultPath;
+	public String getLecVodDefaultPath() {
+		return lecVodDefaultPath;
 	}
 	/**
-	 * subjectVodDefaultPath attribute 값을 설정한다.
-	 * @param subjectVodDefaultPath String
+	 * lecVodDefaultPath attribute 값을 설정한다.
+	 * @param lecVodDefaultPath String
 	 */
-	public void setSubjectVodDefaultPath(String subjectVodDefaultPath) {
-		this.subjectVodDefaultPath = subjectVodDefaultPath;
+	public void setLecVodDefaultPath(String lecVodDefaultPath) {
+		this.lecVodDefaultPath = lecVodDefaultPath;
 	}
 	/**
-	 * subjectPass attribute 를 리턴한다.
+	 * lecPass attribute 를 리턴한다.
 	 * @return String
 	 */
-	public String getSubjectPass() {
-		return subjectPass;
+	public String getLecPass() {
+		return lecPass;
 	}
 	/**
-	 * subjectPass attribute 값을 설정한다.
-	 * @param subjectPass String
+	 * lecPass attribute 값을 설정한다.
+	 * @param lecPass String
 	 */
-	public void setSubjectPass(String subjectPass) {
-		this.subjectPass = subjectPass;
+	public void setLecPass(String lecPass) {
+		this.lecPass = lecPass;
 	}
 	/**
 	 * lecSchedule attribute 를 리턴한다.
@@ -673,18 +679,18 @@ public class LectureVO implements Serializable {
 		this.lecTypeChoice = lecTypeChoice;
 	}
 	/**
-	 * movIng attribute 를 리턴한다.
+	 * lecFlag attribute 를 리턴한다.
 	 * @return String
 	 */
-	public String getMovIng() {
-		return movIng;
+	public String getLecFlag() {
+		return lecFlag;
 	}
 	/**
-	 * movIng attribute 값을 설정한다.
-	 * @param movIng String
+	 * lecFlag attribute 값을 설정한다.
+	 * @param lecFlag String
 	 */
-	public void setMovIng(String movIng) {
-		this.movIng = movIng;
+	public void setLecFlag(String lecFlag) {
+		this.lecFlag = lecFlag;
 	}
 	/**
 	 * lecCount attribute 를 리턴한다.
@@ -755,6 +761,48 @@ public class LectureVO implements Serializable {
 	 */
 	public void setNCnt(int nCnt) {
 		this.nCnt = nCnt;
+	}
+	/**
+	 * bookFlag attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getBookFlag() {
+		return bookFlag;
+	}
+	/**
+	 * bookFlag attribute 값을 설정한다.
+	 * @param bookFlag String
+	 */
+	public void setBookFlag(String bookFlag) {
+		this.bookFlag = bookFlag;
+	}
+	/**
+	 * rscId attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getRscId() {
+		return rscId;
+	}
+	/**
+	 * rscId attribute 값을 설정한다.
+	 * @param rscId String
+	 */
+	public void setRscId(String rscId) {
+		this.rscId = rscId;
+	}
+	/**
+	 * bookNm attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getBookNm() {
+		return bookNm;
+	}
+	/**
+	 * bookNm attribute 값을 설정한다.
+	 * @param bookNm String
+	 */
+	public void setBookNm(String bookNm) {
+		this.bookNm = bookNm;
 	}
 	
 }

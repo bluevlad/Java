@@ -13,7 +13,7 @@ public interface LectureService {
 
 	LectureVO selectLectureViewList(LectureVO LectureVO) throws Exception;
 
-	BookVO selectLectureViewBookList(LectureVO LectureVO) throws Exception;
+	List<?> selectLectureViewBookList(LectureVO LectureVO) throws Exception;
 
 	List<?> selectSubjectTeacherList(LectureVO LectureVO) throws Exception;
 

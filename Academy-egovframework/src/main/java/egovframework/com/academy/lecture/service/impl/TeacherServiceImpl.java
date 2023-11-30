@@ -36,13 +36,13 @@ public class TeacherServiceImpl extends EgovAbstractServiceImpl implements Teach
 	 * @throws Exception
 	 */
     @Override
-    public List<?> teacherList(MemberVO MemberVO) throws Exception {
-        return teacherDAO.teacherList(MemberVO);
+    public List<?> selectTeacherList(MemberVO MemberVO) throws Exception {
+        return teacherDAO.selectTeacherList(MemberVO);
     }
 
     @Override
-    public int teacherListCount(MemberVO MemberVO) throws Exception {
-        return teacherDAO.teacherListCount(MemberVO);
+    public int selectTeacherListCount(MemberVO MemberVO) throws Exception {
+        return teacherDAO.selectTeacherListCount(MemberVO);
     }
 
     @Override

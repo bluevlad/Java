@@ -39,7 +39,7 @@ public class LectureServiceImpl extends EgovAbstractServiceImpl implements Lectu
 	}	
 	
 	@Override
-	public BookVO selectLectureViewBookList(LectureVO LectureVO) throws Exception{
+	public List<?> selectLectureViewBookList(LectureVO LectureVO) throws Exception{
 		return lecturedao.selectLectureViewBookList(LectureVO);
 	}	
 	

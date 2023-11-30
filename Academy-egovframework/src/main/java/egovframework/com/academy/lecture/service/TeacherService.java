@@ -12,9 +12,9 @@ public interface TeacherService {
 	 * @return List - 시험 목록
 	 */
 
-	List<?> teacherList(MemberVO MemberVO) throws Exception;
+	List<?> selectTeacherList(MemberVO MemberVO) throws Exception;
 
-    int teacherListCount(MemberVO MemberVO) throws Exception;
+    int selectTeacherListCount(MemberVO MemberVO) throws Exception;
 
     MemberVO teacherDetail(MemberVO MemberVO) throws Exception;
 

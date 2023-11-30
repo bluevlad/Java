@@ -81,18 +81,18 @@ function fn_search(){
 	<colgroup>
 		<col style="width: 10%;">
 		<col style="width: 15%;">
+		<col style="width: 15%;">
+		<col style="width: 15%;">
 		<col style="width: ;">
-		<col style="width: 15%;">
-		<col style="width: 15%;">
 		<col style="width: 15%;">
 	</colgroup>
 	<thead>
 	<tr>
 		<th><spring:message code="table.num" /></th><!-- 번호 -->
-		<th><spring:message code="member.userId" /></th><!-- 사용자아이디 -->
-		<th class="board_th_link"><spring:message code="member.userNm" /></th><!--  사용자명 -->
-		<th><spring:message code="member.userPosition" /></th><!-- 사용자구분 -->
-		<th><spring:message code="member.email" /></th><!--이메일 -->
+		<th><spring:message code="lec.categoryInfo" /></th><!-- 직종 -->
+		<th><spring:message code="lec.subjectNm" /></th><!-- 과목명 -->
+		<th><spring:message code="lec.teacher.code" /></th><!--강사아이디 -->
+		<th class="board_th_link"><spring:message code="lec.teacher.name" /></th><!-- 강사명 -->
 		<th><spring:message code="member.isUse" /></th><!--사용여부 -->
 	</tr>
 	</thead>
@@ -108,16 +108,16 @@ function fn_search(){
 	  <tr>
 	  	<!-- 번호 -->
 		<td class="lt_text3">${(MemberVO.pageIndex-1) * MemberVO.pageSize + status.count}</td>
+		<!-- 사용자구분-->
+		<td class="lt_text3"><c:out value="${resultInfo.categoryNm}"/></td>
+		<!-- 이메일 -->
+		<td class="lt_text3"><c:out value="${resultInfo.subjectNm}"/></td>
 		<!-- 사용자아이디 -->
 		<td class="lt_text3"><c:out value="${resultInfo.userId}"/></td>
 		<!-- 사용자명  -->
 		<td class="lt_text3L">
 			<a href="<c:url value='/academy/leture/teacher/Detail.do'/>?userId=${resultInfo.userId}"><c:out value='${resultInfo.userNm}'/></a>
     	</td>
-		<!-- 사용자구분-->
-		<td class="lt_text3"><c:out value="${resultInfo.userPosition}"/></td>
-		<!-- 이메일 -->
-		<td class="lt_text3"><c:out value="${resultInfo.email}"/></td>
 		<!-- 사용여부 -->
 		<td class="lt_text3"><c:out value="${resultInfo.isUse}"/></td>
       </tr>	  

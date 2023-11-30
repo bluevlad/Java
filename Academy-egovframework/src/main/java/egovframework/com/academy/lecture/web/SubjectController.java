@@ -72,7 +72,7 @@ public class SubjectController {
 
 		int totCnt = subjectService.selectSubjectListTotCnt(LectureVO);
 		paginationInfo.setTotalRecordCount(totCnt);
-		model.addAttribute("paginationInfo", paginationInfo);
+		model.addAttribute("paginationInfo", paginationInfo); 
 		
 		return "egovframework/com/academy/lecture/subject/List";
 	}
