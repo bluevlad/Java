@@ -92,8 +92,8 @@ public class LecFormServiceImpl extends EgovAbstractServiceImpl implements LecFo
 	 * @throws Exception
 	 */
 	@Override
-	public List<?> selectFormListAll(LectureVO LectureVO) throws Exception {
-		return lecFormDAO.selectFormListAll(LectureVO);
+	public List<?> getFormList(LectureVO LectureVO) throws Exception {
+		return lecFormDAO.getFormList(LectureVO);
 	}
 
 }

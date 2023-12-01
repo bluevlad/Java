@@ -97,4 +97,13 @@ public class SubjectServiceImpl extends EgovAbstractServiceImpl implements Subje
 		return subjectDAO.selectCategoryList(LectureVO);
 	}
 
+	/**
+	 * @return List<?> 과목 목록정보
+	 * @throws Exception
+	 */
+	@Override
+	public List<?> getSubjectList(LectureVO LectureVO) throws Exception {
+		return subjectDAO.getSubjectList(LectureVO);
+	}
+
 }

@@ -73,6 +73,15 @@ function fn_save(){
 		<c:set var="inputYes"><spring:message code="input.yes" /></c:set>
 		<c:set var="inputNo"><spring:message code="input.no" /></c:set>
 		
+		<!-- 직렬(분류) -->
+		<c:set var="title"><spring:message code="lec.categoryInfo"/></c:set>
+		<tr>
+			<th>${title}<span class="pilsu">*</span></th>
+			<td class="left">
+		        <form:checkboxes path="categoryCd" items="${categoryList}" itemValue="categoryCd" itemLabel="categoryNm" cssClass="check2" cssStyle="padding:10px; vertical-align : middle;"/>
+		        <form:errors path="categoryCd" cssClass="error"/>
+			</td>
+		</tr>
 		<!-- 사용자아이디 -->
 		<c:set var="title"><spring:message code="member.userId"/></c:set>
 		<tr>
@@ -90,6 +99,38 @@ function fn_save(){
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
 			<td class="left" colspan="3"><input name="userPwd" type="text" value="${MemberVO.userPwd}" style="width:90%;"></td>
+		</tr>
+		<!-- 과목정보 -->
+		<c:set var="title"><spring:message code="lec.subjectNm"/></c:set>
+		<tr>
+			<th><label for="isUse">${title}</label></th>
+			<td class="left">
+                <table width="500px" border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td style="text-align:center;">
+							<select name="orgSubjectCd" id="orgSubjectCd" title="${title} ${inputTxt}" multiple="true" style="width:150px; height:300px">
+								<c:forEach items="${subjectList}" var="subject" varStatus="status">
+			                    <option value="${subject.subjectCd}">${subject.subjectNm}</option>
+			                    </c:forEach>
+			                </select>
+                        </td>
+                        <td style="text-align:center;" width="100px" height="143px">
+                            <span class="btn_pack medium"><button type="button" onclick="javascript:fn_AddSel();">&gt;&gt; 추가</button></span>
+                            <br/> <br/>
+                            <span class="btn_pack medium"><button type="button" onclick="javascript:fn_DelSel();">&lt;&lt; 삭제</button></span>
+                        </td>
+                        <td style="text-align:center;">
+							<form:select path="subjectCd" id="subjectCd" title="${title} ${inputTxt}" multiple="true" style="width:150px; height:300px">
+								<c:forEach items="${subjectList}" var="subject" varStatus="status">
+			                    <form:option value="${subject.subjectCd}" label="${subject.subjectNm}"/>
+			                    </c:forEach>
+			                </form:select>
+			                <div><form:errors path="subjectCd" cssClass="error"/></div>
+                        </td>
+                    </tr>
+                </table>
+			
+			</td>
 		</tr>
 		<!-- 사용여부 -->
 		<c:set var="title"><spring:message code="member.isUse"/></c:set>

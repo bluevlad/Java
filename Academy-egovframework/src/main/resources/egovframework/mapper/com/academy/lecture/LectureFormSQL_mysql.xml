@@ -93,10 +93,11 @@
 		</if>
 	</select>
 
-	<select id="selectFormListAll" parameterType="egovframework.com.academy.lecture.service.LectureVO" 
+	<select id="getFormList" parameterType="egovframework.com.academy.lecture.service.LectureVO" 
 										resultType="egovframework.com.academy.lecture.service.LectureVO">
 		SELECT FORM_CODE, FORM_NAME, IS_USE, REG_DT, REG_ID, UPD_DT, UPD_ID
 		FROM ACM_LEARNING_FORM_INFO
+		WHERE IS_USE = 'Y'
 	 	ORDER BY FORM_CODE ASC
 	</select>
 

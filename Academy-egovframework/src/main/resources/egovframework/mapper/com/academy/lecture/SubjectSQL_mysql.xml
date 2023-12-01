@@ -59,9 +59,16 @@
 
 	<select id="selectCategoryList" parameterType="egovframework.com.academy.lecture.service.LectureVO" 
 										resultType="egovframework.com.academy.lecture.service.LectureVO">
-		SELECT ID, CATEGORY_CD, CATEGORY_NM, IS_USE, REG_DT, REG_ID, UPD_DT, UPD_ID, USE_ON, USE_OFF, P_CODE, ORDR
+		SELECT CATEGORY_CD, CATEGORY_NM, IS_USE, REG_DT, REG_ID, UPD_DT, UPD_ID, USE_ON, USE_OFF, P_CODE, ORDR
 		FROM ACM_CATEGORY_INFO
 		WHERE IS_USE = 'Y' 
+	</select>
+
+	<select id="getSubjectList" parameterType="egovframework.com.academy.lecture.service.LectureVO" 
+										resultType="egovframework.com.academy.lecture.service.LectureVO">
+		SELECT SUBJECT_CD, SUBJECT_NM, IS_USE, REG_ID, UPD_ID, USE_ON, USE_OFF
+		FROM ACM_SUBJECT_INFO
+        WHERE IS_USE = 'Y'
 	</select>
 
 </mapper>

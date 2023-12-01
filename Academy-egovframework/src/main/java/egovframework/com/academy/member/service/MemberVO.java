@@ -114,16 +114,6 @@ public class MemberVO implements Serializable {
     private String ipindi;
     /**  오프라인강사료지급률 */
     private int offPayment;
-    /**  오프라인교수메인이미지 */
-    private String offPic1;
-    /**  오프라인교수서브이미지 */
-    private String offPic2;
-    /**  오프라인교수소개이미지1 */
-    private String offPic3;
-    /**  오프라인교수소개이미지2 */
-    private String offPic4;
-    /**  오프라인교수소개이미지3 */
-    private String offPic5;
     /**  온라인활성여부코드(y: 활성, n:비활성) */
     private String onOpenyn;
     /**  오프라인활성여부코드(y: 활성, n: 비활성) */
@@ -828,82 +818,6 @@ public class MemberVO implements Serializable {
 	public void setOffPayment(int offPayment) {
 		this.offPayment = offPayment;
 	}
-	
-	/**
-	 * offPic1 attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getOffPic1() {
-		return offPic1;
-	}
-	/**
-	 * offPic1 attribute 값을 설정한다.
-	 * @param offPic1 String
-	 */
-	public void setOffPic1(String offPic1) {
-		this.offPic1 = offPic1;
-	}
-	
-	/**
-	 * offPic2 attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getOffPic2() {
-		return offPic2;
-	}
-	/**
-	 * offPic2 attribute 값을 설정한다.
-	 * @param offPic2 String
-	 */
-	public void setOffPic2(String offPic2) {
-		this.offPic2 = offPic2;
-	}
-	
-	/**
-	 * offPic3 attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getOffPic3() {
-		return offPic3;
-	}
-	/**
-	 * offPic3 attribute 값을 설정한다.
-	 * @param offPic3 String
-	 */
-	public void setOffPic3(String offPic3) {
-		this.offPic3 = offPic3;
-	}
-	
-	/**
-	 * offPic4 attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getOffPic4() {
-		return offPic4;
-	}
-	/**
-	 * offPic4 attribute 값을 설정한다.
-	 * @param offPic4 String
-	 */
-	public void setOffPic4(String offPic4) {
-		this.offPic4 = offPic4;
-	}
-	
-	/**
-	 * offPic5 attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getOffPic5() {
-		return offPic5;
-	}
-	/**
-	 * offPic5 attribute 값을 설정한다.
-	 * @param offPic5 String
-	 */
-	public void setOffPic5(String offPic5) {
-		this.offPic5 = offPic5;
-	}
-	
 	/**
 	 * onOpenyn attribute 를 리턴한다.
 	 * @return String

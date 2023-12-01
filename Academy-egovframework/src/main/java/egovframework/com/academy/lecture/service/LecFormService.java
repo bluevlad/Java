@@ -50,6 +50,6 @@ public interface LecFormService {
 	 * @param LectureVO
 	 * @return List - 목록
 	 */
-	List<?> selectFormListAll(LectureVO LectureVO) throws Exception;
+	List<?> getFormList(LectureVO LectureVO) throws Exception;
 
 }

@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import egovframework.com.academy.lecture.service.LecFormService;
+import egovframework.com.academy.lecture.service.LectureVO;
+import egovframework.com.academy.lecture.service.SubjectService;
 import egovframework.com.academy.lecture.service.TeacherService;
 import egovframework.com.academy.member.service.MemberVO;
 import egovframework.com.cmm.ComDefaultCodeVO;
@@ -41,6 +44,12 @@ public class TeacherController {
 
 	@Resource(name = "teacherService")
 	private TeacherService teacherService;
+
+	@Resource(name = "subjectService")
+	private SubjectService subjectService;
+
+	@Resource(name = "lecFormService")
+	private LecFormService lecFormService;
 
 	/** EgovMessageSource */
 	@Resource(name = "egovMessageSource")
@@ -99,6 +108,10 @@ public class TeacherController {
      	//공통코드 질문유형 조회
         MemberVO = teacherService.teacherDetail(MemberVO);
         model.addAttribute("MemberVO", MemberVO);
+        
+        LectureVO LectureVO = new LectureVO();
+		model.addAttribute("categoryList", subjectService.selectCategoryList(LectureVO)); //직렬(분류) 리스트
+		model.addAttribute("subjectList", subjectService.getSubjectList(LectureVO)); //과목 리스트
         
 		return "egovframework/com/academy/lecture/teacher/Detail";
 	}

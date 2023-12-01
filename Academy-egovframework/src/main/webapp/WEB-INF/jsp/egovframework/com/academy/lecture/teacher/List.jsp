@@ -113,11 +113,9 @@ function fn_search(){
 		<!-- 이메일 -->
 		<td class="lt_text3"><c:out value="${resultInfo.subjectNm}"/></td>
 		<!-- 사용자아이디 -->
-		<td class="lt_text3"><c:out value="${resultInfo.userId}"/></td>
+		<td class="lt_text3"><a href="<c:url value='/academy/leture/teacher/Detail.do'/>?userId=${resultInfo.userId}"><c:out value="${resultInfo.userId}"/></a></td>
 		<!-- 사용자명  -->
-		<td class="lt_text3L">
-			<a href="<c:url value='/academy/leture/teacher/Detail.do'/>?userId=${resultInfo.userId}"><c:out value='${resultInfo.userNm}'/></a>
-    	</td>
+		<td class="lt_text3L"><a href="<c:url value='/academy/leture/teacher/Detail.do'/>?userId=${resultInfo.userId}"><c:out value='${resultInfo.userNm}'/></a></td>
 		<!-- 사용여부 -->
 		<td class="lt_text3"><c:out value="${resultInfo.isUse}"/></td>
       </tr>	  

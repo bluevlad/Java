@@ -106,7 +106,7 @@ public class LectureController {
         model.addAttribute("SEARCHGUBN", "T");
 		model.addAttribute("kindlist", subjectService.selectCategoryList(LectureVO));
         model.addAttribute("SEARCHCODEISUSE", "Y");
-		model.addAttribute("formlist", lecFormService.selectFormListAll(LectureVO)); 
+		model.addAttribute("formlist", lecFormService.getFormList(LectureVO)); 
 		model.addAttribute("subjectteacherlist", lectureservice.selectSubjectTeacherList(LectureVO));
 		model.addAttribute("lectureOrderCount", lectureservice.selectLectureOrderCnt(LectureVO));
 		model.addAttribute("rdelyn", "Y"); // 현재 선택글 삭제가능여부

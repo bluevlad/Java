@@ -92,12 +92,24 @@
 
     <insert id="insertTeacher">
         INSERT INTO ACM_MEMBER(
-            USER_ID, USER_NM, USER_PWD, USER_POSITION, SEX, USER_ROLE, ADMIN_ROLE, BIRTH_DAY, EMAIL,
-            PHONE_NO, TEL_NO, ZIP_CODE, ADDRESS1, ADDRESS2, CATEGORY_CODE, USER_POINT, REMARK, MEMO, PAYMENT,
-            PIC1, PIC2, PIC3, PIC4, PROFILE, ACCOUNT, IPINDI, IS_USE,
-            REG_DT, REG_ID, UPD_DT, UPD_ID,
-            OFF_PAYMENT, OFF_PIC1, OFF_PIC2, OFF_PIC3, OFF_PIC4, OFF_PIC5, ON_OPENYN, OFF_OPENYN,
-            OFF_MOVIE_PAYMENT, TITLE, OFF_TITLE, PROFILE_SUMMARY, BOOK_LOG_SUMMARY, ISOK_SMS, ISOK_EMAIL
+			USER_ID, USER_NM, USER_PWD, USER_POSITION, SEX, USER_ROLE, ADMIN_ROLE, BIRTH_DAY, EMAIL, ZIP_CODE, ADDRESS1, ADDRESS2,
+			CATEGORY_CODE, USER_POINT, REMARK, MEMO, PAYMENT, PIC1, PIC2, PIC3, PIC4, PROFILE, ACCOUNT, IPINDI, IS_USE,
+			REG_DT, REG_ID, UPD_DT, UPD_ID, OFF_PAYMENT, OFF_PIC1, OFF_PIC2, OFF_PIC3, OFF_PIC4, OFF_PIC5,
+	`ON_OPENYN` VARCHAR(1) NULL COMMENT '온라인활성여부코드(Y: 활성, N:비활성)' COLLATE 'utf8_general_ci',
+	`OFF_OPENYN` VARCHAR(1) NULL COMMENT '오프라인활성여부코드(Y: 활성, N: 비활성)' COLLATE 'utf8_general_ci',
+	`OFF_MOVIE_PAYMENT` VARCHAR(50) NULL COMMENT '학원 강사료 지급율' COLLATE 'utf8_general_ci',
+	`TITLE` VARCHAR(2000) NULL COMMENT '강사타이틀' COLLATE 'utf8_general_ci',
+	`OFF_TITLE` VARCHAR(2000) NULL COMMENT '오프라인 강사타이틀' COLLATE 'utf8_general_ci',
+	`PROFILE_SUMMARY` VARCHAR(2000) NULL COMMENT '강사프로필' COLLATE 'utf8_general_ci',
+	`BOOK_LOG_SUMMARY` VARCHAR(2000) NULL COMMENT '강사교재프로필' COLLATE 'utf8_general_ci',
+	`ISOK_SMS` VARCHAR(1) NULL COMMENT '문자수신여부' COLLATE 'utf8_general_ci',
+	`ISOK_EMAIL` VARCHAR(1) NULL COMMENT '이메일수신여부' COLLATE 'utf8_general_ci',
+	PRIMARY KEY (`USER_ID`) USING BTREE
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+;
+
         ) VALUES(
             #{userId}, #{userNm}, #{userPwd}, #{userPosition}, #{sex}, #{userRole}, #{adminRole}, #{birthDay}, #{email},
             #{phoneNo}, #{telNo}, #{zipCode}, #{address1}, #{address2}, #{categoryCode}, #{userPoint}, #{remark}, #{memo}, #{payment},

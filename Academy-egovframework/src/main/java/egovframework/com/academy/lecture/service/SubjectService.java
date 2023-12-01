@@ -50,4 +50,11 @@ public interface SubjectService {
 	 */
 	List<?> selectCategoryList(LectureVO LectureVO) throws Exception;
 
+	/**
+	 * 과목정보 목록을 조회한다.
+	 * @param LectureVO
+	 * @return List - 과목 목록
+	 */
+	List<?> getSubjectList(LectureVO LectureVO) throws Exception;
+
 }

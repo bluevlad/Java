@@ -79,4 +79,12 @@ public class SubjectDAO extends EgovComAbstractDAO{
 		return selectList("Subject.selectCategoryList", LectureVO);
     }
 
+    /**
+     * @param LectureVO 검색조건
+     * @return List 과목 목록정보
+     */
+    public List<?> getSubjectList(LectureVO LectureVO) throws Exception{
+		return selectList("Subject.getSubjectList", LectureVO);
+		
+    }
 }
