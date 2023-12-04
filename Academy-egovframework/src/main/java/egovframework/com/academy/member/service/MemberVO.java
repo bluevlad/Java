@@ -99,35 +99,13 @@ public class MemberVO implements Serializable {
     /**  강사료 지급률(강사에 사용) */
     private int payment;
     /**  사진(소)(강사에 사용) */
-    private String pic1;
-    /**  사진(중)(강사에 사용) */
-    private String pic2;
-    /**  사진(대)(강사에 사용) */
-    private String pic3;
-    /**  이벤트사진(강사에 사용) */
-    private String pic4;
+    private String pic;
     /**  약력(강사에 사용) */
     private String profile;
     /**  입금계좌(강사에 사용) */
     private String account;
     /**  아이핀 di(회원에 사용) */
     private String ipindi;
-    /**  오프라인강사료지급률 */
-    private int offPayment;
-    /**  온라인활성여부코드(y: 활성, n:비활성) */
-    private String onOpenyn;
-    /**  오프라인활성여부코드(y: 활성, n: 비활성) */
-    private String offOpenyn;
-    /**  학원 강사료 지급율 */
-    private String offMoviePayment;
-    /**  강사타이틀 */
-    private String title;
-    /**  오프라인 강사타이틀 */
-    private String offTitle;
-    /**  강사프로필 */
-    private String profileSummary;
-    /**  강사교재프로필 */
-    private String bookLogSummary;
     /**  문자수신여부 */
     private String isokSms;
     /**  이메일수신여부 */
@@ -700,65 +678,19 @@ public class MemberVO implements Serializable {
 	}
 	
 	/**
-	 * pic1 attribute 를 리턴한다.
+	 * pic attribute 를 리턴한다.
 	 * @return String
 	 */
-	public String getPic1() {
-		return pic1;
+	public String getPic() {
+		return pic;
 	}
 	/**
-	 * pic1 attribute 값을 설정한다.
-	 * @param pic1 String
+	 * pic attribute 값을 설정한다.
+	 * @param pic String
 	 */
-	public void setPic1(String pic1) {
-		this.pic1 = pic1;
+	public void setPic(String pic) {
+		this.pic = pic;
 	}
-	
-	/**
-	 * pic2 attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getPic2() {
-		return pic2;
-	}
-	/**
-	 * pic2 attribute 값을 설정한다.
-	 * @param pic2 String
-	 */
-	public void setPic2(String pic2) {
-		this.pic2 = pic2;
-	}
-	
-	/**
-	 * pic3 attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getPic3() {
-		return pic3;
-	}
-	/**
-	 * pic3 attribute 값을 설정한다.
-	 * @param pic3 String
-	 */
-	public void setPic3(String pic3) {
-		this.pic3 = pic3;
-	}
-	
-	/**
-	 * pic4 attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getPic4() {
-		return pic4;
-	}
-	/**
-	 * pic4 attribute 값을 설정한다.
-	 * @param pic4 String
-	 */
-	public void setPic4(String pic4) {
-		this.pic4 = pic4;
-	}
-	
 	/**
 	 * profile attribute 를 리턴한다.
 	 * @return String
@@ -803,126 +735,6 @@ public class MemberVO implements Serializable {
 	public void setIpindi(String ipindi) {
 		this.ipindi = ipindi;
 	}
-
-	/**
-	 * offPayment attribute 를 리턴한다.
-	 * @return int
-	 */
-	public int getOffPayment() {
-		return offPayment;
-	}
-	/**
-	 * offPayment attribute 값을 설정한다.
-	 * @param offPayment int
-	 */
-	public void setOffPayment(int offPayment) {
-		this.offPayment = offPayment;
-	}
-	/**
-	 * onOpenyn attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getOnOpenyn() {
-		return onOpenyn;
-	}
-	/**
-	 * onOpenyn attribute 값을 설정한다.
-	 * @param onOpenyn String
-	 */
-	public void setOnOpenyn(String onOpenyn) {
-		this.onOpenyn = onOpenyn;
-	}
-	
-	/**
-	 * offOpenyn attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getOffOpenyn() {
-		return offOpenyn;
-	}
-	/**
-	 * offOpenyn attribute 값을 설정한다.
-	 * @param offOpenyn String
-	 */
-	public void setOffOpenyn(String offOpenyn) {
-		this.offOpenyn = offOpenyn;
-	}
-	
-	/**
-	 *  offMoviePayment attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getOffMoviePayment() {
-		return offMoviePayment;
-	}
-	/**
-	 * ipindi attribute 값을 설정한다.
-	 * @param ipindi String
-	 */
-	public void setOffMoviePayment(String offMoviePayment) {
-		this.offMoviePayment = offMoviePayment;
-	}
-	
-	/**
-	 * title attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getTitle() {
-		return title;
-	}
-	/**
-	 * title attribute 값을 설정한다.
-	 * @param title String
-	 */
-	public void setTitle(String title) {
-		this.title = title;
-	}
-	
-	/**
-	 * offTitle attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getOffTitle() {
-		return offTitle;
-	}
-	/**
-	 * offTitle attribute 값을 설정한다.
-	 * @param offTitle String
-	 */
-	public void setOffTitle(String offTitle) {
-		this.offTitle = offTitle;
-	}
-	
-	/**
-	 * profileSummary attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getProfileSummary() {
-		return profileSummary;
-	}
-	/**
-	 * profileSummary attribute 값을 설정한다.
-	 * @param profileSummary String
-	 */
-	public void setProfileSummary(String profileSummary) {
-		this.profileSummary = profileSummary;
-	}
-	
-	/**
-	 * bookLogSummary attribute 를 리턴한다.
-	 * @return String
-	 */
-	public String getBookLogSummary() {
-		return bookLogSummary;
-	}
-	/**
-	 * bookLogSummary attribute 값을 설정한다.
-	 * @param bookLogSummary String
-	 */
-	public void setBookLogSummary(String bookLogSummary) {
-		this.bookLogSummary = bookLogSummary;
-	}
-	
 	/**
 	 * isokSms attribute 를 리턴한다.
 	 * @return String

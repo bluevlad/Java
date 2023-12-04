@@ -11,20 +11,24 @@
 
     <select id="selectTeacherList" parameterType="egovframework.com.academy.member.service.MemberVO"
     							 resultType="egovframework.com.academy.member.service.MemberVO">
-		SELECT USER_ID, USER_NM, CATEGORY_CD, CATEGORY_NM, IS_USE
-		       , (SELECT MIN(SUBJECT_CD) FROM ACM_MEMBER_SUBJECT WHERE USER_ID = AA.USER_ID) AS SUBJECT_CD
-		       , (SELECT GROUP_CONCAT(DD.SUBJECT_NM  ORDER BY DD.SUBJECT_NM ASC SEPARATOR '/')
-		          FROM ACM_MEMBER_SUBJECT CC
-		          INNER JOIN ACM_SUBJECT_INFO DD 
-		          ON CC.SUBJECT_CD = DD.SUBJECT_CD
-		          WHERE USER_ID = AA.USER_ID) AS SUBJECT_NM
-		FROM (SELECT CI.CATEGORY_CD, CI.CATEGORY_NM, CI.IS_USE, MC.USER_ID, M.USER_NM, CI.ORDR,
-		            RANK() OVER(PARTITION BY MC.USER_ID ORDER BY CI.ORDR) RNK
+        SELECT 
+            (SELECT GROUP_CONCAT(MC.CATEGORY_CD  ORDER BY MC.CATEGORY_CD ASC SEPARATOR '/')
+		          FROM ACM_MEMBER_CATEGORY MC, ACM_CATEGORY_INFO CI
+		          WHERE MC.USER_ID = M.USER_ID
+                  AND MC.CATEGORY_CD = CI.CATEGORY_CD) AS CATEGORY_CD, AA.CATEGORY_NM, 
+            MS.SUBJECT_CD, SI.SUBJECT_NM, M.USER_ID, M.USER_NM, M.USER_PWD, M.EMAIL, M.PAYMENT,
+            M.PIC, M.PROFILE, M.ACCOUNT, M.IS_USE, M.REG_DT, M.REG_ID, M.UPD_DT, M.UPD_ID
+        FROM ACM_MEMBER M, ACM_MEMBER_SUBJECT MS, ACM_SUBJECT_INFO SI,
+        (SELECT CI.CATEGORY_NM, MC.USER_ID, RANK() OVER(PARTITION BY MC.USER_ID ORDER BY CI.ORDR) RNK
 		      FROM ACM_MEMBER M, ACM_CATEGORY_INFO CI, ACM_MEMBER_CATEGORY MC
 		      WHERE M.USER_ID = MC.USER_ID
 		      AND M.USER_ROLE = 'PRF'
 		      AND CI.CATEGORY_CD = MC.CATEGORY_CD) AA
-		WHERE AA.RNK = 1
+        WHERE M.USER_ROLE = 'PRF'
+        AND M.USER_ID = MS.USER_ID
+        AND M.USER_ID = AA.USER_ID
+        AND MS.SUBJECT_CD = SI.SUBJECT_CD
+        AND AA.RNK = 1
         <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchCategory)">
         AND TBL.CATEGORY_CD = #{categoryCd}
         </if>
@@ -52,13 +56,18 @@
 
     <select id="selectTeacherListCount" parameterType="egovframework.com.academy.member.service.MemberVO" resultType="int">
 		SELECT COUNT(*)
-		FROM (SELECT CI.CATEGORY_CD, CI.CATEGORY_NM, CI.IS_USE, MC.USER_ID, M.USER_NM, CI.ORDR,
+        FROM ACM_MEMBER M, ACM_MEMBER_SUBJECT MS, ACM_SUBJECT_INFO SI,
+        (SELECT CI.CATEGORY_NM, MC.USER_ID,
 		            RANK() OVER(PARTITION BY MC.USER_ID ORDER BY CI.ORDR) RNK
 		      FROM ACM_MEMBER M, ACM_CATEGORY_INFO CI, ACM_MEMBER_CATEGORY MC
 		      WHERE M.USER_ID = MC.USER_ID
 		      AND M.USER_ROLE = 'PRF'
 		      AND CI.CATEGORY_CD = MC.CATEGORY_CD) AA
-		WHERE AA.RNK = 1
+        WHERE M.USER_ROLE = 'PRF'
+        AND M.USER_ID = MS.USER_ID
+        AND M.USER_ID = AA.USER_ID
+        AND MS.SUBJECT_CD = SI.SUBJECT_CD
+        AND AA.RNK = 1
         <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchCategory)">
         AND TBL.CATEGORY_CD = #{categoryCd}
         </if>
@@ -81,42 +90,29 @@
     <select id="teacherDetail" parameterType="egovframework.com.academy.member.service.MemberVO"
     							 resultType="egovframework.com.academy.member.service.MemberVO">
         SELECT 
-        	USER_ID, USER_NM, USER_PWD, USER_POSITION, SEX, USER_ROLE, ADMIN_ROLE, BIRTH_DAY, EMAIL,
-            ZIP_CODE, ADDRESS1, ADDRESS2, CATEGORY_CODE, USER_POINT, REMARK, MEMO, PAYMENT,
-            PIC1, PIC2, PIC3, PIC4, PROFILE, ACCOUNT, IPINDI, IS_USE, REG_DT, REG_ID, UPD_DT, UPD_ID,
-            OFF_PAYMENT, OFF_PIC1, OFF_PIC2, OFF_PIC3, OFF_PIC4, OFF_PIC5, ON_OPENYN, OFF_OPENYN,
-            OFF_MOVIE_PAYMENT, TITLE, OFF_TITLE, PROFILE_SUMMARY, BOOK_LOG_SUMMARY, ISOK_SMS, ISOK_EMAIL 
-        FROM ACM_MEMBER
-        WHERE USER_ID = #{userId}
+            (SELECT GROUP_CONCAT(MC.CATEGORY_CD  ORDER BY MC.CATEGORY_CD ASC SEPARATOR '/')
+		          FROM ACM_MEMBER_CATEGORY MC, ACM_CATEGORY_INFO CI
+		          WHERE MC.USER_ID = M.USER_ID
+                AND MC.CATEGORY_CD = CI.CATEGORY_CD) AS CATEGORY_CD, 
+            MS.SUBJECT_CD,
+            SI.SUBJECT_NM, 
+        	   M.USER_ID, USER_NM, USER_PWD, USER_ROLE, EMAIL,
+            ZIP_CODE, ADDRESS1, ADDRESS2, USER_POINT, REMARK, MEMO, PAYMENT,
+            PIC, PROFILE, ACCOUNT, M.IS_USE, M.REG_DT, M.REG_ID, M.UPD_DT, M.UPD_ID
+        FROM ACM_MEMBER M, ACM_MEMBER_SUBJECT MS, ACM_SUBJECT_INFO SI
+        WHERE M.USER_ROLE = 'PRF'
+        AND M.USER_ID = MS.USER_ID
+        AND MS.SUBJECT_CD = SI.SUBJECT_CD
+        AND M.USER_ID = #{userId}
     </select>
 
     <insert id="insertTeacher">
         INSERT INTO ACM_MEMBER(
-			USER_ID, USER_NM, USER_PWD, USER_POSITION, SEX, USER_ROLE, ADMIN_ROLE, BIRTH_DAY, EMAIL, ZIP_CODE, ADDRESS1, ADDRESS2,
-			CATEGORY_CODE, USER_POINT, REMARK, MEMO, PAYMENT, PIC1, PIC2, PIC3, PIC4, PROFILE, ACCOUNT, IPINDI, IS_USE,
-			REG_DT, REG_ID, UPD_DT, UPD_ID, OFF_PAYMENT, OFF_PIC1, OFF_PIC2, OFF_PIC3, OFF_PIC4, OFF_PIC5,
-	`ON_OPENYN` VARCHAR(1) NULL COMMENT '온라인활성여부코드(Y: 활성, N:비활성)' COLLATE 'utf8_general_ci',
-	`OFF_OPENYN` VARCHAR(1) NULL COMMENT '오프라인활성여부코드(Y: 활성, N: 비활성)' COLLATE 'utf8_general_ci',
-	`OFF_MOVIE_PAYMENT` VARCHAR(50) NULL COMMENT '학원 강사료 지급율' COLLATE 'utf8_general_ci',
-	`TITLE` VARCHAR(2000) NULL COMMENT '강사타이틀' COLLATE 'utf8_general_ci',
-	`OFF_TITLE` VARCHAR(2000) NULL COMMENT '오프라인 강사타이틀' COLLATE 'utf8_general_ci',
-	`PROFILE_SUMMARY` VARCHAR(2000) NULL COMMENT '강사프로필' COLLATE 'utf8_general_ci',
-	`BOOK_LOG_SUMMARY` VARCHAR(2000) NULL COMMENT '강사교재프로필' COLLATE 'utf8_general_ci',
-	`ISOK_SMS` VARCHAR(1) NULL COMMENT '문자수신여부' COLLATE 'utf8_general_ci',
-	`ISOK_EMAIL` VARCHAR(1) NULL COMMENT '이메일수신여부' COLLATE 'utf8_general_ci',
-	PRIMARY KEY (`USER_ID`) USING BTREE
-)
-COLLATE='utf8_general_ci'
-ENGINE=InnoDB
-;
-
-        ) VALUES(
-            #{userId}, #{userNm}, #{userPwd}, #{userPosition}, #{sex}, #{userRole}, #{adminRole}, #{birthDay}, #{email},
-            #{phoneNo}, #{telNo}, #{zipCode}, #{address1}, #{address2}, #{categoryCode}, #{userPoint}, #{remark}, #{memo}, #{payment},
-            #{pic1}, #{pic2}, #{pic3}, #{pic4}, #{profile}, #{account}, #{ipindi}, #{isUse},
-            now(), #{regId}, now(), #{updId}, 
-            #{offPayment}, #{offPic1}, #{offPic2}, #{offPic3}, #{offPic4}, #{offPic5}, #{onOpenyn}, #{offOpenyn},
-            #{offMoviePayment}, #{title}, #{offTitle}, #{profileSummary}, #{bookLogSummary}, #{isokSms}, #{isokEmail}
+			USER_ID, USER_NM, USER_PWD, USER_ROLE, EMAIL, CATEGORY_CODE, PAYMENT, PIC, PROFILE, ACCOUNT, IPINDI, 
+			IS_USE, REG_DT, REG_ID, UPD_DT, UPD_ID
+		) VALUES(
+            #{userId}, #{userNm}, #{userPwd}, 'PRF', #{email}, #{categoryCode},#{payment}, #{pic}, #{profile}, #{account}, #{ipindi}, 
+            #{isUse}, now(), #{regId}, now(), #{updId}
         )
     </insert>
 	
@@ -124,45 +120,14 @@ ENGINE=InnoDB
         UPDATE ACM_MEMBER
             SET USER_NM = #{userNm}
             , USER_PWD = #{userPwd}
-            , USER_POSITION = #{userPosition}
-            , SEX = #{sex}
-            , USER_ROLE = #{userRole}
-            , ADMIN_ROLE = #{adminRole}
-            , BIRTH_DAY = #{birthDay}
 			, EMAIL = #{email}
-			, PHONE_NO = #{phoneNo}
-			, TEL_NO = #{telNo}
-			, ZIP_CODE = #{zipCode}
-			, ADDRESS1 = #{address1}
-			, ADDRESS2 = #{address2}
 			, CATEGORY_CODE = #{categoryCode}
-			, USER_POINT = #{userPoint}
-			, REMARK = #{remark}
-			, MEMO = #{memo}
+			, SUBJECT_CD = #{subjectCd}
 			, PAYMENT = #{payment}
-			, PIC1 = #{pic1}
-			, PIC2 = #{pic2}
-			, PIC3 = #{pic3}
-			, PIC4 = #{pic4}
+			, PIC = #{pic}
 			, PROFILE = #{profile}
 			, ACCOUNT = #{account}
-			, IPINDI = #{ipindi}
 			, IS_USE = #{isUse}
-			, OFF_PAYMENT = #{offPayment}
-			, OFF_PIC1 = #{offPic1}
-			, OFF_PIC2 = #{offPic2}
-			, OFF_PIC3 = #{offPic3}
-			, OFF_PIC4 = #{offPic4}
-			, OFF_PIC5 = #{offPic5}
-			, ON_OPENYN = #{onOpenyn}
-			, OFF_OPENYN = #{offOpenyn}
-			, OFF_MOVIE_PAYMENT = #{offMoviePayment}
-			, TITLE = #{title}
-			, OFF_TITLE = #{offTitle}
-			, PROFILE_SUMMARY = #{profileSummary}
-			, BOOK_LOG_SUMMARY = #{bookLogSummary}
-			, ISOK_SMS = #{isokSms}
-			, ISOK_EMAIL = #{isokEmail}
 			, UPD_DT = now()
 			, UPD_ID = #{updId}
         WHERE USER_ID = #{userId}

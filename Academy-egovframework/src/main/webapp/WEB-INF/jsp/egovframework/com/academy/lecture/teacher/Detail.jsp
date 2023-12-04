@@ -78,7 +78,7 @@ function fn_save(){
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
 			<td class="left">
-		        <form:checkboxes path="categoryCd" items="${categoryList}" itemValue="categoryCd" itemLabel="categoryNm" cssClass="check2" cssStyle="padding:10px; vertical-align : middle;"/>
+		        <form:checkboxes path="categoryCd" items="${categoryList}" itemValue="categoryCd" itemLabel="categoryNm" cssClass="check2" cssStyle="padding:20px; vertical-align : middle;"/>
 		        <form:errors path="categoryCd" cssClass="error"/>
 			</td>
 		</tr>
@@ -105,31 +105,12 @@ function fn_save(){
 		<tr>
 			<th><label for="isUse">${title}</label></th>
 			<td class="left">
-                <table width="500px" border="0" cellpadding="0" cellspacing="0">
-                    <tr>
-                        <td style="text-align:center;">
-							<select name="orgSubjectCd" id="orgSubjectCd" title="${title} ${inputTxt}" multiple="true" style="width:150px; height:300px">
-								<c:forEach items="${subjectList}" var="subject" varStatus="status">
-			                    <option value="${subject.subjectCd}">${subject.subjectNm}</option>
-			                    </c:forEach>
-			                </select>
-                        </td>
-                        <td style="text-align:center;" width="100px" height="143px">
-                            <span class="btn_pack medium"><button type="button" onclick="javascript:fn_AddSel();">&gt;&gt; 추가</button></span>
-                            <br/> <br/>
-                            <span class="btn_pack medium"><button type="button" onclick="javascript:fn_DelSel();">&lt;&lt; 삭제</button></span>
-                        </td>
-                        <td style="text-align:center;">
-							<form:select path="subjectCd" id="subjectCd" title="${title} ${inputTxt}" multiple="true" style="width:150px; height:300px">
-								<c:forEach items="${subjectList}" var="subject" varStatus="status">
-			                    <form:option value="${subject.subjectCd}" label="${subject.subjectNm}"/>
-			                    </c:forEach>
-			                </form:select>
-			                <div><form:errors path="subjectCd" cssClass="error"/></div>
-                        </td>
-                    </tr>
-                </table>
-			
+				<c:forEach items="${subjectList}" var="list" varStatus="status">
+				<c:set var="chk"><c:if test="${list.subjectCd eq MemberVO.subjectCd}" >checked</c:if></c:set>
+		        <form:radiobutton path="subjectCd" title="${title} ${inputTxt}" value="${list.subjectCd}" checked="${chk}" />${list.subjectNm} &nbsp;
+				<c:set var="chk" value=""/>
+		        </c:forEach>
+		        <form:errors path="subjectCd" cssClass="error"/>
 			</td>
 		</tr>
 		<!-- 사용여부 -->
