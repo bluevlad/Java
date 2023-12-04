@@ -42,7 +42,6 @@
 		GROUP BY LEC_CD) YY
 	    ON TBL.LEC_CD = YY.LEC_CD
 	    WHERE TBL.LEC_TYPE_CHOICE = 'D'
-	    AND TBL.LEC_CD = 'D120001257'
 		ORDER BY LEC_CD DESC  
 		LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
 	</select>

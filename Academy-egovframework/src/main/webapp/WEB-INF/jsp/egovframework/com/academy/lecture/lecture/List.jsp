@@ -117,8 +117,7 @@ function fn_MovieDataViewPop(val1, val2, val3){
 	</div>
 
 <input type="hidden" id="lecTypeChoice" name="lecTypeChoice" value="${lecTypeChoice}">
-<input type="hidden" id="bridgeLeccode" name="bridgeLeccode" value="">
-<input type="hidden" id="leccode" name="leccode" value="">
+<input type="hidden" id="lecCd" name="lecCd" value="">
 </form>
 
     <ul class="lecWritheTab">
@@ -147,9 +146,9 @@ function fn_MovieDataViewPop(val1, val2, val3){
 		<th><spring:message code="table.num" /></th><!-- 번호 -->
 		<th><spring:message code="lec.categoryInfo" /></th><!-- 직종 -->
 		<th><spring:message code="lec.subjectNm" /></th><!-- 과목명 -->
-		<th><spring:message code="lec.lecture.leccode" /></th><!--강의코드 -->
+		<th><spring:message code="lec.lecture.lecCd" /></th><!--강의코드 -->
 		<th><spring:message code="lec.teacher.name" /></th><!--강사명 -->
-		<th class="board_th_link"><spring:message code="lec.lecture.subjectTitle" /></th><!-- 강의명 -->
+		<th class="board_th_link"><spring:message code="lec.lecture.lecTitle" /></th><!-- 강의명 -->
 		<th><spring:message code="lec.form.name" /></th><!--강의형태 -->
 		<th><spring:message code="lec.regDt" /></th><!--등록일 -->
 		<th><spring:message code="lec.isUse" /></th><!--사용여부 -->
@@ -168,9 +167,9 @@ function fn_MovieDataViewPop(val1, val2, val3){
 		<td class="lt_text3">${(LectureVO.pageIndex-1) * LectureVO.pageSize + status.count}</td>
 		<td class="lt_text3"><c:out value="${resultInfo.categoryNm}"/></td>
 		<td class="lt_text3"><c:out value="${resultInfo.subjectNm}"/></td>
-		<td class="lt_text3"><c:out value="${resultInfo.leccode}"/></td>
-		<td class="lt_text3"><c:out value="${resultInfo.subjectTeacherNm}"/></td>
-		<td class="lt_text3L"><a href="<c:url value='/academy/leture/lecture/Detail.do'/>?leccode=${resultInfo.leccode}"><c:out value='${resultInfo.subjectTitle}'/></a></td>
+		<td class="lt_text3"><c:out value="${resultInfo.lecCd}"/></td>
+		<td class="lt_text3"><c:out value="${resultInfo.lecTeacherNm}"/></td>
+		<td class="lt_text3L"><a href="<c:url value='/academy/leture/lecture/Detail.do'/>?leccode=${resultInfo.lecCd}"><c:out value='${resultInfo.lecTitle}'/></a></td>
 		<td class="lt_text3"><c:out value="${resultInfo.formName}"/></td>
 		<td class="lt_text3"><c:out value="${resultInfo.regDt}"/></td>
 		<td class="lt_text3"><c:out value="${resultInfo.isUse}"/></td>
