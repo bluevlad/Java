@@ -74,16 +74,16 @@ function fn_save(){
 		<c:set var="inputNo"><spring:message code="input.no" /></c:set>
 		
 		<!-- 강의코드 -->
-		<c:set var="title"><spring:message code="lec.lecture.leccode"/></c:set>
+		<c:set var="title"><spring:message code="lec.lecture.lecCd"/></c:set>
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
-			<td class="left"><input name="leccode" type="text" value="${LectureVO.leccode}" style="width:90%;" readonly="true"></td>
+			<td class="left"><input name="lecCd" type="text" value="${LectureVO.lecCd}" style="width:90%;" readonly="true"></td>
 		</tr>
 		<!-- 강의명 -->
-		<c:set var="title"><spring:message code="lec.lecture.subjectTitle"/></c:set>
+		<c:set var="title"><spring:message code="lec.lecture.lecTitle"/></c:set>
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
-			<td class="left" colspan="3"><input name="subjectTitle" type="text" value="${LectureVO.subjectTitle}" style="width:90%;"></td>
+			<td class="left" colspan="3"><input name="lecTitle" type="text" value="${LectureVO.lecTitle}" style="width:90%;"></td>
 		</tr>
 		<!-- 강의예정회차 -->
 		<c:set var="title"><spring:message code="lec.lecture.lecSchedule"/></c:set>
@@ -98,55 +98,55 @@ function fn_save(){
 			<td class="left" colspan="3"><input name="lecCount" type="text" value="${LectureVO.lecCount}" style="width:90%;"></td>
 		</tr>
 		<!-- 강의개요 -->	
-		<c:set var="title"><spring:message code="lec.lecture.subjectDesc"/></c:set>
+		<c:set var="title"><spring:message code="lec.lecture.lecDesc"/></c:set>
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
 			<td class="left">
-  				<form:textarea path="subjectDesc" rows="3" style="width:98%;" cssClass="txaClass" title="<spring:message code='lec.lecture.subjectDesc'/><spring:message code='input.input'/>"/>
-    			<form:errors path="subjectDesc"/>
+  				<form:textarea path="lecDesc" rows="3" style="width:98%;" cssClass="txaClass" title="<spring:message code='lec.lecture.lecDesc'/><spring:message code='input.input'/>"/>
+    			<form:errors path="lecDesc"/>
 			</td>
 		</tr>
 		<!-- 키워드 -->	
-		<c:set var="title"><spring:message code="lec.lecture.subjectKeyword"/></c:set>
+		<c:set var="title"><spring:message code="lec.lecture.lecKeyword"/></c:set>
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
 			<td class="left">
-  				<form:textarea path="subjectKeyword" rows="3" style="width:98%;" cssClass="txaClass" title="<spring:message code='lec.lecture.subjectKeyword'/><spring:message code='input.input'/>"/>
-    			<form:errors path="subjectKeyword"/>
+  				<form:textarea path="lecKeyword" rows="3" style="width:98%;" cssClass="txaClass" title="<spring:message code='lec.lecture.lecKeyword'/><spring:message code='input.input'/>"/>
+    			<form:errors path="lecKeyword"/>
 			</td>
 		</tr>
 		<!-- 강의일수 -->
-		<c:set var="title"><spring:message code="lec.lecture.subjectPeriod"/></c:set>
+		<c:set var="title"><spring:message code="lec.lecture.lecPeriod"/></c:set>
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
-			<td class="left" colspan="3"><input name="subjectPeriod" type="text" value="${LectureVO.subjectPeriod}" style="width:90%;"></td>
+			<td class="left" colspan="3"><input name="lecPeriod" type="text" value="${LectureVO.lecPeriod}" style="width:90%;"></td>
 		</tr>
 		<!-- 강의원가 -->
-		<c:set var="title"><spring:message code="lec.lecture.subjectPrice"/></c:set>
+		<c:set var="title"><spring:message code="lec.lecture.lecPrice"/></c:set>
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
-			<td class="left" colspan="3"><input name="subjectPrice" type="text" value="${LectureVO.subjectPrice}" style="width:90%;"></td>
+			<td class="left" colspan="3"><input name="lecPrice" type="text" value="${LectureVO.lecPrice}" style="width:90%;"></td>
 		</tr>
 		<!-- 할인율 -->
-		<c:set var="title"><spring:message code="lec.lecture.subjectDiscount"/></c:set>
+		<c:set var="title"><spring:message code="lec.lecture.lecDiscount"/></c:set>
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
-			<td class="left" colspan="3"><input name="subjectDiscount" type="text" value="${LectureVO.subjectDiscount}" style="width:90%;"></td>
+			<td class="left" colspan="3"><input name="lecDiscount" type="text" value="${LectureVO.lecDiscount}" style="width:90%;"></td>
 		</tr>
 		<!-- 수강료 -->
-		<c:set var="title"><spring:message code="lec.lecture.subjectMovie"/></c:set>
+		<c:set var="title"><spring:message code="lec.lecture.lecMovie"/></c:set>
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
-			<td class="left" colspan="3"><input name="subjectMovie" type="text" value="${LectureVO.subjectMovie}" style="width:90%;"></td>
+			<td class="left" colspan="3"><input name="lecMovie" type="text" value="${LectureVO.lecMovie}" style="width:90%;"></td>
 		</tr>
 		<!-- 포인트 -->
-		<c:set var="title"><spring:message code="lec.lecture.subjectPoint"/></c:set>
+		<c:set var="title"><spring:message code="lec.lecture.lecPoint"/></c:set>
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
-			<td class="left" colspan="3"><input name="subjectPoint" type="text" value="${LectureVO.subjectPoint}" style="width:90%;"></td>
+			<td class="left" colspan="3"><input name="lecPoint" type="text" value="${LectureVO.lecPoint}" style="width:90%;"></td>
 		</tr>
 		<!-- 주교재 -->
-		<c:set var="title"><spring:message code="lec.lecture.subjectVodDefaultPath"/></c:set>
+		<c:set var="title"><spring:message code="lec.lecture.lecVodDefaultPath"/></c:set>
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
 			<td class="left" colspan="3">
@@ -164,8 +164,8 @@ function fn_save(){
                             <tr>
                                 <td>${item.categoryNm}</td>
                                 <td>${item.formName}</td>
-                                <td><a href="javascript:fn_summary('${item.RSC_ID}')">${item.BOOK_NM}</a></td>
-                                <td><input name="BTN_BOOKDEL" type="button" value="삭제"/><input type="hidden" name="RSC_ID" value="${item.RSC_ID}" /></td>
+                                <td><a href="javascript:fn_summary('${item.bookCd}')">${item.bookNm}</a></td>
+                                <td><input name="BTN_BOOKDEL" type="button" value="삭제"/><input type="hidden" name="bookCd" value="${item.bookCd}" /></td>
                             </tr>
                         </c:if>
                     </c:forEach>
@@ -178,16 +178,16 @@ function fn_save(){
 			</td>
 		</tr>
 		<!-- 동영상 기본경로 -->
-		<c:set var="title"><spring:message code="lec.lecture.subjectVodDefaultPath"/></c:set>
+		<c:set var="title"><spring:message code="lec.lecture.lecVodDefaultPath"/></c:set>
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
-			<td class="left" colspan="3"><input name="subjectVodDefaultPath" type="text" value="${LectureVO.subjectVodDefaultPath}" style="width:90%;"></td>
+			<td class="left" colspan="3"><input name="lecVodDefaultPath" type="text" value="${LectureVO.lecVodDefaultPath}" style="width:90%;"></td>
 		</tr>
 		<!-- 보강비밀번호 -->
-		<c:set var="title"><spring:message code="lec.lecture.subjectPass"/></c:set>
+		<c:set var="title"><spring:message code="lec.lecture.lecPass"/></c:set>
 		<tr>
 			<th>${title}<span class="pilsu">*</span></th>
-			<td class="left" colspan="3"><input name="subjectPass" type="text" value="${LectureVO.subjectPass}" style="width:90%;"></td>
+			<td class="left" colspan="3"><input name="lecPass" type="text" value="${LectureVO.lecPass}" style="width:90%;"></td>
 		</tr>
 		<!-- 사용여부 -->
 		<c:set var="title"><spring:message code="lec.isUse"/></c:set>
