@@ -3,7 +3,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ page session="false"%>
-<%@ include file="/WEB-INF/views/common/topInclude.jsp" %>
 
 <head>
 <script type="text/javascript">
