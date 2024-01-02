@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="boardNotAnswer">
+
+ 	<resultMap type="java.util.HashMap" id="testMap">
+	   <result column="CONTENT" property="CONTENT" javaType="java.lang.String" jdbcType="CLOB"/>
+	   <result column="ANSWER" property="ANSWER" javaType="java.lang.String" jdbcType="CLOB"/>
+	   <result column="ORIGIN" property="ORIGIN" javaType="java.lang.String" jdbcType="CLOB"/>
+	</resultMap>
+
+
+	<select id="boardList" parameterType="hashMap" resultType="hashMap" >
+	SELECT * FROM 	(
+							SELECT A.*, ROWNUM rnum
+						  	FROM (
+									SELECT
+												 (SELECT BOARD_MNG_NAME FROM TB_BOARD_MNG WHERE BOARD_MNG_SEQ = C.BOARD_MNG_SEQ) BOARD_NAME ,
+									              D.ONOFF_DIV ,
+									              C.BOARD_MNG_SEQ ,
+									             TO_NUMBER(C.BOARD_SEQ) BOARD_SEQ,
+									             C.SUBJECT,
+									             C.CONTENT,
+									             (SELECT FILE_NAME FROM TB_BOARD_FILE WHERE BOARD_SEQ = C.BOARD_SEQ AND ROWNUM = 1) FILE_NAME,
+									             C.PARENT_BOARD_SEQ,
+									             C.NOTICE_TOP_YN,
+									             C.HITS		,
+									             TO_CHAR(C.REG_DT , 'yyyy-mm-dd HH24:MI:SS')  REG_DT ,
+									            TO_CHAR(C.UPD_DT , 'yyyy-mm-dd HH24:MI:SS')  UPD_DT,
+									            C.UPD_ID ,
+									            C.CREATENAME,
+							                    C.PROF_ID,
+							                    (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = C.PROF_ID) PROF_NM,
+							                     C.BOARD_REPLY,
+                        						CASE
+                        						WHEN 
+                        						(SELECT NVL2(BOARD_SEQ , 'Y' , 'N') 
+                        						FROM TB_BOARD 
+                        						WHERE BOARD_MNG_SEQ = C.BOARD_MNG_SEQ 
+                        						AND PARENT_BOARD_SEQ = C.BOARD_SEQ) = 'Y' THEN '답변완료'
+                        						WHEN C.PARENT_BOARD_SEQ <![CDATA[ > ]]> 0 THEN '답변완료'
+                    							ELSE DECODE(C.BOARD_REPLY,'C','처리중(CS)','A','처리중(운영)','Y','답변완료','답변대기')
+                    							END BOARD_REPLY_NM
+									FROM TB_BOARD C , TB_BOARD_MNG D
+									WHERE C.BOARD_MNG_SEQ = D.BOARD_MNG_SEQ
+				                  	<if test='ONOFF_DIV != null and ONOFF_DIV == "O" '>
+									AND		D.ONOFF_DIV = 'O'
+									</if>
+									<if test='ONOFF_DIV != null and ONOFF_DIV == "F" '>
+									AND		D.ONOFF_DIV = 'F'
+									</if>
+				                  	AND	 D.REPLY_YN='Y'
+				                  	AND	 C.PARENT_BOARD_SEQ = 0
+                                    AND INSTR(C.BOARD_MNG_SEQ, 'BOARD_') > 0
+                                    AND INSTR(D.BOARD_MNG_NAME, '상담실') > 0
+									AND	 C.NOTICE_TOP_YN = 'N'
+									AND C.BOARD_SEQ  NOT IN  (SELECT PARENT_BOARD_SEQ FROM TB_BOARD)
+									<choose>
+										<when test='PRF != null and PRF != "" '>
+	                                    AND C.PROF_ID IS NOT NULL
+									    </when>
+									    <otherwise>
+	                                    AND C.PROF_ID IS NULL
+									    </otherwise>
+									</choose>
+									ORDER BY C.BOARD_SEQ DESC
+									) A
+		                 	WHERE rownum <![CDATA[ <= ]]> #{endNo}
+							)
+	WHERE rnum <![CDATA[ > ]]> #{startNo}
+	</select>
+
+	<select id="boardListCount" parameterType="hashMap" resultType="int">
+		SELECT
+		COUNT(*) CNT
+		FROM TB_BOARD C , TB_BOARD_MNG D
+		WHERE C.BOARD_MNG_SEQ = D.BOARD_MNG_SEQ
+	   	<if test='ONOFF_DIV != null and ONOFF_DIV == "O" '>
+		AND		D.ONOFF_DIV = 'O'
+		</if>
+		<if test='ONOFF_DIV != null and ONOFF_DIV == "F" '>
+		AND		D.ONOFF_DIV = 'F'
+		</if>
+	   	AND	 D.REPLY_YN='Y'
+	   	AND	 C.PARENT_BOARD_SEQ = 0
+	    AND INSTR(C.BOARD_MNG_SEQ, 'BOARD_') > 0
+	    AND INSTR(D.BOARD_MNG_NAME, '상담실') > 0
+		AND	 C.NOTICE_TOP_YN = 'N'
+		AND C.BOARD_SEQ  NOT IN  (SELECT PARENT_BOARD_SEQ FROM TB_BOARD)
+			<choose>
+				<when test='PRF != null and PRF != "" '>
+	            AND C.PROF_ID IS NOT NULL
+			    </when>
+			    <otherwise>
+	            AND C.PROF_ID IS NULL
+			    </otherwise>
+			</choose>
+		ORDER BY C.BOARD_SEQ DESC
+	</select>
+
+	<select id="getRankCode" parameterType="hashMap" resultType="hashMap">
+		SELECT
+			ID, CODE, NAME, ISUSE, DECODE(ISUSE, 'Y', '활성', 'N', '비활성') ISUSENM
+			, REG_DT, REG_ID, UPD_DT, UPD_ID
+		FROM TB_CATEGORY_INFO
+		WHERE ISUSE = 'Y'
+        AND P_CODE = 'CLASSCODE'
+		<if test='ONOFF_DIV != null and ONOFF_DIV == "O" '>
+		AND    	USE_ON = 'Y'
+		</if>
+		<if test='ONOFF_DIV != null and ONOFF_DIV == "F" '>
+		AND    	USE_OFF = 'Y'
+		</if>
+	 	ORDER BY CODE ASC
+	</select>
+	<insert id="insertBoardCatInfo" parameterType="hashMap">
+		INSERT INTO TB_BOARD_CATEGORY_INFO(
+			BOARD_MNG_SEQ ,
+			BOARD_SEQ,
+			CATEGORY_CODE
+		)
+		VALUES(
+			#{BOARD_MNG_SEQ} ,
+			#{BOARD_SEQ} ,
+			#{CATEGORY_CODE}
+		)
+	</insert>
+
+	<select id="getBoardDetail" parameterType="hashMap" resultMap="testMap" >
+		SELECT
+				<if test="BOARDVIEWPARENT_SEQ != null and BOARDVIEWPARENT_SEQ != 0">
+					(SELECT CONTENT FROM TB_BOARD WHERE BOARD_SEQ = a.PARENT_BOARD_SEQ) ORIGIN ,
+				</if>
+					BOARD_MNG_SEQ,
+			        BOARD_SEQ,
+			        OPEN_YN,
+			        SUBJECT,
+			        CONTENT,
+			        ANSWER,
+			        FILE_PATH,
+			        FILE_NAME,
+			        REAL_FILE_NAME ,
+			        PARENT_BOARD_SEQ,
+			        NOTICE_TOP_YN ,
+			        TO_CHAR(REG_DT , 'yyyy-mm-dd HH24:MI:SS')  REG_DT ,
+			        REG_ID,
+			        UPD_DT,
+			        UPD_ID,
+			        HITS,
+			        CREATENAME,
+			        BOARD_REPLY,
+			        CASE
+					WHEN 
+					(SELECT NVL2(BOARD_SEQ , 'Y' , 'N') 
+					FROM TB_BOARD 
+					WHERE BOARD_MNG_SEQ = a.BOARD_MNG_SEQ 
+					AND PARENT_BOARD_SEQ = a.BOARD_SEQ) = 'Y' THEN '답변완료'
+					WHEN a.PARENT_BOARD_SEQ <![CDATA[ > ]]> 0 THEN '답변완료'
+					ELSE DECODE(a.BOARD_REPLY,'C','처리중(CS)','A','처리중(운영)','Y','답변완료','답변대기')
+					END BOARD_REPLY_NM
+		FROM  TB_BOARD a
+		WHERE BOARD_SEQ = #{BOARDVIEW_SEQ}
+   	</select>
+
+	<select id="getboardCodeList" parameterType="hashMap" resultType="hashMap">
+   		SELECT CATEGORY_CODE  FROM TB_BOARD_CATEGORY_INFO WHERE BOARD_MNG_SEQ=#{BOARDVIEW_MNG_SEQ} AND BOARD_SEQ=#{BOARDVIEW_SEQ}
+   	</select>
+
+	<delete id="deleteTboardTestClass" parameterType="hashMap" >
+   		DELETE FROM TB_BOARD_CATEGORY_INFO
+   		WHERE BOARD_SEQ=#{BOARDVIEW_SEQ}
+   		AND BOARD_MNG_SEQ=#{BOARDVIEW_MNG_SEQ}
+   	</delete>
+
+	<update id="boardUpdateProcess" parameterType="hashMap">
+		UPDATE TB_BOARD
+		SET
+				      NOTICE_TOP_YN          = #{NOTICE_TOP_YN} ,
+				      OPEN_YN         = #{OPEN_YN},
+				      SUBJECT           = #{SUBJECT}  ,
+				      UPD_DT    = SYSDATE,
+				      UPD_ID    = #{REG_ID},
+				      CONTENT = #{CONTENT}
+		where BOARD_SEQ = #{BOARDVIEW_SEQ}
+	</update>
+
+	<update id="updateBoardFile" parameterType="hashMap" >
+   		UPDATE TB_BOARD
+		SET
+		      FILE_PATH  = '' ,
+		      FILE_NAME  = '' ,
+		      REAL_FILE_NAME  = ''
+		where FILE_PATH = #{FILE_PATH}
+   	</update>
+
+	<insert id="boardReplyInsertProcess" parameterType="hashMap" flushCache="true" keyProperty="bContentId" keyColumn="bContentId">
+		INSERT INTO TB_BOARD(
+		        BOARD_MNG_SEQ,
+		        BOARD_SEQ,
+		        OPEN_YN,
+		        SUBJECT,
+		        CONTENT,
+		        PARENT_BOARD_SEQ,
+		        NOTICE_TOP_YN ,
+		        REG_DT,
+		        REG_ID,
+		        UPD_DT,
+		        UPD_ID,
+		        HITS,
+		        BOARD_TYPE,
+		        CREATENAME
+		)VALUES(
+				#{BOARDVIEW_MNG_SEQ},
+		        (SELECT NVL(MAX(TO_NUMBER(BOARD_SEQ)) , 0)+1  FROM TB_BOARD),
+		        #{OPEN_YN},
+		        #{SUBJECT},
+		        #{CONTENT},
+		        #{BOARDVIEW_SEQ},
+		        #{NOTICE_TOP_YN} ,
+		        SYSDATE,
+		        #{REG_ID},
+		        SYSDATE,
+		        #{REG_ID},
+		        '0',
+		        #{BOARD_TYPE},
+		        #{CREATENAME}
+		)
+		<selectKey keyProperty="bContentId" resultType="int">SELECT NVL(MAX(TO_NUMBER(BOARD_SEQ)) , 0)  FROM TB_BOARD</selectKey>
+	</insert>
+
+	<select id="getReplyData" parameterType="hashMap" resultType="hashMap">
+   		SELECT
+			BOARD_SEQ ,
+			FILE_PATH
+		FROM TB_BOARD
+		WHERE BOARD_MNG_SEQ=#{BOARD_MNG_SEQ}
+		AND     PARENT_BOARD_SEQ=#{BOARDVIEW_SEQ}
+   	</select>
+
+   	<delete id="deleteBoardData" parameterType="hashMap" >
+   		DELETE FROM TB_BOARD
+   		WHERE BOARD_MNG_SEQ=#{BOARDVIEW_MNG_SEQ}
+   		AND     BOARD_SEQ=#{BOARDVIEW_SEQ}
+   	</delete>
+
+	<update id="updateBoardHits" parameterType="hashMap">
+		UPDATE TB_BOARD set HITS = HITS+1 where BOARD_SEQ = #{BOARDVIEW_SEQ}
+	</update>
+
+	<select id="getBoardKind" parameterType="hashMap" resultType="hashMap">
+   		SELECT
+					BOARD_MNG_SEQ ,
+					BOARD_MNG_NAME ,
+					ONOFF_DIV ,
+					BOARD_MNG_TYPE,
+					ATTACH_FILE_YN    ,
+					OPEN_YN ,
+					REPLY_YN
+		FROM TB_BOARD_MNG
+		WHERE  BOARD_MNG_SEQ = #{BOARD_MNG_SEQ}
+   	</select>
+
+	<select id="boardAttachFile" parameterType="hashMap" resultMap="testMap">
+		SELECT     BOARD_SEQ,
+				   FILE_NO,
+				   FILE_NAME,
+				   FILE_PATH
+		FROM   TB_BOARD_FILE
+		WHERE  BOARD_SEQ = #{BOARDVIEW_SEQ}
+	</select>
+
+	<select id="boardAttachFile_Img" parameterType="hashMap" resultMap="testMap">
+		SELECT BOARD_SEQ,
+			   FILE_NO,
+			   FILE_NAME,
+			   FILE_PATH
+		FROM   TB_BOARD_FILE
+		WHERE  BOARD_SEQ = #{BOARDVIEW_SEQ}
+		AND	   (SUBSTR(FILE_NAME, -3) = 'jpg'
+                 OR SUBSTR(FILE_NAME, -3) = 'JPG'
+                 OR SUBSTR(FILE_NAME, -3) = 'peg'
+                 OR SUBSTR(FILE_NAME, -3) = 'PEG'
+                 OR SUBSTR(FILE_NAME, -3) = 'png'
+                 OR SUBSTR(FILE_NAME, -3) = 'PNG'
+                 OR SUBSTR(FILE_NAME, -3) = 'bmp'
+                 OR SUBSTR(FILE_NAME, -3) = 'BMP'
+                 OR SUBSTR(FILE_NAME, -3) = 'gif'
+                 OR SUBSTR(FILE_NAME, -3) = 'GIF'
+                )
+	</select>
+
+	<insert id="insertBoardReplyFile" parameterType="hashMap" flushCache="true" >
+		INSERT INTO TB_BOARD_FILE(BOARD_MNG_SEQ, BOARD_SEQ, FILE_NO, FILE_NAME, FILE_PATH, REG_ID, REG_DT, UPD_ID, UPD_DT, PARENT_BOARD_SEQ)
+		VALUES(#{BOARDVIEW_MNG_SEQ}, #{bContentId}, (SELECT NVL(MAX(TO_NUMBER(FILE_NO)) , 0)+1  FROM TB_BOARD_FILE), #{FILE_NAME}, #{FILE_PATH}, #{REG_ID}, SYSDATE, #{REG_ID}, SYSDATE, #{BOARDVIEW_SEQ})
+	</insert>
+
+	<delete id="Modify_deleteBoardFileData" parameterType="hashMap" >
+   		DELETE FROM TB_BOARD_FILE
+   		WHERE 	FILE_PATH = #{FILE_PATH}
+   		AND     BOARD_SEQ = #{BOARDVIEW_SEQ}
+   	</delete>
+
+	<insert id="insertBoardFile" parameterType="hashMap" flushCache="true" >
+		INSERT INTO TB_BOARD_FILE(BOARD_MNG_SEQ, BOARD_SEQ, FILE_NO, FILE_NAME, FILE_PATH, REG_ID, REG_DT, UPD_ID, UPD_DT)
+		VALUES(#{BOARDVIEW_MNG_SEQ}, #{BOARDVIEW_SEQ}, (SELECT NVL(MAX(TO_NUMBER(FILE_NO)) , 0)+1  FROM TB_BOARD_FILE), #{FILE_NAME}, #{FILE_PATH}, #{REG_ID}, SYSDATE, #{REG_ID}, SYSDATE)
+	</insert>
+
+	<delete id="deleteBoardFileData" parameterType="hashMap" >
+   		DELETE FROM TB_BOARD_FILE
+   		WHERE 	BOARD_MNG_SEQ=#{BOARDVIEW_MNG_SEQ}
+   		AND     BOARD_SEQ=#{BOARDVIEW_SEQ}
+   	</delete>
+	<!--
+
+	<select id="getIsReply" parameterType="hashMap" resultType="int">
+	SELECT
+	    		COUNT(*) CNT
+	FROM  TB_BOARD
+	WHERE PARENT_BOARD_SEQ = #{BOARDVIEW_SEQ}
+	</select>
+
+    <delete id="deleteBoardFile" parameterType="hashMap" >
+   		DELETE FROM TB_TATTACHFILE
+   		WHERE ATTACHFILEID=#{ATTACHFILEID}
+   	</delete>
+
+
+
+    <select id="getFileInfo" parameterType="hashMap" resultType="hashMap">
+   		SELECT
+					 ATTACHFILEID ,
+				      FILENAME ,
+				      FILEPATH,
+				      FILESIZE,
+				      REGDATE
+		FROM TB_TATTACHFILE WHERE ATTACHFILEID =#{ATTACHFILEID}
+   	</select>
+
+	<insert id="boardInsertProcess" parameterType="hashMap" flushCache="true" keyProperty="bContentId" keyColumn="bContentId">
+		INSERT INTO TB_BOARD(
+		        BOARD_MNG_SEQ,
+		        BOARD_SEQ,
+		        OPEN_YN,
+		        SUBJECT,
+		        CONTENT,
+		        FILE_PATH,
+		        FILE_NAME,
+		        REAL_FILE_NAME ,
+		        PARENT_BOARD_SEQ,
+		        NOTICE_TOP_YN ,
+		        REG_DT,
+		        REG_ID,
+		        UPD_DT,
+		        UPD_ID,
+		        HITS,
+		        CREATENAME
+		)VALUES(
+				#{BOARD_MNG_SEQ},
+		        (SELECT NVL(MAX(TO_NUMBER(BOARD_SEQ)) , 0)+1  FROM TB_BOARD),
+		        #{OPEN_YN},
+		        #{SUBJECT},
+		        #{CONTENT},
+		        #{FILE_PATH},
+		        #{FILE_NAME},
+		        #{REAL_FILE_NAME} ,
+		        '0',
+		        #{NOTICE_TOP_YN} ,
+		        SYSDATE,
+		        #{REG_ID},
+		        SYSDATE,
+		        #{REG_ID},
+		        '0',
+		        #{CREATENAME}
+		)
+		<selectKey keyProperty="BOARD_SEQ" resultType="int">SELECT NVL(MAX(TO_NUMBER(BOARD_SEQ)) , 0)  FROM TB_BOARD</selectKey>
+	</insert>
+	<insert id="boardFAQInsertProcess" parameterType="hashMap" flushCache="true" keyProperty="bContentId" keyColumn="bContentId">
+		INSERT INTO TB_BOARD(
+		        BOARD_MNG_SEQ,
+		        BOARD_SEQ,
+		        OPEN_YN,
+		        SUBJECT,
+		        ANSWER,
+		        FILE_PATH,
+		        FILE_NAME,
+		        REAL_FILE_NAME ,
+		        PARENT_BOARD_SEQ,
+		        NOTICE_TOP_YN ,
+		        REG_DT,
+		        REG_ID,
+		        UPD_DT,
+		        UPD_ID,
+		        HITS,
+		        CREATENAME
+		)VALUES(
+				#{BOARD_MNG_SEQ},
+		        (SELECT NVL(MAX(TO_NUMBER(BOARD_SEQ)) , 0)+1  FROM TB_BOARD),
+		        #{OPEN_YN},
+		        #{SUBJECT},
+		        #{ANSWER},
+		        #{FILE_PATH},
+		        #{FILE_NAME},
+		        #{REAL_FILE_NAME} ,
+		        '0',
+		        #{NOTICE_TOP_YN} ,
+		        SYSDATE,
+		        #{REG_ID},
+		        SYSDATE,
+		        #{REG_ID},
+		        '0',
+		        #{CREATENAME}
+		)
+		<selectKey keyProperty="BOARD_SEQ" resultType="int">SELECT NVL(MAX(TO_NUMBER(BOARD_SEQ)) , 0)  FROM TB_BOARD</selectKey>
+	</insert>
+
+	<update id="boardReplyUpdateProcess" parameterType="hashMap">
+		UPDATE TB_TBOARDTEST
+		SET
+				      TITLE           = #{title}  ,
+				     <if test="ATTACHFILEID !=null and ATTACHFILEID != '' ">
+				      	ATTACHFILEID = #{ATTACHFILEID},
+				      </if>
+				      UPDATETIME    = SYSDATE,
+				      CONTENT        = #{content}
+		where BCONTENTID = #{BOARDVIEWID}
+	</update>
+
+	 -->
+	<update id="updateBoardReply" parameterType="hashMap" >
+   		UPDATE TB_BOARD
+		SET
+		    BOARD_REPLY = #{BOARD_REPLY}
+		where BOARD_SEQ = #{BOARDVIEW_SEQ}
+		AND BOARD_MNG_SEQ = #{BOARDVIEW_MNG_SEQ}
+   	</update>
+</mapper>

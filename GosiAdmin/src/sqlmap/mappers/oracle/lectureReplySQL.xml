@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lectureReply">
+
+	<select id="lectureReplyList" parameterType="hashMap" resultType="hashMap" >
+		SELECT * 
+		FROM (SELECT BB.*, ROWNUM rnum 
+				FROM (
+						SELECT 
+						      LECCODE, LEARNING_CD, CATEGORY_CD, CATEGORY_NAME,
+						      SUBJECT_TEACHER, SUBJECT_TEACHER_NAME, SUBJECT_NM, SUBJECT_TITLE, CHOICE_POINT, USER_ID
+						FROM (SELECT 
+						            A.LECCODE, A.LEARNING_CD, A.CATEGORY_CD, B.NAME CATEGORY_NAME, 
+						            A.SUBJECT_TEACHER, 
+						            (SELECT USER_NM FROM TB_MA_MEMBER WHERE ISUSE ='Y' AND USER_ID= A.SUBJECT_TEACHER) AS SUBJECT_TEACHER_NAME,
+						            A.SUBJECT_TITLE, C.SUBJECT_NM,
+						            D.CHOICE_POINT, D.USER_ID
+						     FROM TB_LEC_MST A, TB_CATEGORY_INFO B, TB_SUBJECT_INFO C,
+						          (SELECT SEQ, LECCODE, USER_ID, CHOICE_POINT,
+						                  RANK () OVER (PARTITION BY LECCODE, USER_ID ORDER BY LECCODE, USER_ID, CHOICE_POINT DESC, SEQ DESC) RNK
+						           FROM TB_COMMENT) D
+						     WHERE A.LEC_TYPE_CHOICE = 'D' 
+						     AND A.CATEGORY_CD = B.CODE
+						     AND A.SUBJECT_SJT_CD = C.SUBJECT_CD
+						     AND A.LECCODE = D.LECCODE
+						     AND D.RNK = 1
+						     ORDER BY A.REG_DT DESC
+						    ) AA
+						WHERE 1= 1										
+						<if test="SEARCHKEYWORD != null and SEARCHKEYWORD != ''">
+							<choose>
+								<when test='SEARCHTYPE == "CATEGORY_NAME"'>
+						AND INSTR(CATEGORY_NAME, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+							    </when>
+								<when test='SEARCHTYPE == "SUBJECT_TITLE"'>
+						AND INSTR(SUBJECT_TITLE, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+							    </when>
+							    <when test='SEARCHTYPE == "SJT_NM"'>
+						AND INSTR(SUBJECT_NM, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+							    </when>
+							    <when test='SEARCHTYPE == "SUBJECT_TEACHER_NAME"'>
+						AND INSTR(SUBJECT_TEACHER_NAME, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+							    </when>
+							    <when test='SEARCHTYPE == ""'>
+						AND (
+								INSTR(CATEGORY_NAME, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+								OR INSTR(SUBJECT_TITLE, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+								OR INSTR(SUBJECT_NM, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+								OR INSTR(SUBJECT_TEACHER_NAME, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+								) 
+							    </when>
+							</choose>
+						</if>
+						) BB
+               	WHERE rownum <![CDATA[ <= ]]> #{endNo}
+				)
+		WHERE rnum <![CDATA[ > ]]> #{startNo}
+	</select>
+
+	<select id="lectureReplyListCount" parameterType="hashMap" resultType="int">
+		SELECT COUNT(*) CNT
+		FROM (
+						SELECT 
+						      LECCODE, LEARNING_CD, CATEGORY_CD, CATEGORY_NAME,
+						      SUBJECT_TEACHER, SUBJECT_TEACHER_NAME, SUBJECT_NM, SUBJECT_TITLE, CHOICE_POINT, USER_ID
+						FROM (SELECT 
+						            A.LECCODE, A.LEARNING_CD, A.CATEGORY_CD, B.NAME CATEGORY_NAME, 
+						            A.SUBJECT_TEACHER, 
+						            (SELECT USER_NM FROM TB_MA_MEMBER WHERE ISUSE ='Y' AND USER_ID= A.SUBJECT_TEACHER) AS SUBJECT_TEACHER_NAME,
+						            A.SUBJECT_TITLE, C.SUBJECT_NM,
+						            D.CHOICE_POINT, D.USER_ID
+						     FROM TB_LEC_MST A, TB_CATEGORY_INFO B, TB_SUBJECT_INFO C,
+						          (SELECT SEQ, LECCODE, USER_ID, CHOICE_POINT,
+						                  RANK () OVER (PARTITION BY LECCODE, USER_ID ORDER BY LECCODE, USER_ID, CHOICE_POINT DESC, SEQ DESC) RNK
+						           FROM TB_COMMENT) D
+						     WHERE A.LEC_TYPE_CHOICE = 'D' 
+						     AND A.CATEGORY_CD = B.CODE
+						     AND A.SUBJECT_SJT_CD = C.SUBJECT_CD
+						     AND A.LECCODE = D.LECCODE
+						     AND D.RNK = 1
+						     ORDER BY A.REG_DT DESC
+						    ) AA
+						WHERE 1= 1										
+						<if test="SEARCHKEYWORD != null and SEARCHKEYWORD != ''">
+							<choose>
+								<when test='SEARCHTYPE == "CATEGORY_NAME"'>
+						AND INSTR(CATEGORY_NAME, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+							    </when>
+								<when test='SEARCHTYPE == "SUBJECT_TITLE"'>
+						AND INSTR(SUBJECT_TITLE, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+							    </when>
+							    <when test='SEARCHTYPE == "SJT_NM"'>
+						AND INSTR(SUBJECT_NM, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+							    </when>
+							    <when test='SEARCHTYPE == "SUBJECT_TEACHER_NAME"'>
+						AND INSTR(SUBJECT_TEACHER_NAME, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+							    </when>
+							    <when test='SEARCHTYPE == ""'>
+						AND (
+								INSTR(CATEGORY_NAME, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+								OR INSTR(SUBJECT_TITLE, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+								OR INSTR(SUBJECT_NM, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+								OR INSTR(SUBJECT_TEACHER_NAME, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+								) 
+							    </when>
+							</choose>
+						</if>
+		)
+	</select>
+
+	<select id="lectureReplyDetail" parameterType="hashMap" resultType="hashMap">
+		 SELECT 
+				  A.LECCODE , 
+				  A.LEARNING_CD,
+		          A.CATEGORY_CD ,
+		          (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE=A.CATEGORY_CD) AS CATEGORY_NAME , 
+		          A.SUBJECT_TEACHER , 
+		          (SELECT USER_NM FROM TB_MA_MEMBER WHERE ISUSE ='Y' AND USER_ID= A.SUBJECT_TEACHER) AS SUBJECT_TEACHER_NAME , 
+		          (SELECT SUBJECT_NM FROM TB_SUBJECT_INFO WHERE ISUSE='Y' AND SUBJECT_CD = A.SUBJECT_SJT_CD) AS SJT_NM , 
+		          A.SUBJECT_TITLE
+		FROM TB_LEC_MST A 
+		WHERE	LECCODE = #{DETAIL_LECCODE}
+	</select>
+	
+	<select id="lectureReplyDetailList" parameterType="hashMap" resultType="hashMap">
+		SELECT * FROM 	( 
+							SELECT C.*, ROWNUM rnum 
+						  	FROM ( 
+											 SELECT 
+													  	LECCODE , 
+													  	SEQ , 
+												        USER_ID,
+												        USER_NAME , 
+												        CONTENT , 
+												        CHOICE_POINT , 
+														TO_CHAR(REG_DT , 'yyyy-mm-dd HH24:MI:SS')  REG_DT 
+											FROM TB_COMMENT 
+											WHERE	LECCODE = #{DETAIL_LECCODE}
+											ORDER BY SEQ DESC
+										) C
+		                 	WHERE rownum &lt;= #{endNo}
+							)
+	WHERE rnum &gt; #{startNo}
+	</select>
+	<select id="lectureReplyDetailListCount" parameterType="hashMap" resultType="int">
+		 SELECT 
+				  	COUNT(*) CNT
+		FROM TB_COMMENT 
+		WHERE	LECCODE = #{DETAIL_LECCODE}
+		ORDER BY SEQ DESC
+	</select>
+	
+	<delete id="replyDelete" parameterType="hashMap">
+		DELETE FROM TB_COMMENT WHERE LECCODE = #{DELETE_LECCODE}  AND SEQ=#{DELETE_SEQ}
+	</delete>
+	
+</mapper>	

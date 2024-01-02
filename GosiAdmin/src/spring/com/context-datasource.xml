@@ -1,0 +1,46 @@
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+    xsi:schemaLocation="
+      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+      http://www.springframework.org/schema/jdbc  http://www.springframework.org/schema/jdbc/spring-jdbc-3.2.xsd">
+
+    <!-- 환경설정 기본정보를 globals.properties 에서 참조하도록 propertyConfigurer 설정  -->
+    <bean id="propertyConfigurer" class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:/globalProps/globals.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- datasource 설정(propertyConfigurer 활용) -->
+    <alias name="dataSource" alias="dataSource" />
+    <alias name="dataSource" alias="egov.dataSource" />
+	
+    <!-- Oracle -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${Globals.oracle.DriverClassName}"/>
+        <property name="url" value="${Globals.oracle.Url}" />
+        <property name="username" value="${Globals.oracle.UserName}"/>
+        <property name="password" value="${Globals.oracle.Password}"/>
+    </bean>
+
+    <!-- Oracle -->
+    <!--
+    <bean id="dataSource-oracle-Exm" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${Globals.DriverClassName}"/>
+        <property name="url" value="${Globals.Url}" />
+        <property name="username" value="${Globals.UserNameExm}"/>
+        <property name="password" value="${Globals.PasswordExm}"/>
+    </bean>
+     -->
+
+    <!-- <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" /> -->
+
+</beans>

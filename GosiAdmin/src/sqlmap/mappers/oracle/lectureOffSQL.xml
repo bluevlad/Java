@@ -1,0 +1,1031 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lectureOff">
+
+ 	<resultMap type="java.util.HashMap" id="lectureMap">
+	   <result column="SUBJECT_DESC" property="SUBJECT_DESC" javaType="java.lang.String" jdbcType="CLOB"/>
+	   <result column="PLAN" property="PLAN" javaType="java.lang.String" jdbcType="CLOB"/>
+	</resultMap>
+
+<!-- 단과 start -->
+
+
+	<select id="lectureList" parameterType="hashMap" resultType="hashMap">
+		SELECT *
+		FROM (SELECT DA.*,
+				           (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = DA.CATEGORY_CD) AS CATEGORY_NM,
+				           (SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE CODE = DA.LEARNING_CD) AS LEARNING_NM,
+				           NVL((SELECT MAX(Z.LEC_DATE) FROM TB_OFF_LECTURE_DATE Z WHERE Z.LECCODE = DA.LECCODE),'') AS SUBJECT_END_DATE,
+		         ROWNUM rnum
+			FROM (SELECT CA.CNT OFFERERCNT, CA.SUBJECT_TEACHER_NM, CA.SUBJECT_NM, CA.BRIDGE_LECCODE,
+			                   CB.*
+					FROM (SELECT BA.LECCODE, BA.SUBJECT_ISUSE, BA.LEC_PROCESS,
+							     (SELECT SUBJECT_NM FROM TB_SUBJECT_INFO WHERE SUBJECT_CD = BA.SUBJECT_SJT_CD) AS SUBJECT_NM,
+					             BA.CATEGORY_CD, BA.LEARNING_CD, BA.SUBJECT_TITLE, BA.SUBJECT_TEACHER, BC.USER_NM SUBJECT_TEACHER_NM,
+					             BB.BRIDGE_LECCODE,
+					             RANK () OVER(PARTITION BY BB.BRIDGE_LECCODE ORDER BY BA.CATEGORY_CD ASC) RANK,
+					             NVL(BD.CNT, 0) CNT
+					      FROM TB_OFF_LEC_MST BA, TB_OFF_LEC_BRIDGE BB, TB_MA_MEMBER BC,
+					           (SELECT BRIDGE_LECCODE, COUNT(BRIDGE_LECCODE) CNT
+					            FROM (SELECT AC.BRIDGE_LECCODE
+					                  FROM TB_OFF_MYLECTURE AA, TB_OFF_ORDER_MGNT_NO AB, TB_OFF_LEC_BRIDGE AC,
+					                       (SELECT A.LECCODE, B.BRIDGE_LECCODE
+					                        FROM TB_OFF_LEC_MST A, TB_OFF_LEC_BRIDGE B
+					                        WHERE A.LECCODE = B.LECCODE) AD
+					                  WHERE AA.ORDERNO = AB.ORDERNO
+					                  AND AA.PACKAGE_NO = AB.MGNTNO
+					                  AND AA.LECTURE_NO = AC.LECCODE
+					                  AND AB.STATUSCODE IN ('DLV105', 'DLV230')
+					                  AND AC.LECCODE = AD.LECCODE
+					                  AND AC.BRIDGE_LECCODE = AD.BRIDGE_LECCODE
+					                  GROUP BY AB.ORDERNO, AB.MGNTNO, AC.BRIDGE_LECCODE
+					                  HAVING COUNT(AB.MGNTNO) = 1)
+					            GROUP BY BRIDGE_LECCODE) BD
+					      WHERE BA.LECCODE = BB.LECCODE
+					      AND BA.SUBJECT_TEACHER = BC.USER_ID
+					      AND BB.BRIDGE_LECCODE = BD.BRIDGE_LECCODE(+)) CA, TB_OFF_LEC_MST CB
+					WHERE CA.RANK = 1
+					AND CA.LECCODE = CB.LECCODE
+					AND CB.LEC_TYPE_CHOICE = 'D'
+					     <if test='SEARCHKIND != null and SEARCHKIND != ""'>
+  						 AND CB.CATEGORY_CD = #{SEARCHKIND}
+						</if>
+			            <if test ='SEARCHFORM != null and SEARCHFORM != ""'>
+			            AND CB.LEARNING_CD = #{SEARCHFORM}
+			            </if>
+			            <if test ='SEARCHYEAR!= null and SEARCHYEAR != ""'>
+			            AND CB.SUBJECT_OPEN_DATE <![CDATA[ >= ]]> '2012'
+			            </if>
+			            <if test ='SEARCH_OPEN_DATE != null and SEARCH_OPEN_DATE != ""'>
+			            AND CB.SUBJECT_OPEN_DATE BETWEEN ${SEARCH_OPEN_DATE} AND ${SEARCH_END_DATE}
+			            </if>
+			            <if test ='SEARCH_SUBJECT_ISUSE != null and SEARCH_SUBJECT_ISUSE != ""'>
+			            AND CB.SUBJECT_ISUSE = #{SEARCH_SUBJECT_ISUSE}
+			            </if>
+			            <if test ='SEARCH_LEC_PROCESS != null and SEARCH_LEC_PROCESS != ""'>
+			            AND CB.LEC_PROCESS = #{SEARCH_LEC_PROCESS}
+			            </if>
+					 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+							<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+								<if test='SEARCHTYPE == "1"'>
+									AND (CB.SUBJECT_SJT_CD like '%${SEARCHTEXT}%'
+										OR CA.SUBJECT_NM like '%${SEARCHTEXT}%')
+								</if>
+								<if test='SEARCHTYPE == "2"'>
+									AND INSTR(CB.SUBJECT_TITLE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+								</if>
+								<if test='SEARCHTYPE == "3"'>
+									AND CA.SUBJECT_TEACHER_NM like '%${SEARCHTEXT}%'
+								</if>
+								<if test='SEARCHTYPE == "4"'>
+									AND (CA.BRIDGE_LECCODE like '%${SEARCHTEXT}%'
+										OR CB.LECCODE like '%${SEARCHTEXT}%')
+								</if>
+							</if>
+						</if>
+			              <if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+			              AND (CB.SUBJECT_SJT_CD LIKE '%${SEARCHTEXT}%'
+			              OR CA.SUBJECT_NM LIKE '%${SEARCHTEXT}%'
+			              OR INSTR(CB.SUBJECT_TITLE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+			              OR CA.SUBJECT_TEACHER_NM LIKE '%${SEARCHTEXT}%'
+			              OR CA.BRIDGE_LECCODE LIKE '%${SEARCHTEXT}%'
+			              OR CB.LECCODE LIKE '%${SEARCHTEXT}%')
+			              </if>
+					ORDER BY CB.SEQ DESC
+		           ) DA
+		      WHERE rownum <![CDATA[ <= ]]> #{endNo}
+		     ) LTBL
+		WHERE rnum <![CDATA[ > ]]> #{startNo}
+	</select>
+
+	<select id="lectureListCount" parameterType="hashMap" resultType="int">
+		SELECT COUNT(*)
+				FROM (SELECT BA.LECCODE, BA.SUBJECT_ISUSE, BA.LEC_PROCESS,
+						     (SELECT SUBJECT_NM FROM TB_SUBJECT_INFO WHERE SUBJECT_CD = BA.SUBJECT_SJT_CD) AS SUBJECT_NM,
+				             BA.CATEGORY_CD, BA.LEARNING_CD, BA.SUBJECT_TITLE, BA.SUBJECT_TEACHER, BC.USER_NM SUBJECT_TEACHER_NM,
+				             BB.BRIDGE_LECCODE,
+				             RANK () OVER(PARTITION BY BB.BRIDGE_LECCODE ORDER BY BA.CATEGORY_CD ASC) RANK,
+				             NVL(BD.CNT, 0) CNT
+				      FROM TB_OFF_LEC_MST BA, TB_OFF_LEC_BRIDGE BB, TB_MA_MEMBER BC,
+				           (SELECT BRIDGE_LECCODE, COUNT(BRIDGE_LECCODE) CNT
+				            FROM (SELECT AC.BRIDGE_LECCODE
+				                  FROM TB_OFF_MYLECTURE AA, TB_OFF_ORDER_MGNT_NO AB, TB_OFF_LEC_BRIDGE AC,
+				                       (SELECT A.LECCODE, B.BRIDGE_LECCODE
+				                        FROM TB_OFF_LEC_MST A, TB_OFF_LEC_BRIDGE B
+				                        WHERE A.LECCODE = B.LECCODE) AD
+				                  WHERE AA.ORDERNO = AB.ORDERNO
+				                  AND AA.PACKAGE_NO = AB.MGNTNO
+				                  AND AA.LECTURE_NO = AC.LECCODE
+				                  AND AB.STATUSCODE IN ('DLV105', 'DLV230')
+				                  AND AC.LECCODE = AD.LECCODE
+				                  AND AC.BRIDGE_LECCODE = AD.BRIDGE_LECCODE
+				                  GROUP BY AB.ORDERNO, AB.MGNTNO, AC.BRIDGE_LECCODE
+				                  HAVING COUNT(AB.MGNTNO) = 1)
+				            GROUP BY BRIDGE_LECCODE) BD
+				      WHERE BA.LECCODE = BB.LECCODE
+				      AND BA.SUBJECT_TEACHER = BC.USER_ID
+				      AND BB.BRIDGE_LECCODE = BD.BRIDGE_LECCODE(+)) CA, TB_OFF_LEC_MST CB
+				WHERE CA.RANK = 1
+				AND CA.LECCODE = CB.LECCODE
+    			AND CB.LEC_TYPE_CHOICE = 'D'
+				     <if test='SEARCHKIND != null and SEARCHKIND != ""'>
+ 						 AND CB.CATEGORY_CD = #{SEARCHKIND}
+					</if>
+		            <if test ='SEARCHFORM != null and SEARCHFORM != ""'>
+		            AND CB.LEARNING_CD = #{SEARCHFORM}
+		            </if>
+		            <if test ='SEARCHYEAR!= null and SEARCHYEAR != ""'>
+		            AND CB.SUBJECT_OPEN_DATE <![CDATA[ >= ]]> '2012'
+		            </if>
+		            <if test ='SEARCH_OPEN_DATE != null and SEARCH_OPEN_DATE != ""'>
+		            AND CB.SUBJECT_OPEN_DATE BETWEEN ${SEARCH_OPEN_DATE} AND ${SEARCH_END_DATE}
+		            </if>
+		            <if test ='SEARCH_SUBJECT_ISUSE != null and SEARCH_SUBJECT_ISUSE != ""'>
+		            AND CB.SUBJECT_ISUSE = #{SEARCH_SUBJECT_ISUSE}
+		            </if>
+		            <if test ='SEARCH_LEC_PROCESS != null and SEARCH_LEC_PROCESS != ""'>
+		            AND CB.LEC_PROCESS = #{SEARCH_LEC_PROCESS}
+		            </if>
+				 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+						<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+							<if test='SEARCHTYPE == "1"'>
+								AND (CB.SUBJECT_SJT_CD like '%${SEARCHTEXT}%'
+									OR CA.SUBJECT_NM like '%${SEARCHTEXT}%')
+							</if>
+							<if test='SEARCHTYPE == "2"'>
+								AND INSTR(CB.SUBJECT_TITLE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+							</if>
+							<if test='SEARCHTYPE == "3"'>
+								AND CA.SUBJECT_TEACHER_NM like '%${SEARCHTEXT}%'
+							</if>
+							<if test='SEARCHTYPE == "4"'>
+								AND (CA.BRIDGE_LECCODE like '%${SEARCHTEXT}%'
+									OR CB.LECCODE like '%${SEARCHTEXT}%')
+							</if>
+						</if>
+					</if>
+			              <if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+			              AND (CB.SUBJECT_SJT_CD LIKE '%${SEARCHTEXT}%'
+			              OR CA.SUBJECT_NM LIKE '%${SEARCHTEXT}%'
+			              OR INSTR(CB.SUBJECT_TITLE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+			              OR CA.SUBJECT_TEACHER_NM LIKE '%${SEARCHTEXT}%'
+			              OR CA.BRIDGE_LECCODE LIKE '%${SEARCHTEXT}%'
+			              OR CB.LECCODE LIKE '%${SEARCHTEXT}%')
+		              </if>
+	</select>
+
+	<select id="bookList" parameterType="hashMap" resultType="hashMap">
+		SELECT LTBL.*
+			,(SELECT NAME FROM TB_CATEGORY_INFO WHERE ISUSE = 'Y' AND CODE = LTBL.CATEGORY_CD) CATEGORY_NM
+			,(SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE ISUSE = 'Y' AND CODE = LTBL.LEARNING_CD) LEARNING_NM
+		FROM 	(
+					SELECT TBL.*, ROWNUM rnum
+				  	FROM (
+						SELECT
+						  SEQ, RSC_ID, SUBJECT_SJT_CD, CATEGORY_CD, LEARNING_CD, BOOK_NM
+						FROM TB_CA_BOOK WHERE USE_YN = 'Y'
+						<if test='SEARCHKIND != null and SEARCHKIND != ""'>
+					 		AND CATEGORY_CD = #{SEARCHKIND}
+					 	</if>
+					 	<if test='SEARCHFORM != null and SEARCHFORM != ""'>
+					 		AND LEARNING_CD = #{SEARCHFORM}
+					 	</if>
+					 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+							AND BOOK_NM like '%'||#{SEARCHTEXT}||'%'
+						</if>
+						ORDER BY REG_DT DESC
+				) TBL
+               	WHERE rownum &lt;= #{endNo}
+			) LTBL
+		WHERE rnum &gt; #{startNo}
+	</select>
+
+	<select id="bookListCount" parameterType="hashMap" resultType="int">
+		SELECT
+		  COUNT(RSC_ID)
+		FROM TB_CA_BOOK WHERE USE_YN = 'Y'
+		<if test='SEARCHKIND != null and SEARCHKIND != ""'>
+	 		AND CATEGORY_CD = #{SEARCHKIND}
+	 	</if>
+	 	<if test='SEARCHFORM != null and SEARCHFORM != ""'>
+	 		AND LEARNING_CD = #{SEARCHFORM}
+	 	</if>
+	 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+			AND BOOK_NM like '%'||#{SEARCHTEXT}||'%'
+		</if>
+	</select>
+
+	<select id="getBridgeLeccodeSeq" parameterType="hashMap" resultType="hashMap">
+		SELECT TO_CHAR(NVL(MAX(seq),0)+1) AS SEQ FROM TB_OFF_LEC_BRIDGE
+	</select>
+
+	<select id="getJongLeccodeSeq" parameterType="hashMap" resultType="hashMap">
+		SELECT TO_CHAR(NVL(MAX(seq),0)+1) AS SEQ FROM TB_OFF_LEC_JONG
+	</select>
+
+	<select id="getLeccode" parameterType="hashMap" resultType="hashMap">
+		SELECT
+  			TO_CHAR(NVL(MAX(substr(LECCODE,6,5)),0)+1,'00000') LECCODE
+		FROM TB_OFF_LEC_MST
+		WHERE LECCODE LIKE '%'||#{PREFIX}||'%'
+	</select>
+
+	<select id="getBridgeLeccode" parameterType="hashMap" resultType="hashMap">
+		SELECT
+			TO_CHAR(NVL(MAX(substr(BRIDGE_LECCODE,6,5)),0)+1,'00000') BRIDGE_LECCODE
+		FROM TB_OFF_LEC_BRIDGE
+		WHERE BRIDGE_LECCODE LIKE '%'||#{PREFIX}||'%'
+	</select>
+
+	<insert id="lectureInsert" parameterType="hashMap" flushCache="true">
+		INSERT INTO TB_OFF_LEC_MST(
+			SEQ, LECCODE, CATEGORY_CD, LEARNING_CD, SUBJECT_TYPE
+													, SUBJECT_GUBUN, SUBJECT_MEMBER_CNT , SUBJECT_TEACHER, SUBJECT_TEACHER_PAYMENT, SUBJECT_SJT_CD
+													, SUBJECT_TITLE, SUBJECT_DESC , SUBJECT_KEYWORD, SUBJECT_OPEN_DATE, LEC_SCHEDULE
+													, WEEK1, WEEK2, WEEK3, WEEK4, WEEK5, WEEK6, WEEK7
+													, SUBJECT_DISCOUNT , SUBJECT_PRICE, SUBJECT_REAL_PRICE , SUBJECT_SUMNAIL, SUBJECT_ISUSE
+													, LEC_TYPE_CHOICE, LEC_GUBUN, REC_GUBUN, REG_DT, REG_ID, UPD_DT, UPD_ID, PLAN
+													, LEC_COUNT, LEC_PROCESS
+		)VALUES(
+			(SELECT NVL(MAX(SEQ),0)+1 FROM TB_OFF_LEC_MST), #{LECCODE}, #{CATEGORY_CD}, #{LEARNING_CD}, #{SUBJECT_TYPE}
+					, #{SUBJECT_GUBUN}, #{SUBJECT_MEMBER_CNT} , #{SUBJECT_TEACHER}, #{SUBJECT_TEACHER_PAYMENT}, #{SUBJECT_SJT_CD}
+					, #{SUBJECT_TITLE}, #{SUBJECT_DESC}, #{SUBJECT_KEYWORD}, #{SUBJECT_OPEN_DATE}, #{LEC_SCHEDULE}
+					, #{WEEK1}, #{WEEK2}, #{WEEK3}, #{WEEK4}, #{WEEK5}, #{WEEK6}, #{WEEK7}
+					, #{SUBJECT_DISCOUNT}, #{SUBJECT_PRICE}, #{SUBJECT_REAL_PRICE}, #{SUBJECT_SUMNAIL}, #{SUBJECT_ISUSE}
+					, #{LEC_TYPE_CHOICE}, #{LEC_GUBUN}, #{REC_GUBUN}, SYSDATE, #{REG_ID}, SYSDATE, #{UPD_ID}, #{PLAN}
+					, #{LEC_COUNT}, #{LEC_PROCESS}
+		)
+	</insert>
+
+	<insert id="lectureBridgeInsert" parameterType="hashMap" flushCache="true">
+		INSERT INTO TB_OFF_LEC_BRIDGE(SEQ, BRIDGE_LECCODE, LECCODE, REG_DT, REG_ID, UPD_DT, UPD_ID)
+		VALUES (#{SEQ}, #{BRIDGE_LECCODE}, #{LECCODE}, SYSDATE, #{REG_ID}, SYSDATE, #{UPD_ID})
+	</insert>
+
+	<insert id="lectureBookInsert" parameterType="hashMap" flushCache="true" statementType="CALLABLE">
+		CALL PKG_LECTURE.SP_LECTURE_OFF_BOOK_INSERT(
+		        #{LECCODE, mode=IN},
+		        #{RSC_ID, mode=IN},
+		        #{FLAG, mode=IN},
+		        #{BRIDGE_LEC, mode=IN},
+		        #{SUBJECT_BOOK_MEMO, mode=IN})
+	</insert>
+
+	<insert id="lectureBookInsert2" parameterType="hashMap" flushCache="true">
+		INSERT INTO TB_OFF_PLUS_CA_BOOK(IDX, LECCODE, RSC_ID, FLAG
+		<if test='SUBJECT_BOOK_MEMO != null and SUBJECT_BOOK_MEMO != ""'>
+		, SUBJECT_BOOK_MEMO
+		</if>
+		) VALUES (
+		(SELECT NVL(MAX(IDX),0)+1 FROM TB_OFF_PLUS_CA_BOOK), #{LECCODE}, #{RSC_ID}, #{FLAG}
+		<if test='SUBJECT_BOOK_MEMO != null and SUBJECT_BOOK_MEMO != ""'>
+		, #{SUBJECT_BOOK_MEMO}
+		</if>
+		)
+	</insert>
+
+	<select id="lectureViewList" parameterType="hashMap" resultType="hashMap">
+        SELECT
+          T1.BRIDGE_LECCODE, T2.*
+          , (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = T2.CATEGORY_CD) AS CATEGORY_NM
+          , (SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE CODE = T2.LEARNING_CD) AS LEARNING_NM
+          , (SELECT SUBJECT_NM FROM TB_SUBJECT_INFO WHERE SUBJECT_CD = T2.SUBJECT_SJT_CD) AS SUBJECT_NM
+          , (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = T2.SUBJECT_TEACHER) AS SUBJECT_TEACHER_NM
+          ,    NVL((SELECT MIN(TO_CHAR(Z.LEC_DATE,'yyyymmdd')) FROM TB_OFF_LECTURE_DATE Z WHERE Z.LECCODE = T2.LECCODE),'') AS MIN_DATE
+          ,    NVL((SELECT MAX(TO_CHAR(Z.LEC_DATE,'yyyymmdd')) FROM TB_OFF_LECTURE_DATE Z WHERE Z.LECCODE = T2.LECCODE),'') AS MAX_DATE
+          , (SELECT TO_CHAR(SYSDATE , 'yyyymmdd') FROM DUAL ) AS CURDATE
+          , NVL(OFFERERCNT, 0) OFFERERCNT
+        FROM
+        (SELECT BRIDGE_LECCODE, LECCODE FROM TB_OFF_LEC_BRIDGE WHERE BRIDGE_LECCODE = #{BRIDGE_LECCODE}) T1
+        INNER JOIN TB_OFF_LEC_MST T2 ON T1.LECCODE = T2.LECCODE
+        LEFT OUTER JOIN  (SELECT BB.LECTURE_NO, COUNT(BB.LECTURE_NO) OFFERERCNT
+                                                    FROM (SELECT B.ORDERNO, A.LECTURE_NO, C.BRIDGE_LECCODE
+                                                          FROM TB_OFF_MYLECTURE A, TB_OFF_ORDER_MGNT_NO B, TB_OFF_LEC_BRIDGE C,
+                                                               (SELECT A.LECCODE, B.BRIDGE_LECCODE
+                                                                FROM TB_OFF_LEC_MST A, TB_OFF_LEC_BRIDGE B
+                                                                WHERE A.LECCODE = B.LECCODE) D
+                                                          WHERE A.ORDERNO = B.ORDERNO
+                                                          AND A.PACKAGE_NO = B.MGNTNO
+                                                          AND A.LECTURE_NO = C.LECCODE
+                                                          AND B.STATUSCODE IN ('DLV105', 'DLV230')
+                                                          AND C.LECCODE = D.LECCODE
+                                                          AND C.BRIDGE_LECCODE = D.BRIDGE_LECCODE
+                                                          AND C.BRIDGE_LECCODE = #{BRIDGE_LECCODE}
+                                                          GROUP BY B.ORDERNO, A.LECTURE_NO, C.BRIDGE_LECCODE
+                                                          HAVING COUNT(A.LECTURE_NO) = 1) BB
+                                                    GROUP BY BB.LECTURE_NO) OT ON
+        T1.LECCODE = OT.LECTURE_NO
+        ORDER BY T2.CATEGORY_CD
+	</select>
+
+	<select id="lectureView" parameterType="hashMap" resultMap="lectureMap">
+		SELECT
+			TBL.*, (SELECT NO FROM TB_OFF_CHOICE_JONG_NO WHERE LECCODE = TBL.LECCODE AND CATEGORY_CD = TBL.CATEGORY_CD) AS NO
+			, T2.SEQ AS BSEQ, T2.BRIDGE_LECCODE
+		FROM TB_OFF_LEC_MST TBL  INNER JOIN TB_OFF_LEC_BRIDGE T2 ON TBL.LECCODE = T2.LECCODE
+		WHERE TBL.LECCODE = #{LECCODE}
+	</select>
+
+	<select id="lectureViewBookList" parameterType="hashMap" resultType="hashMap">
+		SELECT
+		  AA.*
+		  ,(SELECT NAME FROM TB_CATEGORY_INFO WHERE ISUSE = 'Y' AND CODE = BB.CATEGORY_CD) CATEGORY_NM
+		  ,(SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE ISUSE = 'Y' AND CODE = BB.LEARNING_CD) LEARNING_NM
+		  , BB.BOOK_NM
+		FROM TB_OFF_PLUS_CA_BOOK AA INNER JOIN TB_CA_BOOK BB
+		ON AA.RSC_ID = BB.RSC_ID WHERE AA.LECCODE = #{LECCODE}
+	</select>
+
+	<update id="lectureUpdate" parameterType="hashMap">
+		UPDATE TB_OFF_LEC_MST
+			SET
+				 LEARNING_CD = #{LEARNING_CD}
+				<if test='UPDATE_FLAG != "ALL" '>
+					,CATEGORY_CD = #{CATEGORY_CD}
+				</if>
+				, SUBJECT_TYPE = #{SUBJECT_TYPE}
+				, SUBJECT_GUBUN = #{SUBJECT_GUBUN}
+				, SUBJECT_MEMBER_CNT = #{SUBJECT_MEMBER_CNT}
+				, SUBJECT_TEACHER = #{SUBJECT_TEACHER}
+				, SUBJECT_TEACHER_PAYMENT = #{SUBJECT_TEACHER_PAYMENT}
+				, SUBJECT_SJT_CD = #{SUBJECT_SJT_CD}
+				, SUBJECT_TITLE = #{SUBJECT_TITLE}
+				, SUBJECT_DESC = #{SUBJECT_DESC}
+				, SUBJECT_KEYWORD = #{SUBJECT_KEYWORD}
+				, SUBJECT_OPEN_DATE = #{SUBJECT_OPEN_DATE}
+				, LEC_SCHEDULE = #{LEC_SCHEDULE}
+				, WEEK1 = #{WEEK1}
+				, WEEK2 = #{WEEK2}
+				, WEEK3 = #{WEEK3}
+				, WEEK4 = #{WEEK4}
+				, WEEK5 = #{WEEK5}
+				, WEEK6 = #{WEEK6}
+				, WEEK7 = #{WEEK7}
+				, SUBJECT_DISCOUNT = #{SUBJECT_DISCOUNT}
+				, SUBJECT_PRICE = #{SUBJECT_PRICE}
+				, SUBJECT_REAL_PRICE = #{SUBJECT_REAL_PRICE}
+				<if test='SUBJECT_SUMNAIL_DEL == "Y" and SUBJECT_SUMNAIL == ""'>, SUBJECT_SUMNAIL = ''</if>
+				<if test='SUBJECT_SUMNAIL != ""'>, SUBJECT_SUMNAIL = #{SUBJECT_SUMNAIL}</if>
+				, SUBJECT_ISUSE = #{SUBJECT_ISUSE}
+				, LEC_TYPE_CHOICE = #{LEC_TYPE_CHOICE}
+				, LEC_GUBUN = #{LEC_GUBUN}
+				, REC_GUBUN = #{REC_GUBUN}
+				, UPD_DT = SYSDATE
+				, UPD_ID = #{UPD_ID}
+				, PLAN = #{PLAN}
+				<if test="LEC_COUNT != null and LEC_COUNT != ''">
+				, LEC_COUNT = #{LEC_COUNT}
+				</if>
+				, LEC_PROCESS = DECODE(#{SUBJECT_ISUSE}, 'N', 'N', NVL(#{LEC_PROCESS}, #{SUBJECT_ISUSE}))
+			<if test='UPDATE_FLAG == "ALL" '>WHERE LECCODE IN (SELECT LECCODE FROM TB_OFF_LEC_BRIDGE WHERE BRIDGE_LECCODE = #{BRIDGE_LEC} )</if>
+		    <if test='UPDATE_FLAG != "ALL" '>WHERE LECCODE = #{LECCODE}</if>
+	</update>
+
+	<delete id="lectureBookDelete" parameterType="hashMap" flushCache="true">
+		DELETE FROM TB_OFF_PLUS_CA_BOOK
+		<if test='UPDATE_FLAG == "ALL" '>WHERE LECCODE IN (SELECT LECCODE FROM TB_OFF_LEC_BRIDGE WHERE BRIDGE_LECCODE = #{BRIDGE_LEC} )</if>
+		<if test='UPDATE_FLAG != "ALL" '>WHERE LECCODE = #{LECCODE}</if>
+	</delete>
+
+	<delete id="lectureIsUseUpdate" parameterType="hashMap" flushCache="true">
+		UPDATE TB_OFF_LEC_MST SET 
+		<choose>
+			<when test='LEC_PROCESS != null and LEC_PROCESS != ""'>
+			LEC_PROCESS = #{LEC_PROCESS}
+			</when>
+			<otherwise>
+			SUBJECT_ISUSE = #{SUBJECT_ISUSE}
+			</otherwise>
+		</choose>
+		<choose>
+			<when test='JONGSEQ_ARR != null and JONGSEQ_ARR != ""'>
+				WHERE LECCODE IN (
+						SELECT TBL.LECCODE
+				        FROM    (  SELECT SEQ, LECCODE
+				                     FROM TB_OFF_LEC_JONG
+				                 GROUP BY SEQ, LECCODE
+				                   HAVING LECCODE LIKE 'N%' AND SEQ = #{JONGSEQ_ARR}) T1
+				             INNER JOIN
+				                TB_OFF_LEC_MST TBL
+				             ON T1.LECCODE = TBL.LECCODE
+				       WHERE LEC_TYPE_CHOICE = 'N'
+			            <if test='SEARCHKIND != null and SEARCHKIND != ""'>
+			            	AND TBL.CATEGORY_CD = #{SEARCHKIND}
+			            </if>
+				)
+			</when>
+			<otherwise>
+				WHERE LECCODE IN (
+				        SELECT
+				            A.LECCODE
+				       FROM    TB_OFF_LEC_BRIDGE A
+				            LEFT OUTER JOIN
+				               TB_OFF_LEC_MST B
+				            ON A.LECCODE = B.LECCODE
+				            WHERE 1=1
+				            AND A.BRIDGE_LECCODE = #{BRIDGE_LECCODES}
+				            <if test='SEARCHKIND != null and SEARCHKIND != ""'>
+				            	AND B.CATEGORY_CD = #{SEARCHKIND}
+				            </if>
+				            )
+			</otherwise>
+		</choose>
+
+		<!-- DELETE FROM TB_LEC_MST WHERE LECCODE = #{LECCODE} -->
+	</delete>
+
+	<delete id="lectureDelete" parameterType="hashMap" flushCache="true">
+		DELETE FROM TB_OFF_LEC_MST WHERE LECCODE = #{LECCODE}
+	</delete>
+
+	<delete id="lectureBridgeDelete" parameterType="hashMap" flushCache="true">
+		DELETE FROM TB_OFF_LEC_BRIDGE WHERE BRIDGE_LECCODE = #{BRIDGE_LECCODE} AND LECCODE = #{LECCODE}
+	</delete>
+
+	<select id="lectureSeqList" parameterType="hashMap" resultType="hashMap">
+		<if test='LEC_TYPE_CHOICE == "D"'>
+			SELECT TBL.* FROM (
+				SELECT T1.BRIDGE_LECCODE, T2.*
+				  , (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = T2.CATEGORY_CD) AS CATEGORY_NM
+				  , (SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE CODE = T2.LEARNING_CD) AS LEARNING_NM
+				  , (SELECT SUBJECT_NM FROM TB_SUBJECT_INFO WHERE SUBJECT_CD = T2.SUBJECT_SJT_CD) AS SUBJECT_NM
+				  , (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = T2.SUBJECT_TEACHER) AS SUBJECT_TEACHER_NM
+				FROM
+				TB_OFF_LEC_BRIDGE T1 RIGHT JOIN TB_OFF_LEC_MST T2 ON T1.LECCODE = T2.LECCODE
+			) TBL WHERE 1 = 1 AND LEC_TYPE_CHOICE = #{LEC_TYPE_CHOICE}
+		</if>
+		<if test='LEC_TYPE_CHOICE != "D"'>
+			SELECT
+				TBL.*
+				  , (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = TBL.CATEGORY_CD) AS CATEGORY_NM
+				  , (SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE CODE = TBL.LEARNING_CD) AS LEARNING_NM
+			FROM TB_OFF_LEC_MST TBL WHERE LEC_TYPE_CHOICE = #{LEC_TYPE_CHOICE}
+		</if>
+  		<if test='SEARCHKIND == null or SEARCHKIND == "" or SEARCHFORM == null or SEARCHFORM == "" '>
+  			AND 1 = 2
+  		</if>
+  		<if test='SEARCHFORM != null and SEARCHFORM != ""'>
+  			AND TBL.LEARNING_CD = #{SEARCHFORM}
+  		</if>
+
+  		<if test='SEARCHKIND != null and SEARCHKIND != ""'>
+  			AND TBL.CATEGORY_CD = #{SEARCHKIND}
+  		</if>
+  		<if test='SEARCHFORM != null and SEARCHFORM != ""'>
+  			AND TBL.LEARNING_CD = #{SEARCHFORM}
+  		</if>
+	 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+			<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+				<if test='SEARCHTYPE == "1"'>
+					AND (TBL.SUBJECT_SJT_CD like '%'||#{SEARCHTEXT}||'%'
+						OR TBL.SUBJECT_NM like '%'||#{SEARCHTEXT}||'%')
+				</if>
+				<if test='SEARCHTYPE == "2"'>
+					AND TBL.SUBJECT_TITLE like '%'||#{SEARCHTEXT}||'%'
+				</if>
+				<if test='SEARCHTYPE == "3"'>
+					AND TBL.SUBJECT_TEACHER_NM like '%'||#{SEARCHTEXT}||'%'
+				</if>
+				<if test='SEARCHTYPE == "4"'>
+					AND (TBL.BRIDGE_LECCODE like '%'||#{SEARCHTEXT}||'%'
+						OR TBL.LECCODE like '%'||#{SEARCHTEXT}||'%')
+				</if>
+			</if>
+			<if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+				AND (TBL.SUBJECT_SJT_CD like '%'||#{SEARCHTEXT}||'%'
+					OR TBL.SUBJECT_NM like '%'||#{SEARCHTEXT}||'%'
+					OR TBL.SUBJECT_TITLE like '%'||#{SEARCHTEXT}||'%'
+					OR TBL.SUBJECT_TEACHER_NM like '%'||#{SEARCHTEXT}||'%'
+					OR TBL.BRIDGE_LECCODE like '%'||#{SEARCHTEXT}||'%'
+					OR TBL.LECCODE like '%'||#{SEARCHTEXT}||'%')
+			</if>
+		</if>
+	 	ORDER BY TBL.SEQ DESC
+	</select>
+
+	<update id="lectureSeqUpdate" parameterType="hashMap">
+		UPDATE TB_OFF_LEC_MST SET SEQ = #{SEQ} WHERE LECCODE = #{LECCODE}
+	</update>
+
+
+<!-- 단과 end -->
+
+
+<!-- 종합반 start -->
+
+	<select id="lectureViewJongList" parameterType="hashMap" resultType="hashMap">
+		SELECT
+			LTBL.*
+			, (SELECT COUNT(A.ORDERNO) AS CNT	FROM TB_OFF_ORDER_MGNT_NO A
+  				,(SELECT ORDERNO, MGNTNO FROM   TB_OFF_ORDER_MGNT_NO
+    				GROUP BY ORDERNO, MGNTNO HAVING COUNT(*) = 1) B
+				WHERE  A.ORDERNO = B.ORDERNO
+				AND A.MGNTNO = B.MGNTNO AND A.STATUSCODE = 'DLV105' AND SUBSTR(A.MGNTNO,1,1) <![CDATA[ <> ]]> 'L' AND A.MGNTNO = LTBL.LECCODE) AS OFFERERCNT
+		FROM 	(
+			SELECT A.*, ROWNUM rnum
+		  	FROM (
+					SELECT
+						TBL.*
+						  , (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = TBL.CATEGORY_CD) AS CATEGORY_NM
+						  , (SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE CODE = TBL.LEARNING_CD) AS LEARNING_NM
+						  , (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = TBL.SUBJECT_TEACHER) AS SUBJECT_TEACHER_NM
+					FROM
+					(SELECT SEQ, LECCODE FROM TB_OFF_LEC_JONG GROUP BY SEQ, LECCODE HAVING LECCODE LIKE CONCAT(#{LEC_TYPE_CHOICE}, '%') AND SEQ = #{SEQ}) T1
+					INNER JOIN TB_OFF_LEC_MST TBL ON T1.LECCODE = TBL.LECCODE
+					WHERE LEC_TYPE_CHOICE = #{LEC_TYPE_CHOICE}
+				 	ORDER BY TBL.CATEGORY_CD
+				) A
+			) LTBL
+	</select>
+
+	<select id="lectureJongList" parameterType="hashMap" resultType="hashMap">
+		SELECT
+			LTBL.*
+		FROM 	(
+			SELECT A.*, ROWNUM rnum
+		  	FROM (
+                    SELECT
+                        TBL.*
+                          , (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = TBL.CATEGORY_CD) AS CATEGORY_NM
+                          , (SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE CODE = TBL.LEARNING_CD) AS LEARNING_NM
+                          , T1.JONGSEQ, NVL(A1.CNT,0) USR_CNT
+                    FROM
+                        (SELECT JONGSEQ, LECCODE
+                        FROM (
+                             SELECT ROW_NUMBER() OVER(PARTITION BY A.SEQ ORDER BY B.CATEGORY_CD) ROW_NUM, 
+                                       A.LECCODE, A.SEQ JONGSEQ
+                             FROM TB_OFF_LEC_JONG A, TB_OFF_LEC_MST B 
+                             WHERE A.LECCODE = B.LECCODE
+					  		<if test='SEARCHKIND != null and SEARCHKIND != ""'>
+							 AND B.CATEGORY_CD = #{SEARCHKIND}
+					  		</if>
+                            )
+                        WHERE ROW_NUM = 1) T1, TB_OFF_LEC_MST TBL,
+                        (SELECT MGNTNO, COUNT(MGNTNO) CNT
+                         FROM (
+                              SELECT ORDERNO, MGNTNO 
+                              FROM TB_OFF_ORDER_MGNT_NO
+                              WHERE STATUSCODE IN ('DLV105', 'DLV230')
+                              GROUP BY ORDERNO, MGNTNO
+                              HAVING COUNT(MGNTNO) = 1) AA
+                         GROUP BY MGNTNO) A1 
+                        WHERE T1.LECCODE = TBL.LECCODE
+                        AND T1.LECCODE = A1.MGNTNO(+)
+                        AND TBL.LEC_TYPE_CHOICE = #{LEC_TYPE_CHOICE}
+			  		<if test='SEARCHFORM != null and SEARCHFORM != ""'>
+			  			AND LEARNING_CD = #{SEARCHFORM}
+			  		</if>
+			  		<if test='SEARCHYEAR!= null and SEARCHYEAR != ""'>
+			  			AND SUBJECT_OPEN_DATE <![CDATA[ >= ]]> '2012'
+			  		</if>
+				 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+						<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+							<if test='SEARCHTYPE == "2"'>
+								AND SUBJECT_TITLE like '%'||#{SEARCHTEXT}||'%'
+							</if>
+							<if test='SEARCHTYPE == "4"'>
+								AND TBL.LECCODE like '%'||#{SEARCHTEXT}||'%'
+							</if>
+						</if>
+						<if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+							AND (
+								SUBJECT_TITLE like '%'||#{SEARCHTEXT}||'%'
+								OR TBL.LECCODE like '%'||#{SEARCHTEXT}||'%')
+						</if>
+					</if>
+                   ORDER BY TBL.SEQ DESC
+				) A
+               	WHERE rownum &lt;= #{endNo}
+			) LTBL
+		WHERE rnum &gt; #{startNo}
+	</select>
+
+	<select id="lectureJongListCount" parameterType="hashMap" resultType="int">
+		SELECT
+			COUNT(TBL.LECCODE)
+		FROM
+			(SELECT JONGSEQ, LECCODE
+			FROM (
+			 	SELECT ROW_NUMBER() OVER(PARTITION BY A.SEQ ORDER BY B.CATEGORY_CD) ROW_NUM
+			        ,A.LECCODE, A.SEQ JONGSEQ
+			     FROM TB_OFF_LEC_JONG A
+			     LEFT OUTER JOIN TB_OFF_LEC_MST B ON A.LECCODE = B.LECCODE
+			     WHERE A.LECCODE LIKE CONCAT(#{LEC_TYPE_CHOICE}, '%')
+		  		<if test='SEARCHKIND != null and SEARCHKIND != ""'>
+		  			AND B.CATEGORY_CD = #{SEARCHKIND}
+		  		</if>
+				)
+			WHERE ROW_NUM = 1) T1
+			INNER JOIN TB_OFF_LEC_MST TBL ON T1.LECCODE = TBL.LECCODE
+		WHERE LEC_TYPE_CHOICE = #{LEC_TYPE_CHOICE}
+  		<if test='SEARCHFORM != null and SEARCHFORM != ""'>
+  			AND LEARNING_CD = #{SEARCHFORM}
+  		</if>
+  		<if test='SEARCHYEAR!= null and SEARCHYEAR != ""'>
+  			AND SUBJECT_OPEN_DATE <![CDATA[ >= ]]> '2012'
+  		</if>
+	 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+			<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+				<if test='SEARCHTYPE == "2"'>
+					AND SUBJECT_TITLE like '%'||#{SEARCHTEXT}||'%'
+				</if>
+				<if test='SEARCHTYPE == "4"'>
+					AND TBL.LECCODE like '%'||#{SEARCHTEXT}||'%'
+				</if>
+			</if>
+			<if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+				AND (
+					SUBJECT_TITLE like '%'||#{SEARCHTEXT}||'%'
+					OR TBL.LECCODE like '%'||#{SEARCHTEXT}||'%')
+			</if>
+		</if>
+	</select>
+
+	<select id="lectureJongView" parameterType="hashMap" resultMap="lectureMap">
+		SELECT
+			TBL.*, (SELECT NO FROM TB_OFF_CHOICE_JONG_NO WHERE LECCODE = TBL.LECCODE AND CATEGORY_CD = TBL.CATEGORY_CD) AS NO
+		FROM TB_OFF_LEC_MST TBL
+		WHERE TBL.LECCODE = #{LECCODE}
+	</select>
+
+	<select id="lectureJongSubjectList" parameterType="hashMap" resultType="hashMap">
+		SELECT * FROM 	(
+			SELECT A.*, ROWNUM rnum
+		  	FROM (
+                SELECT TBL.* FROM (
+                    SELECT T1.*
+                        , (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = T1.CATEGORY_CD) AS CATEGORY_NM
+                        , (SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE CODE = T1.LEARNING_CD) AS LEARNING_NM
+                        , (SELECT SUBJECT_NM FROM TB_SUBJECT_INFO WHERE SUBJECT_CD = T1.SUBJECT_SJT_CD) AS SUBJECT_NM
+                        , (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = T1.SUBJECT_TEACHER) AS SUBJECT_TEACHER_NM
+                        FROM
+                        TB_OFF_LEC_MST T1 INNER JOIN TB_OFF_LEC_BRIDGE T2 ON T1.LECCODE = T2.LECCODE
+                    WHERE T1.LEC_TYPE_CHOICE = 'D'
+                ) TBL WHERE 1 = 1
+		 		<if test='SEARCHKIND != null and SEARCHKIND != ""'>
+		 			AND TBL.CATEGORY_CD = #{SEARCHKIND}
+		 		</if>
+		 		<if test='SEARCHFORM != null and SEARCHFORM != ""'>
+		 			AND TBL.LEARNING_CD = #{SEARCHFORM}
+		 		</if>
+			 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+					<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+						<if test='SEARCHTYPE == "1"'>
+							AND TBL.SUBJECT_TITLE like '%'||#{SEARCHTEXT}||'%'
+						</if>
+						<if test='SEARCHTYPE == "2"'>
+							AND TBL.SUBJECT_TEACHER_NM like '%'||#{SEARCHTEXT}||'%'
+						</if>
+					</if>
+					<if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+						AND (
+							TBL.SUBJECT_TITLE like '%'||#{SEARCHTEXT}||'%'
+							OR TBL.SUBJECT_TEACHER_NM like '%'||#{SEARCHTEXT}||'%'
+						)
+					</if>
+				</if>
+				ORDER BY TBL.SEQ DESC
+			) A
+            WHERE rownum &lt;= #{endNo}
+		)
+		WHERE rnum &gt; #{startNo}
+	</select>
+
+	<select id="lectureJongSubjectListCount" parameterType="hashMap" resultType="int">
+        SELECT COUNT(TBL.LECCODE) FROM (
+            SELECT T1.*
+                , (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = T1.CATEGORY_CD) AS CATEGORY_NM
+                , (SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE CODE = T1.LEARNING_CD) AS LEARNING_NM
+                , (SELECT SUBJECT_NM FROM TB_SUBJECT_INFO WHERE SUBJECT_CD = T1.SUBJECT_SJT_CD) AS SUBJECT_NM
+                , (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = T1.SUBJECT_TEACHER) AS SUBJECT_TEACHER_NM
+                FROM
+                TB_OFF_LEC_MST T1 INNER JOIN TB_OFF_LEC_BRIDGE T2 ON T1.LECCODE = T2.LECCODE
+            WHERE T1.LEC_TYPE_CHOICE = 'D'
+        ) TBL WHERE 1 = 1
+ 		<if test='SEARCHKIND != null and SEARCHKIND != ""'>
+ 			AND TBL.CATEGORY_CD = #{SEARCHKIND}
+ 		</if>
+ 		<if test='SEARCHFORM != null and SEARCHFORM != ""'>
+ 			AND TBL.LEARNING_CD = #{SEARCHFORM}
+ 		</if>
+	 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+			<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+				<if test='SEARCHTYPE == "1"'>
+					AND TBL.SUBJECT_TITLE like '%'||#{SEARCHTEXT}||'%'
+				</if>
+				<if test='SEARCHTYPE == "2"'>
+					AND TBL.SUBJECT_TEACHER_NM like '%'||#{SEARCHTEXT}||'%'
+				</if>
+			</if>
+			<if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+				AND (
+					TBL.SUBJECT_TITLE like '%'||#{SEARCHTEXT}||'%'
+					OR TBL.SUBJECT_TEACHER_NM like '%'||#{SEARCHTEXT}||'%'
+				)
+			</if>
+		</if>
+	</select>
+
+	<insert id="lectureLecJongInsert" parameterType="hashMap" flushCache="true">
+		INSERT INTO TB_OFF_LEC_JONG(SEQ, LECCODE, MST_LECCODE, SORT, GUBUN, REG_DT, REG_ID, UPD_DT, UPD_ID)
+		VALUES (#{SEQ}, #{LECCODE}, #{MST_LECCODE}, #{SORT}, #{GUBUN}, SYSDATE, #{REG_ID}, SYSDATE, #{UPD_ID})
+	</insert>
+
+	<select id="lectureViewLeccodeList" parameterType="hashMap" resultType="hashMap">
+		SELECT
+		  T1.MST_LECCODE, T1.SORT, T1.GUBUN
+		  , TBL.*
+		  , (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = TBL.CATEGORY_CD) AS CATEGORY_NM
+		  , (SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE CODE = TBL.LEARNING_CD) AS LEARNING_NM
+		  , (SELECT SUBJECT_NM FROM TB_SUBJECT_INFO WHERE SUBJECT_CD = TBL.SUBJECT_SJT_CD) AS SUBJECT_NM
+		  , (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = TBL.SUBJECT_TEACHER) AS SUBJECT_TEACHER_NM
+		  FROM
+		  TB_OFF_LEC_JONG T1 INNER JOIN TB_OFF_LEC_MST TBL ON T1.MST_LECCODE = TBL.LECCODE
+		WHERE T1.LECCODE = #{LECCODE} AND TBL.LEC_TYPE_CHOICE = 'D'
+		ORDER BY T1.SORT ASC
+	</select>
+
+	<delete id="lectureLecJongDelete" parameterType="hashMap" flushCache="true">
+		DELETE FROM TB_OFF_LEC_JONG WHERE LECCODE = #{LECCODE}
+	</delete>
+
+	<delete id="lectureChoiceJongNoDelete" parameterType="hashMap" flushCache="true">
+		DELETE FROM TB_OFF_CHOICE_JONG_NO WHERE LECCODE = #{LECCODE}
+	</delete>
+
+<!-- 종합반 end -->
+
+
+<!-- 선택형 종합반 start -->
+
+	<insert id="lectureChoiceJongNoInsert" parameterType="hashMap" flushCache="true">
+		INSERT INTO TB_OFF_CHOICE_JONG_NO(SEQ, LECCODE, NO, CATEGORY_CD)
+		VALUES (#{SEQ}, #{LECCODE}, #{NO}, #{CATEGORY_CD})
+	</insert>
+
+<!-- 선택형 종합반 end -->
+
+
+	<select id="lectureDeleteCheck" parameterType="hashMap" resultType="int">
+		SELECT COUNT(*) FROM TB_OFF_ORDER_MGNT_NO WHERE MGNTNO = #{LECCODE} AND STATUSCODE = 'DLV105'
+	</select>
+
+	<select id="lecturePayList" parameterType="hashMap" resultType="hashMap">
+		SELECT DISTINCT C.USERID                                                AS USERID
+		 	  ,B.ORDERNO                                                               AS ORDERNO
+		      ,NVL((SELECT USER_NM  FROM TB_MA_MEMBER WHERE USER_ID = C.USERID), (SELECT DISTINCT USER_NM FROM TB_OFF_ORDERS WHERE ORDERNO = C.ORDERNO))         AS USER_NM
+		      ,NVL((SELECT PHONE_NO FROM TB_MA_MEMBER WHERE USER_ID = C.USERID), (SELECT DISTINCT PHONE_NO FROM TB_OFF_ORDERS WHERE ORDERNO = C.ORDERNO))        AS PHONE_NO
+		      ,(SELECT USER_NM  FROM TB_MA_MEMBER WHERE USER_ID = A.SUBJECT_TEACHER) AS SUBJECT_USER_NM
+		      ,A.SUBJECT_TITLE                                                       AS SUBJECT_TITLE
+		      ,C.START_DATE                                                          AS START_DATE
+		      ,C.END_DATE                                                              AS END_DATE
+		      ,B.STATUSCODE
+		      ,(SELECT CODE_NM FROM TB_BA_CONFIG_CD D WHERE D.CODE_CD = B.STATUSCODE) AS STATUSCODE_NM
+		      ,C.REALPRICE
+              ,TA.PAYCODE,
+               CASE TA.PAYCODE WHEN 'PAY110' THEN '카드결제'
+               WHEN 'PAY120' THEN '가상계좌'
+               WHEN 'PAY130' THEN '계좌이체'
+               WHEN 'PAY140' THEN '현금'
+               WHEN 'PAY150' THEN '예금'
+               WHEN 'PAY160' THEN '미수금'
+               WHEN 'PAY100' THEN '무통장입금' END PAYNM
+		FROM   TB_OFF_LEC_MST A,	TB_OFF_APPROVALS TA
+		      ,(
+		        SELECT A.ORDERNO
+		              ,A.MGNTNO
+		              ,A.WMV_PMP
+		              ,A.STATUSCODE
+		        FROM   TB_OFF_ORDER_MGNT_NO A
+		              ,(SELECT ORDERNO
+		                      ,MGNTNO
+		                FROM   TB_OFF_ORDER_MGNT_NO
+		                GROUP BY ORDERNO, MGNTNO
+		                HAVING COUNT(*) = 1
+		               ) B
+		            WHERE  A.ORDERNO    =    B.ORDERNO
+		            AND    A.MGNTNO     =    B.MGNTNO
+		            AND    A.STATUSCODE IN    ('DLV105', 'DLV230')
+		            <!--  유료 > 0, 무료 = 0 -->
+		            <if test='SEARCHPAYYN == "Y"'>
+		            	AND    A.PRICE      <![CDATA[ > ]]>    0
+		            </if>
+		            <if test='SEARCHPAYYN == "N"'>
+		            	AND    A.PRICE      =    0
+		            </if>
+		       ) B
+		      LEFT JOIN TB_OFF_MYLECTURE C ON B.ORDERNO = C.ORDERNO AND B.MGNTNO = C.PACKAGE_NO
+		WHERE  A.LECCODE            = B.MGNTNO
+        AND B.ORDERNO = TA.ORDERNO
+		<if test='SEARCHOPENPAGE == "L"'>
+		AND    (A.LECCODE = #{LECCODE} OR C.LECTURE_NO = #{LECCODE})
+		</if>
+		<if test='SEARCHOPENPAGE == "F1"'>
+		AND B.MGNTNO IN (SELECT PACKAGE_NO FROM TB_OFF_MYLECTURE WHERE ORDERNO = B.ORDERNO AND PACKAGE_NO = B.MGNTNO AND LECTURE_NO IN (SELECT LECCODE FROM TB_OFF_LEC_BRIDGE WHERE BRIDGE_LECCODE = #{BRIDGE_LECCODE}))
+		</if>
+		<if test='SEARCHOPENPAGE == "F2"'>
+		AND B.MGNTNO IN (SELECT LECCODE FROM TB_OFF_LEC_BRIDGE WHERE BRIDGE_LECCODE = #{BRIDGE_LECCODE})
+		</if>
+		ORDER BY B.STATUSCODE
+	</select>
+
+	<select id="off_lecturePayList" parameterType="hashMap" resultType="hashMap">
+        <choose>
+				<when test='LEC_TYPE == "JONG"'>
+        SELECT M1.ORDERNO, M1.MGNTNO, M4.LECCODE, M3.USER_ID USERID, M3.USER_NM, M3.PHONE_NO,
+        M4.SUBJECT_TITLE, M2.PRICE REALPRICE, M2.ISCONFIRM,
+        CASE M5.PAYCODE WHEN 'PAY110' THEN '카드결제'
+        WHEN 'PAY120' THEN '가상계좌'
+        WHEN 'PAY130' THEN '계좌이체'
+        WHEN 'PAY140' THEN '현금'
+        WHEN 'PAY150' THEN '예금'
+        WHEN 'PAY160' THEN '미수금'
+        WHEN 'PAY100' THEN '무통장입금' END PAYNM
+        FROM (SELECT ORDERNO, MGNTNO 
+                              FROM TB_OFF_ORDER_MGNT_NO
+                              WHERE STATUSCODE IN ('DLV105', 'DLV230')
+                              GROUP BY ORDERNO, MGNTNO
+                              HAVING COUNT(MGNTNO) = 1) M1, TB_OFF_ORDER_MGNT_NO M2, TB_OFF_ORDERS M3, TB_OFF_LEC_MST M4, TB_OFF_APPROVALS M5
+        WHERE M1.ORDERNO = M2.ORDERNO
+        AND M1.MGNTNO = M2.MGNTNO
+        AND M1.ORDERNO = M3.ORDERNO
+        AND M1.MGNTNO = M4.LECCODE
+        AND M1.ORDERNO = M5.ORDERNO
+        AND M1.MGNTNO = #{LECCODE}
+        ORDER BY USER_NM
+				</when>
+				<otherwise>
+        SELECT M1.ORDERNO, TO_CHAR(M7.ISCONFIRM, 'YYYY-MM-DD') ISCONFIRM, M1.MGNTNO, M1.BRIDGE_LECCODE, M2.LECCODE, M3.USER_ID USERID, M3.USER_NM, M3.PHONE_NO,
+        M4.SUBJECT_TITLE, M4.SUBJECT_REAL_PRICE, M6.REALPRICE, TO_CHAR(TO_DATE(M4.SUBJECT_OPEN_DATE), 'YYYY-MM-DD') SUBJECT_OPEN_DATE, 
+        NVL((SELECT TO_CHAR(TO_DATE(MAX(Z.LEC_DATE)), 'YYYY-MM-DD') FROM TB_OFF_LECTURE_DATE Z WHERE Z.LECCODE = M2.LECCODE),'') AS SUBJECT_END_DATE,
+        M5.PRICE_DISCOUNT_REASON, (SELECT MEMO FROM TB_OFF_APPROVALS WHERE ORDERNO = M1.ORDERNO) MEMO,
+        CASE M5.PAYCODE WHEN 'PAY110' THEN '카드결제'
+        WHEN 'PAY120' THEN '가상계좌'
+        WHEN 'PAY130' THEN '계좌이체'
+        WHEN 'PAY140' THEN '현금'
+        WHEN 'PAY150' THEN '예금'
+        WHEN 'PAY160' THEN '미수금'
+        WHEN 'PAY100' THEN '무통장입금' END PAYNM
+        FROM (SELECT B.ORDERNO, B.MGNTNO, C.BRIDGE_LECCODE
+              FROM TB_OFF_MYLECTURE A, TB_OFF_ORDER_MGNT_NO B, TB_OFF_LEC_BRIDGE C,
+                   (SELECT AA.LECCODE, BB.BRIDGE_LECCODE
+                    FROM TB_OFF_LEC_MST AA, TB_OFF_LEC_BRIDGE BB
+                    WHERE AA.LECCODE = BB.LECCODE) D
+        WHERE A.ORDERNO = B.ORDERNO
+        AND A.PACKAGE_NO = B.MGNTNO
+        AND A.LECTURE_NO = C.LECCODE
+        AND B.STATUSCODE IN ('DLV105', 'DLV230')
+        AND C.LECCODE = D.LECCODE
+        AND C.BRIDGE_LECCODE = D.BRIDGE_LECCODE
+		<if test='BRIDGE_LECCODE != null and BRIDGE_LECCODE != ""'>
+		AND C.BRIDGE_LECCODE = #{BRIDGE_LECCODE}
+		</if>
+		<if test='BRIDGE_LECS != null and BRIDGE_LECS != ""'>
+		AND C.BRIDGE_LECCODE IN (${BRIDGE_LECS})
+		</if>
+        GROUP BY B.ORDERNO, B.MGNTNO, C.BRIDGE_LECCODE
+        HAVING COUNT(*) = 1) M1, TB_OFF_LEC_BRIDGE M2, TB_OFF_ORDERS M3, TB_OFF_LEC_MST M4, TB_OFF_APPROVALS M5, TB_OFF_MYLECTURE M6, TB_OFF_ORDER_MGNT_NO M7
+        WHERE M1.BRIDGE_LECCODE = M2.BRIDGE_LECCODE
+        AND M1.ORDERNO = M3.ORDERNO
+        AND M2.LECCODE = M4.LECCODE
+        AND M1.ORDERNO = M5.ORDERNO
+        AND M1.ORDERNO = M6.ORDERNO
+        AND M2.LECCODE = M6.LECTURE_NO
+        AND M1.ORDERNO = M7.ORDERNO
+        AND M1.MGNTNO = M7.MGNTNO
+        AND M7.STATUSCODE = 'DLV105'
+		<if test='SEARCHOPENPAGE == "L"'>
+		AND (M2.LECCODE = #{LECCODE} OR M6.LECTURE_NO = #{LECCODE})
+		</if>
+		<if test='SEARCHOPENPAGE == "F1"'>
+		AND M1.MGNTNO IN (SELECT PACKAGE_NO FROM TB_OFF_MYLECTURE WHERE ORDERNO = M1.ORDERNO AND PACKAGE_NO = M1.MGNTNO AND LECTURE_NO IN (SELECT LECCODE FROM TB_OFF_LEC_BRIDGE WHERE BRIDGE_LECCODE = #{BRIDGE_LECCODE}))
+		</if>
+		<if test='SEARCHOPENPAGE == "F2"'>
+		AND M1.MGNTNO IN (SELECT LECCODE FROM TB_OFF_LEC_BRIDGE WHERE BRIDGE_LECCODE = #{BRIDGE_LECCODE})
+		</if>
+        ORDER BY M2.LECCODE, M3.USER_NM
+				</otherwise>
+		</choose>
+	</select>
+
+	<select id="lectureJongPayList" parameterType="hashMap" resultType="hashMap">
+		SELECT C.USERID                                                              AS USERID
+		      ,(SELECT USER_NM  FROM TB_MA_MEMBER WHERE USER_ID = C.USERID)          AS USER_NM
+		      ,(SELECT PHONE_NO FROM TB_MA_MEMBER WHERE USER_ID = C.USERID)          AS PHONE_NO
+		      ,(SELECT USER_NM  FROM TB_MA_MEMBER WHERE USER_ID = A.SUBJECT_TEACHER) AS SUBJECT_USER_NM
+		      ,A.SUBJECT_TITLE                                                       AS SUBJECT_TITLE
+		      ,C.START_DATE                                                          AS START_DATE
+		      ,C.END_DATE                                                            AS END_DATE
+		FROM   TB_OFF_LEC_MST A
+		      ,(
+		        SELECT A.ORDERNO
+		              ,A.MGNTNO
+		              ,A.WMV_PMP
+		        FROM   TB_OFF_ORDER_MGNT_NO A
+		              ,(SELECT ORDERNO, MGNTNO
+		                FROM   TB_OFF_ORDER_MGNT_NO
+		                GROUP BY ORDERNO, MGNTNO	HAVING COUNT(*) = 1
+		               ) B
+		            WHERE  A.ORDERNO            =    B.ORDERNO
+		            AND    A.MGNTNO             =    B.MGNTNO
+		            AND    A.STATUSCODE         =    'DLV105'
+		            AND    SUBSTR(A.MGNTNO,1,1) <![CDATA[ <> ]]> 'L'
+		            AND    A.WMV_PMP            =    #{SEARCHPAYTYPE}
+		            <!--  유료 > 0, 무료 = 0 -->
+		            <if test='SEARCHPAYYN == "Y"'>
+		            	AND    A.PRICE      <![CDATA[ > ]]>    0
+		            </if>
+		            <if test='SEARCHPAYYN == "N"'>
+		            	AND    A.PRICE      =    0
+		            </if>
+		       ) B
+		      ,TB_MYLECTURE C
+		WHERE  A.LECCODE = C.LECTURE_NO
+		AND    B.ORDERNO = C.ORDERNO
+		AND    B.MGNTNO  = C.PACKAGE_NO
+		AND    SUBSTR(C.PACKAGE_NO,1,1) NOT IN ('D','L')
+		AND    B.WMV_PMP = #{SEARCHPAYTYPE}
+		AND    C.PACKAGE_NO = #{LECCODE}
+		ORDER BY C.LECTURE_NO
+	</select>
+
+	<select id="lectureDataViewList" parameterType="hashMap" resultType="hashMap">
+		SELECT B.SUBJECT_OPTION
+		      ,B.BRIDGE_LECCODE
+		      ,A.MOVIE_NAME
+		      ,A.MOVIE_DESC
+		      ,A.MOVIE_URL
+		      ,A.WIDE_URL
+		      ,A.MOVIE_FILENAME1
+		      ,A.MP4_URL
+		      ,A.MOVIE_FILENAME2
+		      ,A.MOVIE_FILENAME4
+		      ,A.MOVIE_DATA_FILE_YN
+		      ,A.MOVIE_DATA_FILENAME
+		      ,A.MOVIE_TIME
+		      ,A.MOVIE_ORDER1
+		      ,A.MOVIE_ORDER2
+		      ,A.MOVIE_FREE_FLAG
+		      ,A.PMP_URL
+		      ,A.PMP_FILENAME
+		      ,A.MOVIE_NO
+		      ,B.SUBJECT_VOD_DEFAULT_PATH
+		      ,B.SUBJECT_WIDE_DEFAULT_PATH
+		      ,B.SUBJECT_PMP_DEFAULT_PATH
+		      ,B.SUBJECT_PRICE
+		      ,NVL(A.STOP,'N')               AS STOP
+		FROM   TB_MOVIE A, (
+		                        SELECT B.BRIDGE_LECCODE
+		                              ,A.SUBJECT_OPTION
+		                              ,A.SUBJECT_VOD_DEFAULT_PATH
+		                              ,A.SUBJECT_WIDE_DEFAULT_PATH
+		                              ,A.SUBJECT_PMP_DEFAULT_PATH
+		                              ,A.SUBJECT_PRICE
+		                        FROM   TB_LEC_MST A, TB_LEC_BRIDGE B
+		                        WHERE  A.LECCODE = B.LECCODE
+		                        AND    A.LECCODE = #{LECCODE}
+		                    ) B
+		WHERE  A.LECCODE = B.BRIDGE_LECCODE
+		AND    A.LECCODE = #{BRIDGE_LECCODE}
+		AND    A.STOP != 'Y'
+		ORDER BY A.MOVIE_ORDER1, A.MOVIE_ORDER2
+
+	</select>
+
+	<select id="lectureDataMemoViewList" parameterType="hashMap" resultType="hashMap">
+		SELECT  NVL(BRIDGE_LECCODE,'')  AS RLECCODE
+		       ,MOVIE_ORDER1            AS MOVIE_ORDER1
+		       ,MOVIE_ORDER2            AS MOVIE_ORDER2
+		       ,NVL(POSITION,'')        AS POSITION
+		       ,NVL(MST_TEXT,'')        AS MST_TEXT
+		FROM    TB_LEC_MST_MEMO
+		WHERE   BRIDGE_LECCODE = #{BRIDGE_LECCODE}
+		ORDER BY MOVIE_ORDER1 , MOVIE_ORDER2 ASC , POSITION DESC
+	</select>
+
+	<delete id="lectureOffDayDelete" parameterType="hashMap" flushCache="true">
+		DELETE FROM TB_OFF_LECTURE_DATE
+		<if test='UPDATE_FLAG == "ALL" '>WHERE LECCODE IN (SELECT LECCODE FROM TB_OFF_LEC_BRIDGE WHERE BRIDGE_LECCODE = #{BRIDGE_LEC} )</if>
+		<if test='UPDATE_FLAG != "ALL" '>WHERE LECCODE = #{LECCODE}</if>
+	</delete>
+
+	<insert id="lectureOffDayInsert" parameterType="hashMap" flushCache="true" statementType="CALLABLE">
+
+		CALL SP_LECTURE_OFF_DAY_INSERT(
+		        #{NUM,  mode=IN},
+		        #{BRIDGE_LEC, mode=IN},
+		        #{LEC_DATE, mode=IN},
+		        #{result, jdbcType=INTEGER, mode=OUT})
+	</insert>
+
+	<insert id="lectureOffDayInsert2" parameterType="hashMap" flushCache="true">
+		INSERT INTO TB_OFF_LECTURE_DATE(LECCODE, NUM, LEC_DATE)
+		VALUES (#{LECCODE}, #{NUM}, TO_DATE(#{LEC_DATE} , 'yyyymmdd'))
+	</insert>
+
+	<select id="lectureOffDayList" parameterType="hashMap" resultType="hashMap">
+		SELECT LECCODE, NUM, TO_CHAR(LEC_DATE,'YYYYMMDD') AS LEC_DATE FROM TB_OFF_LECTURE_DATE
+		WHERE LECCODE = #{LECCODE} ORDER BY NUM ASC
+	</select>
+
+</mapper>

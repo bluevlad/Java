@@ -1,0 +1,69 @@
+/* UI Object */
+#wrap{width:100%}
+#header{width:100%}
+#container{_display:inline-block;width:100%; background:url('../img/common/bg_container01.gif') left top repeat-y; min-height:860px}
+#container:after{display:block;clear:both;content:''}
+.snb{float:left;width:170px;margin-right:-200px; background:#729d12}
+#content{margin-left:190px; margin-bottom:0px}
+#footer{width:100%; float:left}
+
+#wrap{width:auto;margin:0;padding:0px}
+
+#header{width:100%;height:59px;margin-top:0px;background:#4f7302; min-width:1000px}
+#gnb{position:relative;margin:0 auto;width:100%}
+#gnb ul#gnb_l {padding-top:14px; padding-left:12px; float:left}
+#gnb ul#gnb_r {padding-top:12px;float:right; color:#CCCCCC; font-size:11px; margin-right:20px}
+#gnb ul#gnb_r a{color:#CCCCCC;/*outline:none;*/}
+#gnb ul#gnb_r a:link{color:#CCCCCC;text-decoration:none}
+#gnb ul#gnb_r a:Visited{color:#CCCCCC;text-decoration:none}
+
+#gnb ul#gnb_r2 {padding-top:30px;float:right; color:#fff; font-size:11px; margin-right:20px}
+#gnb ul#gnb_r2 a{color:#fff;/*outline:none;*/}
+#gnb ul#gnb_r2 a:link{color:#fff;text-decoration:none}
+#gnb ul#gnb_r2 a:Visited{color:#fff;text-decoration:none}
+
+.gnb_l {color:#FFFFFF; padding:10px 0 0 5px}
+.gnb_l li {color:#FFFFFF}
+.gnb_l li a {color:#FFFFFF}
+.gnb_l li.info {padding-bottom:10px}
+.gnb_l li.logout {padding-left:40px}
+
+.gnb_c {padding-top:9px; width:770px; height:50px; margin-left:55px; float:left; font-size:11pt; font-weight:bold}
+.gnb_c li{padding-top:16px;margin-right:7px; width:115px; float:left}
+
+.gnb_c li {color:#FFFFFF}
+.gnb_c li a{color:#FFFFFF}
+.gnb_c li a:link{color:#FFFFFF}
+.gnb_c li a:Visited{color:#FFFFFF}
+
+#header,#container{width:auto;padding:0px}
+.snb,#content{margin-top:0px;text-align:left}
+#content{height:100%; padding-right:20px; padding-top:30px; min-width:810px}
+#stitle {width: 100%; height:30px; padding-bottom:0px; background-image:url(../img/common/stitle_bg01.gif)}
+#stitle ul#stitle_l { float:left;color:#000;font-size:14px;font-weight:bold; padding-top:3px}
+#stitle ul#stitle_r { float:right; display:inline; font-size:11px; color:#999999; padding-top:10px}
+
+
+#footer{float:left; width:100%; height:30px; text-align:center; background:url(../img/common/bg_footer01.gif) repeat-x; bottom:0}
+.footertext { width:100%; text-align:center; font-size:11px; color:#999999; padding-top:11px}
+	
+.textbox01 {float:left; width:97%; border:#e2e2e2 solid 2px; padding:10px; display:inline; margin-top:16px; margin-bottom:16px}
+.textbox01 li { float:left; color:#666666; font-size:12px; display:inline; margin:0; width:90%; padding:8px 0 0 0px; height:18px}
+.textbox01 dl { float:left; color:#666666; font-size:12px; display:inline; margin:0; width:90%; font-weight:bold; padding:0px 0 0px 0}
+.textbox01 dl#title01 { float:left; color:#666666; font-size:12px; display:inline; margin:0; width:100px; font-weight:bold; padding:0px 0 0px 0}
+
+
+.text_red {  font-family: "Gulim", "tahoma"; font-size: 11px; font-style: normal; font-weight: bold; color: #e71717; text-decoration: none; display:inline; margin-right:5px}
+.text_red_r {  font-family: "Gulim", "tahoma"; font-size: 11px; font-style: normal; font-weight: bold; color: #e71717; text-decoration: none; display:inline; margin-left:3px}
+.text_red2 {  font-family: "Gulim", "tahoma"; font-size: 12px; font-style: normal; font-weight: normal; color: #e71717; text-decoration: none; display:inline; margin-right:0px}
+
+.boardre01 {margin:0px 5px 0 5px}
+
+
+#guide{float:left; margin:0px auto;width:700px; background: url('../img/common/bg_guide02.gif') left top no-repeat}
+#guide li{ float:left; color:#666666; font-size:12px;margin:0; width:660px; padding:0px 0 6px 20px; list-style:none}
+#guide dl{ float:left; color:#666666; font-size:12px;margin:0; width:90%; font-weight:bold; padding:0px 0 0px 0}
+#guide dl#title01 { float:left; color:#666666; font-size:12px; display:inline; margin:0; width:100px; font-weight:bold; padding:0px 0 0px 0}
+
+/* //UI Object */
+

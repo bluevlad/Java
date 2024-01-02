@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="poll">
+
+	<select id="pollList" parameterType="hashMap" resultType="hashMap" >
+		SELECT * FROM  (
+				SELECT AA.*, ROWNUM RNUM 
+                FROM (
+						SELECT POLL_ID, TITLE, START_DT, END_DT, ISUSE, IS_SHOW,
+						       (SELECT COUNT(POLL_ITEM_ID) FROM WWW_POLL_ITEM WHERE POLL_ID = A.POLL_ID) ITEM_CNT,
+						       (SELECT COUNT(USER_ID) FROM WWW_POLL_RESULT WHERE POLL_ID = A.POLL_ID) USER_CNT,
+						       (SELECT DISTINCT SUBJECT_NM FROM WWW_POLL_ITEM WHERE POLL_ID = A.POLL_ID) SUBJECT_NM
+						FROM WWW_POLL A
+                        <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+                         WHERE INSTR(A.TITLE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+                        </if>
+                        ORDER BY POLL_ID DESC
+                 ) AA
+                 WHERE ROWNUM <![CDATA[ <= ]]> #{endNo}
+         )
+    	WHERE RNUM <![CDATA[ > ]]> #{startNo}
+	</select>
+
+	<select id="pollListCount" parameterType="hashMap" resultType="int">
+		SELECT COUNT(*) CNT 
+        FROM WWW_POLL A
+        <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+         WHERE INSTR(A.TITLE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+        </if>
+	</select>
+	
+	<select id="pollView" parameterType="hashMap" resultType="hashMap">
+		 SELECT POLL_ID, TITLE, START_DT, END_DT, ISUSE, IS_SHOW
+         FROM WWW_POLL
+		 WHERE POLL_ID = #{POLL_ID}
+	</select>
+	
+	<insert id="pollInsert" parameterType="hashMap">
+		INSERT INTO WWW_POLL(POLL_ID, START_DT, END_DT, ISUSE, TITLE, IS_SHOW)
+		VALUES(SEQ_POLL.nextval, #{START_DT}, #{END_DT}, #{ISUSE}, #{TITLE}, #{IS_SHOW})
+	</insert>
+	
+	<update id="pollUpdate" parameterType="hashMap">
+		UPDATE WWW_POLL 
+		SET START_DT = #{START_DT}
+        , END_DT = #{END_DT}
+        , ISUSE = #{ISUSE}
+        , TITLE = #{TITLE}
+        , IS_SHOW = #{IS_SHOW}
+		WHERE POLL_ID = #{POLL_ID}
+	</update>
+	
+	<delete id="pollDelete" parameterType="hashMap">
+		DELETE FROM WWW_POLL WHERE POLL_ID = #{POLL_ID}
+	</delete>
+	
+	<select id="pollItemList" parameterType="hashMap" resultType="hashMap">
+		 SELECT POLL_ID, POLL_ITEM_ID, VIW, SEQ, CNT, SUBJECT_NM
+         FROM WWW_POLL_ITEM
+		 WHERE POLL_ID = #{POLL_ID}
+		 ORDER BY SEQ
+	</select>
+	
+	<insert id="pollItemInsert" parameterType="hashMap">
+		INSERT INTO WWW_POLL_ITEM(POLL_ID, POLL_ITEM_ID, VIW, SEQ, CNT <if test="SUBJECT_NM != null and SUBJECT_NM != ''">, SUBJECT_NM</if>)
+		VALUES(#{POLL_ID}, (SELECT NVL(MAX(POLL_ITEM_ID),0)+1 FROM WWW_POLL_ITEM WHERE POLL_ID = #{POLL_ID}), #{VIW}, #{SEQ}, 0 <if test="SUBJECT_NM != null and SUBJECT_NM != ''">, #{SUBJECT_NM}</if>)
+	</insert>
+	
+	<update id="pollItemUpdate" parameterType="hashMap">
+		UPDATE WWW_POLL_ITEM 
+		SET VIW = #{VIW},
+        SEQ = #{SEQ}
+		<if test="SUBJECT_NM != null and SUBJECT_NM != ''">		
+        , SUBJECT_NM = #{SUBJECT_NM}
+        </if>
+		WHERE POLL_ID = #{POLL_ID}
+		AND POLL_ITEM_ID = #{POLL_ITEM_ID}
+	</update>
+	
+	<delete id="pollItemDelete" parameterType="hashMap">
+		DELETE FROM WWW_POLL_ITEM 
+		WHERE POLL_ID = #{POLL_ID}
+		AND POLL_ITEM_ID = #{POLL_ITEM_ID}
+	</delete>
+	
+	<select id="pollResultList" parameterType="hashMap" resultType="hashMap">
+		 SELECT POLL_ID, USER_ID, REG_DT, ANSW
+         FROM WWW_POLL_RESULT
+		 WHERE POLL_ID = #{POLL_ID}
+		 ORDER BY REG_DT DESC
+	</select>
+
+</mapper>	

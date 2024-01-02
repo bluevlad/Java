@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="offExamReg">
+
+  <select id="offExamList" parameterType="hashMap" resultType="hashMap">
+    SELECT * FROM   (
+        SELECT A.*, ROWNUM rnum
+        FROM (
+            SELECT
+                ID ,
+                MOCKCODE,
+                MOCKNAME,
+                (SELECT NAME FROM TB_CATEGORY_INFO  WHERE CODE = CLASSCODE AND P_CODE='CLASSCODE' AND ISUSE='Y' ) AS CLASSCODE,
+                TO_CHAR(TO_DATE(EXAMSTARTTIME,'YYYY/MM/DD HH24:MI'),'YYYY-MM-DD HH24:MI')  EXAMSTARTTIME,
+                TO_CHAR(TO_DATE(EXAMENDTIME,'YYYY/MM/DD HH24:MI'),'YYYY-MM-DD HH24:MI')  EXAMENDTIME,
+                EXAMTIME
+            FROM TB_TMOCKREGISTRATION
+            WHERE 1=1
+        <if test="searchText != null">
+          <choose>
+            <when test="searchType == 1">AND MOCKCODE LIKE '%'||#{searchText}||'%'</when>
+            <when test="searchType == 2">AND MOCKNAME LIKE '%'||#{searchText}||'%'</when>
+          </choose>
+        </if>
+       <if test='SEARCHUSEFLAG !=null and SEARCHUSEFLAG != "" and SEARCHUSEFLAG == "Y" '>
+              AND (USEFLAG  = '1' OR USEFLAG  = '3')
+       </if>
+            ORDER BY ID DESC
+        ) A
+        WHERE rownum &lt;= #{endNo}
+    )
+    WHERE rnum &gt; #{startNo}
+  </select>
+
+  <select id="offExamListCount" parameterType="hashMap" resultType="int">
+    SELECT COUNT(*) CNT
+    FROM TB_TMOCKREGISTRATION
+    WHERE 1=1
+    <if test="searchText != null">
+      <choose>
+        <when test="searchType == 1">AND MOCKCODE LIKE '%'||#{searchText}||'%'</when>
+        <when test="searchType == 2">AND MOCKNAME LIKE '%'||#{searchText}||'%'</when>
+      </choose>
+    </if>
+    <if test='SEARCHUSEFLAG !=null and SEARCHUSEFLAG != "" and SEARCHUSEFLAG == "Y" '>
+          AND (USEFLAG  = '1' OR USEFLAG  = '3')
+    </if>
+    ORDER BY ID DESC
+  </select>
+
+  <select id="offExamView" parameterType="hashMap" resultType="hashMap">
+    SELECT
+        A.MOCKCODE,
+        A.MOCKNAME,
+        (SELECT NAME FROM TB_CATEGORY_INFO  WHERE CODE = CLASSCODE AND P_CODE='CLASSCODE' AND ISUSE='Y' ) AS CLASSCODE,
+        TO_CHAR(TO_DATE(A.EXAMSTARTTIME,'YYYY/MM/DD HH24:MI'),'YYYY-MM-DD HH24:MI')  EXAMSTARTTIME,
+        TO_CHAR(TO_DATE(A.EXAMENDTIME,'YYYY/MM/DD HH24:MI'),'YYYY-MM-DD HH24:MI')  EXAMENDTIME,
+        A.EXAMTIME ,
+        A.EXAMYEAR ,
+        A.EXAMROUND,
+        B.FILENAME ,
+        B.REG_ID ,
+        B.REG_DT,
+        B.FILEPATH
+    FROM TB_TMOCKREGISTRATION A
+    LEFT JOIN  TB_TOFFEXAMREGISTRATION B ON A.MOCKCODE = B.MOCKCODE
+    WHERE A.MOCKCODE = #{mockCode}
+  </select>
+
+  <select id="offExamOfferConfirm" parameterType="hashMap" resultType="hashMap">
+    SELECT EXAMCODE , IDENTYID
+    FROM TB_TORDERS
+    WHERE EXAMTYPE = 1
+    AND IDENTYID = #{identyId}
+    AND EXAMCODE = #{mockCode}
+  </select>
+
+  <select id="offExamOfferGetSubjectCode" parameterType="hashMap" resultType="hashMap">
+    SELECT MOCKCODE , ITEMID
+    FROM TB_TMOCKSUBJECT
+    WHERE MOCKCODE = #{mockCode}
+    AND SUBJECT_CD IN (SELECT SUBJECT_CD FROM TB_SUBJECT_INFO WHERE SUBJECT_NM =#{subjectInfo})
+  </select>
+
+  <insert id="offExanInsertData" parameterType="hashMap">
+    INSERT INTO TB_TEXAMINEEANSWER (
+        ID,
+        IDENTYID,
+        ITEMID,
+        QUESTIONNUMBER,
+        MOCKCODE ,
+      <if test="answerNumber !='' ">ANSWERNUMBER ,</if>
+        REG_ID ,
+        REG_DT,
+        CORRECTYN
+    )VALUES(
+        SEQ_TEXAMINEEANSWER_ID.NEXTVAL ,
+        #{identyId},
+        #{itemId},
+        #{questionNumber},
+        #{mockCode},
+      <if test="answerNumber !='' ">#{answerNumber} ,</if>
+        #{createId} ,
+        SYSDATE ,
+        #{correctYn}
+    )
+  </insert>
+
+  <select id="offExanUpdateList" resultType="hashMap">
+    SELECT A.ID
+    FROM TB_TEXAMINEEANSWER A , TB_TITEMPOOL B
+    WHERE A.QUESTIONNUMBER = B.QUESTIONNUMBER
+    AND A.ITEMID = B.ITEMID
+    AND A.ANSWERNUMBER = B.ANSWERNUMBER
+  </select>
+
+  <!-- 응시자의 답변이 맞았는지 틀렸는지 업데이트한다. 전달받은 모의고사 코드에 속한 응시자만 -->
+  <select id="offExamUpdateCorrectYN" resultType="hashMap">
+    UPDATE TB_TEXAMINEEANSWER A
+    SET
+        A.CORRECTYN = (
+            SELECT
+                CASE WHEN B.ANSWERNUMBER = NVL(A.ANSWERNUMBER,'') THEN 'Y'
+                    ELSE 'N'
+                END
+            FROM TB_TITEMPOOL B
+            WHERE A.QUESTIONNUMBER = B.QUESTIONNUMBER
+            AND A.ITEMID = B.ITEMID
+            AND A.MOCKCODE = #{mockCode}
+            AND A.IDENTYID = #{identyId}
+        )
+    WHERE A.MOCKCODE = #{mockCode} AND A.IDENTYID = #{identyId}
+  </select>
+
+  <insert id="insertFileInfo" parameterType="hashMap">
+    INSERT INTO TB_TOFFEXAMREGISTRATION(
+        ID,
+        MOCKCODE,
+        FILENAME,
+        FILEPATH,
+        FILESIZE ,
+        REG_ID ,
+        REG_DT
+    ) VALUES (
+        SEQ_TOFFFILE_ID.NEXTVAL ,
+        #{mockCode},
+        #{fileName},
+        #{filePath},
+        #{fileSize},
+        #{fileCreateId} ,
+        SYSDATE
+    )
+  </insert>
+
+  <update id="updateCorrectYn" parameterType="hashMap">
+    UPDATE  TB_TEXAMINEEANSWER
+    SET     CORRECTYN = 'Y'
+    WHERE   ID = #{id}
+  </update>
+
+  <update id="updateTOffererExamstatus" parameterType="hashMap">
+    UPDATE  TB_TORDERS
+    SET     EXAMSTATUS = 3
+    WHERE   IDENTYID = #{identyId}
+  </update>
+
+  <delete id="offExamDelete" parameterType="hashMap" >
+    DELETE
+    FROM TB_TEXAMINEEANSWER A
+    WHERE EXISTS( SELECT 1 FROM TB_TORDERS B WHERE A.IDENTYID = B.IDENTYID AND MOCKCODE = #{mockCode} AND B.EXAMTYPE='1')
+  </delete>
+
+  <delete id="offExamDeleteFile" parameterType="hashMap" >
+    DELETE
+    FROM TB_TOFFEXAMREGISTRATION
+    WHERE MOCKCODE = #{mockCode}
+  </delete>
+
+  <delete id="offExamGradeDelete" parameterType="hashMap" >
+    DELETE
+    FROM TB_TMOCKGRADE
+    WHERE MOCKCODE = #{mockCode}
+  </delete>
+
+  <select id="offListPop" parameterType="hashMap" resultType="hashMap">
+    SELECT * FROM   (
+        SELECT A.*, ROWNUM rnum
+        FROM (
+            SELECT
+                A.USER_NM ,
+                (SELECT SUBJECT_NM FROM TB_SUBJECT_INFO WHERE SUBJECT_CD IN(SELECT SUBJECT_CD FROM TB_TMOCKSUBJECT WHERE ITEMID = B.ITEMID)) SUBJECT_NM ,
+                B.QUESTIONNUMBER ,
+                B.ANSWERNUMBER,
+                B.CORRECTYN
+            FROM TB_TORDERS A , TB_TEXAMINEEANSWER B
+            WHERE A.IDENTYID = B.IDENTYID
+            AND B.MOCKCODE = #{mockCode}
+            AND A.EXAMTYPE='1'
+            ORDER BY B.MOCKCODE,B.ITEMID,B.IDENTYID,B.QUESTIONNUMBER ASC
+        ) A
+        WHERE ROWNUM &lt;= #{endNo}
+    )
+    WHERE rnum &gt; #{startNo}
+  </select>
+
+  <select id="popListCount" parameterType="hashMap" resultType="int">
+    SELECT COUNT(*) CNT
+    FROM TB_TEXAMINEEANSWER A , TB_TORDERS B
+    WHERE A.IDENTYID = B.IDENTYID
+    AND A.MOCKCODE =#{mockCode}
+    AND B.EXAMTYPE='1'
+    ORDER BY QUESTIONNUMBER ASC
+  </select>
+
+  <select id="offExamGradeList" parameterType="hashMap" resultType="hashMap">
+    SELECT  B.IDENTYID AS IDENTYID,
+        B.MOCKCODE AS MOCKCODE,
+        A.SUBJECT_CD AS SUBJECT_CD,
+        C.CLASSCODE AS CLASSCODE,
+        C.CLASSSERIESCODE AS CLASSSERIESCODE,
+        B.CNT AS ORAIFINGRADE
+    FROM TB_TITEM A
+    INNER JOIN (SELECT A.IDENTYID,A.ITEMID,A.MOCKCODE,
+        COUNT(*)* (SELECT 100/QUESTIONNUM  FROM TB_TITEM WHERE ITEMID=A.ITEMID) AS CNT
+        FROM TB_TEXAMINEEANSWER A , TB_TORDERS B
+        WHERE A.CORRECTYN = 'Y'
+        AND A.IDENTYID = B.IDENTYID
+        AND A.MOCKCODE = #{MOCKCODE}
+        GROUP BY A.IDENTYID,A.ITEMID,A.MOCKCODE
+    ) B ON A.ITEMID=B.ITEMID
+    INNER JOIN TB_TORDERS C ON B.IDENTYID = C.IDENTYID AND C.EXAMSTATUS = 3
+  </select>
+
+  <select id="getAdujustGrade" parameterType="hashMap" resultType="int">
+    SELECT
+        NVL( ROUND(((#{ORAIFINGRADE}-A.AVG)/DECODE(A.STDDEV,0,NULL,A.STDDEV))*10+50 , 0) ,  0) ADJUSTGRADE
+    FROM (
+        SELECT STDDEV(ORIGINGRADE) STDDEV, AVG(ORIGINGRADE) AVG
+        FROM TB_TMOCKGRADE
+        WHERE SUBJECT_CD=#{SUBJECT_CD}
+        AND CLASSCODE= #{CLASSCODE}
+        AND MOCKCODE=#{MOCKCODE}
+    ) A
+  </select>
+
+  <insert id="insertTmockGrade" parameterType="hashMap">
+    <!-- * 모의고사 접수자 중에서 결제완료(PAYMENTSTATE=1)되고 응시 제출완료(EXAMSTATUS=3)한 신청자에 대하여
+             전달받은 모의고사코드(MOCKCODE)에 대한 모든 응시과목의 원점수와 조정점수를 동일하게 TMOCKGRADE 테이블에 삽입한다.
+             선택과목의 조정점수는 다른 업데이트문을 통해 처리한다.  -->
+    INSERT INTO TB_TMOCKGRADE (
+      ID, IDENTYID, MOCKCODE, SUBJECT_CD, CLASSCODE,
+      CLASSSERIESCODE, ORIGINGRADE, ADJUSTGRADE, ITEMID, REG_ID, REG_DT
+    )
+    SELECT SEQ_TMOCKGRADE_ID.NEXTVAL AS ID, TEA.IDENTYID, TEA.MOCKCODE, TIT.SUBJECT_CD, OA.CLASSCODE,
+        OA.CLASSSERIESCODE, ROUND(TEA.CCNT*(100/TIT.QUESTIONNUM),0), ROUND(TEA.CCNT*(100/TIT.QUESTIONNUM),0), TEA.ITEMID, USER_ID, SYSDATE
+    FROM TB_TORDERS OA
+    INNER JOIN (
+        SELECT MOCKCODE, IDENTYID, ITEMID, COUNT(*) AS CCNT  FROM TB_TEXAMINEEANSWER
+        WHERE CORRECTYN = 'Y' AND MOCKCODE = #{mockCode}
+        GROUP BY MOCKCODE, IDENTYID, ITEMID
+    ) TEA ON OA.EXAMCODE=TEA.MOCKCODE AND OA.IDENTYID=TEA.IDENTYID
+    INNER JOIN TB_TITEM TIT ON TEA.ITEMID=TIT.ITEMID
+    WHERE OA.EXAMCODE = #{mockCode}
+    AND OA.PAYMENTSTATE = 1 AND OA.EXAMSTATUS = 3
+
+<!--        insert into TB_TMOCKGRADE (ID,identyid,mockcode,subjectcode,classcode,classseriescode, origingrade , itemid  , createtime)
+      select  SEQ_TMOCKGRADE_ID.nextval as ID,
+             b.identyid as identyid,b.mockcode as mockcode,a.subjectcode as subjectcode,c.classcode as classcode,c.classseriescode as classseriescode, B.cnt as oraifingrade  , B.itemid as itemid  , sysdate as createtime
+      from TB_TITEM A
+      inner join
+      (select a.identyid,a.itemid,a.MockCode,
+      count(*)* (SELECT 100/QUESTIONNUM  FROM TB_TITEM WHERE itemid=a.ITEMID) as cnt
+      from TB_TEXAMINEEANSWER a , TB_TORDERS b
+      where a.correctyn = 'Y'
+      AND       a.IDENTYID = b.IDENTYID
+      AND       a.MOCKCODE=#{mockCode}
+      group by a.identyid,a.itemid,a.MockCode) B
+      on A.itemid=B.itemid
+      inner join TB_TORDERS C
+      on b.identyid = c.identyid
+      and C.PAYMENTSTATE = 1 -->
+  </insert>
+
+  <update id="updateAdjGrade" parameterType="hashMap">
+    UPDATE  TB_TMOCKGRADE
+    SET     ADJUSTGRADE = #{ADJUSTGRADE}
+    WHERE   IDENTYID = #{IDENTYID}
+    AND     MOCKCODE=#{MOCKCODE}
+    AND     SUBJECT_CD =#{SUBJECT_CD}
+    AND     CLASSCODE=#{CLASSCODE}
+    AND     CLASSSERIESCODE =#{CLASSSERIESCODE}
+    AND     ORIGINGRADE = #{ORAIFINGRADE}
+  </update>
+
+  <update id="updateAdjustGradeTmockgradeByMockcode" parameterType="hashMap">
+    MERGE INTO TB_TMOCKGRADE A
+    USING (
+        SELECT A.IDENTYID, A.MOCKCODE, A.SUBJECT_CD, A.CLASSCODE, A.CLASSSERIESCODE, ROUND(B.ADJUSTGRADE1,0) ADJUSTGRADE1
+        FROM TB_TMOCKGRADE A, (
+            SELECT TMG.IDENTYID IDENTYID, TMG.MOCKCODE MOCKCODE,TMG.SUBJECT_CD SUBJECT_CD, TMG.CLASSCODE CLASSCODE, TMG.CLASSSERIESCODE CLASSSERIESCODE
+                ,NVL(ROUND(((TMG.ORIGINGRADE - MGSA.FAVG)/DECODE(MGSA.FSTDDEV,0,NULL,MGSA.FSTDDEV))*10+50 , 0),0) AS ADJUSTGRADE1
+            FROM TB_TMOCKGRADE  TMG
+            INNER JOIN (
+                SELECT MOCKCODE,CLASSCODE,SUBJECT_CD,ITEMID,STDDEV(ORIGINGRADE) FSTDDEV, AVG(ORIGINGRADE) FAVG
+                FROM TB_TMOCKGRADE
+                WHERE MOCKCODE = #{mockCode}
+                GROUP BY MOCKCODE,CLASSCODE,SUBJECT_CD,ITEMID
+            ) MGSA ON TMG.MOCKCODE=MGSA.MOCKCODE AND TMG.CLASSCODE=MGSA.CLASSCODE AND TMG.SUBJECT_CD=MGSA.SUBJECT_CD
+            INNER JOIN TB_TMOCKSUBJECT TMS ON TMG.MOCKCODE=TMS.MOCKCODE AND TMG.SUBJECT_CD=TMS.SUBJECT_CD AND TMS.SUBJECTTYPEDIVISION = 2
+            WHERE TMG.MOCKCODE = #{mockCode}
+        ) B
+        WHERE A.IDENTYID=B.IDENTYID
+        AND A.MOCKCODE=B.MOCKCODE
+        AND A.SUBJECT_CD=B.SUBJECT_CD
+        AND A.CLASSCODE=B.CLASSCODE
+        AND A.CLASSSERIESCODE=B.CLASSSERIESCODE
+    ) C
+    ON (A.IDENTYID=C.IDENTYID
+    AND A.MOCKCODE=C.MOCKCODE
+    AND A.SUBJECT_CD=C.SUBJECT_CD
+    AND A.CLASSCODE=C.CLASSCODE
+    AND A.CLASSSERIESCODE=C.CLASSSERIESCODE)
+    WHEN MATCHED THEN
+    UPDATE SET ADJUSTGRADE = C.ADJUSTGRADE1
+  </update>
+
+</mapper>

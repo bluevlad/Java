@@ -1,0 +1,962 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="bookOrder">
+
+<!-- 교재배송 리스트 (택배)-->
+<select id="getJuOrderListDB"  parameterType="hashMap" resultType="hashMap">
+	SELECT * 
+	FROM (
+			SELECT ROWNUM AS RNUM, H.* 
+			FROM (
+                     SELECT AA.ORDERNO, AA.ORDERNO AS ORDERS_ORDERNO,
+	                           AA.USER_NM ORDERS_USERNAME, AA.USER_ID AS ORDERS_USERID,  
+	                           BB.USERNAME DELIVERS_USERNAME, 
+	                           AA.TEL_NO AS ORDERS_TELNO, AA.PHONE_NO AS ORDERS_CELLNO,   
+	                           AA.ZIP_CODE AS ORDERS_ZIPCD, AA.ADDRESS1 || AA.ADDRESS2 AS ORDERS_ADDR,  
+	                           AA.EMAIL AS ORDERS_EMAIL,  
+	                           DD.PAYCODE APPROVALS_PAYCODENAME, DD.ADDPRICE APPROVALS_ADDPRICE, 
+	                           DD.PAYNAME,
+                               BB.REG_DT,
+                               CC.CONFIRM_DT DELIVERS_REGDATE
+					FROM TB_ORDERS AA, TB_DELIVERS BB, (SELECT TO_CHAR(A.CONFIRM_DT, 'YYYYMMDD') CONFIRM_DT, A.ORDERNO
+			                 											FROM TB_ORDER_MGNT_NO A, TB_CA_BOOK B
+			                 											WHERE A.MGNTNO = B.RSC_ID
+			                                  							AND A.STATUSCODE IN ('DLV105')
+			                                  							AND TO_CHAR(A.CONFIRM_DT, 'YYYYMMDD') BETWEEN #{sdate} AND #{edate}
+			                                  							GROUP BY TO_CHAR(A.CONFIRM_DT, 'YYYYMMDD'), A.ORDERNO) CC,
+			                 TB_APPROVALS DD
+			WHERE AA.ORDERNO = BB.ORDERNO
+			AND AA.ORDERNO = CC.ORDERNO
+			AND NVL(BB.DLEORDER, 'DLE100') = 'DLE100'
+			AND AA.ORDERNO = DD.ORDERNO
+			<if test="searchkey !=null and searchkey != '' "> 
+		   		<if test="searchtype !=null and searchtype != '' ">
+		   			<choose>
+					  <when test="searchtype != 'all'">
+                      AND INSTR(${searchtype}, #{searchkey}) <![CDATA[ > ]]> 0
+					  </when>
+					  <when test="searchtype == 'all'">
+                       AND (
+                               INSTR(AA.ORDERNO, #{searchkey}) <![CDATA[ > ]]> 0
+                               OR INSTR(AA.USER_ID, #{searchkey}) <![CDATA[ > ]]> 0
+                               OR INSTR(AA.USER_NM, #{searchkey}) <![CDATA[ > ]]> 0
+                               OR INSTR(BB.USERNAME, #{searchkey}) <![CDATA[ > ]]> 0
+                               OR INSTR(DD.PAYNAME, #{searchkey}) <![CDATA[ > ]]> 0
+                              )
+					  </when>
+				 </choose>
+		   		</if>							
+			</if>
+			ORDER BY CC.CONFIRM_DT ASC, AA.ORDERNO ASC
+		) H WHERE ROWNUM <![CDATA[ <= ]]> #{endNo}
+	) WHERE RNUM  <![CDATA[ > ]]> #{startNo}		
+</select>
+
+<!-- 교재배송 리스트 (택배) 카운트-->
+<select id="getJuOrderListCount" parameterType="hashMap" resultType="int">
+			SELECT COUNT(*)
+			FROM TB_ORDERS AA, TB_DELIVERS BB, (SELECT A.ORDERNO
+	                 											FROM TB_ORDER_MGNT_NO A, TB_CA_BOOK B
+	                 											WHERE A.MGNTNO = B.RSC_ID
+	                                  							AND A.STATUSCODE IN ('DLV105')
+	                                  							AND TO_CHAR(A.CONFIRM_DT, 'YYYYMMDD') BETWEEN #{sdate} AND #{edate}
+	                                  							GROUP BY A.ORDERNO) CC,
+	                 TB_APPROVALS DD
+			WHERE AA.ORDERNO = BB.ORDERNO
+			AND AA.ORDERNO = CC.ORDERNO
+			AND NVL(BB.DLEORDER, 'DLE100') = 'DLE100'
+			AND AA.ORDERNO = DD.ORDERNO
+			<if test="searchkey !=null and searchkey != '' ">
+		   		<if test="searchtype !=null and searchtype != '' ">
+		   			<choose>
+					  <when test="searchtype != 'all'">
+                      AND INSTR(${searchtype}, #{searchkey}) <![CDATA[ > ]]> 0
+					  </when>
+					  <when test="searchtype == 'all'">
+                       AND (
+                               INSTR(AA.ORDERNO, #{searchkey}) <![CDATA[ > ]]> 0
+                               OR INSTR(AA.USER_ID, #{searchkey}) <![CDATA[ > ]]> 0
+                               OR INSTR(AA.USER_NM, #{searchkey}) <![CDATA[ > ]]> 0
+                               OR INSTR(BB.USERNAME, #{searchkey}) <![CDATA[ > ]]> 0
+                               OR INSTR(DD.PAYNAME, #{searchkey}) <![CDATA[ > ]]> 0
+                              )
+					  </when>
+				 </choose>
+		   		</if>							
+			</if>
+</select>
+
+<!-- 교재배송 리스트 (택배,직접수령) 2번째-->
+<select id="getTblJuOrderMgntListDB" parameterType="hashMap" resultType="hashMap">
+		select	b.book_nm name
+			  , a.cnt
+			  , a.price
+			  , b.rsc_id mgntNo
+        	  , b.book_author author
+   		from	tb_order_mgnt_no a, TB_CA_BOOK b
+   		where	a.orderNo = #{orderno}
+   		and a.mgntNo = b.rsc_id
+   		and a.statuscode IN ('DLV105', 'DLV110', 'DLV120', 'DLV125', 'DLV130')
+</select>
+
+<!-- 엑셀 리스트-->
+<select id="getJuOrderExelListDB"  parameterType="hashMap" resultType="hashMap">
+                     SELECT ROWNUM RNUM, AA.ORDERNO, AA.ORDERNO AS ORDERS_ORDERNO,
+	                           AA.USER_NM ORDERS_USERNAME, AA.USER_ID AS ORDERS_USERID,  
+	                           BB.USERNAME DELIVERS_USERNAME, 
+	                           BB.TELNO AS DELIVERS_TELNO, BB.CELLNO AS DELIVERS_CELLNO,   
+	                           BB.ZIPCD AS DELIVERS_ZIPCD, BB.ADDR AS DELIVERS_ADDR,  
+	                           AA.EMAIL AS ORDERS_EMAIL,  BB.MEMO DELIVERS_MEMO,  
+	                           DD.PAYCODE APPROVALS_PAYCODENAME, DD.ADDPRICE APPROVALS_ADDPRICE, 
+	                           DD.PAYNAME, FN_GET_MULTI_BOOK_NM(AA.ORDERNO) MULTI_BOOK_NM,
+                               TO_CHAR(BB.REGDATE, 'YYYY-MM-DD') TO_DATE
+					FROM TB_ORDERS AA, TB_DELIVERS BB, (SELECT A.ORDERNO
+			                 											FROM TB_ORDER_MGNT_NO A, TB_CA_BOOK B
+			                 											WHERE A.MGNTNO = B.RSC_ID
+			                                  							AND A.STATUSCODE IN ('DLV105')
+			                                  							AND TO_CHAR(A.ISCONFIRM, 'YYYYMMDD') BETWEEN #{sdate} AND #{edate}
+			                                  							GROUP BY A.ORDERNO) CC,
+			                 TB_APPROVALS DD
+			WHERE AA.ORDERNO = BB.ORDERNO
+			AND AA.ORDERNO = CC.ORDERNO
+			AND NVL(BB.DLEORDER, 'DLE100') = 'DLE100'
+			AND AA.ORDERNO = DD.ORDERNO
+			<if test="searchkey !=null and searchkey != '' ">
+		   		<if test="searchtype !=null and searchtype != '' ">
+		   			<choose>
+					  <when test="searchtype != 'all'">
+                      AND INSTR(${searchtype}, #{searchkey}) <![CDATA[ > ]]> 0
+					  </when>
+					  <when test="searchtype == 'all'">
+                       AND (
+                               INSTR(AA.ORDERNO, #{searchkey}) <![CDATA[ > ]]> 0
+                               OR INSTR(AA.USER_ID, #{searchkey}) <![CDATA[ > ]]> 0
+                               OR INSTR(AA.USER_NM, #{searchkey}) <![CDATA[ > ]]> 0
+                               OR INSTR(BB.USERNAME, #{searchkey}) <![CDATA[ > ]]> 0
+                               OR INSTR(DD.PAYNAME, #{searchkey}) <![CDATA[ > ]]> 0
+                              )
+					  </when>
+				 </choose>
+		   		</if>							
+			</if>
+			ORDER BY BB.REGDATE ASC, AA.ORDERNO ASC
+</select>
+
+<!-- 전체상품주문관리 주문번호 상세-->
+<select id="getTblApprovalsViewList" parameterType="hashMap" resultType="hashMap">
+		select	b.price,
+       			a.addPrice,
+       			a.payCode payCodeName,
+       			case when (a.payCode = 'PAY120') then a.Vacct else a.payCode end as acctNoName,
+           		case when (a.vcdbank = '') then null else a.vcdbank end as VcdBank,
+       			a.payName,
+        		a.paycode,
+       			a.point,
+       			a.returnValue,
+       			a.vacct,
+       			CASE WHEN a.payCode   =  'PAY120' THEN
+                DECODE((select statuscode from tb_order_mgnt_no where orderno = #{orderno} and rownum = 1),'DLV105',TO_CHAR((SELECT ISCONFIRM FROM TB_ORDER_MGNT_NO DD WHERE DD.ORDERNO =#{orderno} AND ROWNUM=1),'YYYY-MM-DD.HH24:MI.SS'),'') 
+                ELSE  ''
+                END STATUS_DT
+       	from	tb_approvals a,
+       		(	select	orderNo, sum(price*cnt) price
+   				from	tb_order_mgnt_no
+   				where	orderNo = #{orderno}
+       			group by orderNo ) b
+       	where	a.orderNo = #{orderno}
+       	and a.orderNo = b.orderNo
+</select>
+
+<!-- 전체상품주문관리 주문번호  상세 카운트-->
+<select id="getTblDeliversViewListCount" parameterType="hashMap" resultType="int">
+	select	count(*)
+	from	tb_delivers
+	where	orderNo = #{orderno}
+</select>
+
+<!-- 전체상품주문관리 주문번호 상세-->
+<select id="getTblDeliversViewList" parameterType="hashMap" resultType="hashMap">
+		select	a.sendNo, a.userName, a.telNo,
+       			a.cellNo, a.zipcd,
+       			SUBSTR(a.zipcd,1,3) zipcd_set1,
+       			decode(length(a.zipcd), 6, SUBSTR(a.zipcd,4,3), SUBSTR(a.zipcd,5,3)) zipcd_set2,
+       			a.addr, a.memo,
+       			a.sendDate,
+       			a.dleorder,
+       			DECODE(a.dleorder,'DLE100','택배수령','DLE110','직접수령',NULL,'택배수령') DLEORDER_NM
+		from	tb_delivers a
+		where	a.orderNo = #{orderno}
+</select>
+
+<!-- 전체상품주문관리 주문번호 상세-->
+<select id="getTblOrdersViewList" parameterType="hashMap" resultType="hashMap">
+		select	TO_CHAR(a.REG_DT, 'YYYY-MM-DD hh24:mi:ss') REG_DT,
+				a.USER_NM,
+				a.TEL_NO,
+				a.PHONE_NO,
+				a.ZIP_CODE,
+				a.ADDRESS1,
+				a.EMAIL,
+				b.BIRTH_DAY birth_dt
+		from tb_orders a
+		left outer join TB_MA_MEMBER b
+		on a.USER_ID = b.USER_ID
+		where a.orderNo = #{orderno}
+</select>
+
+<!-- 전체상품주문관리 주문번호 상세-->
+<select id="getLecMstViewList" parameterType="hashMap" resultType="hashMap">
+			select	a.leccode mgntNo,
+           			b.sdate,
+       				c.orderNo,
+       				c.USER_ID userId,
+       				'동영상강좌' gbnName,
+       				a.subject_title name,
+       				a.subject_price price,
+       				a.SUBJECT_DISCOUNT rate,
+       	 			(case b.wmv_pmp when 'VOD' then a.SUBJECT_MOVIE when 'PMP' then a.SUBJECT_PMP when 'VOD+PMP' then a.SUBJECT_MOVIE_PMP end) as realprice,
+       				b.cnt,
+       				b.statusCode ,
+       				b.wmv_pmp,
+       				(b.Price * b.cnt) tot_price,
+       				b.statusCode statusCodeName,
+       				NVL(b.discountper,0) discountper,
+       				b.iscancel
+       		from	TB_LEC_MST a,
+       				tb_order_mgnt_no b,
+       				tb_orders c
+        	 where	a.leccode = b.mgntNo
+			and b.orderNo = c.orderNo
+			and c.orderNo = #{orderno}
+
+        	union all
+
+       		select	a.rsc_id mgntNo,
+       				b.sdate,
+       				c.orderNo,
+       				c.USER_ID userId,
+       				'도서' gbnName,
+       				a.book_nm name,
+       				a.price price,
+       				a.discount rate,
+       				b.price realprice,
+       				b.cnt,
+					b.statusCode ,
+					'도서' wmv_pmp,
+					<!-- (b.Price * b.cnt) tot_price, -->
+					(b.Price) tot_price,
+					b.statusCode statusCodeName,
+					NVL(b.discountper,0) discountper,
+					b.iscancel
+			from	TB_CA_BOOK a,
+					tb_order_mgnt_no b,
+       				tb_orders c
+			where	a.rsc_id = b.mgntNo
+			and b.orderNo = c.orderNo
+			and c.orderNo = #{orderno}
+</select>
+
+<!-- 전체상품주문관리 주문번호  수정-->
+<update id="updateDelivers" parameterType="hashMap">
+	update	tb_delivers
+		set
+			sendNo = #{sendno},
+			username = #{d_name},
+			telno = #{d_telno},
+			cellno = #{d_cellno},
+			zipcd = #{zipcd},
+			addr = #{juso},
+			memo = #{d_memo}
+	where	orderNo = #{orderno}
+</update>
+
+<!-- 전체상품주문관리 주문번호  수정-->
+<update id="updateApprovals" parameterType="hashMap">
+	update	tb_approvals
+		set
+			payName = #{payname}
+	where	orderNo = #{orderno}
+	<if test="rec_name !=null and rec_name != '' ">
+	and USERNAME = #{rec_name}
+	</if>
+</update>
+
+<!-- 전체상품주문관리 주문번호 상세페이지 상품구분 셀렉트 박스 onchange-->
+<update id="updateDeliversWmv" parameterType="hashMap">
+  update	tb_order_mgnt_no
+	  set
+	  	wmv_pmp = #{wmv_pmp}
+  where	orderNo = #{orderno}
+  and mgntNO = #{mgntno}
+</update>
+
+<!-- 전체상품주문관리 주문번호 상세페이지 금액수정 버튼  수정-->
+<update id="updateMoney1" parameterType="hashMap">
+	update tb_order_mgnt_no
+		set
+			price = #{realprice}
+	where orderNo = #{orderno}
+	and mgntNo = #{mgntno}
+	and isCancel = #{iscancle}
+</update>
+
+<!-- 전체상품주문관리 주문번호 상세페이지 금액수정 버튼 합계-->
+<select id="getMoneySum" parameterType="hashMap" resultType="int">
+	select sum(price)
+	from tb_order_mgnt_no
+	where orderNo = #{orderno}
+</select>
+
+<!-- 전체상품주문관리 주문번호 상세페이지 금액수정 버튼-->
+<update id="updateMoney2" parameterType="hashMap">
+	update tb_approvals
+		set price = #{totalPrice}
+	where orderNo = #{orderno}
+</update>
+
+<!-- 전체상품주문관리 주문번호 상세페이지 상태코드 삭제-->
+<delete id="refund_money_delete" parameterType="hashMap">
+	delete tb_order_mgnt_no
+	where mgntno = #{mgntno}
+	and orderno = #{orderno}
+	and iscancel = #{iscancle}
+</delete>
+
+<!-- 송장저장-->
+<update id="updateSendNo1" parameterType="hashMap">
+	update	tb_delivers
+		set
+			sendNo = #{sendno},
+			sendDate = sysdate
+	where orderNo = #{orderno}
+</update>
+
+<!-- 송장저장-->
+<update id="updateSendNo2" parameterType="hashMap">
+	update tb_order_mgnt_no
+		set
+			statusCode = 'DLV125'
+	where PTYPE = 'L'
+	and orderNo = #{orderno}
+</update>
+
+<!-- 교재배송관리 'P' 팝업 리스트-->
+<select id="getPopPrintView"  parameterType="hashMap" resultType="hashMap">
+
+	<choose>
+		  <when test="printtype == 'deliver'">
+		 	select	a.rsc_id mgntNo,
+            		'도서' gbnName,
+            		a.book_nm name,
+                    A.DISCOUNT_PRICE REALPRICE,  
+            		a.DISCOUNT rate,
+            		a.PRICE,
+            		a.book_author,
+            		b.cnt,
+            		b.statusCode ,
+            		(a.DISCOUNT_PRICE * b.cnt) tot_price,
+	      			b.statusCode statusCodeName
+      		from	TB_CA_BOOK a, tb_order_mgnt_no b
+      		where	a.rsc_id = b.mgntNo
+   			and b.orderNo = #{orderno}
+   			and b.statusCode in ('DLV105')
+      	   </when>
+
+		   <otherwise>
+		     select	a.leccode mgntNo,
+      				'도서' gbnName,
+      				a.subject_title name,
+      				a.SUBJECT_PRICE price,
+      				a.SUBJECT_DISCOUNT rate,
+      				a.SUBJECT_PRICE realPrice,
+					b.cnt,
+					b.statusCode ,
+					(a.SUBJECT_PRICE * b.cnt) tot_price,
+					b.statusCode statusCodeName
+			  from	TB_LEC_MST a, tb_order_mgnt_no b
+			  where	a.leccode = b.mgntNo
+			    and b.orderNo = #{orderno}
+		   </otherwise>
+	 </choose>
+
+</select>
+
+<!-- 교재배송관리 'P' 팝업 리스트-->
+<select id="getPopPrintInfoView"  parameterType="hashMap" resultType="hashMap">
+	select	a.sendNo
+	      , a.userName
+	      , c.BIRTH_DAY
+	      , a.telno
+	      , a.cellno
+	      , a.zipcd
+	      , a.addr
+	      , a.memo
+	      , b.statusCode
+	      , TO_CHAR(a.sendDate, 'YYYY-MM-DD') sendDate
+       	  , a.dleorder
+       	  , DECODE(a.dleorder,'DLE100','택배수령','DLE110','직접수령',NULL,'택배수령') DLEORDER_NM
+   	from	TB_DELIVERS a, tb_order_mgnt_no b,
+	      (select a.orderno,a.USER_ID userid, bb.BIRTH_DAY
+	       from tb_orders a
+	   		left outer join
+	   		(select USER_ID userid, BIRTH_DAY
+	   		from TB_MA_MEMBER) bb
+			on a.USER_ID = bb.userid) c
+   	where	a.orderNo = #{orderno}
+   			and a.orderNo = b.orderNo
+	 		and rownum =1
+</select>
+
+<!-- 교재배송관리 'P' 팝업 리스트-->
+<select id="getPopPrintOrderInfoView"  parameterType="hashMap" resultType="hashMap">
+	select	a.USER_ID userid
+	       ,a.USER_NM username
+	       ,b.BIRTH_DAY
+	       ,a.TEL_NO telno
+	       ,a.PHONE_NO cellno
+	       ,a.ZIP_CODE zipcd
+	       ,a.ADDRESS1 || ADDRESS2 addr
+	       , a.email
+	       ,TO_CHAR(a.REG_DT, 'YYYY-MM-DD hh24:mi:ss') regdate
+	       ,TO_CHAR(sysdate, 'YYYY-MM-DD hh24:mi:ss') to_date
+   	from	tb_orders a
+       		LEFT OUTER JOIN
+       		(SELECT USER_ID userid, BIRTH_DAY
+     		  FROM TB_MA_MEMBER
+    		) b on a.USER_ID = b.userid
+   	where	a.orderNo = #{orderno}
+
+</select>
+
+
+<!-- 교재배송 리스트 (직접수령-단순쿼리 적용)-->
+<select id="getJicOrderListDB"  parameterType="hashMap" resultType="hashMap">
+    SELECT * FROM (
+        SELECT ROWNUM AS RNUM, H.* FROM (
+            SELECT  A.ORDERNO,
+                                                                                A.ORDERNO AS ORDERS_ORDERNO,
+                    A.USER_NM AS ORDERS_USERNAME,
+                    A.USER_ID AS ORDERS_USERID,
+                    A.TEL_NO AS ORDERS_TELNO,
+                    A.PHONE_NO AS ORDERS_CELLNO,
+                    A.ZIP_CODE AS ORDERS_ZIPCD,
+                    A.ADDRESS1 || ADDRESS2 AS ORDERS_ADDR,
+                    A.EMAIL AS ORDERS_EMAIL,
+                    TO_CHAR(A.REG_DT, 'YYYYMMDD') AS ORDERS_REGDATE,
+                    A.IPDATE AS ORDERS_IPDATE,
+                    B.SENDNO AS DELIVERS_SENDNO,
+                    B.USERNAME AS DELIVERS_USERNAME,
+                    '' AS DELIVERS_JUMIN1,
+                    '' AS DELIVERS_JUMIN2,
+                    CASE WHEN NVL(B.TELNO, '') = '' THEN B.CELLNO ELSE B.TELNO END DELIVERS_TELNO,
+                    B.ZIPCD AS DELIVERS_ZIPCD,
+                    B.ADDR AS DELIVERS_ADDR,
+                    B.MEMO AS DELIVERS_MEMO,
+                    TO_CHAR(B.REGDATE, 'YYYY-MM-DD') AS DELIVERS_REGDATE,
+                    TO_CHAR(B.SENDDATE, 'YYYY-MM-DD') AS DELIVERS_SENDDATE,
+                    B.DLEORDER AS DLEORDER,
+                    C.PRICE AS APPROVALS_PRICE,
+                    C.ADDPRICE AS APPROVALS_ADDPRICE,
+                    C.PAYCODE AS APPROVALS_PAYCODE,
+                    (SELECT CODE_NM FROM TB_BA_CONFIG_CD
+                                            WHERE  SYS_CD = 'PAYMENT_CODE' AND CODE_VAL =C.PAYCODE ) AS APPROVALS_PAYCODE_NM ,
+                    C.ACCTNOCODE AS APPROVALS_ACCTNOCODE,
+                    C.PAYNAME AS APPROVALS_PAYNAME,
+                    C.POINT AS APPROVALS_POINT,
+                    C.RETURNVALUE AS APPROVALS_RETURNVALUE,
+                    TO_CHAR(C.REG_DT, 'YYYYMMDD') AS APPROVALS_REGDATE,
+
+                    C.PAYCODE APPROVALS_PAYCODENAME,
+                    C.ACCTNOCODE APPROVALS_ACCTNONAME,
+                    B.SENDNO TBL_DELIVERS_SENDNO,
+                    (SELECT MAX(STATUSCODE)
+                    FROM TB_ORDER_MGNT_NO
+                    WHERE ORDERNO = A.ORDERNO
+                    AND ISCANCEL = 0) STATUSCODE
+
+            FROM TB_ORDERS A
+            LEFT JOIN TB_DELIVERS B
+            ON A.ORDERNO = B.ORDERNO,
+            TB_APPROVALS C
+            WHERE C.ORDERNO = A.ORDERNO
+            AND A.ORDERNO IN (SELECT DISTINCT AA.ORDERNO FROM TB_ORDER_MGNT_NO AA, TB_CA_BOOK BB WHERE AA.ORDERNO = A.ORDERNO AND AA.MGNTNO = BB.RSC_ID AND AA.STATUSCODE IN ('DLV105', 'DLV110', 'DLV120', 'DLV130'))
+            AND (B.DLEORDER = 'DLE110')
+			and TO_CHAR(a.REG_DT, 'YYYYMMDD') between #{sdate} and #{edate}
+
+			<if test="searchkey !=null and searchkey != '' ">
+		   		<if test="searchtype !=null and searchtype != '' ">
+		   			<choose>
+					  <when test="searchtype != 'all'">
+					  		and ${searchtype} like '%'||#{searchkey}||'%'
+					  </when>
+
+					  <when test="searchtype == 'all'">
+						  and (
+							     a.orderNo like '%'||#{searchkey}||'%'
+							  or a.USER_ID like '%'||#{searchkey}||'%'
+							  or a.USER_NM like '%'||#{searchkey}||'%'
+							  or b.username like '%'||#{searchkey}||'%'
+							  or c.payName like '%'||#{searchkey}||'%'
+							   )
+					  </when>
+
+				 </choose>
+		   		</if>
+			</if>
+
+            ORDER BY A.IPDATE ASC , A.ORDERNO ASC
+		) H WHERE ROWNUM <![CDATA[ <= ]]> #{endNo}
+	) WHERE RNUM <![CDATA[ > ]]> #{startNo}
+</select>
+
+<!-- 교재배송 리스트 (직접수령) 카운트-->
+<select id="getJicOrderListCount" parameterType="hashMap" resultType="int">
+	SELECT COUNT(*)
+	from tb_orders a
+			left join tb_delivers b
+			on a.orderNo = b.orderNo,
+			tb_approvals c
+			where c.orderNo = a.orderNo
+			and a.orderNo in (select distinct aa.orderNo from tb_order_mgnt_no aa, TB_CA_BOOK bb where aa.orderNo = a.orderNo and aa.mgntNo = bb.rsc_id and aa.statusCode in ('DLV105', 'DLV110', 'DLV120', 'DLV130'))
+			and (b.dleorder = 'DLE110')
+			and TO_CHAR(a.REG_DT, 'YYYYMMDD') between #{sdate} and #{edate}
+
+			<if test="searchkey !=null and searchkey != '' ">
+		   		<if test="searchtype !=null and searchtype != '' ">
+		   			<choose>
+					  <when test="searchtype != 'all'">
+					  		and ${searchtype} like '%'||#{searchkey}||'%'
+					  </when>
+
+					  <when test="searchtype == 'all'">
+						  and (
+							     a.orderNo like '%'||#{searchkey}||'%'
+							  or a.USER_ID like '%'||#{searchkey}||'%'
+							  or a.USER_NM like '%'||#{searchkey}||'%'
+							  or b.username like '%'||#{searchkey}||'%'
+							  or c.payName like '%'||#{searchkey}||'%'
+							   )
+					  </when>
+
+				 </choose>
+		   		</if>
+			</if>
+
+			order by a.ipDate asc , a.orderNo asc
+
+</select>
+
+<!-- 수령완료-->
+<update id="updateSendNo3" parameterType="hashMap">
+	update	tb_delivers
+		set
+			sendNo = '9999999999',
+			sendDate = sysdate
+	where orderNo = #{orderno}
+</update>
+
+<!-- 수령완료-->
+<update id="updateSendNo4" parameterType="hashMap">
+	update tb_order_mgnt_no
+		set
+			statusCode = 'DLV130'
+	where PTYPE = 'L'
+	and orderNo = #{orderno}
+</update>
+
+<!-- 교재매출내역 리스트-->
+<select id="getTolOrderListDB"  parameterType="hashMap" resultType="hashMap">
+	SELECT * FROM (
+		SELECT ROWNUM AS RNUM, H.* FROM (
+
+			select  b.orderNo
+			      , c.USER_ID userid
+			      , c.USER_NM username
+			      , b.userName deliveName
+			      , case when nvl(b.cellNo, '') = '' then	b.telNo else b.cellNo end cellNo
+			      , b.zipcd
+			      , b.addr
+			      , TO_CHAR(b.sendDate, 'YYYY-MM-DD') sendDate
+			      , b.sendNo
+			      , d.addPrice
+      		  from	(
+		      		  select	distinct ta.orderNo
+		      		  from	tb_order_mgnt_no ta, TB_CA_BOOK tb
+		      		  where	ta.mgntNo = tb.rsc_id
+		      		  and ta.statusCode IN ('DLV120', 'DLV125', 'DLV130')
+
+		      		  <if test="searchkey !=null and searchkey != '' ">
+				   		<if test="searchtype !=null and searchtype != '' ">
+				   			<choose>
+							  <when test="searchtype == 'tb.book_nm'">
+							  		and ${searchtype} like '%'||#{searchkey}||'%'
+							  </when>
+
+							  <when test="searchtype == 'tb.rsc_id'">
+							  		and ${searchtype} like '%'||#{searchkey}||'%'
+							  </when>
+						 	</choose>
+				   		 </if>
+					   </if>
+
+		      		) a,
+		      		tb_delivers b,
+		      		tb_orders c,
+		      		tb_approvals d
+      		  where	a.orderNo = b.orderNo
+      		  and b.orderNo = c.orderNo
+      		  and c.orderNo = d.orderNo
+
+            and TO_CHAR(b.sendDate, 'YYYYMMDD') between #{sdate} and #{edate}
+
+			<if test="searchkey !=null and searchkey != '' ">
+		   		<if test="searchtype !=null and searchtype != '' ">
+		   			<choose>
+					  <when test="searchtype != 'all' and searchtype != 'tb.book_nm' and searchtype != 'tb.rsc_id'">
+					  		and ${searchtype} like '%'||#{searchkey}||'%'
+					  </when>
+
+					  <when test="searchtype == 'all'">
+						  and (
+							     b.orderNo like '%'||#{searchkey}||'%'
+							  or c.USER_ID like '%'||#{searchkey}||'%'
+							  or c.USER_NM like '%'||#{searchkey}||'%'
+							  or b.username like '%'||#{searchkey}||'%'
+							  or d.payName like '%'||#{searchkey}||'%'
+							   )
+					  </when>
+
+				 </choose>
+		   		</if>
+			</if>
+
+            order by b.sendDate desc
+
+		) H WHERE ROWNUM <![CDATA[ <= ]]> #{endNo}
+	) WHERE RNUM  > #{startNo}
+</select>
+
+<!-- 교재매출내역 리스트 카운트-->
+<select id="getTolOrderListCount" parameterType="hashMap" resultType="int">
+	SELECT COUNT(*)
+	from	(
+	     		  select	distinct ta.orderNo
+	     		  from	tb_order_mgnt_no ta, TB_CA_BOOK tb
+	     		  where	ta.mgntNo = tb.rsc_id
+	     		  and ta.statusCode IN ('DLV120', 'DLV125', 'DLV130')
+
+	     		  <if test="searchkey !=null and searchkey != '' ">
+		   		<if test="searchtype !=null and searchtype != '' ">
+		   			<choose>
+					  <when test="searchtype == 'tb.book_nm'">
+					  		and ${searchtype} like '%'||#{searchkey}||'%'
+					  </when>
+
+					  <when test="searchtype == 'tb.rsc_id'">
+					  		and ${searchtype} like '%'||#{searchkey}||'%'
+					  </when>
+				 	</choose>
+		   		 </if>
+			   </if>
+
+	     		) a,
+	     		tb_delivers b,
+	     		tb_orders c,
+	     		tb_approvals d
+	   		  where	a.orderNo = b.orderNo
+	   		  and b.orderNo = c.orderNo
+	   		  and c.orderNo = d.orderNo
+
+	         and TO_CHAR(b.sendDate, 'YYYYMMDD') between #{sdate} and #{edate}
+
+	<if test="searchkey !=null and searchkey != '' ">
+	  		<if test="searchtype !=null and searchtype != '' ">
+	  			<choose>
+			  <when test="searchtype != 'all' and searchtype != 'tb.book_nm' and searchtype != 'tb.rsc_id'">
+			  		and ${searchtype} like '%'||#{searchkey}||'%'
+			  </when>
+
+			  <when test="searchtype == 'all'">
+				  and (
+					     b.orderNo like '%'||#{searchkey}||'%'
+					  or c.USER_ID like '%'||#{searchkey}||'%'
+					  or c.USER_NM like '%'||#{searchkey}||'%'
+					  or b.username like '%'||#{searchkey}||'%'
+					  or d.payName like '%'||#{searchkey}||'%'
+					   )
+			  </when>
+
+		 </choose>
+	  		</if>
+	</if>
+
+</select>
+
+<!-- 교재매출내역 리스트 2번째-->
+<select id="getPutLecMstDB" parameterType="hashMap" resultType="hashMap">
+	select	b.book_nm name
+	      , a.cnt
+	      , b.rsc_id mgntNo
+	      , b.book_author as author
+	      , b.book_publishers
+	      , b.price
+	      , b.discount_price
+	from	tb_order_mgnt_no a,
+			TB_CA_BOOK b
+	where	a.orderNo = #{orderno}
+	and a.mgntNo = b.rsc_id
+	and a.statusCode IN ('DLV120', 'DLV125', 'DLV130')
+</select>
+
+<!-- 엑셀 리스트-->
+<select id="getTolOrderExelListDB"  parameterType="hashMap" resultType="hashMap">
+	select  ROWNUM RNUM
+	          , b.orderNo
+			      , c.USER_ID userid
+			      , c.USER_NM username
+			      , b.userName deliveName
+			      , case when nvl(b.cellNo, '') = '' then	b.telNo else b.cellNo end cellNo
+			      , b.zipcd
+			      , b.addr
+			      , TO_CHAR(b.sendDate, 'YYYY-MM-DD') sendDate
+			      , b.sendNo
+			      , d.addPrice
+      		  from	(
+		      		  select	distinct ta.orderNo
+		      		  from	tb_order_mgnt_no ta, TB_CA_BOOK tb
+		      		  where	ta.mgntNo = tb.rsc_id
+		      		  and ta.statusCode IN ('DLV120', 'DLV125', 'DLV130')
+
+		      		  <if test="searchkey !=null and searchkey != '' ">
+				   		<if test="searchtype !=null and searchtype != '' ">
+				   			<choose>
+							  <when test="searchtype == 'tb.book_nm'">
+							  		and ${searchtype} like '%'||#{searchkey}||'%'
+							  </when>
+
+							  <when test="searchtype == 'tb.rsc_id'">
+							  		and ${searchtype} like '%'||#{searchkey}||'%'
+							  </when>
+						 	</choose>
+				   		 </if>
+					   </if>
+
+		      		) a,
+		      		tb_delivers b,
+		      		tb_orders c,
+		      		tb_approvals d
+      		  where	a.orderNo = b.orderNo
+      		  and b.orderNo = c.orderNo
+      		  and c.orderNo = d.orderNo
+
+            and TO_CHAR(b.sendDate, 'YYYYMMDD') between #{sdate} and #{edate}
+
+			<if test="searchkey !=null and searchkey != '' ">
+		   		<if test="searchtype !=null and searchtype != '' ">
+		   			<choose>
+					  <when test="searchtype != 'all' and searchtype != 'tb.book_nm' and searchtype != 'tb.rsc_id'">
+					  		and ${searchtype} like '%'||#{searchkey}||'%'
+					  </when>
+
+					  <when test="searchtype == 'all'">
+						  and (
+							     b.orderNo like '%'||#{searchkey}||'%'
+							  or c.USER_ID like '%'||#{searchkey}||'%'
+							  or c.USER_NM like '%'||#{searchkey}||'%'
+							  or b.username like '%'||#{searchkey}||'%'
+							  or d.payName like '%'||#{searchkey}||'%'
+							   )
+					  </when>
+
+				 </choose>
+		   		</if>
+			</if>
+
+            order by b.sendDate desc
+</select>
+
+<!-- 교재배송 리스트 (택배) 경찰 -->
+<select id="getJuOrderListDB_COP"  parameterType="hashMap" resultType="hashMap">
+	SELECT * 
+	FROM (
+			SELECT ROWNUM AS RNUM, H.* 
+			FROM (
+                     SELECT AA.ORDERNO, AA.ORDERNO AS ORDERS_ORDERNO,
+	                           AA.USER_NM ORDERS_USERNAME, AA.USER_ID AS ORDERS_USERID,  
+	                           BB.USERNAME DELIVERS_USERNAME, 
+	                           AA.TEL_NO AS ORDERS_TELNO, AA.PHONE_NO AS ORDERS_CELLNO,   
+	                           AA.ZIP_CODE AS ORDERS_ZIPCD, AA.ADDRESS1 || AA.ADDRESS2 AS ORDERS_ADDR,  
+	                           AA.EMAIL AS ORDERS_EMAIL,  
+	                           DD.PAYCODE APPROVALS_PAYCODENAME, DD.ADDPRICE APPROVALS_ADDPRICE, 
+	                           DD.PAYNAME,
+                               BB.REGDATE,
+                               CC.ISCONFIRM DELIVERS_REGDATE
+					FROM TB_ORDERS@WILLBESGOSI_NEW AA, TB_DELIVERS@WILLBESGOSI_NEW BB, (SELECT TO_CHAR(A.ISCONFIRM, 'YYYYMMDD') ISCONFIRM, A.ORDERNO
+			                 											FROM TB_ORDER_MGNT_NO@WILLBESGOSI_NEW A, TB_CA_BOOK@WILLBESGOSI_NEW B
+			                 											WHERE A.MGNTNO = B.RSC_ID
+			                                  							AND A.STATUSCODE IN ('DLV105')
+			                                  							AND TO_CHAR(A.ISCONFIRM, 'YYYYMMDD') BETWEEN #{sdate} AND #{edate}
+			                                  							GROUP BY TO_CHAR(A.ISCONFIRM, 'YYYYMMDD'), A.ORDERNO) CC,
+			                 TB_APPROVALS@WILLBESGOSI_NEW DD
+			WHERE AA.ORDERNO = BB.ORDERNO
+			AND AA.ORDERNO = CC.ORDERNO
+			AND NVL(BB.DLEORDER, 'DLE100') = 'DLE100'
+			AND AA.ORDERNO = DD.ORDERNO
+			<if test="searchkey !=null and searchkey != '' ">
+		   		<if test="searchtype !=null and searchtype != '' ">
+		   			<choose>
+					  <when test="searchtype != 'all'">
+                      AND INSTR(${searchtype}, #{searchkey}) <![CDATA[ > ]]> 0
+					  </when>
+					  <when test="searchtype == 'all'">
+                       AND (
+                               INSTR(AA.ORDERNO, #{searchkey}) <![CDATA[ > ]]> 0
+                               OR INSTR(AA.USER_ID, #{searchkey}) <![CDATA[ > ]]> 0
+                               OR INSTR(AA.USER_NM, #{searchkey}) <![CDATA[ > ]]> 0
+                               OR INSTR(BB.USERNAME, #{searchkey}) <![CDATA[ > ]]> 0
+                               OR INSTR(DD.PAYNAME, #{searchkey}) <![CDATA[ > ]]> 0
+                              )
+					  </when>
+				 </choose>
+		   		</if>							
+			</if>
+			ORDER BY CC.ISCONFIRM ASC, AA.ORDERNO ASC
+		) H WHERE ROWNUM <![CDATA[ <= ]]> #{endNo}
+	) WHERE RNUM  <![CDATA[ > ]]> #{startNo}		
+</select>
+
+<!-- 교재배송 리스트 (택배) 카운트 경찰 -->
+<select id="getJuOrderListCount_COP" parameterType="hashMap" resultType="int">
+			SELECT COUNT(*)
+			FROM TB_ORDERS@WILLBESGOSI_NEW AA, TB_DELIVERS@WILLBESGOSI_NEW BB, (SELECT A.ORDERNO
+	                 											FROM TB_ORDER_MGNT_NO@WILLBESGOSI_NEW A, TB_CA_BOOK@WILLBESGOSI_NEW B
+	                 											WHERE A.MGNTNO = B.RSC_ID
+	                                  							AND A.STATUSCODE IN ('DLV105')
+	                                  							AND TO_CHAR(A.ISCONFIRM, 'YYYYMMDD') BETWEEN #{sdate} AND #{edate}
+	                                  							GROUP BY A.ORDERNO) CC,
+	                 TB_APPROVALS@WILLBESGOSI_NEW DD
+			WHERE AA.ORDERNO = BB.ORDERNO
+			AND AA.ORDERNO = CC.ORDERNO
+			AND NVL(BB.DLEORDER, 'DLE100') = 'DLE100'
+			AND AA.ORDERNO = DD.ORDERNO
+			<if test="searchkey !=null and searchkey != '' ">
+		   		<if test="searchtype !=null and searchtype != '' ">
+		   			<choose>
+					  <when test="searchtype != 'all'">
+                      AND INSTR(${searchtype}, #{searchkey}) <![CDATA[ > ]]> 0
+					  </when>
+					  <when test="searchtype == 'all'">
+                       AND (
+                               INSTR(AA.ORDERNO, #{searchkey}) <![CDATA[ > ]]> 0
+                               OR INSTR(AA.USER_ID, #{searchkey}) <![CDATA[ > ]]> 0
+                               OR INSTR(AA.USER_NM, #{searchkey}) <![CDATA[ > ]]> 0
+                               OR INSTR(BB.USERNAME, #{searchkey}) <![CDATA[ > ]]> 0
+                               OR INSTR(DD.PAYNAME, #{searchkey}) <![CDATA[ > ]]> 0
+                              )
+					  </when>
+				 </choose>
+		   		</if>							
+			</if>
+</select>
+
+<!-- 교재배송 리스트 (택배,직접수령) 2번째 - 경찰 -->
+<select id="getTblJuOrderMgntListDB_COP" parameterType="hashMap" resultType="hashMap">
+        SELECT B.BOOK_NM NAME
+              , A.CNT
+              , A.PRICE
+              , B.RSC_ID MGNTNO
+              , B.BOOK_AUTHOR AUTHOR
+           FROM TB_ORDER_MGNT_NO@WILLBESGOSI_NEW A, TB_CA_BOOK@WILLBESGOSI_NEW B
+           WHERE A.ORDERNO = #{orderno}
+           AND A.MGNTNO = B.RSC_ID
+           AND A.STATUSCODE IN ('DLV105', 'DLV110', 'DLV120', 'DLV125', 'DLV130')
+</select>
+
+<!-- 엑셀 리스트-->
+<select id="getJuOrderExelListDB_COP"  parameterType="hashMap" resultType="hashMap">
+                     SELECT ROWNUM RNUM, AA.ORDERNO, AA.ORDERNO AS ORDERS_ORDERNO,
+	                           AA.USER_NM ORDERS_USERNAME, AA.USER_ID AS ORDERS_USERID,  
+	                           BB.USERNAME DELIVERS_USERNAME, 
+	                           BB.TELNO AS DELIVERS_TELNO, BB.CELLNO AS DELIVERS_CELLNO,   
+	                           BB.ZIPCD AS DELIVERS_ZIPCD, BB.ADDR AS DELIVERS_ADDR,  
+	                           AA.EMAIL AS ORDERS_EMAIL,  BB.MEMO DELIVERS_MEMO,  
+	                           DD.PAYCODE APPROVALS_PAYCODENAME, DD.ADDPRICE APPROVALS_ADDPRICE, 
+	                           DD.PAYNAME, FN_GET_MULTI_BOOK_NM@WILLBESGOSI_NEW(AA.ORDERNO) MULTI_BOOK_NM,
+                               TO_CHAR(BB.REGDATE, 'YYYY-MM-DD') TO_DATE
+					FROM TB_ORDERS@WILLBESGOSI_NEW AA, TB_DELIVERS@WILLBESGOSI_NEW BB, (SELECT A.ORDERNO
+			                 											FROM TB_ORDER_MGNT_NO@WILLBESGOSI_NEW A, TB_CA_BOOK@WILLBESGOSI_NEW B
+			                 											WHERE A.MGNTNO = B.RSC_ID
+			                                  							AND A.STATUSCODE IN ('DLV105')
+			                                  							AND TO_CHAR(A.ISCONFIRM, 'YYYYMMDD') BETWEEN #{sdate} AND #{edate}
+			                                  							GROUP BY A.ORDERNO) CC,
+			                 TB_APPROVALS@WILLBESGOSI_NEW DD
+			WHERE AA.ORDERNO = BB.ORDERNO
+			AND AA.ORDERNO = CC.ORDERNO
+			AND NVL(BB.DLEORDER, 'DLE100') = 'DLE100'
+			AND AA.ORDERNO = DD.ORDERNO
+			<if test="searchkey !=null and searchkey != '' ">
+		   		<if test="searchtype !=null and searchtype != '' ">
+		   			<choose>
+					  <when test="searchtype != 'all'">
+                      AND INSTR(${searchtype}, #{searchkey}) <![CDATA[ > ]]> 0
+					  </when>
+					  <when test="searchtype == 'all'">
+                       AND (
+                               INSTR(AA.ORDERNO, #{searchkey}) <![CDATA[ > ]]> 0
+                               OR INSTR(AA.USER_ID, #{searchkey}) <![CDATA[ > ]]> 0
+                               OR INSTR(AA.USER_NM, #{searchkey}) <![CDATA[ > ]]> 0
+                               OR INSTR(BB.USERNAME, #{searchkey}) <![CDATA[ > ]]> 0
+                               OR INSTR(DD.PAYNAME, #{searchkey}) <![CDATA[ > ]]> 0
+                              )
+					  </when>
+				 </choose>
+		   		</if>							
+			</if>
+			ORDER BY BB.REGDATE ASC, AA.ORDERNO ASC
+</select>
+
+<!-- 송장저장-->
+<update id="updateSendNo1_COP" parameterType="hashMap">
+    UPDATE TB_DELIVERS@WILLBESGOSI_NEW
+	SET
+		SENDNO = #{sendno},
+        SENDDATE = SYSDATE
+    WHERE ORDERNO = #{orderno}
+</update>
+
+<!-- 송장저장-->
+<update id="updateSendNo2_COP" parameterType="hashMap">
+    UPDATE TB_ORDER_MGNT_NO@WILLBESGOSI_NEW
+	SET
+		STATUSCODE = 'DLV125'
+    WHERE PTYPE = 'L'
+    AND ORDERNO = #{orderno}
+</update>
+
+<!-- 전체상품주문관리 주문번호 상세-->
+<select id="getLecMstViewList_COP" parameterType="hashMap" resultType="hashMap">
+	SELECT A.RSC_ID MGNTNO, B.SDATE, C.ORDERNO, C.USER_ID USERID,
+	          '도서' GBNNAME, A.BOOK_NM NAME,
+	          A.PRICE PRICE, A.DISCOUNT RATE, B.PRICE REALPRICE,
+	          B.CNT, B.STATUSCODE, '도서' WMV_PMP,
+	          (B.PRICE) TOT_PRICE, B.STATUSCODE STATUSCODENAME,
+	          NVL(B.DISCOUNTPER,0) DISCOUNTPER, B.ISCANCEL
+	FROM TB_CA_BOOK@WILLBESGOSI_NEW A, TB_ORDER_MGNT_NO@WILLBESGOSI_NEW B, TB_ORDERS@WILLBESGOSI_NEW C
+	WHERE A.RSC_ID = B.MGNTNO
+	AND B.ORDERNO = C.ORDERNO
+	AND C.ORDERNO = #{orderno}
+</select>
+
+<!-- 전체상품주문관리 주문번호 상세-->
+<select id="getTblDeliversViewList_COP" parameterType="hashMap" resultType="hashMap">
+	SELECT A.SENDNO, A.USERNAME, A.TELNO, A.CELLNO, A.ZIPCD,
+             SUBSTR(A.ZIPCD,1,3) ZIPCD_SET1,
+             DECODE(LENGTH(A.ZIPCD), 6, SUBSTR(A.ZIPCD,4,3), SUBSTR(A.ZIPCD,5,3)) ZIPCD_SET2,
+             A.ADDR, A.MEMO, A.SENDDATE, A.DLEORDER,
+             DECODE(A.DLEORDER,'DLE100','택배수령','DLE110','직접수령',NULL,'택배수령') DLEORDER_NM
+	FROM TB_DELIVERS@WILLBESGOSI_NEW A
+    WHERE A.ORDERNO = #{orderno}
+</select>
+
+</mapper>

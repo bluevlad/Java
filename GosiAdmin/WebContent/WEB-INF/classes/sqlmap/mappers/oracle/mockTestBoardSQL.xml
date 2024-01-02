@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mockTestBoard">
+
+    <resultMap type="java.util.HashMap" id="testMap">
+        <result column="CONTENT" property="CONTENT" javaType="java.lang.String" jdbcType="CLOB"/>
+        <result column="ANSWER" property="ANSWER" javaType="java.lang.String" jdbcType="CLOB"/>
+        <result column="ORIGIN" property="ORIGIN" javaType="java.lang.String" jdbcType="CLOB"/>
+    </resultMap>
+
+    <select id="boardList" parameterType="hashMap" resultType="hashMap" >
+        SELECT * FROM   (
+            SELECT A.*, ROWNUM rnum
+            FROM (
+                SELECT
+                    TO_NUMBER(LEVEL) LISTLEVEL,
+                    CODENAME ,
+                    TO_NUMBER(BOARD_SEQ) BOARD_SEQ,
+                    SUBJECT,
+                    CONTENT,
+                    FILE_NAME,
+                    PARENT_BOARD_SEQ,
+                    NOTICE_TOP_YN,
+                    HITS ,
+                    TO_CHAR(REG_DT , 'yyyy-mm-dd HH24:MI:SS')  REG_DT ,
+                    (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = REG_ID) USER_NM ,
+                    TO_CHAR(UPD_DT , 'yyyy-mm-dd HH24:MI:SS')  UPD_DT,
+                    UPD_ID ,
+                    CREATENAME,
+                    RECOMMEND,
+                    ISSUE,
+                    OPEN_YN,
+                    NVL(ISREPLY ,'N') ISREPLY ,
+                    PROF_ID,
+                    (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = PROF_ID) AS PROF_NM,
+                    DIVICE_TYPE,
+                    MOCKCODE,
+                    MOCKNAME
+                FROM
+                    (SELECT
+                        (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE=#{SEARCHCATEGORY}) CODENAME,
+                        bb.BOARD_SEQ,
+                        bb.SUBJECT,
+                        bb.CONTENT,
+                        (SELECT FILE_NAME FROM TB_BOARD_FILE WHERE BOARD_SEQ = bb.BOARD_SEQ AND ROWNUM = 1) FILE_NAME,
+                        bb.PARENT_BOARD_SEQ,
+                        bb.NOTICE_TOP_YN,
+                        bb.REG_ID,
+                        bb.REG_DT,
+                        bb.UPD_ID,
+                        bb.UPD_DT,
+                        bb.HITS ,
+                        bb.CREATENAME,
+                        bb.RECOMMEND,
+                        bb.ISSUE,
+                        bb.OPEN_YN,
+                        (SELECT NVL2(BOARD_SEQ , 'Y' , 'N') FROM TB_BOARD WHERE PARENT_BOARD_SEQ = bb.BOARD_SEQ) ISREPLY ,
+                        bb.PROF_ID,
+                        bb.DIVICE_TYPE,
+                        bb.MOCKCODE,
+                        (SELECT MOCKNAME FROM TB_TMOCKREGISTRATION WHERE MOCKCODE = bb.MOCKCODE AND ROWNUM = 1) MOCKNAME
+                    FROM TB_BOARD_CATEGORY_INFO aa , TB_BOARD bb , TB_BOARD_MNG cc
+                    WHERE cc.BOARD_MNG_SEQ = aa.BOARD_MNG_SEQ
+                    AND aa.BOARD_MNG_SEQ = bb.BOARD_MNG_SEQ
+                    AND aa.CATEGORY_CODE = #{SEARCHCATEGORY}
+                    AND aa.BOARD_SEQ = bb.BOARD_SEQ
+                    AND aa.BOARD_MNG_SEQ = #{BOARD_MNG_SEQ}
+                    AND bb.BOARD_MNG_SEQ = #{BOARD_MNG_SEQ}
+                    AND cc.BOARD_MNG_SEQ = #{BOARD_MNG_SEQ}
+                <choose>
+                    <when test="SEARCHONOFFDIV != null and SEARCHONOFFDIV != ''">
+                        AND cc.ONOFF_DIV = #{SEARCHONOFFDIV}
+                    </when>
+                    <otherwise>
+                        <if test='ONOFF_DIV != null and ONOFF_DIV == "T" '>
+                        AND cc.ONOFF_DIV = 'T'
+                        </if>
+                    </otherwise>
+                </choose>
+                <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+                    <choose>
+                        <when test='SEARCHKIND == "SEARCHSUBJECT"'>
+                        AND bb.SUBJECT LIKE '%'||#{SEARCHTEXT}||'%'
+                        </when>
+                        <when test='SEARCHKIND == "SEARCHNAME"'>
+                        AND bb.CREATENAME LIKE '%'||#{SEARCHTEXT}||'%'
+                        </when>
+                        <when test='SEARCHKIND == "SEARCHCONTENT"'>
+                        AND bb.CONTENT LIKE '%'||#{SEARCHTEXT}||'%'
+                        </when>
+                    </choose>
+                </if>
+                <if test="SEARCHPRFID != null and SEARCHPRFID != ''">
+                    AND bb.PROF_ID = #{SEARCHPRFID}
+                </if>
+                    ) C
+                    WHERE 1 = 1
+                <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+                    <choose>
+                        <when test='SEARCHKIND == "SEARCHSUBJECT"'>
+                        AND C.SUBJECT LIKE '%'||#{SEARCHTEXT}||'%'
+                        </when>
+                        <when test='SEARCHKIND == "SEARCHNAME"'>
+                        AND C.CREATENAME LIKE '%'||#{SEARCHTEXT}||'%'
+                        </when>
+                        <when test='SEARCHKIND == "SEARCHCONTENT"'>
+                        AND C.CONTENT LIKE '%'||#{SEARCHTEXT}||'%'
+                        </when>
+                        <when test='SEARCHKIND == "SEARCHMOCKNM"'>
+                        AND C.MOCKNAME LIKE '%'||#{SEARCHTEXT}||'%'
+                        </when>
+                        <otherwise>
+                        AND ( C.SUBJECT LIKE '%'||#{SEARCHTEXT}||'%'
+                                OR C.CREATENAME LIKE '%'||#{SEARCHTEXT}||'%'
+                                OR C.CONTENT LIKE '%'||#{SEARCHTEXT}||'%'
+                                OR C.MOCKNAME LIKE '%'||#{SEARCHTEXT}||'%'
+                                )
+                        </otherwise>
+                    </choose>
+                </if>
+                   START WITH PARENT_BOARD_SEQ = 0
+                   CONNECT BY PRIOR BOARD_SEQ = PARENT_BOARD_SEQ
+                   ORDER SIBLINGS BY NOTICE_TOP_YN DESC , BOARD_SEQ DESC
+            ) A
+            WHERE rownum <![CDATA[ <= ]]> #{endNo}
+        )
+        WHERE rnum <![CDATA[ > ]]> #{startNo}
+    </select>
+
+    <select id="boardListCount" parameterType="hashMap" resultType="int">
+    SELECT
+        COUNT(BOARD_SEQ) AS CNT
+    FROM
+        (SELECT
+            (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE=#{SEARCHCATEGORY}) CODENAME,
+            bb.BOARD_SEQ,
+            bb.SUBJECT,
+            bb.CONTENT,
+            (SELECT FILE_NAME FROM TB_BOARD_FILE WHERE BOARD_SEQ = bb.BOARD_SEQ AND ROWNUM = 1) FILE_NAME,
+            bb.PARENT_BOARD_SEQ,
+            bb.NOTICE_TOP_YN,
+            bb.REG_ID,
+            bb.REG_DT,
+            bb.UPD_ID,
+            bb.UPD_DT,
+            bb.HITS ,
+            bb.CREATENAME,
+            bb.RECOMMEND,
+            bb.ISSUE,
+            bb.OPEN_YN,
+            bb.PROF_ID,
+            bb.DIVICE_TYPE,
+            bb.MOCKCODE,
+            (SELECT MOCKNAME FROM TB_TMOCKREGISTRATION WHERE MOCKCODE = bb.MOCKCODE AND ROWNUM = 1) MOCKNAME
+        FROM TB_BOARD_CATEGORY_INFO aa , TB_BOARD bb , TB_BOARD_MNG cc
+        WHERE cc.BOARD_MNG_SEQ = aa.BOARD_MNG_SEQ
+        AND aa.BOARD_MNG_SEQ = bb.BOARD_MNG_SEQ
+        AND aa.CATEGORY_CODE = #{SEARCHCATEGORY}
+        AND aa.BOARD_SEQ = bb.BOARD_SEQ
+        AND aa.BOARD_MNG_SEQ = #{BOARD_MNG_SEQ}
+        AND bb.BOARD_MNG_SEQ = #{BOARD_MNG_SEQ}
+        AND cc.BOARD_MNG_SEQ = #{BOARD_MNG_SEQ}
+    <choose>
+        <when test="SEARCHONOFFDIV != null and SEARCHONOFFDIV != ''">
+            AND cc.ONOFF_DIV = #{SEARCHONOFFDIV}
+        </when>
+        <otherwise>
+            <if test='ONOFF_DIV != null and ONOFF_DIV == "T" '>
+            AND cc.ONOFF_DIV = 'T'
+            </if>
+        </otherwise>
+    </choose>
+    <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+        <choose>
+            <when test='SEARCHKIND == "SEARCHSUBJECT"'>
+            AND bb.SUBJECT LIKE '%'||#{SEARCHTEXT}||'%'
+            </when>
+            <when test='SEARCHKIND == "SEARCHNAME"'>
+            AND bb.CREATENAME LIKE '%'||#{SEARCHTEXT}||'%'
+            </when>
+            <when test='SEARCHKIND == "SEARCHCONTENT"'>
+            AND bb.CONTENT LIKE '%'||#{SEARCHTEXT}||'%'
+            </when>
+        </choose>
+    </if>
+    <if test="SEARCHPRFID != null and SEARCHPRFID != ''">
+        AND bb.PROF_ID = #{SEARCHPRFID}
+    </if>
+        ) C
+        WHERE 1 = 1
+    <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+        <choose>
+            <when test='SEARCHKIND == "SEARCHSUBJECT"'>
+            AND C.SUBJECT LIKE '%'||#{SEARCHTEXT}||'%'
+            </when>
+            <when test='SEARCHKIND == "SEARCHNAME"'>
+            AND C.CREATENAME LIKE '%'||#{SEARCHTEXT}||'%'
+            </when>
+            <when test='SEARCHKIND == "SEARCHCONTENT"'>
+            AND C.CONTENT LIKE '%'||#{SEARCHTEXT}||'%'
+            </when>
+            <when test='SEARCHKIND == "SEARCHMOCKNM"'>
+            AND C.MOCKNAME LIKE '%'||#{SEARCHTEXT}||'%'
+            </when>
+            <otherwise>
+            AND ( C.SUBJECT LIKE '%'||#{SEARCHTEXT}||'%'
+                    OR C.CREATENAME LIKE '%'||#{SEARCHTEXT}||'%'
+                    OR C.CONTENT LIKE '%'||#{SEARCHTEXT}||'%'
+                    OR C.MOCKNAME LIKE '%'||#{SEARCHTEXT}||'%'
+                    )
+            </otherwise>
+        </choose>
+    </if>
+        START WITH PARENT_BOARD_SEQ = 0
+        CONNECT BY PRIOR BOARD_SEQ = PARENT_BOARD_SEQ
+        ORDER SIBLINGS BY NOTICE_TOP_YN DESC , BOARD_SEQ DESC
+    </select>
+
+    <select id="getBoardDetail" parameterType="hashMap" resultMap="testMap" >
+        SELECT
+        <if test="BOARDVIEWPARENT_SEQ != null and BOARDVIEWPARENT_SEQ != 0">
+            (SELECT CONTENT FROM TB_BOARD WHERE BOARD_SEQ = a.PARENT_BOARD_SEQ) ORIGIN ,
+        </if>
+            BOARD_MNG_SEQ,
+            BOARD_SEQ,
+            OPEN_YN,
+            SUBJECT,
+            CONTENT,
+            ANSWER,
+            FILE_PATH,
+            FILE_NAME,
+            REAL_FILE_NAME ,
+            PARENT_BOARD_SEQ,
+            NOTICE_TOP_YN ,
+            TO_CHAR(REG_DT , 'yyyy-mm-dd HH24:MI:SS')  REG_DT ,
+            REG_ID,
+            UPD_DT,
+            UPD_ID,
+            HITS,
+            CREATENAME  ,
+            THUMBNAIL_FILE_PATH,
+            THUMBNAIL_FILE_NAME,
+            THUMBNAIL_FILE_REAL_NAME,
+            ISSUE,
+            RECOMMEND,
+            PROF_ID,
+            (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = PROF_ID) AS PROF_NM,
+            DIVICE_TYPE,
+            MOCKCODE,
+            (SELECT MOCKNAME FROM TB_TMOCKREGISTRATION WHERE MOCKCODE = a.MOCKCODE AND ROWNUM = 1) MOCKNAME
+        FROM  TB_BOARD a
+        WHERE BOARD_SEQ = #{BOARDVIEW_SEQ}
+    </select>
+
+</mapper>

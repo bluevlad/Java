@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="note">
+	<select id="noteList" parameterType="hashMap" resultType="hashMap" >
+		SELECT * FROM 	( 
+								SELECT A.*, ROWNUM rnum 
+							  	FROM (
+											SELECT * FROM
+												(SELECT 
+																		NOTEID , 
+																        FROM_USERID ,
+																        (SELECT  USER_NM FROM TB_MA_MEMBER WHERE USER_ID= FROM_USERID)  FROM_USERNM ,
+																        CONT,
+																        SEND_ID ,
+																        (SELECT  USER_NM FROM TB_MA_MEMBER WHERE USER_ID= SEND_ID)  SENDNM ,
+																      	READ_YN,
+																      	DECODE(READ_YN, 'Y', '수신', 'N', '미수신')   READ_YNNM , 
+																        TO_CHAR(SEND_DT , 'yyyy-mm-dd HH24:MI:SS')  SEND_DT, READ_DT
+												FROM TB_NOTE_SEND_INFO
+												ORDER BY NOTEID DESC
+												)
+											WHERE 1=1
+											<if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+												<if test="SEARCHKIND != null and SEARCHKIND != ''">
+													<if test="SEARCHKIND == 'FROM'">
+														AND FROM_USERNM like '%'||#{SEARCHTEXT}||'%'
+													</if>
+													<if test="SEARCHKIND == 'SEND'">
+														AND SENDNM like '%'||#{SEARCHTEXT}||'%'
+													</if>
+													<if test="SEARCHKIND == 'CONT'">
+														AND CONT like '%'||#{SEARCHTEXT}||'%'
+													</if>
+												</if>
+												<if test="SEARCHKIND == null or SEARCHKIND == ''">
+													AND (
+														FROM_USERNM like '%'||#{SEARCHTEXT}||'%' 
+														OR SENDNM like '%'||#{SEARCHTEXT}||'%' 
+														OR CONT like '%'||#{SEARCHTEXT}||'%' 
+													)
+												</if>
+											</if>
+										) A 
+			                 	WHERE rownum &lt;= #{endNo}
+								)
+		WHERE rnum &gt; #{startNo}
+	</select>
+
+	<select id="noteListCount" parameterType="hashMap" resultType="int">
+		SELECT COUNT(*) CNT FROM
+		(SELECT 
+								NOTEID , 
+						        FROM_USERID ,
+						        (SELECT  USER_NM FROM TB_MA_MEMBER WHERE USER_ID= FROM_USERID)  FROM_USERNM ,
+						        CONT,
+						        SEND_ID ,
+						        (SELECT  USER_NM FROM TB_MA_MEMBER WHERE USER_ID= SEND_ID)  SENDNM ,
+						      	READ_YN, 
+						        TO_CHAR(SEND_DT , 'yyyy-mm-dd HH24:MI:SS')  SEND_DT, READ_DT
+		FROM TB_NOTE_SEND_INFO
+		ORDER BY NOTEID DESC
+		)
+	WHERE 1=1
+	<if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+		<if test="SEARCHKIND != null and SEARCHKIND != ''">
+			<if test="SEARCHKIND == 'FROM'">
+				AND FROM_USERNM like '%'||#{SEARCHTEXT}||'%'
+			</if>
+			<if test="SEARCHKIND == 'SEND'">
+				AND SENDNM like '%'||#{SEARCHTEXT}||'%'
+			</if>
+			<if test="SEARCHKIND == 'CONT'">
+				AND CONT like '%'||#{SEARCHTEXT}||'%'
+			</if>
+		</if>
+		<if test="SEARCHKIND == null or SEARCHKIND == ''">
+			AND (
+				FROM_USERNM like '%'||#{SEARCHTEXT}||'%' 
+				OR SENDNM like '%'||#{SEARCHTEXT}||'%' 
+				OR CONT like '%'||#{SEARCHTEXT}||'%' 
+			)
+		</if>
+	</if>
+	</select>
+	
+	<select id="noteView" parameterType="hashMap" resultType="hashMap">
+		 SELECT 
+		        NOTEID , 
+		        FROM_USERID ,
+		        (SELECT  USER_NM FROM TB_MA_MEMBER WHERE USER_ID= FROM_USERID)  FROM_USERNM ,
+		        CONT,
+		        SEND_ID ,
+		        (SELECT  USER_NM FROM TB_MA_MEMBER WHERE USER_ID= SEND_ID)  SENDNM ,
+		      	READ_YN, 
+		        TO_CHAR(SEND_DT , 'yyyy-mm-dd HH24:MI:SS')  SEND_DT, READ_DT
+		FROM TB_NOTE_SEND_INFO
+		 WHERE NOTEID = #{NOTEID}
+	</select>
+	
+	<update id="noteUpdate" parameterType="hashMap">
+		UPDATE TB_NOTE_SEND_INFO 
+		SET 		
+			          CONT = #{CONT} ,
+			          READ_YN= #{READ_YN},
+			          READ_DT = SYSDATE
+		WHERE NOTEID = #{NOTEID}
+	</update>
+	
+	<delete id="noteDelete" parameterType="hashMap">
+		DELETE FROM TB_NOTE_SEND_INFO WHERE NOTEID = #{NOTEID}
+	</delete>
+</mapper>	

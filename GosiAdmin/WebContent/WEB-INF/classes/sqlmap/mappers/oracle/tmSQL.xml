@@ -1,0 +1,1275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="tm">
+
+	<!-- TM 배정된 회원 조회하기 -->
+	<select id="tmAdminList" parameterType="hashMap" resultType="hashMap">
+		SELECT
+			ADMINID, ADMINNAME
+		FROM TB_TM_ADMIN
+		WHERE DELETEFLAG = 'N'
+		ORDER BY IDX
+	</select>
+
+	<!-- TM 배정된 회원 조회하기 -->
+	<select id="tmIsTmAdmin" parameterType="hashMap" resultType="hashMap">
+		SELECT
+			ADMINID, ADMINNAME
+		FROM TB_TM_ADMIN
+		WHERE DELETEFLAG = 'N'
+			AND ADMINID = #{USER_ID}
+	</select>
+
+	<!-- TM 배정된 회원 조회하기 -->
+	<select id="tmMemberList" parameterType="hashMap" resultType="hashMap">
+		SELECT LTBL.*
+		FROM (
+			SELECT TBL.*, ROWNUM rnum
+		  	FROM (
+				SELECT USERID ,USERNAME ,
+				EMAIL ,ADMUSERID
+					,ADMUSERNAME ,ALLOCDATE ,USERTYPE
+					,DECODE(USERTYPE,'A','신규','B','재수강','C','장바구니','D','회수(부재)','') USERTYPE_NM
+					,LASTREGDATE
+                    ,DECODE(USERTYPE, 'C', (SELECT SUBSTR(XMLAGG(XMLELEMENT(X,',',TOOLTIP) ORDER BY USER_ID).Extract('//text()'),2) AS NMS
+			                                           FROM  (
+			                                                  SELECT AA.USER_ID, '[' || BB.LECCODE || ']' || BB.SUBJECT_TITLE || '(원가 : ' || SUBJECT_PRICE || ' ) ☞ 판매가 : ' || DECODE(AA.MOVIE_TYPE, '1',AA.MOVIE_TYPE, '4', SUBJECT_MOVIE, '2', SUBJECT_PMP, '3', SUBJECT_MOVIE_PMP, 'AA',SUBJECT_MOVIE_MP4, SUBJECT_MOVIE_VOD_MP4) TOOLTIP
+			                                                  FROM TB_CC_CART AA, TB_LEC_MST BB
+			                                                  WHERE AA.LECCODE = BB.LECCODE
+			                                                  AND   TO_DATE(TO_CHAR(AA.REGDATE,'YYYYMMDD'),'YYYYMMDD') <![CDATA[ > ]]> TO_DATE(#{SDATE},'YYYYMMDD')
+			                                                  AND   TO_DATE(TO_CHAR(AA.REGDATE,'YYYYMMDD'),'YYYYMMDD') <![CDATA[ < ]]> TO_DATE(#{EDATE},'YYYYMMDD') + 1
+			                                                  AND   AA.KIND_TYPE = 'D'
+			                                                  ORDER BY USER_ID
+			                                                  )
+			                                           WHERE USER_ID = A.USERID
+			                                           GROUP BY USER_ID
+                                           			 ), '') TOOLTIP
+				FROM TB_TM_USERS A
+				LEFT OUTER JOIN
+					(SELECT REQUSERID, MAX(REGDATE) LASTREGDATE
+					 FROM TB_TM_BOARD
+					 WHERE 1=1
+					    <if test='SDATE != null and SDATE != ""'>
+							AND REGDATE <![CDATA[ > ]]> ADD_MONTHS(TO_DATE(#{SDATE}),-12)
+						</if>
+					    <if test='EDATE != NULL and EDATE != ""'>
+							AND REGDATE <![CDATA[ < ]]> TO_DATE(#{EDATE}) + 1
+						</if>
+					 GROUP BY REQUSERID ) B
+				ON A.USERID = B.REQUSERID
+				WHERE 1=1
+			    <if test='TMADMINID != null and TMADMINID != ""'>
+					AND A.ADMUSERID = #{TMADMINID}
+				</if>
+			    <if test='SDATE != null and SDATE != ""'>
+					AND A.ALLOCDATE <![CDATA[ > ]]> TO_DATE(#{SDATE})
+				</if>
+			    <if test='EDATE != null and EDATE != ""'>
+					AND A.ALLOCDATE <![CDATA[ < ]]> TO_DATE(#{EDATE}) + 1
+				</if>
+			    <if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+					AND ( A.USERID LIKE '%'||#{SEARCHTEXT}||'%'
+					    OR A.USERNAME LIKE '%'||#{SEARCHTEXT}||'%'
+					    )
+		    	</if>
+		    	ORDER BY A.IDX DESC
+			) TBL
+              	WHERE ROWNUM <![CDATA[ <= ]]> #{endNo}
+		) LTBL
+		WHERE rnum <![CDATA[ > ]]> #{startNo}
+	</select>
+
+	<!-- TM배정된 회원 수를 조회한다. -->
+	<select id="tmMemberListCount" parameterType="hashMap" resultType="String">
+		SELECT COUNT(*)
+		FROM TB_TM_USERS A
+		LEFT OUTER JOIN
+			(SELECT REQUSERID, MAX(REGDATE) LASTREGDATE
+			 FROM TB_TM_BOARD
+			 WHERE 1=1
+			    <if test='SDATE != null and SDATE != ""'>
+					AND REGDATE <![CDATA[ > ]]> ADD_MONTHS(TO_DATE(#{SDATE}),-12)
+				</if>
+			    <if test='EDATE != NULL and EDATE != ""'>
+					AND REGDATE <![CDATA[ < ]]> TO_DATE(#{EDATE}) + 1
+				</if>
+			 GROUP BY REQUSERID ) B
+		ON A.USERID = B.REQUSERID
+		WHERE 1=1
+	    <if test='TMADMINID != null and TMADMINID != ""'>
+			AND A.ADMUSERID = #{TMADMINID}
+		</if>
+	    <if test='SDATE != null and SDATE != ""'>
+			AND A.ALLOCDATE <![CDATA[ > ]]> TO_DATE(#{SDATE})
+		</if>
+	    <if test='EDATE != null and EDATE != ""'>
+			AND A.ALLOCDATE <![CDATA[ < ]]> TO_DATE(#{EDATE}) + 1
+		</if>
+	    <if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+			AND ( A.USERID LIKE '%'||#{SEARCHTEXT}||'%'
+			    OR A.USERNAME LIKE '%'||#{SEARCHTEXT}||'%'
+			    )
+    	</if>
+	</select>
+
+	<!-- TM배정된 회원 목록을 엑셀로 다운로드하기 위해 조회. -->
+	<select id="tmMemberListExcel" parameterType="hashMap" resultType="hashMap">
+		SELECT USERID ,USERNAME ,TEL ,PHONE ,EMAIL ,ADMUSERID
+			,ADMUSERNAME ,TO_CHAR(ALLOCDATE,'YYYY-MM-DD HH24:MI:SS') ALLOCDATE ,USERTYPE
+			,DECODE(USERTYPE,'A','신규','B','재수강','C','장바구니','D','회수(부재)','') USERTYPE_NM, NVL(TO_CHAR(REGDATE,'YYYY-MM-DD HH24:MI:SS'),' ') REGDATE
+		FROM TB_TM_USERS A
+		LEFT OUTER JOIN
+			(SELECT REQUSERID, MAX(REGDATE) REGDATE
+			 FROM TB_TM_BOARD
+			 WHERE 1=1
+			    <if test='SDATE != null and SDATE != ""'>
+					AND REGDATE <![CDATA[ > ]]> ADD_MONTHS(TO_DATE(#{SDATE}),-12)
+				</if>
+			    <if test='EDATE != NULL and EDATE != ""'>
+					AND REGDATE <![CDATA[ < ]]> TO_DATE(#{EDATE}) + 1
+				</if>
+			 GROUP BY REQUSERID ) B
+		ON A.USERID = B.REQUSERID
+		WHERE 1=1
+	    <if test='TMADMINID != null and TMADMINID != ""'>
+			AND A.ADMUSERID = #{TMADMINID}
+		</if>
+	    <if test='SDATE != null and SDATE != ""'>
+			AND A.ALLOCDATE <![CDATA[ > ]]> TO_DATE(#{SDATE})
+		</if>
+	    <if test='EDATE != null and EDATE != ""'>
+			AND A.ALLOCDATE <![CDATA[ < ]]> TO_DATE(#{EDATE}) + 1
+		</if>
+	    <if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+			AND ( A.USERID LIKE '%'||#{SEARCHTEXT}||'%'
+			    OR A.USERNAME LIKE '%'||#{SEARCHTEXT}||'%'
+			    )
+
+    	</if>
+			ORDER BY A.IDX
+	</select>
+
+	<!-- TM 상담내용 조회하기 -->
+	<select id="tmBoardList" parameterType="hashMap" resultType="hashMap">
+		SELECT LTBL.*
+		FROM (
+			SELECT TBL.*, ROWNUM rnum
+		  	FROM (
+				SELECT
+					IDX ,VOCCODE ,DECODE(VOCCODE,'A','통화','B','재통화','C','부재중','D','거절','E','번호오류','F','관심회원') VOCCODE_NM
+					,DUTYCODE ,DECODE(DUTYCODE,'001','9급공무원','002','7급공무원','003','법원/검찰/교정','005','세무/관세','006','소방공무원','007','군무원','008','경찰공무원','999','독서실','') DUTYCODE_NM
+					,CONTENT ,REQUSERID ,REQUSERNAME ,REGUSERID ,REGUSERNAME ,TO_CHAR(REGDATE,'YYYY-MM-DD HH24:MM') REG_DT ,UPDDATE
+					,(SELECT TEL_NO FROM TB_MA_MEMBER WHERE USER_ID = A.REQUSERID) TEL_NO
+					,(SELECT PHONE_NO FROM TB_MA_MEMBER WHERE USER_ID = A.REQUSERID) PHONE_NO
+				FROM TB_TM_BOARD A
+				WHERE 1=1
+			    <if test='DUTYCODE != null and DUTYCODE != ""'>
+					AND A.DUTYCODE = #{DUTYCODE}
+				</if>
+			    <if test='VOCCODE != null and VOCCODE != ""'>
+					AND A.VOCCODE = #{VOCCODE}
+				</if>
+			    <if test='TMADMINID != null and TMADMINID != ""'>
+					AND A.REGUSERID = #{TMADMINID}
+				</if>
+			    <if test='SDATE != null and SDATE != ""'>
+					AND A.REGDATE <![CDATA[ > ]]> TO_DATE(#{SDATE})
+				</if>
+			    <if test='EDATE != null and EDATE != ""'>
+					AND A.REGDATE <![CDATA[ < ]]> TO_DATE(#{EDATE}) + 1
+				</if>
+			 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+					<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+						<if test='SEARCHTYPE == "REGUSERNAME"'>
+							AND A.REGUSERNAME like '%'||#{SEARCHTEXT}||'%'
+						</if>
+						<if test='SEARCHTYPE == "REQUSERNAME"'>
+							AND A.REQUSERNAME like '%'||#{SEARCHTEXT}||'%'
+						</if>
+						<if test='SEARCHTYPE == "CONTENT"'>
+							AND A.CONTENT like '%'||#{SEARCHTEXT}||'%'
+						</if>
+					</if>
+					<if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+						AND (A.REGUSERNAME like '%'||#{SEARCHTEXT}||'%'
+							OR A.REQUSERNAME like '%'||#{SEARCHTEXT}||'%'
+							OR A.CONTENT like '%'||#{SEARCHTEXT}||'%')
+					</if>
+				</if>
+				ORDER BY A.IDX DESC
+			) TBL
+              	WHERE ROWNUM <![CDATA[ <= ]]> #{endNo}
+		) LTBL
+		WHERE rnum <![CDATA[ > ]]> #{startNo}
+	</select>
+
+	<!-- TM 상담내용 EXCEL 다운로드 조회하기 -->
+	<select id="tmBoardListExcel" parameterType="hashMap" resultType="hashMap">
+				SELECT
+					IDX ,VOCCODE ,DECODE(VOCCODE,'A','통화','B','재통화','C','부재중','D','거절','E','번호오류','F','관심회원') VOCCODE_NM
+					,DUTYCODE ,DECODE(DUTYCODE,'001','9급공무원','002','7급공무원','003','법원/검찰/교정','005','세무/관세','006','소방공무원','007','군무원','008','경찰공무원','999','독서실','') DUTYCODE_NM
+					,CONTENT ,REQUSERID ,REQUSERNAME ,REGUSERID ,REGUSERNAME ,TO_CHAR(REGDATE,'YYYY-MM-DD HH24:MM') REG_DT ,UPDDATE
+					,(SELECT TEL_NO FROM TB_MA_MEMBER WHERE USER_ID = A.REQUSERID) TEL_NO
+					,(SELECT PHONE_NO FROM TB_MA_MEMBER WHERE USER_ID = A.REQUSERID) PHONE_NO
+				FROM TB_TM_BOARD A
+				WHERE 1=1
+			    <if test='DUTYCODE != null and DUTYCODE != ""'>
+					AND A.DUTYCODE = #{DUTYCODE}
+				</if>
+			    <if test='VOCCODE != null and VOCCODE != ""'>
+					AND A.VOCCODE = #{VOCCODE}
+				</if>
+			    <if test='TMADMINID != null and TMADMINID != ""'>
+					AND A.REGUSERID = #{TMADMINID}
+				</if>
+			    <if test='SDATE != null and SDATE != ""'>
+					AND A.REGDATE <![CDATA[ > ]]> TO_DATE(#{SDATE})
+				</if>
+			    <if test='EDATE != null and EDATE != ""'>
+					AND A.REGDATE <![CDATA[ < ]]> TO_DATE(#{EDATE}) + 1
+				</if>
+			 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+					<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+						<if test='SEARCHTYPE == "REGUSERNAME"'>
+							AND A.REGUSERNAME like '%'||#{SEARCHTEXT}||'%'
+						</if>
+						<if test='SEARCHTYPE == "REQUSERNAME"'>
+							AND A.REQUSERNAME like '%'||#{SEARCHTEXT}||'%'
+						</if>
+						<if test='SEARCHTYPE == "CONTENT"'>
+							AND A.CONTENT like '%'||#{SEARCHTEXT}||'%'
+						</if>
+					</if>
+					<if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+						AND (A.REGUSERNAME like '%'||#{SEARCHTEXT}||'%'
+							OR A.REQUSERNAME like '%'||#{SEARCHTEXT}||'%'
+							OR A.CONTENT like '%'||#{SEARCHTEXT}||'%')
+					</if>
+				</if>
+				ORDER BY A.IDX DESC
+	</select>
+
+	<!-- TM 상담내용 갯수 조회하기 -->
+	<select id="tmBoardListCount" parameterType="hashMap" resultType="String">
+		SELECT
+			COUNT(*)
+		FROM TB_TM_BOARD
+		WHERE 1=1
+	    <if test='DUTYCODE != null and DUTYCODE != ""'>
+			AND DUTYCODE = #{DUTYCODE}
+		</if>
+	    <if test='VOCCODE != null and VOCCODE != ""'>
+			AND VOCCODE = #{VOCCODE}
+		</if>
+	    <if test='TMADMINID != null and TMADMINID != ""'>
+			AND REGUSERID = #{TMADMINID}
+		</if>
+	    <if test='SDATE != null and SDATE != ""'>
+			AND REGDATE <![CDATA[ > ]]> TO_DATE(#{SDATE})
+		</if>
+	    <if test='EDATE != null and EDATE != ""'>
+			AND REGDATE <![CDATA[ < ]]> TO_DATE(#{EDATE}) + 1
+		</if>
+	 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+			<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+				<if test='SEARCHTYPE == "REGUSERNAME"'>
+					AND REGUSERNAME like '%'||#{SEARCHTEXT}||'%'
+				</if>
+				<if test='SEARCHTYPE == "REQUSERNAME"'>
+					AND REQUSERNAME like '%'||#{SEARCHTEXT}||'%'
+				</if>
+				<if test='SEARCHTYPE == "CONTENT"'>
+					AND CONTENT like '%'||#{SEARCHTEXT}||'%'
+				</if>
+			</if>
+			<if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+				AND (REGUSERNAME like '%'||#{SEARCHTEXT}||'%'
+					OR REQUSERNAME like '%'||#{SEARCHTEXT}||'%'
+					OR CONTENT like '%'||#{SEARCHTEXT}||'%')
+			</if>
+		</if>
+	</select>
+
+	<!-- TM상담내용 삭제  -->
+	<delete id="tmBoardDelete" parameterType="hashMap" flushCache="true">
+		DELETE FROM TB_TM_BOARD
+			WHERE IDX = #{IDX}
+			<if test='REQUSERID != null and REQUSERID != ""'>
+				AND REQUSERID = #{REQUSERID}
+			</if>
+			<if test='VOCCODE != null and VOCCODE != ""'>
+				AND VOCCODE = #{VOCCODE}
+			</if>
+	</delete>
+
+	<update id="tmBoardUpdate" parameterType="hashMap" flushCache="true">
+		UPDATE TB_TM_BOARD
+		set IDX = #{IDX}
+	    <if test='DUTYCODE != null and DUTYCODE != ""'>
+			,DUTYCODE = #{DUTYCODE}
+		</if>
+	    <if test='VOCCODE != null and VOCCODE != ""'>
+			,VOCCODE = #{VOCCODE}
+		</if>
+	    <if test='CONTENT != null and CONTENT != ""'>
+			,CONTENT = #{CONTENT}
+		</if>
+		WHERE IDX = #{IDX}
+	</update>
+
+	<!-- TM 결제리스트 -->
+	<select id="tmOrderList" parameterType="hashMap" resultType="hashMap">
+		SELECT LTBL.*
+		FROM (
+			SELECT TBL.*, ROWNUM rnum
+		  	FROM (
+			    SELECT
+			    B.ORDERNO,
+			    C.MGNTNO,
+			    D.SUBJECT_TITLE ,
+			    D.SUBJECT_PRICE ,
+			    C.WMV_PMP,
+			    C.PRICE,
+			    B.IPDATE,
+			    C.ISCONFIRM,
+			    TO_CHAR(C.ISCONFIRM,'yyyy-MM-dd') PAYDATE,
+			    A.REQUSERID,
+			    A.REQUSERNAME,
+			    A.REGUSERID,
+			    A.REGUSERNAME,
+			    LASTREGDATE,
+			    ONLYUSER.ALLOCDATE AS LASTALLOCDATE,
+			    F.USERTYPE
+			    FROM (
+			        SELECT USERID
+			            ,MAX(ALLOCDATE) ALLOCDATE
+			        FROM TB_TM_USERS
+			        WHERE 1=1
+			        <if test='TMADMINID != null and TMADMINID != ""'>
+                        AND USERTYPE IN ('A', 'B', 'C')
+						AND ADMUSERID = #{TMADMINID}
+					</if>
+			        GROUP BY USERID
+			        ) ONLYUSER
+			    INNER JOIN TB_TM_USERS F
+			        ON F.USERID = ONLYUSER.USERID AND F.ALLOCDATE = ONLYUSER.ALLOCDATE
+			    LEFT OUTER JOIN (
+			        SELECT TT.REQUSERID
+			            ,MAX(TT.REGDATE) LASTREGDATE
+			            ,MIN(TT.REGDATE) FIRSTREGDATE
+			            ,TT.REGUSERID
+			        FROM TB_TM_BOARD TT
+			        WHERE 1=1
+			        <if test='SDATE != null and SDATE != ""'>
+						AND TT.REGDATE <![CDATA[ > ]]> ADD_MONTHS(TO_DATE(#{SDATE}),-1)
+					</if>
+			        <if test='TMADMINID != null and TMADMINID != ""'>
+	                    AND TT.VOCCODE IN('A','B','F')
+						AND TT.REGUSERID = #{TMADMINID}
+					</if>
+			        GROUP BY TT.REQUSERID ,TT.REGUSERID
+			        ) USEIDTABLE
+			        ON F.USERID = USEIDTABLE.REQUSERID AND F.ADMUSERID = USEIDTABLE.REGUSERID
+			    	LEFT OUTER JOIN TB_TM_BOARD A
+			        ON A.REQUSERID = USEIDTABLE.REQUSERID AND A.REGDATE = LASTREGDATE
+			    	LEFT OUTER JOIN TB_ORDERS B ON B.USER_ID = A.REQUSERID
+			    	LEFT OUTER JOIN TB_ORDER_MGNT_NO C  ON C.ORDERNO = B.ORDERNO
+			    	LEFT OUTER JOIN TB_LEC_MST D ON D.LECCODE = C.MGNTNO
+                	WHERE A.VOCCODE IN ('A', 'B', 'F')
+		        	<!--  통화, 재통화, 도서구매가 아닌 것 -->
+		        	AND C.PTYPE IN ('D', 'P', 'J', 'N', 'Y')
+		        	AND C.STATUSCODE IN ('DLV105', 'DLV150')   
+					AND C.ISCONFIRM <![CDATA[> ]]> FIRSTREGDATE
+	          		<!--  주문확인일이 최종 상담일이후 21일 이내인 경우 -->
+					AND C.ISCONFIRM <![CDATA[ < ]]> (A.REGDATE + 21)
+			    	<!-- 결제 금액이 0원 이상인 경우 -->
+			    	AND C.PRICE <![CDATA[ > ]]> 0
+		        	<if test='TMADMINID != null and TMADMINID != ""'>
+					AND A.REGUSERID = #{TMADMINID}
+					</if>
+			    	<if test='SDATE != null and SDATE != ""'>
+					AND TO_CHAR(C.ISCONFIRM, 'YYYYMMDD') BETWEEN #{SDATE} AND #{EDATE}
+					</if>
+			 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+					<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+						<if test='SEARCHTYPE == "REGUSERNAME"'>
+							AND INSTR(A.REGUSERNAME, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+						</if>
+						<if test='SEARCHTYPE == "REQUSERNAME"'>
+							AND INSTR(A.REQUSERNAME, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+						</if>
+						<if test='SEARCHTYPE == "REGUSERID"'>
+							AND A.REGUSERID = #{SEARCHTEXT}
+						</if>
+						<if test='SEARCHTYPE == "REQUSERID"'>
+							AND A.REQUSERID = #{SEARCHTEXT}
+						</if>
+					</if>
+					<if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+						AND (INSTR(A.REGUSERNAME, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+							OR INSTR(A.REQUSERNAME, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+							OR REGUSERID = #{SEARCHTEXT}
+							OR REQUSERID = #{SEARCHTEXT} )
+					</if>
+				</if>
+				ORDER BY C.ISCONFIRM DESC, A.REQUSERNAME ASC
+			) TBL
+              	WHERE ROWNUM <![CDATA[ <= ]]> #{endNo}
+		) LTBL
+		WHERE rnum <![CDATA[ > ]]> #{startNo}
+	</select>
+
+	<!-- TM 결제리스트 엑셀다운로드 조회 -->
+	<select id="tmOrderListExcel" parameterType="hashMap" resultType="hashMap">
+		    SELECT
+			    B.ORDERNO,
+			    C.MGNTNO,
+			    D.SUBJECT_TITLE ,
+			    D.SUBJECT_PRICE ,
+			    C.WMV_PMP,
+			    C.PRICE,
+			    B.IPDATE,
+			    C.ISCONFIRM,
+			    TO_CHAR(C.ISCONFIRM,'yyyy-MM-dd') PAYDATE,
+			    A.REQUSERID,
+			    A.REQUSERNAME,
+			    A.REGUSERID,
+			    A.REGUSERNAME,
+			    LASTREGDATE,
+			    ONLYUSER.ALLOCDATE AS LASTALLOCDATE,
+			    F.USERTYPE
+		    FROM (
+		        SELECT USERID
+		            ,MAX(ALLOCDATE) ALLOCDATE
+		        FROM TB_TM_USERS
+		        WHERE 1=1
+		        <if test='TMADMINID != null and TMADMINID != ""'>
+                    AND USERTYPE IN ('A', 'B', 'C')
+					AND ADMUSERID = #{TMADMINID}
+				</if>
+		        GROUP BY USERID
+		        ) ONLYUSER
+		    INNER JOIN TB_TM_USERS F
+		        ON F.USERID = ONLYUSER.USERID AND F.ALLOCDATE = ONLYUSER.ALLOCDATE
+		    LEFT OUTER JOIN (
+		        SELECT TT.REQUSERID
+		            ,MAX(TT.REGDATE) LASTREGDATE
+		            ,MIN(TT.REGDATE) FIRSTREGDATE
+		            ,TT.REGUSERID
+		        FROM TB_TM_BOARD TT
+		        WHERE 1=1
+		        <if test='SDATE != null and SDATE != ""'>
+					AND TT.REGDATE <![CDATA[ > ]]> ADD_MONTHS(TO_DATE(#{SDATE}),-1)
+				</if>
+		        <if test='TMADMINID != null and TMADMINID != ""'>
+                    AND TT.VOCCODE IN('A','B','F')
+					AND TT.REGUSERID = #{TMADMINID}
+				</if>
+		        GROUP BY TT.REQUSERID ,TT.REGUSERID
+		        ) USEIDTABLE
+		        ON F.USERID = USEIDTABLE.REQUSERID AND F.ADMUSERID = USEIDTABLE.REGUSERID
+		    	LEFT OUTER JOIN TB_TM_BOARD A
+		        ON A.REQUSERID = USEIDTABLE.REQUSERID AND A.REGDATE = LASTREGDATE
+		    	LEFT OUTER JOIN TB_ORDERS B ON B.USER_ID = A.REQUSERID
+		    	LEFT OUTER JOIN TB_ORDER_MGNT_NO C  ON C.ORDERNO = B.ORDERNO
+		    	LEFT OUTER JOIN TB_LEC_MST D ON D.LECCODE = C.MGNTNO
+	           	WHERE A.VOCCODE IN ('A', 'B', 'F')
+		        <!--  통화, 재통화, 도서구매가 아닌 것 -->
+		        AND C.PTYPE IN ('D', 'P', 'J', 'N', 'Y')
+		        AND C.STATUSCODE IN ('DLV105', 'DLV150')
+				AND C.ISCONFIRM <![CDATA[ > ]]> FIRSTREGDATE
+		          <!--  주문확인일이 최종 상담일이후 21일 이내인 경우 -->
+		        AND C.ISCONFIRM <![CDATA[ < ]]> (A.REGDATE + 21)
+		          <!-- 결제 금액이 0원 이상인 경우 -->
+		        AND C.PRICE <![CDATA[ > ]]> 0
+	        <if test='TMADMINID != null and TMADMINID != ""'>
+				AND A.REGUSERID = #{TMADMINID}
+			</if>
+			    <if test='SDATE != null and SDATE != ""'>
+					AND TO_CHAR(C.ISCONFIRM, 'YYYYMMDD') BETWEEN #{SDATE} AND #{EDATE}
+				</if>
+		  <if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+				<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+					<if test='SEARCHTYPE == "REGUSERNAME"'>
+						AND INSTR(A.REGUSERNAME, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+					</if>
+					<if test='SEARCHTYPE == "REQUSERNAME"'>
+						AND INSTR(A.REQUSERNAME, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+					</if>
+					<if test='SEARCHTYPE == "REGUSERID"'>
+						AND A.REGUSERID = #{SEARCHTEXT}
+					</if>
+					<if test='SEARCHTYPE == "REQUSERID"'>
+						AND A.REQUSERID = #{SEARCHTEXT}
+					</if>
+				</if>
+				<if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+					AND ( INSTR(A.REGUSERNAME, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+						OR INSTR(A.REQUSERNAME, #{SEARCHTEXT}) <![CDATA[ > ]]> 0 )
+				</if>
+			</if>
+			ORDER BY C.ISCONFIRM DESC, A.REQUSERNAME ASC
+	</select>
+
+	<!-- TM 결제리스트 -->
+	<select id="tmOrderListCount" parameterType="hashMap" resultType="hashMap">
+		    SELECT
+				COUNT(*) CNT, NVL(SUM(D.SUBJECT_PRICE),0) REALPRICESUM, NVL(SUM(C.PRICE),0) PAYPRICESUM
+		    FROM (
+		        SELECT USERID
+		            ,MAX(ALLOCDATE) ALLOCDATE
+		        FROM TB_TM_USERS
+		        WHERE 1=1
+		        <if test='TMADMINID != null and TMADMINID != ""'>
+                    AND USERTYPE IN ('A', 'B', 'C')
+					AND ADMUSERID = #{TMADMINID}
+				</if>
+		        GROUP BY USERID
+		        ) ONLYUSER
+		    INNER JOIN TB_TM_USERS F
+		        ON F.USERID = ONLYUSER.USERID AND F.ALLOCDATE = ONLYUSER.ALLOCDATE
+		    LEFT OUTER JOIN (
+		        SELECT TT.REQUSERID
+		            ,MAX(TT.REGDATE) LASTREGDATE
+		            ,MIN(TT.REGDATE) FIRSTREGDATE
+		            ,TT.REGUSERID
+		        FROM TB_TM_BOARD TT
+		        WHERE 1=1
+		        <if test='SDATE != null and SDATE != ""'>
+					AND TT.REGDATE <![CDATA[ > ]]> ADD_MONTHS(TO_DATE(#{SDATE}),-1)
+				</if>
+		        <if test='TMADMINID != null and TMADMINID != ""'>
+                    AND TT.VOCCODE IN('A','B','F')
+					AND TT.REGUSERID = #{TMADMINID}
+				</if>
+		        GROUP BY TT.REQUSERID ,TT.REGUSERID
+		        ) USEIDTABLE
+		        ON F.USERID = USEIDTABLE.REQUSERID AND F.ADMUSERID = USEIDTABLE.REGUSERID
+		    	LEFT OUTER JOIN TB_TM_BOARD A
+		        ON A.REQUSERID = USEIDTABLE.REQUSERID AND A.REGDATE = LASTREGDATE
+		    	LEFT OUTER JOIN TB_ORDERS B ON B.USER_ID = A.REQUSERID
+		    	LEFT OUTER JOIN TB_ORDER_MGNT_NO C  ON C.ORDERNO = B.ORDERNO
+		    	LEFT OUTER JOIN TB_LEC_MST D ON D.LECCODE = C.MGNTNO
+                WHERE A.VOCCODE IN ('A', 'B', 'F')
+		        <!-- 통화, 재통화, 도서구매가 아닌 것 -->
+		        AND C.PTYPE IN ('D', 'P', 'J', 'N', 'Y')
+		        AND C.STATUSCODE IN ('DLV105', 'DLV150')
+  	            AND C.ISCONFIRM <![CDATA[ > ]]> FIRSTREGDATE
+		        <!--  주문확인일이 최종 상담일이후 21일 이내인 경우 -->
+		        AND C.ISCONFIRM <![CDATA[ < ]]> (A.REGDATE + 21)
+		        <!--  결제 금액이 0원 이상인 경우 -->
+		        AND C.PRICE <![CDATA[ > ]]> 0
+	        <if test='TMADMINID != null and TMADMINID != ""'>
+				AND A.REGUSERID = #{TMADMINID}
+			</if>
+			    <if test='SDATE != null and SDATE != ""'>
+					AND TO_CHAR(C.ISCONFIRM, 'YYYYMMDD') BETWEEN #{SDATE} AND #{EDATE}
+				</if>
+		 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+				<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+					<if test='SEARCHTYPE == "REGUSERNAME"'>
+						AND INSTR(A.REGUSERNAME, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+					</if>
+					<if test='SEARCHTYPE == "REQUSERNAME"'>
+						AND INSTR(A.REQUSERNAME, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+					</if>
+					<if test='SEARCHTYPE == "REGUSERID"'>
+						AND A.REGUSERID = #{SEARCHTEXT}
+					</if>
+					<if test='SEARCHTYPE == "REQUSERID"'>
+						AND A.REQUSERID = #{SEARCHTEXT}
+					</if>
+				</if>
+				<if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+					AND (INSTR(A.REGUSERNAME, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+						OR INSTR(A.REQUSERNAME, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+						OR REGUSERID = #{SEARCHTEXT}
+						OR REQUSERID = #{SEARCHTEXT} )
+				</if>
+			</if>
+	</select>
+
+	<!--  TM 환불취소 리스트 -->
+	<select id="tmRefundList" parameterType="hashMap" resultType="hashMap">
+		SELECT LTBL.*
+		FROM (
+			SELECT TBL.*, ROWNUM rnum
+		  	FROM (
+				SELECT B.ORDERNO
+				    ,C.MGNTNO
+				    ,D.SUBJECT_TITLE
+				    ,D.SUBJECT_PRICE REALPRICE
+				    ,CASE
+				        WHEN C.ISCANCEL = 1
+				            THEN C.PRICE * -1
+				        ELSE C.PRICE
+				        END CONFIRMCANCELPRICE
+				    ,B.IPDATE
+				    ,C.ISCONFIRM
+				    ,CASE
+				        WHEN C.ISCANCEL = 1
+				            THEN NVL(C.CANCELDATE, '')
+				        ELSE C.ISCONFIRM
+				        END CONFIRMCANCELDATE
+				    ,A.REQUSERID
+				    ,A.REQUSERNAME
+				    ,A.REGUSERID
+				    ,A.REGUSERNAME
+				    ,LASTREGDATE
+				    ,ONLYUSER.ALLOCDATE LASTALLOCDATE
+				    ,F.USERTYPE
+				    ,CASE
+				        WHEN C.ISCANCEL = 1
+				            THEN C.PRICE
+				        ELSE (
+				            SELECT MAX(PRICE)
+				            FROM TB_ORDER_MGNT_NO
+				            WHERE ORDERNO = C.ORDERNO
+				                AND MGNTNO = C.MGNTNO
+				                AND ISCANCEL = 0
+				            )
+				        END SALEPRICE
+				    ,NVL(D.SUBJECT_MOVIE, 0) SUBJECT_MOVIE
+				    ,NVL(D.SUBJECT_PMP, 0) SUBJECT_PMP
+				    ,NVL(D.SUBJECT_MOVIE_PMP, 0) SUBJECT_MOVIE_PMP
+				FROM (
+				    SELECT USERID
+				        ,MAX(ALLOCDATE) ALLOCDATE
+				    FROM TB_TM_USERS
+				    GROUP BY USERID
+				    ) ONLYUSER
+				INNER JOIN TB_TM_USERS F ON F.USERID = ONLYUSER.USERID
+				    AND F.ALLOCDATE = ONLYUSER.ALLOCDATE
+				LEFT OUTER JOIN (
+				    SELECT TT.REQUSERID
+				        ,MAX(TT.REGDATE) LASTREGDATE
+				        ,TT.REGUSERID
+				    FROM TB_TM_BOARD TT
+				    GROUP BY TT.REQUSERID ,TT.REGUSERID
+				    ) USEIDTABLE ON F.USERID = USEIDTABLE.REQUSERID
+				    AND F.ADMUSERID = USEIDTABLE.REGUSERID
+				LEFT OUTER JOIN TB_TM_BOARD A  ON A.REQUSERID = USEIDTABLE.REQUSERID
+				    AND A.REGDATE = LASTREGDATE
+				LEFT OUTER JOIN TB_ORDERS B  ON B.USER_ID = A.REQUSERID
+				LEFT OUTER JOIN TB_ORDER_MGNT_NO C ON C.ORDERNO = B.ORDERNO
+				INNER JOIN TB_LEC_MST D  ON D.LECCODE = C.MGNTNO
+				    	WHERE (A.VOCCODE = 'A' OR A.VOCCODE = 'B' OR A.VOCCODE = 'F')
+				    AND C.PTYPE IN ('D', 'P', 'J', 'N', 'Y')
+				    AND (( ISCANCEL = 1 AND CANCELDATE <![CDATA[ < ]]> (LASTREGDATE + 30))
+				        OR ( ISCANCEL = 2 AND ISCONFIRM <![CDATA[ < ]]> (LASTREGDATE + 30)))
+		        <if test='TMADMINID != null and TMADMINID != ""'>
+					AND A.REGUSERID = #{TMADMINID}
+				</if>
+			    <if test='SDATE != null and SDATE != "" and EDATE != null and EDATE != ""'>
+				<!--	CANCELDATE <![CDATA[ > ]]> TO_DATE(#{SDATE}) AND CANCELDATE <![CDATA[ < ]]> TO_DATE(#{EDATE}) + 1 -->
+				<!--	ISCONFIRM <![CDATA[ > ]]> TO_DATE(#{SDATE}) AND ISCONFIRM <![CDATA[ < ]]> TO_DATE(#{EDATE}) + 1 -->
+					AND ( (ISCANCEL = 1 AND TO_CHAR(CANCELDATE, 'YYYYMMDD') BETWEEN #{SDATE} AND #{EDATE})
+					    OR (ISCANCEL = 2 AND TO_CHAR(ISCONFIRM, 'YYYYMMDD') BETWEEN #{SDATE} AND #{EDATE}) )
+				</if>
+			 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+					<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+						<if test='SEARCHTYPE == "REGUSERNAME"'>
+							AND A.REGUSERNAME like '%'||#{SEARCHTEXT}||'%'
+						</if>
+						<if test='SEARCHTYPE == "REQUSERNAME"'>
+							AND A.REQUSERNAME like '%'||#{SEARCHTEXT}||'%'
+						</if>
+						<if test='SEARCHTYPE == "REGUSERID"'>
+							AND A.REGUSERID = #{SEARCHTEXT}
+						</if>
+						<if test='SEARCHTYPE == "REQUSERID"'>
+							AND A.REQUSERID = #{SEARCHTEXT}
+						</if>
+					</if>
+					<if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+						AND (REGUSERNAME like '%'||#{SEARCHTEXT}||'%'
+							OR REQUSERNAME like '%'||#{SEARCHTEXT}||'%'
+							OR REGUSERID = #{SEARCHTEXT}
+							OR REQUSERID = #{SEARCHTEXT} )
+					</if>
+				</if>
+				ORDER BY CONFIRMCANCELDATE DESC, B.ORDERNO ASC
+			) TBL
+              	WHERE ROWNUM <![CDATA[ <= ]]> #{endNo}
+		) LTBL
+		WHERE rnum <![CDATA[ > ]]> #{startNo}
+	</select>
+
+	<!-- TM 환불취소 리스트 갯수 -->
+	<select id="tmRefundListCount" parameterType="hashMap" resultType="String">
+		SELECT
+			COUNT(*)
+		FROM (
+		    SELECT USERID
+		        ,MAX(ALLOCDATE) ALLOCDATE
+		    FROM TB_TM_USERS
+		    GROUP BY USERID
+		    ) ONLYUSER
+		INNER JOIN TB_TM_USERS F ON F.USERID = ONLYUSER.USERID
+		    AND F.ALLOCDATE = ONLYUSER.ALLOCDATE
+		LEFT OUTER JOIN (
+		    SELECT TT.REQUSERID
+		        ,MAX(TT.REGDATE) LASTREGDATE
+		        ,TT.REGUSERID
+		    FROM TB_TM_BOARD TT
+		    GROUP BY TT.REQUSERID ,TT.REGUSERID
+		    ) USEIDTABLE ON F.USERID = USEIDTABLE.REQUSERID
+		    AND F.ADMUSERID = USEIDTABLE.REGUSERID
+		LEFT OUTER JOIN TB_TM_BOARD A  ON A.REQUSERID = USEIDTABLE.REQUSERID
+		    AND A.REGDATE = LASTREGDATE
+		LEFT OUTER JOIN TB_ORDERS B  ON B.USER_ID = A.REQUSERID
+		LEFT OUTER JOIN TB_ORDER_MGNT_NO C ON C.ORDERNO = B.ORDERNO
+		INNER JOIN TB_LEC_MST D  ON D.LECCODE = C.MGNTNO
+		    	WHERE (A.VOCCODE = 'A' OR A.VOCCODE = 'B' OR A.VOCCODE = 'F')
+		    AND C.PTYPE IN ('D', 'P', 'J', 'N', 'Y')
+		    AND (( ISCANCEL = 1 AND CANCELDATE <![CDATA[ < ]]> (LASTREGDATE + 30))
+		        OR ( ISCANCEL = 2 AND ISCONFIRM <![CDATA[ < ]]> (LASTREGDATE + 30)))
+        <if test='TMADMINID != null and TMADMINID != ""'>
+			AND A.REGUSERID = #{TMADMINID}
+		</if>
+	    <if test='SDATE != null and SDATE != "" and EDATE != null and EDATE != ""'>
+				<!--	CANCELDATE <![CDATA[ > ]]> TO_DATE(#{SDATE}) AND CANCELDATE <![CDATA[ < ]]> TO_DATE(#{EDATE}) + 1 -->
+				<!--	ISCONFIRM <![CDATA[ > ]]> TO_DATE(#{SDATE}) AND ISCONFIRM <![CDATA[ < ]]> TO_DATE(#{EDATE}) + 1 -->
+					AND ( (ISCANCEL = 1 AND TO_CHAR(CANCELDATE, 'YYYYMMDD') BETWEEN #{SDATE} AND #{EDATE})
+					    OR (ISCANCEL = 2 AND TO_CHAR(ISCONFIRM, 'YYYYMMDD') BETWEEN #{SDATE} AND #{EDATE}) )
+		</if>
+	 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+			<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+				<if test='SEARCHTYPE == "REGUSERNAME"'>
+					AND A.REGUSERNAME like '%'||#{SEARCHTEXT}||'%'
+				</if>
+				<if test='SEARCHTYPE == "REQUSERNAME"'>
+					AND A.REQUSERNAME like '%'||#{SEARCHTEXT}||'%'
+				</if>
+				<if test='SEARCHTYPE == "REGUSERID"'>
+					AND A.REGUSERID = #{SEARCHTEXT}
+				</if>
+				<if test='SEARCHTYPE == "REQUSERID"'>
+					AND A.REQUSERID = #{SEARCHTEXT}
+				</if>
+			</if>
+			<if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+				AND (REGUSERNAME like '%'||#{SEARCHTEXT}||'%'
+					OR REQUSERNAME like '%'||#{SEARCHTEXT}||'%'
+					OR REGUSERID = #{SEARCHTEXT}
+					OR REQUSERID = #{SEARCHTEXT} )
+			</if>
+		</if>
+	</select>
+
+	<!--  TM 환불취소 리스트 엑셀다운로드 조회 -->
+	<select id="tmRefundListExcel" parameterType="hashMap" resultType="hashMap">
+		SELECT B.ORDERNO
+		    ,C.MGNTNO
+		    ,D.SUBJECT_TITLE NAME
+		    ,D.SUBJECT_PRICE REALPRICE
+		    ,CASE
+		        WHEN C.ISCANCEL = 1
+		            THEN C.PRICE * -1
+		        ELSE C.PRICE
+		        END CONFIRMCANCELPRICE
+		    ,B.IPDATE
+		    ,C.ISCONFIRM
+		    ,CASE
+		        WHEN C.ISCANCEL = 1
+		            THEN NVL(C.CANCELDATE, '')
+		        ELSE C.ISCONFIRM
+		        END CONFIRMCANCELDATE
+		    ,A.REQUSERID
+		    ,A.REQUSERNAME
+		    ,A.REGUSERID
+		    ,A.REGUSERNAME
+		    ,LASTREGDATE
+		    ,ONLYUSER.ALLOCDATE LASTALLOCDATE
+		    ,F.USERTYPE
+		    ,CASE
+		        WHEN C.ISCANCEL = 1
+		            THEN C.PRICE
+		        ELSE (
+		            SELECT MAX(PRICE)
+		            FROM TB_ORDER_MGNT_NO
+		            WHERE ORDERNO = C.ORDERNO
+		                AND MGNTNO = C.MGNTNO
+		                AND ISCANCEL = 0
+		            )
+		        END SALEPRICE
+		    ,NVL(D.SUBJECT_MOVIE, 0) SUBJECT_MOVIE
+		    ,NVL(D.SUBJECT_PMP, 0) SUBJECT_PMP
+		    ,NVL(D.SUBJECT_MOVIE_PMP, 0) SUBJECT_MOVIE_PMP
+		FROM (
+		    SELECT USERID
+		        ,MAX(ALLOCDATE) ALLOCDATE
+		    FROM TB_TM_USERS
+		    GROUP BY USERID
+		    ) ONLYUSER
+		INNER JOIN TB_TM_USERS F ON F.USERID = ONLYUSER.USERID
+		    AND F.ALLOCDATE = ONLYUSER.ALLOCDATE
+		LEFT OUTER JOIN (
+		    SELECT TT.REQUSERID
+		        ,MAX(TT.REGDATE) LASTREGDATE
+		        ,TT.REGUSERID
+		    FROM TB_TM_BOARD TT
+		    GROUP BY TT.REQUSERID ,TT.REGUSERID
+		    ) USEIDTABLE ON F.USERID = USEIDTABLE.REQUSERID
+		    AND F.ADMUSERID = USEIDTABLE.REGUSERID
+		LEFT OUTER JOIN TB_TM_BOARD A  ON A.REQUSERID = USEIDTABLE.REQUSERID
+		    AND A.REGDATE = LASTREGDATE
+		LEFT OUTER JOIN TB_ORDERS B  ON B.USER_ID = A.REQUSERID
+		LEFT OUTER JOIN TB_ORDER_MGNT_NO C ON C.ORDERNO = B.ORDERNO
+		INNER JOIN TB_LEC_MST D  ON D.LECCODE = C.MGNTNO
+		    	WHERE (A.VOCCODE = 'A' OR A.VOCCODE = 'B' OR A.VOCCODE = 'F')
+		    AND C.PTYPE IN ('D', 'P', 'J', 'N', 'Y')
+		    AND (( ISCANCEL = 1 AND CANCELDATE <![CDATA[ < ]]> (LASTREGDATE + 30))
+		        OR ( ISCANCEL = 2 AND ISCONFIRM <![CDATA[ < ]]> (LASTREGDATE + 30)))
+        <if test='TMADMINID != null and TMADMINID != ""'>
+			AND A.REGUSERID = #{TMADMINID}
+		</if>
+	    <if test='SDATE != null and SDATE != "" and EDATE != null and EDATE != ""'>
+				<!--	CANCELDATE <![CDATA[ > ]]> TO_DATE(#{SDATE}) AND CANCELDATE <![CDATA[ < ]]> TO_DATE(#{EDATE}) + 1 -->
+				<!--	ISCONFIRM <![CDATA[ > ]]> TO_DATE(#{SDATE}) AND ISCONFIRM <![CDATA[ < ]]> TO_DATE(#{EDATE}) + 1 -->
+					AND ( (ISCANCEL = 1 AND TO_CHAR(CANCELDATE, 'YYYYMMDD') BETWEEN #{SDATE} AND #{EDATE})
+					    OR (ISCANCEL = 2 AND TO_CHAR(ISCONFIRM, 'YYYYMMDD') BETWEEN #{SDATE} AND #{EDATE}) )
+		</if>
+	 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+			<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+				<if test='SEARCHTYPE == "REGUSERNAME"'>
+					AND A.REGUSERNAME like '%'||#{SEARCHTEXT}||'%'
+				</if>
+				<if test='SEARCHTYPE == "REQUSERNAME"'>
+					AND A.REQUSERNAME like '%'||#{SEARCHTEXT}||'%'
+				</if>
+				<if test='SEARCHTYPE == "REGUSERID"'>
+					AND A.REGUSERID = #{SEARCHTEXT}
+				</if>
+				<if test='SEARCHTYPE == "REQUSERID"'>
+					AND A.REQUSERID = #{SEARCHTEXT}
+				</if>
+			</if>
+			<if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+				AND (REGUSERNAME like '%'||#{SEARCHTEXT}||'%'
+					OR REQUSERNAME like '%'||#{SEARCHTEXT}||'%'
+					OR REGUSERID = #{SEARCHTEXT}
+					OR REQUSERID = #{SEARCHTEXT} )
+			</if>
+		</if>
+		ORDER BY CONFIRMCANCELDATE DESC, B.ORDERNO ASC
+	</select>
+
+	<!-- TM 환불취소 금액 -->
+	<select id="tmCancelPayment" parameterType="hashMap" resultType="hashMap">
+		SELECT
+			NVL(SUM(
+			CASE WHEN C.ISCANCEL = 1
+		            THEN C.PRICE * -1
+		        ELSE C.PRICE
+	        END),0) CANCELPRICE
+		    ,NVL(SUM(
+		    CASE WHEN C.ISCANCEL = 1
+		            THEN C.PRICE
+		        ELSE (
+		            SELECT MAX(PRICE)
+		            FROM TB_ORDER_MGNT_NO
+		            WHERE ORDERNO = C.ORDERNO
+		                AND MGNTNO = C.MGNTNO
+		                AND ISCANCEL = 0
+		            )
+		        END),0) SALEPRICE
+		FROM (
+		    SELECT USERID
+		        ,MAX(ALLOCDATE) ALLOCDATE
+		    FROM TB_TM_USERS
+		    GROUP BY USERID
+		    ) ONLYUSER
+		INNER JOIN TB_TM_USERS F ON F.USERID = ONLYUSER.USERID
+		    AND F.ALLOCDATE = ONLYUSER.ALLOCDATE
+		LEFT OUTER JOIN (
+		    SELECT TT.REQUSERID
+		        ,MAX(TT.REGDATE) LASTREGDATE
+		        ,TT.REGUSERID
+		    FROM TB_TM_BOARD TT
+		    GROUP BY TT.REQUSERID ,TT.REGUSERID
+		    ) USEIDTABLE ON F.USERID = USEIDTABLE.REQUSERID
+		    AND F.ADMUSERID = USEIDTABLE.REGUSERID
+		LEFT OUTER JOIN TB_TM_BOARD A  ON A.REQUSERID = USEIDTABLE.REQUSERID
+		    AND A.REGDATE = LASTREGDATE
+		LEFT OUTER JOIN TB_ORDERS B  ON B.USER_ID = A.REQUSERID
+		LEFT OUTER JOIN TB_ORDER_MGNT_NO C ON C.ORDERNO = B.ORDERNO
+		INNER JOIN TB_LEC_MST D  ON D.LECCODE = C.MGNTNO
+		    	WHERE (A.VOCCODE = 'A' OR A.VOCCODE = 'B' OR A.VOCCODE = 'F')
+		    AND C.PTYPE IN ('D', 'P', 'J', 'N', 'Y')
+		    AND (( ISCANCEL = 1 AND CANCELDATE <![CDATA[ < ]]> (LASTREGDATE + 30))
+		        OR ( ISCANCEL = 2 AND ISCONFIRM <![CDATA[ < ]]> (LASTREGDATE + 30)))
+        <if test='TMADMINID != null and TMADMINID != ""'>
+			AND A.REGUSERID = #{TMADMINID}
+		</if>
+	    <if test='SDATE != null and SDATE != "" and EDATE != null and EDATE != ""'>
+				<!--	CANCELDATE <![CDATA[ > ]]> TO_DATE(#{SDATE}) AND CANCELDATE <![CDATA[ < ]]> TO_DATE(#{EDATE}) + 1 -->
+				<!--	ISCONFIRM <![CDATA[ > ]]> TO_DATE(#{SDATE}) AND ISCONFIRM <![CDATA[ < ]]> TO_DATE(#{EDATE}) + 1 -->
+					AND ( (ISCANCEL = 1 AND TO_CHAR(CANCELDATE, 'YYYYMMDD') BETWEEN #{SDATE} AND #{EDATE})
+					    OR (ISCANCEL = 2 AND TO_CHAR(ISCONFIRM, 'YYYYMMDD') BETWEEN #{SDATE} AND #{EDATE}) )
+		</if>
+	 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+			<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+				<if test='SEARCHTYPE == "REGUSERNAME"'>
+					AND A.REGUSERNAME like '%'||#{SEARCHTEXT}||'%'
+				</if>
+				<if test='SEARCHTYPE == "REQUSERNAME"'>
+					AND A.REQUSERNAME like '%'||#{SEARCHTEXT}||'%'
+				</if>
+				<if test='SEARCHTYPE == "REGUSERID"'>
+					AND A.REGUSERID = #{SEARCHTEXT}
+				</if>
+				<if test='SEARCHTYPE == "REQUSERID"'>
+					AND A.REQUSERID = #{SEARCHTEXT}
+				</if>
+			</if>
+			<if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+				AND (REGUSERNAME like '%'||#{SEARCHTEXT}||'%'
+					OR REQUSERNAME like '%'||#{SEARCHTEXT}||'%'
+					OR REGUSERID = #{SEARCHTEXT}
+					OR REQUSERID = #{SEARCHTEXT} )
+			</if>
+		</if>
+	</select>
+
+	<!-- 배정할 수 있는 회원 건수를 조회한다. -->
+	<!-- 회원가입후 한달동안 구매 내역이 없는 회원 -->
+	<select id="getTmMemberACount" parameterType="hashMap" resultType="String">
+		SELECT COUNT(USER_ID)
+		FROM TB_MA_MEMBER
+		WHERE USER_ROLE = 'USER'
+		AND NVL(USER_POSITION, 'PUB') = 'PUB'
+		AND REG_DT <![CDATA[ > ]]> TO_DATE(#{SDATE})
+		AND REG_DT <![CDATA[ < ]]> TO_DATE(#{SDATE})+1
+		AND USER_ID NOT IN (SELECT USERID FROM TB_TM_USERS)
+		AND USER_ID NOT IN (SELECT USERID FROM TB_MYLECTURE WHERE SUBSTR(ORDERNO, 0, 1) <![CDATA[ <> ]]> 'M' AND REG_DT <![CDATA[ > ]]> TO_DATE(#{SDATE})) 
+        AND USER_ID NOT IN (SELECT USER_ID FROM TB_EVENT_RESULT WHERE EVENT_NO = '710')
+	</select>
+	<!-- 수강종료후 1개월동안 재수강 구매가 없는 회원 -->
+	<select id="getTmMemberBCount" parameterType="hashMap" resultType="String">
+		SELECT COUNT(USER_ID)
+		FROM TB_MA_MEMBER
+		WHERE USER_ROLE = 'USER'
+		AND NVL(USER_POSITION, 'PUB') = 'PUB'
+		AND USER_ID NOT IN (SELECT USERID FROM TB_TM_USERS)
+		AND USER_ID IN (
+				SELECT USERID FROM TB_MYLECTURE TA
+				WHERE END_DATE <![CDATA[ >= ]]> ADD_MONTHS(TO_DATE(#{SDATE}),-1)
+				AND END_DATE <![CDATA[ < ]]> ADD_MONTHS(TO_DATE(#{SDATE}),-1)+1 )
+		AND USER_ID NOT IN (SELECT USERID FROM TB_MYLECTURE WHERE REG_DT <![CDATA[ > ]]>  ADD_MONTHS(TO_DATE(#{SDATE}),-1))
+        AND USER_ID NOT IN (SELECT USER_ID FROM TB_EVENT_RESULT WHERE EVENT_NO = '710')
+	</select>
+	
+	<!-- 장바구니에 저장후 4일동안 구매하지 않은 회원 -->
+	<select id="getTmMemberCCount" parameterType="hashMap" resultType="String">
+		SELECT COUNT(USER_ID)
+		FROM TB_MA_MEMBER
+		WHERE USER_ROLE = 'USER'
+		AND NVL(USER_POSITION, 'PUB') = 'PUB'
+		AND USER_ID NOT IN (SELECT USERID FROM TB_TM_USERS)
+		AND USER_ID IN (SELECT USER_ID FROM TB_CC_CART
+				              WHERE REGDATE <![CDATA[ > ]]> (TO_DATE(#{SDATE}) - 3)
+						      AND REGDATE <![CDATA[ < ]]> (TO_DATE(#{SDATE}) - 2))
+		AND USER_ID NOT IN (SELECT USERID FROM TB_MYLECTURE WHERE REG_DT <![CDATA[ > ]]>  (TO_DATE(#{SDATE}) - 3))
+        AND USER_ID NOT IN (SELECT USER_ID FROM TB_EVENT_RESULT WHERE EVENT_NO = '710')
+	</select>
+
+	<!-- 검색 기간동안 부재통화인 회원 -->
+	<select id="getTmMemberDCount" parameterType="hashMap" resultType="String">
+		SELECT COUNT(*)
+			FROM TB_MA_MEMBER A
+			INNER JOIN 
+			( 	SELECT REQUSERID,REQUSERNAME,REGUSERID,REGUSERNAME,TTB.REGDATE,TTB.IDX 
+				FROM TB_TM_BOARD TTB
+				WHERE TTB.VOCCODE = 'C'
+				AND ReqUserID Not In ( Select ReqUserID From TB_TM_BOARD Where voccode <![CDATA[ <> ]]> 'C')
+				    AND TTB.IDX IN (
+				        SELECT MAX(IDX) IDX FROM TB_TM_BOARD
+				        WHERE REGDATE <![CDATA[ > ]]> TO_DATE(#{SDATE}) AND REGDATE <![CDATA[ < ]]> TO_DATE(#{EDATE})+1
+				        GROUP BY REQUSERID
+				    )
+            AND REGDATE <![CDATA[ > ]]> TO_DATE(#{SDATE}) AND REGDATE <![CDATA[ < ]]> TO_DATE(#{EDATE})+1
+			) B
+			ON A.USER_ID = B.REQUSERID
+			WHERE USER_ROLE = 'USER' 
+			AND NVL(USER_POSITION, 'PUB') = 'PUB'
+			AND B.IDX NOT IN (SELECT NVL(IDX_TMBOARD,0) FROM TB_TM_USERS)
+            AND A.USER_ID NOT IN (SELECT USER_ID FROM TB_EVENT_RESULT WHERE EVENT_NO = '710')
+	</select>
+
+	<!-- A.신규 : 회원가입후 한달 동안 구매 내역이 없는 회원 (입력한 날짜를 기준으로 1개월전 해당 날짜의 자료 검색) -->
+	<insert id="insertTBTMUsersProcessA" parameterType="hashMap" flushCache="true" >
+		INSERT INTO TB_TM_USERS
+		(
+			IDX
+			,USERID
+			,USERNAME
+			,TEL
+			,PHONE
+			,EMAIL
+			,ALLOCDATE
+			,USERTYPE
+			,ADMUSERID
+			,ADMUSERNAME
+			,ALLOCADMIN
+			,DBSOUACE
+		)
+		SELECT
+			SEQ_TB_TM_USERS_IDX.NEXTVAL
+			,USER_ID
+			,USER_NM
+			,DAMO.DEC_VARCHAR('WILLBES_GOSI', 'TB_MA_MEMBER', 'TEL_NO', SEC_TEL_NO)
+      ,DAMO.DEC_VARCHAR('WILLBES_GOSI', 'TB_MA_MEMBER', 'PHONE_NO', SEC_PHONE_NO)
+		<!--	,TEL_NO
+			,PHONE_NO  -->
+			,EMAIL
+			,SYSDATE
+			,'A'
+			,#{TMADMINID}
+			,#{TMADMINNAME}
+			,#{USER_ID}
+			,#{USERSOURCE}
+		FROM TB_MA_MEMBER_DAMO
+		WHERE USER_ROLE = 'USER'
+		AND NVL(USER_POSITION, 'PUB') = 'PUB'
+		AND REG_DT <![CDATA[ > ]]> TO_DATE(#{SDATE})
+		AND REG_DT <![CDATA[ < ]]> TO_DATE(#{SDATE})+1
+		AND USER_ID NOT IN (SELECT USERID FROM TB_TM_USERS)
+		AND USER_ID NOT IN (SELECT USERID FROM TB_MYLECTURE WHERE SUBSTR(ORDERNO, 0, 1) <![CDATA[ <> ]]> 'M' AND REG_DT <![CDATA[ > ]]> TO_DATE(#{SDATE}))
+        AND USER_ID NOT IN (SELECT USER_ID FROM TB_EVENT_RESULT WHERE EVENT_NO = '710')
+		AND ROWNUM <![CDATA[ <= ]]> #{ALLOC_COUNT}
+	</insert>
+
+	<!-- B.재수강 : 입력날짜의 한달전 지정 날짜에 강의(수강)종료한 후 그 이후에 강의를 재구매하지 않은 회원 (입력한 날짜를 기준으로 한달동안 재구매가 없는 회원) -->
+	<insert id="insertTBTMUsersProcessB" parameterType="hashMap" flushCache="true" >
+		INSERT INTO TB_TM_USERS
+		(
+			IDX
+			,USERID
+			,USERNAME
+			,TEL
+			,PHONE
+			,EMAIL
+			,ALLOCDATE
+			,USERTYPE
+			,ADMUSERID
+			,ADMUSERNAME
+			,ALLOCADMIN
+			,DBSOUACE
+		)
+		SELECT
+			SEQ_TB_TM_USERS_IDX.NEXTVAL
+			,USER_ID
+			,USER_NM
+			,DAMO.DEC_VARCHAR('WILLBES_GOSI', 'TB_MA_MEMBER', 'TEL_NO', SEC_TEL_NO)
+      ,DAMO.DEC_VARCHAR('WILLBES_GOSI', 'TB_MA_MEMBER', 'PHONE_NO', SEC_PHONE_NO)
+		<!--	,TEL_NO
+			,PHONE_NO -->
+			,EMAIL
+			,SYSDATE
+			,'B'
+			,#{TMADMINID}
+			,#{TMADMINNAME}
+			,#{USER_ID}
+			,#{USERSOURCE}
+		FROM TB_MA_MEMBER_DAMO
+		WHERE USER_ROLE = 'USER'
+		AND NVL(USER_POSITION, 'PUB') = 'PUB'
+		AND USER_ID NOT IN (SELECT USERID FROM TB_TM_USERS)
+		AND USER_ID IN (
+				SELECT USERID FROM TB_MYLECTURE TA
+				WHERE END_DATE <![CDATA[ >= ]]> ADD_MONTHS(TO_DATE(#{SDATE}),-1)
+				AND END_DATE <![CDATA[ < ]]> ADD_MONTHS(TO_DATE(#{SDATE}),-1)+1 )
+		AND USER_ID NOT IN (SELECT USERID FROM TB_MYLECTURE WHERE REG_DT <![CDATA[ > ]]>  ADD_MONTHS(TO_DATE(#{SDATE}),-1))
+        AND USER_ID NOT IN (SELECT USER_ID FROM TB_EVENT_RESULT WHERE EVENT_NO = '710')
+		AND ROWNUM <![CDATA[ <= ]]> #{ALLOC_COUNT}
+	</insert>
+
+	<!-- C.장바구니 : 신청 강의를 장바구니에 담은 후 4일동안 결제를 하지 않은 회원 (입력한 날짜를 기준으로 4일동안 결제하지 않는 회원 검색) -->
+	<insert id="insertTBTMUsersProcessC" parameterType="hashMap" flushCache="true" >
+		INSERT INTO TB_TM_USERS
+		(
+			IDX
+			,USERID
+			,USERNAME
+			,TEL
+			,PHONE
+			,EMAIL
+			,ALLOCDATE
+			,USERTYPE
+			,ADMUSERID
+			,ADMUSERNAME
+			,ALLOCADMIN
+			,DBSOUACE
+		)
+		SELECT
+			SEQ_TB_TM_USERS_IDX.NEXTVAL
+			,USER_ID
+			,USER_NM
+			,DAMO.DEC_VARCHAR('WILLBES_GOSI', 'TB_MA_MEMBER', 'TEL_NO', SEC_TEL_NO)
+      ,DAMO.DEC_VARCHAR('WILLBES_GOSI', 'TB_MA_MEMBER', 'PHONE_NO', SEC_PHONE_NO)
+			<!--,TEL_NO
+			,PHONE_NO -->
+			,EMAIL
+			,SYSDATE
+			,'C'
+			,#{TMADMINID}
+			,#{TMADMINNAME}
+			,#{USER_ID}
+			,#{USERSOURCE}
+		FROM TB_MA_MEMBER_DAMO
+		WHERE USER_ROLE = 'USER'
+		AND NVL(USER_POSITION, 'PUB') = 'PUB'
+		AND USER_ID NOT IN (SELECT USERID FROM TB_TM_USERS)
+		AND USER_ID IN (SELECT USER_ID FROM TB_CC_CART
+					          WHERE REGDATE <![CDATA[ > ]]> (TO_DATE(#{SDATE}) - 3)
+						      AND REGDATE <![CDATA[ < ]]> (TO_DATE(#{SDATE}) - 2))
+		AND USER_ID NOT IN (SELECT USERID FROM TB_MYLECTURE WHERE REG_DT <![CDATA[ > ]]>  (TO_DATE(#{SDATE}) - 3))
+        AND USER_ID NOT IN (SELECT USER_ID FROM TB_EVENT_RESULT WHERE EVENT_NO = '710')
+		AND ROWNUM <![CDATA[ <= ]]> #{ALLOC_COUNT}
+	</insert>
+
+	<!-- D.회수(부재) : TM 직원이 통화 시도시 계속 부재중인 직원 (기간(시작일, 종료일)에 포함된 회원 검색) -->
+	<insert id="insertTBTMUsersProcessD" parameterType="hashMap" flushCache="true" >
+		INSERT INTO TB_TM_USERS
+		(
+			IDX
+			,USERID
+			,USERNAME
+			,TEL
+			,PHONE
+			,EMAIL
+			,ALLOCDATE
+			,USERTYPE
+			,ORIADMUSERID
+			,ORIADMUSERNAME
+			,ORIALLOCDATE
+			,ORIUSERTYPE
+			,ADMUSERID
+			,ADMUSERNAME
+			,ALLOCADMIN
+			,DBSOUACE
+			,IDX_TMBOARD
+		)
+		SELECT
+			SEQ_TB_TM_USERS_IDX.NEXTVAL
+			,USER_ID 
+			,USER_NM 
+			,DAMO.DEC_VARCHAR('WILLBES_GOSI', 'TB_MA_MEMBER', 'TEL_NO', A.SEC_TEL_NO)
+      ,DAMO.DEC_VARCHAR('WILLBES_GOSI', 'TB_MA_MEMBER', 'PHONE_NO', A.SEC_PHONE_NO) 
+	<!--		,TEL_NO 
+			,PHONE_NO -->
+			,EMAIL 
+			,SYSDATE 
+			,'D' 
+			,B.REGUSERID
+			,B.REGUSERNAME
+			,B.REGDATE
+			,'D'
+			,#{TMADMINID} 
+			,#{TMADMINNAME}
+			,#{USER_ID}
+			,#{USERSOURCE} 
+			,B.IDX
+			FROM TB_MA_MEMBER_DAMO A
+			INNER JOIN 
+			( 	SELECT REQUSERID,REQUSERNAME,REGUSERID,REGUSERNAME,TTB.REGDATE,TTB.IDX FROM TB_TM_BOARD TTB
+				WHERE VOCCODE = 'C'
+				AND ReqUserID Not In ( Select ReqUserID From TB_TM_BOARD Where voccode <![CDATA[ <> ]]> 'C')
+				    AND TTB.IDX IN (
+				        SELECT MAX(IDX) IDX FROM TB_TM_BOARD
+				        WHERE REGDATE <![CDATA[ > ]]> TO_DATE(#{SDATE}) AND REGDATE <![CDATA[ < ]]> TO_DATE(#{EDATE})+1
+				        GROUP BY REQUSERID
+				    )
+                AND REGDATE <![CDATA[ > ]]> TO_DATE(#{SDATE}) AND REGDATE <![CDATA[ < ]]> TO_DATE(#{EDATE})+1
+			) B
+			ON A.USER_ID = B.REQUSERID
+			WHERE USER_ROLE = 'USER' 
+			AND NVL(USER_POSITION, 'PUB') = 'PUB'
+			AND B.IDX NOT IN (SELECT NVL(IDX_TMBOARD,0) FROM TB_TM_USERS)
+            AND A.USER_ID NOT IN (SELECT USER_ID FROM TB_EVENT_RESULT WHERE EVENT_NO = '710')
+			AND ROWNUM <![CDATA[ <= ]]> #{ALLOC_COUNT} 				
+	</insert>
+	
+	<!-- 동영상 강좌주문 장바구니 정보 조회 -->
+	<select id="getTBCCCartInfo" parameterType="hashMap" resultType="hashMap">
+	    <!-- 단과, 선택형 종합반, 종합반, 패키지 경우 -->
+	     SELECT A.SEQ, A.USER_ID, A.LECCODE, A.KIND_TYPE, A.MOVIE_TYPE, A.REGDATE, SUBJECT_TEACHER , '' REAPPLYNM
+        ,(SELECT SUBSTR(NAME,1,2) FROM TB_LEARNING_FORM_INFO WHERE CODE = B.LEARNING_CD) AS LRNTYPE
+        ,(CASE A.KIND_TYPE WHEN 'D' THEN '단과' WHEN 'J' THEN '종합' WHEN 'N' THEN '선택' WHEN 'P' THEN '패키지' ELSE '단과' END) KDTYPE
+        ,(SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = SUBJECT_TEACHER) SUBJECT_TEACHER_NM
+        ,SUBJECT_TITLE,SUBJECT_PERIOD,SUBJECT_DISCOUNT, SUBJECT_PRICE
+        ,(CASE A.MOVIE_TYPE WHEN '1' THEN SUBJECT_MOVIE WHEN '2' THEN SUBJECT_PMP WHEN '3' THEN SUBJECT_MOVIE_PMP WHEN 'AA' THEN SUBJECT_MOVIE_MP4 WHEN 'BB' THEN SUBJECT_MOVIE_VOD_MP4 ELSE SUBJECT_PRICE END) DISCOUNT_PRICE
+        FROM TB_CC_CART A
+        INNER JOIN TB_LEC_MST B
+        ON A.LECCODE = B.LECCODE
+        WHERE A.KIND_TYPE IN ('D','J','N','P')
+            AND NVL(A.REPRICE,0) <![CDATA[<]]> 1
+            AND A.USER_ID = #{USER_ID}
+
+        UNION ALL
+
+        <!-- 재수강, 연장 수강신청인 경우 -->
+        SELECT A.SEQ, A.USER_ID, A.LECCODE, A.KIND_TYPE, A.MOVIE_TYPE, A.REGDATE, SUBJECT_TEACHER
+        ,(CASE WHEN A.PACKAGE_PERIOD <![CDATA[>]]> 0 THEN '연장' WHEN A.PACKAGE_PERIOD <![CDATA[=]]> 0 THEN '재수강' ELSE '' END) REAPPLYNM
+        ,(SELECT SUBSTR(NAME,1,2) FROM TB_LEARNING_FORM_INFO WHERE CODE = B.LEARNING_CD) AS LRNTYPE
+        ,(CASE A.KIND_TYPE WHEN 'D' THEN '단과' WHEN 'J' THEN '종합' WHEN 'N' THEN '선택' WHEN 'P' THEN '패키지' ELSE '단과' END) KDTYPE
+        ,(SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = SUBJECT_TEACHER) SUBJECT_TEACHER_NM
+        ,SUBJECT_TITLE,SUBJECT_PERIOD,0 SUBJECT_DISCOUNT, SUBJECT_PRICE
+        ,A.REPRICE DISCOUNT_PRICE
+        FROM TB_CC_CART A
+        INNER JOIN TB_LEC_MST B
+        ON A.LECCODE = B.LECCODE
+        WHERE A.KIND_TYPE  = 'D'
+            AND NVL(A.REPRICE,0) <![CDATA[>]]> 0
+            AND A.USER_ID = #{USER_ID}
+
+        UNION ALL
+
+        <!-- 임의선택 선택형 종합반인 경우 -->
+        SELECT A.SEQ, A.USER_ID, A.LECCODE, A.KIND_TYPE, A.MOVIE_TYPE, A.REGDATE, SUBJECT_TEACHER , '' REAPPLYNM
+        ,(SELECT SUBSTR(NAME,1,2) FROM TB_LEARNING_FORM_INFO WHERE CODE = B.LEARNING_CD) AS LRNTYPE
+        ,(CASE A.KIND_TYPE WHEN 'D' THEN '단과' WHEN 'J' THEN '종합' WHEN 'N' THEN '선택' WHEN 'C' THEN '선택' WHEN 'P' THEN '패키지' ELSE '단과' END) KDTYPE
+        ,(SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = SUBJECT_TEACHER) SUBJECT_TEACHER_NM
+        ,SUBJECT_TITLE,SUBJECT_PERIOD, SUBJECT_DISCOUNT, SUBJECT_PRICE
+        ,C.SUMPRICE DISCOUNT_PRICE
+        FROM TB_CC_CART A
+        INNER JOIN TB_LEC_MST B
+        ON A.LECCODE = B.LECCODE
+        INNER JOIN (SELECT LECCODE, KIND_TYPE, UPDATE_ID, COUNT(MST_LECCODE) LECCOUNT, SUM(PRICE) SUMPRICE FROM TB_CC_J_CART
+            WHERE KIND_TYPE = 'C'
+            AND UPDATE_ID = #{USER_ID}
+            GROUP BY LECCODE,KIND_TYPE,UPDATE_ID ) C
+        ON A.USER_ID = C.UPDATE_ID AND A.LECCODE = C.LECCODE AND A.KIND_TYPE = C.KIND_TYPE
+        WHERE A.KIND_TYPE = 'C'
+            AND A.USER_ID = #{USER_ID}
+	</select>
+
+	<update id="updateTmBoard" parameterType="hashMap" >
+		UPDATE TB_TM_BOARD
+		SET VOCCODE = #{VOCCODE}
+			,DUTYCODE = #{DUTYCODE}
+			,CONTENT = #{CONTENT}
+			,UPDDATE = SYSDATE
+		WHERE IDX = #{IDX}
+			AND REQUSERID = #{REQUSERID}
+	</update>
+
+	<select id="getVOCCODEList"  parameterType="hashMap" resultType="hashMap">
+		SELECT CODE_VAL , CODE_NM 
+		FROM TB_BA_CONFIG_CD
+		WHERE SYS_CD = 'TM_VOCCODE'
+		ORDER BY CODE_VAL
+	</select>
+
+	<select id="getDUTYCODEList" parameterType="hashMap" resultType="hashMap">
+		SELECT
+			ID, CODE, NAME, ISUSE, DECODE(ISUSE, 'Y', '활성', 'N', '비활성') ISUSE_NM
+			, REG_DT, REG_ID, UPD_DT, UPD_ID
+		FROM TB_CATEGORY_INFO
+		WHERE ISUSE = 'Y'
+			AND USE_ON = 'Y'
+	 	ORDER BY CODE ASC
+	</select>
+
+</mapper>

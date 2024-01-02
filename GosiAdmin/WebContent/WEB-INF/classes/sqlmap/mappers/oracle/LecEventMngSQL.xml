@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="LecEventMng">
+	
+	<resultMap type="java.util.HashMap" id="eventMap">
+	   <result column="CONTENTS_TEXT" property="CONTENTS_TEXT" javaType="java.lang.String" jdbcType="CLOB"/>
+	</resultMap>
+	
+	<select id="getEventList" parameterType="hashMap" resultType="hashMap" >
+		SELECT * 
+		FROM ( SELECT A.*, ROWNUM rnum 
+				  FROM ( SELECT EVENT_NO, START_DATE, END_DATE, TITLE, CONTENTS, REG_ID, REG_DT
+							  FROM TB_LECTURE_EVENT_INFO A
+							  WHERE 1=1
+								<if test="SEARCHKEYWORD != null and SEARCHKEYWORD != ''">
+									<choose>
+										<when test='SEARCHTYPE == "TITLE"'>
+			                                AND INSTR(A.TITLE, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+									    </when>
+										<when test='SEARCHTYPE == "CONTENTS_TEXT"'>
+											AND INSTR(CONTENTS, #{SEARCHKEYWORD} ) > 0
+									    </when>
+									</choose>
+								</if>								
+								ORDER BY EVENT_NO DESC
+							) A 
+                 	WHERE rownum <![CDATA[ <= ]]> #{endNo}
+					)
+	WHERE rnum <![CDATA[ > ]]> #{startNo}
+	</select>
+
+	<select id="getEventListCount" parameterType="hashMap" resultType="int">
+		SELECT COUNT(*)
+		  FROM TB_LECTURE_EVENT_INFO
+			WHERE 1=1
+			<if test="SEARCHKEYWORD != null and SEARCHKEYWORD != ''">
+				<choose>
+					<when test='SEARCHTYPE == "TITLE"'>
+                        AND INSTR(TITLE, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+				    </when>
+					<when test='SEARCHTYPE == "CONTENTS_TEXT"'>
+						AND INSTR(CONTENTS_TEXT, #{SEARCHKEYWORD} ) > 0
+				    </when>
+				</choose>
+			</if>
+	</select>
+		
+	<select id="eventDetail" parameterType="hashMap" resultMap="eventMap">
+		SELECT EVENT_NO, START_DATE, END_DATE, TITLE, CONTENTS, REG_ID, REG_DT
+		  FROM TB_LECTURE_EVENT_INFO
+		  WHERE EVENT_NO = #{EVENT_NO}
+	</select>
+	
+	<insert id="eventInsertProcess" parameterType="hashMap" flushCache="true" keyProperty="eventNo" keyColumn="eventNo">
+		INSERT INTO TB_LECTURE_EVENT_INFO(
+			   EVENT_NO, START_DATE, END_DATE, TITLE, CONTENTS, 
+		       REG_ID, REG_DT
+		)VALUES(
+			   (SELECT NVL(MAX(TO_NUMBER(EVENT_NO)) , 0) FROM TB_LECTURE_EVENT_INFO)+1, 
+		       #{START_DATE}, #{END_DATE}, #{TITLE}, #{CONTENTS}, 
+		       #{REG_ID}, SYSDATE
+		)
+	</insert>
+	
+	<update id="eventUpdateProcess" parameterType="hashMap" flushCache="true" >
+		UPDATE TB_LECTURE_EVENT_INFO
+		SET 
+	       START_DATE = #{START_DATE},
+	       END_DATE = #{END_DATE},
+	       TITLE = #{TITLE},
+	       CONTENTS = #{CONTENTS}
+		WHERE EVENT_NO = #{EVENT_NO}
+	</update>
+	
+	<delete id="eventDelete" parameterType="hashMap">
+		DELETE FROM TB_LECTURE_EVENT_INFO WHERE EVENT_NO = #{EVENT_NO}
+	</delete>
+
+	<select id="getEventlectureList" parameterType="hashMap" resultType="hashMap" >
+        SELECT A.EVENT_NO, B.LECCODE, C.SUBJECT_TITLE, C.CATEGORY_CD, C.SUBJECT_ISUSE, D.NAME CATEGORY_NM
+        FROM TB_LECTURE_EVENT_INFO A, TB_LECTURE_EVENT_LIST B, TB_LEC_MST C, TB_CATEGORY_INFO D
+        WHERE A.EVENT_NO = B.EVENT_NO
+        AND B.LECCODE = C.LECCODE
+        AND C.CATEGORY_CD = D.CODE
+		AND A.EVENT_NO = #{EVENT_NO}
+	</select>
+
+	<select id="lectureList" parameterType="hashMap" resultType="hashMap">
+	    SELECT TBL.*
+	    FROM(SELECT AA.*, ROWNUM RNUM
+                FROM (SELECT A.*
+              			 FROM (SELECT LM.LEC_TYPE_CHOICE, LM.LECCODE, LM.SUBJECT_OPTION,
+                                            LM.CATEGORY_CD, (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = LM.CATEGORY_CD) AS CATEGORY_NM,
+                                            LM.SUBJECT_SJT_CD, (SELECT SUBJECT_NM FROM TB_SUBJECT_INFO WHERE SUBJECT_CD = LM.SUBJECT_SJT_CD) AS SUBJECT_NM,
+                                            LM.SUBJECT_TEACHER, (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = LM.SUBJECT_TEACHER) AS SUBJECT_TEACHER_NM,
+                                            LM.SUBJECT_TITLE,
+                                            LM.LEARNING_CD, (SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE CODE = LM.LEARNING_CD) AS LEARNING_NM,
+                                            LM.REG_DT, LM.SUBJECT_ISUSE
+                                  FROM TB_LEC_MST LM
+                    			  WHERE LEC_TYPE_CHOICE = 'D'
+                    			  AND LM.SUBJECT_ISUSE = 'Y'
+                                  AND LM.LECCODE NOT IN (SELECT LECCODE FROM TB_LECTURE_EVENT_LIST WHERE EVENT_NO = #{EVENT_NO})
+                    			  ) A
+                        WHERE 1=1
+                    	<if test='SEARCHKIND != null and SEARCHKIND != ""'>
+                    	AND A.CATEGORY_CD = #{SEARCHKIND}
+                    	</if>
+			  			<if test='SEARCHFORM != null and SEARCHFORM != ""'>
+			  			AND A.LEARNING_CD = #{SEARCHFORM}
+			  			</if>
+				 		<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+							<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+								<if test='SEARCHTYPE == "1"'>
+						AND ( INSTR(A.SUBJECT_SJT_CD, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+								OR INSTR(A.SUBJECT_NM, #{SEARCHTEXT}) <![CDATA[ > ]]> 0)
+								</if>					
+							<if test='SEARCHTYPE == "2"'>
+						AND INSTR(A.SUBJECT_TITLE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+							</if>
+							<if test='SEARCHTYPE == "3"'>
+						AND INSTR(A.SUBJECT_TEACHER_NM, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+							</if>
+							<if test='SEARCHTYPE == "4"'>
+						AND INSTR(A.LECCODE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+							</if>							
+						</if>
+					</if>		
+                    ORDER BY A.REG_DT DESC, A.SUBJECT_NM ASC
+                ) AA
+	           WHERE ROWNUM <![CDATA[ <= ]]> #{endNo}
+	        ) TBL 
+        WHERE RNUM <![CDATA[ > ]]> #{startNo}
+	</select>
+	
+	<select id="lectureListCount" parameterType="hashMap" resultType="int">
+                         SELECT COUNT(*)
+              			 FROM (SELECT LM.LEC_TYPE_CHOICE, LM.LECCODE, LM.SUBJECT_OPTION,
+                                            LM.CATEGORY_CD, (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = LM.CATEGORY_CD) AS CATEGORY_NM,
+                                            LM.SUBJECT_SJT_CD, (SELECT SUBJECT_NM FROM TB_SUBJECT_INFO WHERE SUBJECT_CD = LM.SUBJECT_SJT_CD) AS SUBJECT_NM,
+                                            LM.SUBJECT_TEACHER, (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = LM.SUBJECT_TEACHER) AS SUBJECT_TEACHER_NM,
+                                            LM.SUBJECT_TITLE,
+                                            LM.LEARNING_CD, (SELECT NAME FROM TB_LEARNING_FORM_INFO WHERE CODE = LM.LEARNING_CD) AS LEARNING_NM,
+                                            LM.REG_DT, LM.SUBJECT_ISUSE
+                                  FROM TB_LEC_MST LM
+                    			  WHERE LEC_TYPE_CHOICE = 'D'
+                    			  AND LM.SUBJECT_ISUSE = 'Y'
+                                  AND LM.LECCODE NOT IN (SELECT LECCODE FROM TB_LECTURE_EVENT_LIST WHERE EVENT_NO = #{EVENT_NO})
+                    			  ) A
+                        WHERE 1=1
+                    	<if test='SEARCHKIND != null and SEARCHKIND != ""'>
+                    	AND A.CATEGORY_CD = #{SEARCHKIND}
+                    	</if>
+			  			<if test='SEARCHFORM != null and SEARCHFORM != ""'>
+			  			AND A.LEARNING_CD = #{SEARCHFORM}
+			  			</if>
+				 		<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+							<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+								<if test='SEARCHTYPE == "1"'>
+						AND ( INSTR(A.SUBJECT_SJT_CD, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+								OR INSTR(A.SUBJECT_NM, #{SEARCHTEXT}) <![CDATA[ > ]]> 0)
+								</if>					
+							<if test='SEARCHTYPE == "2"'>
+						AND INSTR(A.SUBJECT_TITLE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+							</if>
+							<if test='SEARCHTYPE == "3"'>
+						AND INSTR(A.SUBJECT_TEACHER_NM, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+							</if>
+							<if test='SEARCHTYPE == "4"'>
+						AND INSTR(A.LECCODE, #{SEARCHTEXT}) <![CDATA[ > ]]> 0
+							</if>							
+						  </if>
+					   </if>		
+	</select>
+		
+	<insert id="insertEventLecture" parameterType="hashMap">
+		INSERT INTO TB_LECTURE_EVENT_LIST (
+			EVENT_NO, LECCODE
+		) VALUES (
+			#{EVENT_NO}, #{LECCODE}
+		)
+	</insert>	
+		
+	<delete id="deleteEventLecture" parameterType="hashMap">
+		DELETE FROM TB_LECTURE_EVENT_LIST 
+		WHERE EVENT_NO = #{EVENT_NO}
+	    AND LECCODE = #{LECCODE}
+	</delete>
+	
+	<select id="getReboundEventList" parameterType="hashMap" resultType="hashMap">
+         SELECT *
+         FROM (SELECT H.*, ROWNUM RNUM  
+               FROM(SELECT A.EVENT_NO, A.USER_ID, C.USER_NM, A.PHONE_NO, A.EVENT_TXT, 
+                          A.ARM_NM, A.ARM_DIV, A.ARM_RANK, A.ARM_NO,
+                          B.FILE_PATH, B.IS_CHK, A.REG_DT,TO_CHAR(A.REG_DT,'YYYY-MM-DD HH24:MI:SS') AS REG_DD,
+                          B.UPD_ID, TO_CHAR(B.UPD_DT,'YYYY-MM-DD HH24:MI:SS') UPD_DD,
+                          (SELECT D.USER_NM FROM TB_MA_MEMBER D WHERE D.USER_ID = B.UPD_ID) AS UPD_NM,
+                          DECODE(D.ISCONFIRM, null, 'N', 'Y') IS_BUY, D.ISCONFIRM BUY_DD
+                  FROM TB_EVENT_RESULT A, TB_EVENT_FILE B, TB_MA_MEMBER C, 
+                      (SELECT A.USER_ID, B.ORDERNO, B.MGNTNO, B.ISCONFIRM,
+                              RANK () OVER(PARTITION BY A.USER_ID ORDER BY A.ORDERNO ASC) RANK
+                       FROM TB_ORDERS A, TB_ORDER_MGNT_NO B
+                       WHERE A.ORDERNO = B.ORDERNO
+                       AND B.STATUSCODE = 'DLV105'
+					<if test="EVENT_NO != null and EVENT_NO != ''">
+                       AND B.MGNTNO IN (SELECT LECCODE FROM TB_EVENT_LECTURE WHERE EVENT_NO = #{EVENT_NO})
+                    </if>
+                      ) D
+                  WHERE A.USER_ID = B.REG_ID
+                  AND A.EVENT_NO = B.EVENT_NO
+                  AND A.USER_ID = C.USER_ID
+                  AND A.USER_ID = D.USER_ID(+)
+                  AND NVL(D.RANK, 1) = 1                  
+				<if test="EVENT_NO != null and EVENT_NO != ''">
+                  AND A.EVENT_NO = #{EVENT_NO}
+                </if>
+				<if test="SEARCHKEYWORD != null and SEARCHKEYWORD != ''">
+					<choose>
+						<when test='SEARCHTYPE == "USER_ID"'>
+				  AND INSTR(A.USER_ID, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+						</when>
+						<when test='SEARCHTYPE == "USER_NAME"'>
+				  AND INSTR(C.USER_NM, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+						</when>
+						<when test='SEARCHTYPE == "PHONE_NO"'>
+				  AND INSTR(A.PHONE_NO, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+						</when>
+						<when test='SEARCHTYPE == "IS_CHK"'>
+				  AND INSTR(B.IS_CHK, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+						</when>
+						<when test='SEARCHTYPE == ""'>
+  				  AND (INSTR(A.USER_ID, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+					 	  OR INSTR(C.USER_NM, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+						  OR INSTR(A.PHONE_NO, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+						  OR INSTR(B.IS_CHK, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0 ) 
+						</when>
+					</choose>
+				</if>
+				<if test='(SDATE != null and SDATE != "") or (EDATE != null and EDATE != "") '>
+							<if test='SDATE != null and SDATE != ""'>
+ 				 AND A.REG_DT <![CDATA[ >= ]]> TO_DATE('${SDATE}')
+							</if>
+							<if test='EDATE != null and EDATE != ""'>
+				 AND A.REG_DT <![CDATA[ < ]]> TO_DATE('${EDATE}') + 1
+							</if>
+				</if>
+                  ORDER BY A.REG_DT DESC
+            )H
+             WHERE ROWNUM <![CDATA[ <= ]]> #{endNo}
+       )
+       WHERE RNUM <![CDATA[ > ]]> #{startNo}
+	</select>
+	
+	<select id="getReboundEventListCount" parameterType="hashMap" resultType="int">
+         	SELECT COUNT(*)  
+               FROM(SELECT A.EVENT_NO, A.USER_ID, C.USER_NM, A.PHONE_NO, A.EVENT_TXT, 
+                          A.ARM_NM, A.ARM_DIV, A.ARM_RANK, A.ARM_NO,
+                          B.FILE_PATH, B.IS_CHK, A.REG_DT,TO_CHAR(A.REG_DT,'YYYY-MM-DD HH24:MI:SS') AS REG_DD,
+                          B.UPD_ID, TO_CHAR(B.UPD_DT,'YYYY-MM-DD HH24:MI:SS') UPD_DD,
+                          (SELECT D.USER_NM FROM TB_MA_MEMBER D WHERE D.USER_ID = B.UPD_ID) AS UPD_NM,
+                          DECODE(D.ISCONFIRM, null, 'N', 'Y') IS_BUY, D.ISCONFIRM BUY_DD
+                  FROM TB_EVENT_RESULT A, TB_EVENT_FILE B, TB_MA_MEMBER C, 
+                      (SELECT A.USER_ID, B.ORDERNO, B.MGNTNO, B.ISCONFIRM,
+                              RANK () OVER(PARTITION BY A.USER_ID ORDER BY A.ORDERNO ASC) RANK
+                       FROM TB_ORDERS A, TB_ORDER_MGNT_NO B
+                       WHERE A.ORDERNO = B.ORDERNO
+                       AND B.STATUSCODE = 'DLV105'
+					<if test="EVENT_NO != null and EVENT_NO != ''">
+                       AND B.MGNTNO IN (SELECT LECCODE FROM TB_EVENT_LECTURE WHERE EVENT_NO = #{EVENT_NO})
+                    </if>
+                      ) D
+                  WHERE A.USER_ID = B.REG_ID
+                  AND A.EVENT_NO = B.EVENT_NO
+                  AND A.USER_ID = C.USER_ID
+                  AND A.USER_ID = D.USER_ID(+)
+                  AND NVL(D.RANK, 1) = 1                  
+				<if test="EVENT_NO != null and EVENT_NO != ''">
+                  AND A.EVENT_NO = #{EVENT_NO}
+                </if>
+				<if test="SEARCHKEYWORD != null and SEARCHKEYWORD != ''">
+					<choose>
+						<when test='SEARCHTYPE == "USER_ID"'>
+				  AND INSTR(A.USER_ID, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+						</when>
+						<when test='SEARCHTYPE == "USER_NAME"'>
+				  AND INSTR(C.USER_NM, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+						</when>
+						<when test='SEARCHTYPE == "PHONE_NO"'>
+				  AND INSTR(A.PHONE_NO, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+						</when>
+						<when test='SEARCHTYPE == "IS_CHK"'>
+				  AND INSTR(B.IS_CHK, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+						</when>
+						<when test='SEARCHTYPE == ""'>
+  				  AND (INSTR(A.USER_ID, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+					 	  OR INSTR(C.USER_NM, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+						  OR INSTR(A.PHONE_NO, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+						  OR INSTR(B.IS_CHK, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0) 
+						</when>
+					</choose>
+				</if>
+				<if test='(SDATE != null and SDATE != "") or (EDATE != null and EDATE != "") '>
+							<if test='SDATE != null and SDATE != ""'>
+ 				 AND A.REG_DT <![CDATA[ >= ]]> TO_DATE('${SDATE}')
+							</if>
+							<if test='EDATE != null and EDATE != ""'>
+				 AND A.REG_DT <![CDATA[ < ]]> TO_DATE('${EDATE}') + 1
+							</if>
+				</if>
+				)
+	</select>
+	
+	<update id="updateReboundEventChk" parameterType="hashMap" flushCache="true">
+		UPDATE TB_EVENT_FILE
+		SET IS_CHK = #{IS_CHK}
+		 	,UPD_ID = #{UPD_ID}
+		 	,UPD_DT = SYSDATE
+		WHERE EVENT_NO = #{EVENT_NO}
+		AND REG_ID = #{EVENT_USER_ID}
+	</update>		
+</mapper>

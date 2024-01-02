@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="CoopManagement">
+
+	<select id="CoopList" parameterType="hashMap" resultType="hashMap" >
+        SELECT A.COOP_CD, A.COOP_NM, A.DISCOUNT_PER, A.COOP_DESC, A.REG_DT,
+               (SELECT COUNT(USER_IP) FROM COOP_USE_IP WHERE COOP_CD = A.COOP_CD) IP_CNT 
+        FROM COOP_MST A
+	</select>
+
+	<insert id="CoopInsertProcess" parameterType="hashMap" flushCache="true" >
+		INSERT INTO COOP_MST(
+			COOP_CD	, COOP_NM, DISCOUNT_PER, COOP_DESC, REG_DT
+		)VALUES(
+			#{COOP_CD}, #{COOP_NM}, #{DISCOUNT_PER}, #{COOP_DESC}, SYSDATE
+		)
+	</insert>
+
+	<update id="CoopUpdateProcess" parameterType="hashMap">
+		UPDATE COOP_MST
+		SET
+			COOP_NM = #{COOP_NM}, 
+			DISCOUNT_PER = #{DISCOUNT_PER}, 
+			COOP_DESC = #{COOP_DESC}
+		WHERE COOP_CD = #{COOP_CD}
+	</update>
+
+	<select id="CoopIpList" parameterType="hashMap" resultType="hashMap" >
+        SELECT COOP_CD, USER_IP, REG_DT
+        FROM COOP_USE_IP
+        WHERE COOP_CD = #{COOP_CD}
+	</select>
+
+	<insert id="CoopIpInsertProcess" parameterType="hashMap" flushCache="true" >
+		INSERT INTO COOP_USE_IP(
+			COOP_CD, USER_IP, REG_DT
+		)VALUES(
+			#{COOP_CD}, #{USER_IP}, SYSDATE
+		)
+	</insert>
+
+	<delete id="CoopIpDeleteProcess" parameterType="hashMap">
+		DELETE COOP_USE_IP
+		WHERE COOP_CD = #{COOP_CD}
+		AND USER_IP = #{O_USER_IP}
+	</delete>
+
+</mapper>

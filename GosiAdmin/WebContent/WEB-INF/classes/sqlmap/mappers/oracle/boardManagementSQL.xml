@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="boardManagement">
+    <select id="getBoardMngList" parameterType="hashMap" resultType="hashMap" >
+        SELECT * FROM   (
+            SELECT A.*, ROWNUM rnum
+            FROM (
+                SELECT
+                    BOARD_MNG_SEQ ,
+                    BOARD_MNG_NAME ,
+                    DECODE(ONOFF_DIV, 'O', '온라인', 'F', '오프라인', 'T', '강사용') ONOFF_DIV_NM ,
+                    (SELECT CODE_NM FROM TB_BA_CONFIG_CD
+                    WHERE SYS_CD = 'BOARD_MNG_TYPE'
+                    AND CODE_VAL = BOARD_MNG_TYPE)  BOARD_MNG_TYPE_NM ,
+                    BOARD_MNG_TYPE,
+                    DECODE(OPEN_YN, 'Y', '로그인', 'N', '비로그인') OPEN_YN_NM ,
+                    DECODE(ISUSE, 'Y', '활성', 'N', '비활성') ISUSE_NM ,
+                    TO_CHAR(REG_DT , 'yyyy-mm-dd hh24:mi:ss')  REG_DT ,
+                    REG_ID ,
+                    TO_CHAR(UPD_DT , 'yyyy-mm-dd hh24:mi:ss')  UPD_DT ,
+                    UPD_ID
+                FROM TB_BOARD_MNG
+                WHERE 1=1
+                <if test="SEARCHKEYWORD != null and SEARCHKEYWORD != ''">
+                    <choose>
+                        <when test='SEARCHTYPE == "BOARD_MNG_SEQ"'>
+                            AND BOARD_MNG_SEQ LIKE '%'||#{SEARCHKEYWORD}||'%'
+                        </when>
+                        <when test='SEARCHTYPE == "BOARD_MNG_NAME"'>
+                            AND BOARD_MNG_NAME LIKE '%'||#{SEARCHKEYWORD}||'%'
+                        </when>
+                        <!-- <when test='SEARCHTYPE == "BOARD_MNG_TYPE"'>
+                            AND BOARD_MNG_TYPE LIKE '%'||#{SEARCHKEYWORD}||'%'
+                        </when> -->
+                        <when test='SEARCHTYPE == ""'>
+                            AND (BOARD_MNG_SEQ LIKE '%'||#{SEARCHKEYWORD}||'%'
+                                OR BOARD_MNG_NAME LIKE '%'||#{SEARCHKEYWORD}||'%'
+                                <!-- OR BOARD_MNG_TYPE LIKE '%'||#{SEARCHKEYWORD}||'%' -->
+                                )
+                        </when>
+                    </choose>
+                </if>
+                ORDER BY REG_DT DESC
+            ) A
+            WHERE rownum &lt;= #{endNo}
+        )
+        WHERE rnum &gt; #{startNo}
+    </select>
+
+    <select id="getBoardMngListCount" parameterType="hashMap" resultType="int">
+        SELECT
+            COUNT(*) CNT
+        FROM TB_BOARD_MNG
+        WHERE 1=1
+        <if test="SEARCHKEYWORD != null and SEARCHKEYWORD != ''">
+            <choose>
+                <when test='SEARCHTYPE == "BOARD_MNG_SEQ"'>
+                    AND BOARD_MNG_SEQ LIKE '%'||#{SEARCHKEYWORD}||'%'
+                </when>
+                <when test='SEARCHTYPE == "BOARD_MNG_NAME"'>
+                    AND BOARD_MNG_NAME LIKE '%'||#{SEARCHKEYWORD}||'%'
+                </when>
+                <!-- <when test='SEARCHTYPE == "BOARD_MNG_TYPE"'>
+                    AND BOARD_MNG_TYPE LIKE '%'||#{SEARCHKEYWORD}||'%'
+                </when> -->
+                <when test='SEARCHTYPE == ""'>
+                    AND (BOARD_MNG_SEQ LIKE '%'||#{SEARCHKEYWORD}||'%'
+                        OR BOARD_MNG_NAME LIKE '%'||#{SEARCHKEYWORD}||'%'
+                        <!-- OR BOARD_MNG_TYPE LIKE '%'||#{SEARCHKEYWORD}||'%' -->
+                        )
+                </when>
+            </choose>
+        </if>
+    </select>
+
+    <select id="getBoardTypeList"  resultType="hashMap">
+        SELECT CODE_CD , CODE_NM FROM TB_BA_CONFIG_CD  WHERE SYS_CD='BOARD_MNG_TYPE'
+    </select>
+
+    <insert id="boardMngInsertProcess" parameterType="hashMap" >
+        INSERT INTO TB_BOARD_MNG(
+                BOARD_MNG_SEQ ,
+                BOARD_MNG_NAME ,
+                ONOFF_DIV,
+                BOARD_MNG_TYPE,
+                ATTACH_FILE_YN,
+                OPEN_YN,
+                REPLY_YN,
+                ISUSE,
+                REG_DT ,
+                REG_ID ,
+                UPD_DT ,
+                UPD_ID
+        )VALUES(
+                (SELECT
+                  #{BOARD_MNG_TYPE}||'_'||LPAD(NVL(SUBSTR(MAX(BOARD_MNG_SEQ), -3)+1 , '0')  , 3 ,'0' )  BOARD_MNG_SEQ
+                FROM TB_BOARD_MNG
+                WHERE  BOARD_MNG_TYPE=#{BOARD_MNG_TYPE})  ,
+                #{BOARD_MNG_NAME} ,
+                #{ONOFF_DIV},
+                #{BOARD_MNG_TYPE},
+                'Y',
+                <if test="BOARD_MNG_TYPE =='BOARD' or BOARD_MNG_TYPE =='TCC'">
+                #{OPEN_YN},
+                #{REPLY_YN},
+                </if>
+                <if test="BOARD_MNG_TYPE !='BOARD' and BOARD_MNG_TYPE !='TCC'">
+                #{OPEN_YN},
+                'N',
+                </if>
+                #{ISUSE},
+                SYSDATE ,
+                #{REG_ID} ,
+                SYSDATE ,
+                #{UPD_ID}
+        )
+    </insert>
+
+    <select id="boardMngDetail" parameterType="hashMap" resultType="hashMap">
+        SELECT
+            BOARD_MNG_SEQ ,
+            (SELECT CODE_NM FROM TB_BA_CONFIG_CD
+              WHERE SYS_CD='BOARD_MNG_TYPE'
+              AND CODE_CD=BOARD_MNG_TYPE)  BOARD_MNG_TYPE_NM ,
+            DECODE(ONOFF_DIV, 'O', '온라인', 'F', '오프라인', 'T', '강사용') ONOFF_DIV_NM ,
+            BOARD_MNG_NAME ,
+            BOARD_MNG_TYPE,
+            ATTACH_FILE_YN,
+            OPEN_YN ,
+            REPLY_YN,
+            ISUSE,
+            TO_CHAR(REG_DT , 'yyyy-mm-dd hh24:mi:ss')  REG_DT ,
+            REG_ID ,
+            TO_CHAR(UPD_DT , 'yyyy-mm-dd hh24:mi:ss')  UPD_DT ,
+            UPD_ID
+        FROM TB_BOARD_MNG
+        WHERE BOARD_MNG_SEQ = #{DETAIL_BOARD_MNG_SEQ}
+    </select>
+
+    <update id="boardMngUpdateProcess" parameterType="hashMap">
+        UPDATE TB_BOARD_MNG
+        SET
+            BOARD_MNG_NAME = #{BOARD_MNG_NAME} ,
+            <if test="BOARD_MNG_TYPE =='BOARD' or BOARD_MNG_TYPE =='TCC'">
+                REPLY_YN            = #{REPLY_YN},
+            </if>
+            OPEN_YN                 = #{OPEN_YN},
+            ISUSE                   = #{ISUSE},
+            UPD_DT                  = SYSDATE ,
+            UPD_ID                  = #{UPD_ID}
+        WHERE BOARD_MNG_SEQ = #{DETAIL_BOARD_MNG_SEQ}
+    </update>
+
+    <delete id="boardMngDelete" parameterType="hashMap">
+        DELETE FROM TB_BOARD_MNG WHERE BOARD_MNG_SEQ = #{DETAIL_BOARD_MNG_SEQ}
+    </delete>
+
+    <delete id="boardMngCheckDelete" parameterType="hashMap">
+        DELETE FROM TB_BOARD_MNG  WHERE BOARD_MNG_SEQ IN(${deleteIds})
+    </delete>
+</mapper>

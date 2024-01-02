@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="attachFile">
+
+	<insert id="insertAttachFile" parameterType="hashMap" flushCache="true" keyProperty="attachFileId" keyColumn="attachFileId">
+		INSERT INTO TB_TATTACHFILE(ATTACHFILEID, FILENAME, FILEPATH, FILESIZE, REGDATE)
+		VALUES(SEQ_TATTACHFILE_ID.NEXTVAL, #{fileName}, #{fileFullPath}, #{fileSize}, SYSDATE)
+		<selectKey keyProperty="attachFileId" resultType="int">SELECT SEQ_TATTACHFILE_ID.CURRVAL FROM DUAL</selectKey>
+	</insert>
+
+	<delete id="deleteAttachFileById" flushCache="true" parameterType="int">
+		DELETE FROM TB_TATTACHFILE
+		WHERE
+			ATTACHFILEID = #{attachFileId}
+	</delete>
+
+	<select id="getAttachFileById" parameterType="int" resultType="hashMap">
+		SELECT *
+		FROM TB_TATTACHFILE
+		WHERE
+			ATTACHFILEID = #{attachFileId}
+	</select>
+
+	<select id="getAttachFileMaxId" resultType="int">
+		SELECT MAX(ATTACHFILEID)
+		FROM TB_TATTACHFILE
+	</select>
+
+</mapper>

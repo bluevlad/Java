@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="memberAdminManagement">
+
+	<resultMap type="java.util.HashMap" id="memberAdminMap">
+	   <result column="MEMO" property="MEMO" javaType="java.lang.String" jdbcType="CLOB"/>
+	</resultMap>
+	<select id="getMemberList" parameterType="hashMap" resultType="hashMap" >
+	SELECT * FROM 	(
+							SELECT A.USER_ID, A.USER_NM, A.USER_NICKNM, A.USER_POSITION, A.ADMIN_NM, A.ISUSENM,
+							           TO_CHAR(A.REG_DT,'YYYY-MM-DD') REG_DT, A.REG_ID, TO_CHAR(A.UPD_DT,'YYYY-MM-DD') UPD_DT, A.UPD_ID, ROWNUM rnum
+						  	FROM (
+										SELECT
+															   USER_ID ,
+													           USER_NM ,
+													           USER_NICKNM,
+						                                       USER_POSITION ,
+						                                       (SELECT SITE_NM FROM TB_SG_SITE WHERE ISUSE='Y' AND SITE_ID=ADMIN_ROLE) AS ADMIN_NM ,
+													            DECODE(ISUSE, 'Y', '활성', 'N', '비활성') ISUSENM  ,
+													            REG_DT ,
+													            REG_ID ,
+													            UPD_DT ,
+													            UPD_ID
+										FROM TB_MA_MEMBER
+										WHERE 1=1
+										AND USER_ROLE ='ADMIN'
+										<if test="SEARCHKEYWORD != null and SEARCHKEYWORD != ''">
+											<choose>
+												<when test='SEARCHTYPE == "USER_ID"'>
+													AND USER_ID LIKE '%'||#{SEARCHKEYWORD}||'%'
+											    </when>
+												<when test='SEARCHTYPE == "USER_NM"'>
+													AND USER_NM LIKE '%'||#{SEARCHKEYWORD}||'%'
+											    </when>
+											</choose>
+										</if>
+										ORDER BY REG_DT DESC
+									) A
+		                 	WHERE rownum &lt;= #{endNo}
+							)
+	WHERE rnum &gt; #{startNo}
+	</select>
+
+	<select id="getMemberListCount" parameterType="hashMap" resultType="int">
+		SELECT
+					COUNT(*) CNT
+		FROM TB_MA_MEMBER
+		WHERE 1=1
+		AND USER_ROLE ='ADMIN'
+		<if test="SEARCHKEYWORD != null and SEARCHKEYWORD != ''">
+			<choose>
+				<when test='SEARCHTYPE == "USER_ID"'>
+					AND USER_ID LIKE '%'||#{SEARCHKEYWORD}||'%'
+			    </when>
+				<when test='SEARCHTYPE == "USER_NM"'>
+					AND USER_NM LIKE '%'||#{SEARCHKEYWORD}||'%'
+			    </when>
+			</choose>
+		</if>
+	</select>
+
+	<select id="getSiteList" parameterType="hashMap" resultType="hashMap">
+	SELECT SITE_ID , SITE_NM
+	 FROM TB_SG_SITE
+	 WHERE ISUSE='Y'
+	 ORDER BY REG_DT ASC
+	</select>
+
+
+	<insert id="memberInsertProcess" parameterType="hashMap" flushCache="true" >
+
+		INSERT INTO TB_MA_MEMBER(
+		        USER_ID,
+		        USER_NM,
+		        USER_POSITION,
+		        USER_NICKNM,
+		        ADMIN_ROLE,
+		        USER_ROLE,
+		        USER_PWD,
+		        PHONE_NO,
+		        EMAIL,
+		        MEMO,
+		        SEX,
+		        ISUSE,
+		        REG_DT,
+		        REG_ID,
+		        UPD_DT,
+		        UPD_ID
+		)VALUES(
+				#{USER_ID},
+		        #{USER_NM},
+		        #{USER_POSITION},
+		        #{USER_NICKNM},
+		        #{ADMIN_ROLE},
+		        #{USER_ROLE},
+		        damo.hash_str_data(#{USER_PWD}),
+                <!-- #{USER_PWD}, -->
+		        #{PHONE_NO},
+		        #{EMAIL},
+		        #{MEMO},
+		        #{SEX},
+		        #{ISUSE},
+		        SYSDATE,
+		        #{REG_ID},
+		        SYSDATE,
+		        #{UPD_ID}
+		)
+	</insert>
+
+	<select id="memberIdCheck" parameterType="hashMap" resultType="int">
+		SELECT
+			COUNT(USER_ID)
+		FROM TB_MA_MEMBER
+		WHERE USER_ID = #{USER_ID}
+	</select>
+
+	<select id="memberDetail" parameterType="hashMap" resultMap="memberAdminMap">
+		 SELECT
+ 				    USER_ID,
+			        USER_NM,
+			        USER_POSITION,
+			        USER_NICKNM,
+			        ADMIN_ROLE,
+			        USER_ROLE,
+			        USER_PWD,
+			        PHONE_NO,
+			        EMAIL,
+			        MEMO,
+			        SEX,
+			        ISUSE,
+		          TO_CHAR(REG_DT , 'yyyy-mm-dd')  REG_DT ,
+		          REG_ID ,
+		          TO_CHAR(UPD_DT , 'yyyy-mm-dd')  UPD_DT ,
+		          UPD_ID
+		 FROM TB_MA_MEMBER
+		 WHERE USER_ID = #{USER_ID}
+	</select>
+
+	<update id="memberUpdateProcess" parameterType="hashMap">
+		UPDATE TB_MA_MEMBER
+		SET
+			          	USER_ID=#{USER_ID},
+				        USER_NM=#{USER_NM},
+				        USER_POSITION=#{USER_POSITION},
+				        USER_NICKNM=#{USER_NICKNM},
+				        ADMIN_ROLE=#{ADMIN_ROLE},
+			          	<if test="USER_PWD != null and USER_PWD != ''">
+				        <!--2015.04.20 개발서버 포팅  -->
+			          	USER_PWD  = damo.hash_str_data(#{USER_PWD}),
+				        </if>
+						PHONE_NO = #{PHONE_NO},
+				        EMAIL=#{EMAIL},
+				        MEMO=#{MEMO},
+				        SEX=#{SEX},
+				        ISUSE=#{ISUSE},
+			          UPD_DT = SYSDATE,
+			          UPD_ID =  #{UPD_ID}
+			          WHERE USER_ID = #{USER_ID}
+	</update>
+
+
+	<delete id="memberDelete" parameterType="hashMap">
+		DELETE FROM TB_MA_MEMBER WHERE USER_ID = #{USER_ID}
+	</delete>
+
+	<insert id="memberAdminSendMessage" parameterType="hashMap">
+		INSERT INTO TB_NOTE_SEND_INFO(
+		        NOTEID,
+		        FROM_USERID,
+		        SEND_DT,
+		        SEND_ID,
+		        CONT,
+		        READ_YN
+		)VALUES(
+				SEQ_NOTE_ID.NEXTVAL,
+		        #{FROM_USERID},
+		        SYSDATE,
+		        #{SEND_ID},
+		        #{CONT},
+		        'N'
+		)
+	</insert>
+
+	<select id="getMemberAdminEmail" parameterType="hashMap" resultType="hashMap">
+		SELECT
+					EMAIL
+		FROM TB_MA_MEMBER
+		WHERE 1=1
+		AND USER_ID =#{USER_ID}
+	</select>
+
+	<insert id="MemberAdminInsertEmail" parameterType="hashMap">
+		INSERT INTO TB_MAIL_SEND_INFO(
+		        MAILID,
+				FROM_USERID,
+				SEND_DT ,
+				SEND_ID  ,
+				SUBJECT ,
+				CONT     ,
+				READ_YN
+		)VALUES(
+				SEQ_EMAIL_ID.NEXTVAL,
+		        #{FROM_USERID},
+		        SYSDATE,
+		        #{SEND_ID},
+		        #{SUBJECT} ,
+		        #{CONT},
+		        'N'
+		)
+	</insert>
+	
+	<select id="getAdminLoginList" parameterType="hashMap" resultType="hashMap" >
+		SELECT * 
+		FROM (
+				SELECT ROWNUM rnum, USER_ID, USER_NM, ADMIN_ROLE, ACCESS_DT, USER_IP, SITE_NM
+		  		FROM (
+						SELECT A.USER_ID, A.USER_NM, A.ADMIN_ROLE, B.ACCESS_DT, B.USER_IP, C.SITE_NM
+						FROM TB_MA_MEMBER A, MB_ACCESS_LOG B, TB_SG_SITE C
+						WHERE A.USER_ID = B.USERID
+						AND A.USER_ROLE = 'ADMIN'
+						AND A.ADMIN_ROLE = C.SITE_ID
+						<if test="SEARCHKEYWORD != null and SEARCHKEYWORD != ''">
+							<choose>
+								<when test='SEARCHTYPE == "USER_ID"'>
+						AND INSTR(A.USER_ID, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+						    	</when>
+								<when test='SEARCHTYPE == "USER_NM"'>
+						AND INSTR(A.USER_NM, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+						    	</when>
+							</choose>
+						</if>
+						<if test='(SDATE != null and SDATE != "") or (EDATE != null and EDATE != "") '>
+							<if test='SDATE != null and SDATE != ""'>
+						AND B.ACCESS_DT <![CDATA[ >= ]]> TO_DATE('${SDATE}')
+							</if>
+							<if test='EDATE != null and EDATE != ""'>
+						AND B.ACCESS_DT <![CDATA[ < ]]> TO_DATE('${EDATE}') + 1
+							</if>
+						</if>
+						ORDER BY B.ACCESS_DT DESC
+					) A
+				WHERE rownum <![CDATA[ <= ]]> #{endNo}
+				)
+		WHERE rnum <![CDATA[ > ]]> #{startNo}
+	</select>
+
+	<select id="getAdminLoginListCount" parameterType="hashMap" resultType="int">
+						SELECT COUNT(*) CNT
+						FROM TB_MA_MEMBER A, MB_ACCESS_LOG B, TB_SG_SITE C
+						WHERE A.USER_ID = B.USERID
+						AND A.USER_ROLE = 'ADMIN'
+						AND A.ADMIN_ROLE = C.SITE_ID
+		<if test="SEARCHKEYWORD != null and SEARCHKEYWORD != ''">
+			<choose>
+				<when test='SEARCHTYPE == "USER_ID"'>
+						AND INSTR(A.USER_ID, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+			    </when>
+				<when test='SEARCHTYPE == "USER_NM"'>
+						AND INSTR(A.USER_NM, #{SEARCHKEYWORD}) <![CDATA[ > ]]> 0
+			    </when>
+			</choose>
+		</if>
+						<if test='(SDATE != null and SDATE != "") or (EDATE != null and EDATE != "") '>
+							<if test='SDATE != null and SDATE != ""'>
+						AND B.ACCESS_DT <![CDATA[ >= ]]> TO_DATE('${SDATE}')
+							</if>
+							<if test='EDATE != null and EDATE != ""'>
+						AND B.ACCESS_DT <![CDATA[ < ]]> TO_DATE('${EDATE}') + 1
+							</if>
+						</if>
+	</select>
+	
+</mapper>

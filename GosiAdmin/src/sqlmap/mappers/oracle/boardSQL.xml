@@ -1,0 +1,1239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="board">
+
+    <resultMap type="java.util.HashMap" id="testMap">
+       <result column="CONTENT" property="CONTENT" javaType="java.lang.String" jdbcType="CLOB"/>
+       <result column="ANSWER" property="ANSWER" javaType="java.lang.String" jdbcType="CLOB"/>
+       <result column="ORIGIN" property="ORIGIN" javaType="java.lang.String" jdbcType="CLOB"/>
+    </resultMap>
+
+    <select id="boardList" parameterType="hashMap" resultType="hashMap" >
+        SELECT * FROM   (
+            SELECT A.*, ROWNUM rnum
+            FROM (
+                SELECT
+                    TO_NUMBER(LEVEL) LISTLEVEL,
+                    CODENAME ,
+                    TO_NUMBER(BOARD_SEQ) BOARD_SEQ,
+                    SUBJECT,
+                    CONTENT,
+                    FILE_NAME,
+                    PARENT_BOARD_SEQ,
+                    NOTICE_TOP_YN,
+                    HITS ,
+                    TO_CHAR(REG_DT , 'yyyy-mm-dd HH24:MI:SS')  REG_DT ,
+                    (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = C.REG_ID) USER_NM ,
+                    TO_CHAR(UPD_DT , 'yyyy-mm-dd HH24:MI:SS')  UPD_DT,
+                    UPD_ID ,
+                    CREATENAME,
+                    RECOMMEND,
+                    ISSUE,
+                    CATE_CODE,
+                    OPEN_YN,
+                    PROF_ID,
+                    (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = PROF_ID) AS PROF_NM,
+                    DIVICE_TYPE,
+                    BOARD_REPLY,
+                    CASE WHEN ISREPLY = 'Y' THEN '답변완료'
+                    WHEN PARENT_BOARD_SEQ <![CDATA[ > ]]> 0 THEN '답변완료'
+                    ELSE DECODE(BOARD_REPLY,'C','처리중(CS)','A','처리중(운영)','Y','답변완료','답변대기') 
+                    END BOARD_REPLY_NM,
+                    EXAM_TYPE,EXAM_AREA,
+                    FN_GET_CODE_NM('PUB_TYPE', EXAM_TYPE) EXAM_TYPE_NM,
+					FN_GET_CODE_NM('PUB_AREA', EXAM_AREA) EXAM_AREA_NM
+                FROM
+                    (SELECT
+                        (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE=#{SEARCHCATEGORY}) CODENAME,
+                        bb.BOARD_SEQ,
+                        bb.SUBJECT,
+                        bb.CONTENT,
+                        (SELECT FILE_NAME FROM TB_BOARD_FILE WHERE BOARD_SEQ = bb.BOARD_SEQ AND ROWNUM = 1) FILE_NAME,
+                        bb.PARENT_BOARD_SEQ,
+                        bb.NOTICE_TOP_YN,
+                        bb.REG_ID,
+                        bb.REG_DT,
+                        bb.UPD_ID,
+                        bb.UPD_DT,
+                        bb.HITS ,
+                        bb.CREATENAME,
+                        bb.RECOMMEND,
+                        bb.ISSUE,
+                        bb.CATEGORY_CODE CATE_CODE,
+                        bb.OPEN_YN,
+                        bb.PROF_ID,
+                        bb.DIVICE_TYPE,
+                        bb.BOARD_REPLY,
+                        bb.EXAM_TYPE,
+                        bb.EXAM_AREA,
+                       	(SELECT NVL2(BOARD_SEQ , 'Y' , 'N') FROM TB_BOARD WHERE BOARD_MNG_SEQ = bb.BOARD_MNG_SEQ AND PARENT_BOARD_SEQ = bb.BOARD_SEQ) ISREPLY
+                    FROM TB_BOARD_CATEGORY_INFO aa , TB_BOARD bb , TB_BOARD_MNG cc
+                    WHERE cc.BOARD_MNG_SEQ = aa.BOARD_MNG_SEQ
+                    AND aa.BOARD_MNG_SEQ = bb.BOARD_MNG_SEQ
+                    AND aa.CATEGORY_CODE = #{SEARCHCATEGORY}
+                    AND aa.BOARD_SEQ = bb.BOARD_SEQ
+                    AND aa.BOARD_MNG_SEQ = #{BOARD_MNG_SEQ}
+                    AND bb.BOARD_MNG_SEQ = #{BOARD_MNG_SEQ}
+                    AND cc.BOARD_MNG_SEQ = #{BOARD_MNG_SEQ}
+                <choose>
+                    <when test="SEARCHONOFFDIV != null and SEARCHONOFFDIV != ''">
+                        AND cc.ONOFF_DIV = #{SEARCHONOFFDIV}
+                    </when>
+                    <otherwise>
+                        <if test='ONOFF_DIV != null and ONOFF_DIV == "T" '>
+                        AND cc.ONOFF_DIV = 'T'
+                        </if>
+                    </otherwise>
+                </choose>
+                <if test="SCH_EXAM_TYPE != null and SCH_EXAM_TYPE != ''">
+                	AND bb.EXAM_TYPE = #{SCH_EXAM_TYPE}
+                </if>
+                <if test="SCH_EXAM_AREA != null and SCH_EXAM_AREA != ''">
+                	AND bb.EXAM_AREA = #{SCH_EXAM_AREA}
+                </if>
+                <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+                    <choose>
+                        <when test='SEARCHKIND == "SEARCHSUBJECT"'>
+                        AND bb.SUBJECT LIKE '%'||#{SEARCHTEXT}||'%'
+                        </when>
+                        <when test='SEARCHKIND == "SEARCHNAME"'>
+                        AND bb.CREATENAME LIKE '%'||#{SEARCHTEXT}||'%'
+                        </when>
+                        <when test='SEARCHKIND == "SEARCHCONTENT"'>
+                        AND bb.CONTENT LIKE '%'||#{SEARCHTEXT}||'%'
+                        </when>
+                        <otherwise>
+                        AND ( bb.SUBJECT LIKE '%'||#{SEARCHTEXT}||'%'
+                                OR bb.CREATENAME LIKE '%'||#{SEARCHTEXT}||'%'
+                                OR bb.CONTENT LIKE '%'||#{SEARCHTEXT}||'%' )
+                        </otherwise>
+                    </choose>
+                </if>
+                <if test="SEARCHPRFID != null and SEARCHPRFID != ''">
+                    AND bb.PROF_ID = #{SEARCHPRFID}
+                </if>
+                    ) C
+            <!--    START WITH PARENT_BOARD_SEQ = 0 -->
+                    CONNECT BY PRIOR BOARD_SEQ = PARENT_BOARD_SEQ
+                    ORDER SIBLINGS BY NOTICE_TOP_YN DESC, TO_NUMBER(BOARD_SEQ) DESC
+            ) A
+            WHERE rownum <![CDATA[ <= ]]> #{endNo}
+        )
+        WHERE rnum <![CDATA[ > ]]> #{startNo}
+    </select>
+
+    <select id="boardListCount" parameterType="hashMap" resultType="int">
+    SELECT
+        COUNT(BOARD_SEQ) AS CNT
+    FROM
+        (SELECT
+            (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE=#{SEARCHCATEGORY}) CODENAME,
+            bb.BOARD_SEQ,
+            bb.SUBJECT,
+            bb.CONTENT,
+            (SELECT FILE_NAME FROM TB_BOARD_FILE WHERE BOARD_SEQ = bb.BOARD_SEQ AND ROWNUM = 1) FILE_NAME,
+            bb.PARENT_BOARD_SEQ,
+            bb.NOTICE_TOP_YN,
+            bb.REG_ID,
+            bb.REG_DT,
+            bb.UPD_ID,
+            bb.UPD_DT,
+            bb.HITS ,
+            bb.CREATENAME,
+            bb.RECOMMEND,
+            bb.ISSUE,
+            bb.OPEN_YN,
+            bb.PROF_ID,
+            bb.DIVICE_TYPE
+        FROM TB_BOARD_CATEGORY_INFO aa , TB_BOARD bb , TB_BOARD_MNG cc
+        WHERE cc.BOARD_MNG_SEQ = aa.BOARD_MNG_SEQ
+        AND aa.BOARD_MNG_SEQ = bb.BOARD_MNG_SEQ
+        AND aa.CATEGORY_CODE = #{SEARCHCATEGORY}
+        AND aa.BOARD_SEQ = bb.BOARD_SEQ
+        AND aa.BOARD_MNG_SEQ = #{BOARD_MNG_SEQ}
+        AND bb.BOARD_MNG_SEQ = #{BOARD_MNG_SEQ}
+        AND cc.BOARD_MNG_SEQ = #{BOARD_MNG_SEQ}
+    <choose>
+        <when test="SEARCHONOFFDIV != null and SEARCHONOFFDIV != ''">
+            AND cc.ONOFF_DIV = #{SEARCHONOFFDIV}
+        </when>
+        <otherwise>
+            <if test='ONOFF_DIV != null and ONOFF_DIV == "T" '>
+            AND cc.ONOFF_DIV = 'T'
+            </if>
+        </otherwise>
+    </choose>
+    <if test="SCH_EXAM_TYPE != null and SCH_EXAM_TYPE != ''">
+        AND bb.EXAM_TYPE = #{SCH_EXAM_TYPE}
+     </if>
+     <if test="SCH_EXAM_AREA != null and SCH_EXAM_AREA != ''">
+     	AND bb.EXAM_AREA = #{SCH_EXAM_AREA}
+     </if>
+    <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+        <choose>
+            <when test='SEARCHKIND == "SEARCHSUBJECT"'>
+            AND bb.SUBJECT LIKE '%'||#{SEARCHTEXT}||'%'
+            </when>
+            <when test='SEARCHKIND == "SEARCHNAME"'>
+            AND bb.CREATENAME LIKE '%'||#{SEARCHTEXT}||'%'
+            </when>
+            <when test='SEARCHKIND == "SEARCHCONTENT"'>
+            AND bb.CONTENT LIKE '%'||#{SEARCHTEXT}||'%'
+            </when>
+            <otherwise>
+            AND ( bb.SUBJECT LIKE '%'||#{SEARCHTEXT}||'%'
+                    OR bb.CREATENAME LIKE '%'||#{SEARCHTEXT}||'%'
+                    OR bb.CONTENT LIKE '%'||#{SEARCHTEXT}||'%' )
+            </otherwise>
+        </choose>
+    </if>
+    <if test="SEARCHPRFID != null and SEARCHPRFID != ''">
+        AND bb.PROF_ID = #{SEARCHPRFID}
+    </if>
+        ) C
+        CONNECT BY PRIOR BOARD_SEQ = PARENT_BOARD_SEQ
+        ORDER SIBLINGS BY NOTICE_TOP_YN DESC , BOARD_SEQ DESC
+    </select>
+
+    <!-- FAQ LIST -->
+    <select id="boardFAQList" parameterType="hashMap" resultType="hashMap" >
+        SELECT * FROM   (
+            SELECT A.*, ROWNUM rnum
+            FROM (
+                SELECT
+                    TO_NUMBER(LEVEL) LISTLEVEL,
+                    CODENAME ,
+                    TO_NUMBER(BOARD_SEQ) BOARD_SEQ,
+                    SUBJECT,
+                    CONTENT,
+                    FILE_NAME,
+                    PARENT_BOARD_SEQ,
+                    NOTICE_TOP_YN,
+                    HITS      ,
+                    TO_CHAR(REG_DT , 'yyyy-mm-dd')  REG_DT ,
+                    (SELECT USER_NM FROM TB_MA_MEMBER  WHERE USER_ID = C.REG_ID) USER_NM ,
+                    TO_CHAR(UPD_DT , 'yyyy-mm-dd')  UPD_DT ,
+                    UPD_ID ,
+                    CREATENAME
+                FROM
+                    (SELECT
+                        (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE=#{SEARCHCATEGORY}) CODENAME,
+                        bb.BOARD_SEQ,
+                        bb.SUBJECT,
+                        bb.CONTENT,
+                        bb.FILE_NAME,
+                        bb.PARENT_BOARD_SEQ,
+                        bb.NOTICE_TOP_YN,
+                        bb.REG_ID,
+                        bb.REG_DT,
+                        bb.UPD_ID,
+                        bb.UPD_DT,
+                        bb.HITS ,
+                        bb.CREATENAME
+                    FROM TB_BOARD_CATEGORY_INFO aa , TB_BOARD bb , TB_BOARD_MNG cc
+                    WHERE cc.BOARD_MNG_SEQ = aa.BOARD_MNG_SEQ
+                    AND aa.BOARD_MNG_SEQ = bb.BOARD_MNG_SEQ
+                    AND aa.CATEGORY_CODE = #{SEARCHCATEGORY}
+                    AND aa.BOARD_SEQ = bb.BOARD_SEQ
+                    AND aa.BOARD_MNG_SEQ = #{BOARD_MNG_SEQ}
+                    AND bb.BOARD_MNG_SEQ = #{BOARD_MNG_SEQ}
+                    AND cc.BOARD_MNG_SEQ = #{BOARD_MNG_SEQ}
+                    <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+                        <choose>
+                            <when test='SEARCHKIND == "SEARCHSUBJECT"'>
+                            AND bb.SUBJECT LIKE '%'||#{SEARCHTEXT}||'%'
+                            </when>
+                            <when test='SEARCHKIND == "SEARCHNAME"'>
+                            AND bb.CREATENAME LIKE '%'||#{SEARCHTEXT}||'%'
+                            </when>
+                            <when test='SEARCHKIND == "SEARCHCONTENT"'>
+                            AND bb.CONTENT LIKE '%'||#{SEARCHTEXT}||'%'
+                            </when>
+                        </choose>
+                    </if>
+                    ) C
+                    START WITH PARENT_BOARD_SEQ = 0
+                    CONNECT BY PRIOR BOARD_SEQ = PARENT_BOARD_SEQ
+                    ORDER SIBLINGS BY NOTICE_TOP_YN DESC ,  BOARD_SEQ DESC
+            ) A
+            WHERE rownum <![CDATA[ <= ]]> #{endNo}
+        )
+        WHERE rnum <![CDATA[ > ]]> #{startNo}
+    </select>
+
+    <select id="boardFAQListCount" parameterType="hashMap" resultType="int">
+        SELECT
+            COUNT(*) CNT
+        FROM TB_BOARD_CATEGORY_INFO aa , TB_BOARD bb , TB_BOARD_MNG cc
+        WHERE cc.BOARD_MNG_SEQ = aa.BOARD_MNG_SEQ
+        AND aa.BOARD_MNG_SEQ = bb.BOARD_MNG_SEQ
+        AND aa.CATEGORY_CODE = #{SEARCHCATEGORY}
+        AND aa.BOARD_SEQ = bb.BOARD_SEQ
+        AND aa.BOARD_MNG_SEQ = #{BOARD_MNG_SEQ}
+        AND bb.BOARD_MNG_SEQ = #{BOARD_MNG_SEQ}
+        AND cc.BOARD_MNG_SEQ = #{BOARD_MNG_SEQ}
+        <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+            <choose>
+                <when test='SEARCHKIND == "SEARCHSUBJECT"'>
+                AND  bb.SUBJECT LIKE '%'||#{SEARCHTEXT}||'%'
+                </when>
+                <when test='SEARCHKIND == "SEARCHNAME"'>
+                AND  bb.CREATENAME LIKE '%'||#{SEARCHTEXT}||'%'
+                </when>
+                <when test='SEARCHKIND == "SEARCHCONTENT"'>
+                AND  bb.CONTENT LIKE '%'||#{SEARCHTEXT}||'%'
+                </when>
+            </choose>
+        </if>
+    </select>
+    <!-- FAQ LIST -->
+
+    <select id="boardAllList" parameterType="hashMap" resultType="hashMap" >
+        SELECT * FROM   (
+            SELECT A.*, ROWNUM rnum
+            FROM (
+                SELECT
+                  TO_NUMBER(LEVEL) LISTLEVEL,
+                  CATEGORY_CODE,
+                  CATE_CODE,
+                  (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = CATE_CODE) CODENAME,
+                  TO_NUMBER(BOARD_SEQ) BOARD_SEQ,
+                  SUBJECT,
+                  CONTENT,
+                  FILE_NAME,
+                  PARENT_BOARD_SEQ,
+                  NOTICE_TOP_YN,
+                  HITS      ,
+                  TO_CHAR(REG_DT , 'yyyy-mm-dd HH24:MI:SS')  REG_DT ,
+                  REG_ID,
+                  (SELECT USER_NM FROM TB_MA_MEMBER  WHERE USER_ID = C.REG_ID) USER_NM ,
+                  TO_CHAR(UPD_DT , 'yyyy-mm-dd HH24:MI:SS')  UPD_DT,
+                  UPD_ID ,
+                  CREATENAME,
+                  RECOMMEND,
+                  ISSUE,
+                  OPEN_YN,
+                  PROF_ID,
+                  PROF_NM,
+                  DIVICE_TYPE,
+                  BOARD_MNG_SEQ
+                FROM
+                    (SELECT
+                        aa.CATEGORY_CODE,
+                        DECODE(aa.CATE_CODE,'MAIN','001',aa.CATE_CODE) CATE_CODE,
+                        bb.BOARD_SEQ,
+                        bb.SUBJECT,
+                        bb.CONTENT,
+                        (SELECT FILE_NAME FROM TB_BOARD_FILE WHERE BOARD_SEQ = bb.BOARD_SEQ AND ROWNUM = 1) FILE_NAME,
+                        bb.PARENT_BOARD_SEQ,
+                        bb.NOTICE_TOP_YN,
+                        bb.REG_ID,
+                        bb.REG_DT,
+                        bb.UPD_ID,
+                        bb.UPD_DT,
+                        bb.HITS ,
+                        bb.CREATENAME,
+                        bb.RECOMMEND,
+                        bb.ISSUE,
+                        bb.OPEN_YN,
+                        bb.PROF_ID,
+                        (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = bb.PROF_ID) PROF_NM,
+                        bb.DIVICE_TYPE,
+                        bb.BOARD_MNG_SEQ
+                    FROM  (SELECT BOARD_MNG_SEQ, BOARD_SEQ,CATEGORY_CODE CATE_CODE,
+                                SUBSTR(REPLACE(REPLACE(XMLAGG(XMLELEMENT("c", ',' || CATEGORY_CODE)), '<![CDATA[<]]>c<![CDATA[>]]>', ''),'<![CDATA[</]]>c<![CDATA[>]]>', ''),2) AS CATEGORY_CODE
+                          FROM TB_BOARD_CATEGORY_INFO
+                          GROUP BY BOARD_MNG_SEQ, BOARD_SEQ,CATEGORY_CODE) aa , TB_BOARD bb , TB_BOARD_MNG cc
+                    WHERE cc.BOARD_MNG_SEQ = aa.BOARD_MNG_SEQ
+                    AND aa.BOARD_MNG_SEQ = bb.BOARD_MNG_SEQ
+                    AND aa.BOARD_SEQ = bb.BOARD_SEQ
+                    and cc.BOARD_MNG_TYPE = 'BOARD'
+                    AND bb.BOARD_MNG_SEQ IN ('BOARD_002', 'BOARD_003', 'BOARD_004', 'BOARD_005', 'BOARD_006')
+                    <if test="BOARD_MNG_SEQ != null and BOARD_MNG_SEQ != ''">
+                    AND BB.BOARD_MNG_SEQ = #{BOARD_MNG_SEQ}
+                    </if>
+                    <if test="SEARCHCATEGORY != null and SEARCHCATEGORY != ''">
+                    AND aa.CATEGORY_CODE LIKE '%'||#{SEARCHCATEGORY}||'%'
+                    </if>
+                    <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+                        <choose>
+                            <when test='SEARCHKIND == "SEARCHSUBJECT"'>
+                            AND  bb.SUBJECT LIKE '%'||#{SEARCHTEXT}||'%'
+                            </when>
+                           <when test='SEARCHKIND == "SEARCHNAME"'>
+                            AND  (bb.CREATENAME LIKE '%'||#{SEARCHTEXT}||'%' OR bb.REG_ID LIKE '%'||#{SEARCHTEXT}||'%'
+                            OR (SELECT gg.CREATENAME FROM TB_BOARD gg WHERE gg.BOARD_SEQ = bb.PARENT_BOARD_SEQ AND 
+                            gg.BOARD_MNG_SEQ = bb.BOARD_MNG_SEQ)
+                            LIKE '%'||#{SEARCHTEXT}||'%' 
+                            OR (SELECT gg.REG_ID FROM TB_BOARD gg WHERE gg.BOARD_SEQ = bb.PARENT_BOARD_SEQ AND 
+                            gg.BOARD_MNG_SEQ = bb.BOARD_MNG_SEQ)
+                            LIKE '%'||#{SEARCHTEXT}||'%')
+                            </when>
+                            <when test='SEARCHKIND == "SEARCHCONTENT"'>
+                            AND  bb.CONTENT LIKE '%'||#{SEARCHTEXT}||'%'
+                            </when>
+                        </choose>
+                    </if>
+                    ) C
+                    CONNECT BY PRIOR TO_NUMBER(PARENT_BOARD_SEQ) = 0 AND TO_NUMBER(BOARD_SEQ) = TO_NUMBER(PARENT_BOARD_SEQ)
+                    ORDER SIBLINGS BY NOTICE_TOP_YN DESC, DECODE(PARENT_BOARD_SEQ, 0, TO_NUMBER(BOARD_SEQ), TO_NUMBER(PARENT_BOARD_SEQ)) DESC
+            ) A
+            WHERE rownum <![CDATA[ <= ]]> #{endNo}
+        )
+        WHERE rnum <![CDATA[ > ]]> #{startNo}
+    </select>
+
+
+    <select id="boardAllListCount" parameterType="hashMap" resultType="int">
+        SELECT
+            COUNT(*) CNT
+        FROM  (SELECT BOARD_MNG_SEQ, BOARD_SEQ,
+                SUBSTR(REPLACE(REPLACE(XMLAGG(XMLELEMENT("c", ',' || CATEGORY_CODE)), '<![CDATA[<]]>c<![CDATA[>]]>', ''),'<![CDATA[</]]>c<![CDATA[>]]>', ''),2) AS CATEGORY_CODE
+                FROM TB_BOARD_CATEGORY_INFO
+                GROUP BY BOARD_MNG_SEQ, BOARD_SEQ) aa , TB_BOARD bb , TB_BOARD_MNG cc
+        WHERE cc.BOARD_MNG_SEQ = aa.BOARD_MNG_SEQ
+        AND aa.BOARD_MNG_SEQ = bb.BOARD_MNG_SEQ
+        AND aa.BOARD_SEQ = bb.BOARD_SEQ
+        and cc.BOARD_MNG_TYPE = 'BOARD'
+        AND bb.BOARD_MNG_SEQ IN ('BOARD_002', 'BOARD_003', 'BOARD_004', 'BOARD_005', 'BOARD_006')      
+        <if test="BOARD_MNG_SEQ != null and BOARD_MNG_SEQ != ''">
+        AND BB.BOARD_MNG_SEQ = #{BOARD_MNG_SEQ}
+        </if>
+        <if test="SEARCHCATEGORY != null and SEARCHCATEGORY != ''">
+        AND aa.CATEGORY_CODE LIKE '%'||#{SEARCHCATEGORY}||'%'
+        </if>
+        <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+           <choose>
+	          <when test='SEARCHKIND == "SEARCHSUBJECT"'>
+	          AND  bb.SUBJECT LIKE '%'||#{SEARCHTEXT}||'%'
+	          </when>
+	          <when test='SEARCHKIND == "SEARCHNAME"'>
+	          AND  (bb.CREATENAME LIKE '%'||#{SEARCHTEXT}||'%' OR bb.REG_ID LIKE '%'||#{SEARCHTEXT}||'%'
+	          OR (SELECT gg.CREATENAME FROM TB_BOARD gg WHERE gg.BOARD_SEQ = bb.PARENT_BOARD_SEQ AND 
+	          gg.BOARD_MNG_SEQ = bb.BOARD_MNG_SEQ)
+	          LIKE '%'||#{SEARCHTEXT}||'%' 
+	          OR (SELECT gg.REG_ID FROM TB_BOARD gg WHERE gg.BOARD_SEQ = bb.PARENT_BOARD_SEQ AND 
+	          gg.BOARD_MNG_SEQ = bb.BOARD_MNG_SEQ)
+	          LIKE '%'||#{SEARCHTEXT}||'%')
+	          </when>
+	          <when test='SEARCHKIND == "SEARCHCONTENT"'>
+	          AND  bb.CONTENT LIKE '%'||#{SEARCHTEXT}||'%'
+	          </when>
+	      </choose>
+        </if>
+    </select>
+
+    <select id="selectIntgBoardList" parameterType="hashMap" resultType="hashMap" >
+    SELECT * FROM   (
+        SELECT A.*, ROWNUM rnum
+        FROM (
+            SELECT
+                TO_NUMBER(LEVEL) LISTLEVEL,
+                CATEGORY_CODE,
+                CATEGORY_NM AS CODENAME,
+                ONOFF_DIV,
+                BOARD_MNG_SEQ,
+                BOARD_MNG_NAME,
+                BOARD_MNG_TYPE,
+                BOARD_MNG_TYPE_NM,
+                TO_NUMBER(BOARD_SEQ) BOARD_SEQ,
+                SUBJECT,
+                FILE_NAME,
+                PARENT_BOARD_SEQ,
+                NOTICE_TOP_YN,
+                HITS        ,
+                TO_CHAR(REG_DT , 'yyyy-mm-dd HH24:MI:SS')  REG_DT ,
+                (SELECT USER_NM FROM TB_MA_MEMBER  WHERE USER_ID = C.REG_ID) USER_NM ,
+                TO_CHAR(UPD_DT , 'yyyy-mm-dd HH24:MI:SS')  UPD_DT,
+                UPD_ID ,
+                CREATENAME,
+                RECOMMEND,
+                ISSUE,
+                OPEN_YN,
+                DIVICE_TYPE
+            FROM
+                (SELECT
+                    aa.CATEGORY_CODE,
+                    aa.CATEGORY_NM,
+                    cc.ONOFF_DIV,
+                    cc.BOARD_MNG_SEQ,
+                    cc.BOARD_MNG_NAME,
+                    cc.BOARD_MNG_TYPE,
+                    (SELECT CODE_NM FROM TB_BA_CONFIG_CD WHERE SYS_CD='BOARD_MNG_TYPE' AND CODE_CD=cc.BOARD_MNG_TYPE) BOARD_MNG_TYPE_NM ,
+                    bb.BOARD_SEQ,
+                    bb.SUBJECT,
+                    bb.CONTENT,
+                    (SELECT FILE_NAME FROM TB_BOARD_FILE WHERE BOARD_SEQ = bb.BOARD_SEQ AND ROWNUM = 1) FILE_NAME,
+                    bb.PARENT_BOARD_SEQ,
+                    bb.NOTICE_TOP_YN,
+                    bb.REG_ID,
+                    bb.REG_DT,
+                    bb.UPD_ID,
+                    bb.UPD_DT,
+                    bb.HITS ,
+                    bb.CREATENAME,
+                    bb.RECOMMEND,
+                    bb.ISSUE,
+                    bb.OPEN_YN,
+                    bb.DIVICE_TYPE
+                FROM  (SELECT aaa.BOARD_MNG_SEQ, aaa.BOARD_SEQ,
+                        SUBSTR(REPLACE(REPLACE(XMLAGG(XMLELEMENT("c", ',' || aaa.CATEGORY_CODE)), '<![CDATA[<]]>c<![CDATA[>]]>', ''),'<![CDATA[</]]>c<![CDATA[>]]>', ''),2) AS CATEGORY_CODE,
+                        LISTAGG(bbb.NAME,', ') WITHIN GROUP(ORDER BY bbb.ORDR) AS CATEGORY_NM
+                        FROM TB_BOARD_CATEGORY_INFO aaa , TB_CATEGORY_INFO bbb
+                        WHERE aaa.CATEGORY_CODE = bbb.CODE
+                        AND bbb.P_CODE = 'CLASSCODE'
+                    <if test="CATE_LIST != null and CATE_LIST.size() > 0">
+                        AND aaa.CATEGORY_CODE IN
+                      <foreach collection="CATE_LIST" item="item" index="index" open="(" separator="," close=")">
+                        #{item}
+                      </foreach>
+                    </if>
+                        GROUP BY aaa.BOARD_MNG_SEQ, aaa.BOARD_SEQ) aa
+                    , TB_BOARD bb , TB_BOARD_MNG cc
+                WHERE cc.BOARD_MNG_SEQ = aa.BOARD_MNG_SEQ
+                AND aa.BOARD_MNG_SEQ = bb.BOARD_MNG_SEQ
+                AND aa.BOARD_SEQ = bb.BOARD_SEQ
+                <if test="SEARCHONOFFDIV != null and SEARCHONOFFDIV != ''">
+                AND cc.ONOFF_DIV = #{SEARCHONOFFDIV}
+                </if>
+                <if test="SEARCHKEYWORD != null and SEARCHKEYWORD != ''">
+                    <choose>
+                        <when test='SEARCHTYPE == "BRDID"'>
+                        AND  cc.BOARD_MNG_SEQ LIKE '%'||#{SEARCHKEYWORD}||'%'
+                        </when>
+                        <when test='SEARCHTYPE == "BRDNM"'>
+                        AND  cc.BOARD_MNG_NAME LIKE '%'||#{SEARCHKEYWORD}||'%'
+                        </when>
+                    </choose>
+                </if>
+                <if test="SEARCHBRDTYPE != null and SEARCHBRDTYPE != ''">
+                AND cc.BOARD_MNG_TYPE = #{SEARCHBRDTYPE}
+                </if>
+                <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+                    <choose>
+                        <when test='SEARCHKIND == "SEARCHSUBJECT"'>
+                        AND  bb.SUBJECT LIKE '%'||#{SEARCHTEXT}||'%'
+                        </when>
+                        <when test='SEARCHKIND == "SEARCHNAME"'>
+                        AND  bb.CREATENAME LIKE '%'||#{SEARCHTEXT}||'%'
+                        </when>
+                        <when test='SEARCHKIND == "SEARCHCONTENT"'>
+                        AND  bb.CONTENT LIKE '%'||#{SEARCHTEXT}||'%'
+                        </when>
+                    </choose>
+                </if>
+                <if test='(SDATE != null and SDATE != "") or (EDATE != null and EDATE != "") '>
+                    <if test='SDATE != null and SDATE != ""'>
+                AND bb.REG_DT <![CDATA[ >= ]]> TO_DATE('${SDATE}')
+                    </if>
+                    <if test='EDATE != null and EDATE != ""'>
+                AND bb.REG_DT <![CDATA[ < ]]> TO_DATE('${EDATE}') + 1
+                    </if>
+              </if>
+            ) C
+            CONNECT BY PRIOR BOARD_SEQ = PARENT_BOARD_SEQ
+            ORDER SIBLINGS BY NOTICE_TOP_YN DESC ,  BOARD_SEQ DESC
+        ) A
+        WHERE rownum <![CDATA[ <= ]]> #{endNo}
+    )
+    WHERE rnum <![CDATA[ > ]]> #{startNo}
+    </select>
+
+    <select id="getIntgBoardListCount" parameterType="hashMap" resultType="int">
+        SELECT
+            COUNT(BOARD_SEQ) AS CNT
+        FROM
+            (SELECT
+                aa.CATEGORY_CODE,
+                aa.CATEGORY_NM,
+                cc.ONOFF_DIV,
+                cc.BOARD_MNG_SEQ,
+                cc.BOARD_MNG_NAME,
+                cc.BOARD_MNG_TYPE,
+                (SELECT CODE_NM FROM TB_BA_CONFIG_CD WHERE SYS_CD='BOARD_MNG_TYPE' AND CODE_CD=cc.BOARD_MNG_TYPE) BOARD_MNG_TYPE_NM ,
+                bb.BOARD_SEQ,
+                bb.SUBJECT,
+                bb.CONTENT,
+                (SELECT FILE_NAME FROM TB_BOARD_FILE WHERE BOARD_SEQ = bb.BOARD_SEQ AND ROWNUM = 1) FILE_NAME,
+                bb.PARENT_BOARD_SEQ,
+                bb.NOTICE_TOP_YN,
+                bb.REG_ID,
+                bb.REG_DT,
+                bb.UPD_ID,
+                bb.UPD_DT,
+                bb.HITS ,
+                bb.CREATENAME,
+                bb.RECOMMEND,
+                bb.ISSUE,
+                BB.OPEN_YN
+            FROM  (SELECT aaa.BOARD_MNG_SEQ, aaa.BOARD_SEQ,
+                    SUBSTR(REPLACE(REPLACE(XMLAGG(XMLELEMENT("c", ',' || aaa.CATEGORY_CODE)), '<![CDATA[<]]>c<![CDATA[>]]>', ''),'<![CDATA[</]]>c<![CDATA[>]]>', ''),2) AS CATEGORY_CODE,
+                    LISTAGG(bbb.NAME,', ') WITHIN GROUP(ORDER BY bbb.ORDR) AS CATEGORY_NM
+                    FROM TB_BOARD_CATEGORY_INFO aaa , TB_CATEGORY_INFO bbb
+                    WHERE aaa.CATEGORY_CODE = bbb.CODE
+                    AND bbb.P_CODE = 'CLASSCODE'
+                <if test="CATE_LIST != null and CATE_LIST.size() > 0">
+                    AND aaa.CATEGORY_CODE IN
+                  <foreach collection="CATE_LIST" item="item" index="index" open="(" separator="," close=")">
+                    #{item}
+                  </foreach>
+                </if>
+                    GROUP BY aaa.BOARD_MNG_SEQ, aaa.BOARD_SEQ) aa
+                , TB_BOARD bb , TB_BOARD_MNG cc
+            WHERE cc.BOARD_MNG_SEQ = aa.BOARD_MNG_SEQ
+            AND aa.BOARD_MNG_SEQ = bb.BOARD_MNG_SEQ
+            AND aa.BOARD_SEQ = bb.BOARD_SEQ
+            <if test="SEARCHONOFFDIV != null and SEARCHONOFFDIV != ''">
+            AND cc.ONOFF_DIV = #{SEARCHONOFFDIV}
+            </if>
+            <if test="SEARCHKEYWORD != null and SEARCHKEYWORD != ''">
+                <choose>
+                    <when test='SEARCHTYPE == "BRDID"'>
+                    AND  cc.BOARD_MNG_SEQ LIKE '%'||#{SEARCHKEYWORD}||'%'
+                    </when>
+                    <when test='SEARCHTYPE == "BRDNM"'>
+                    AND  cc.BOARD_MNG_NAME LIKE '%'||#{SEARCHKEYWORD}||'%'
+                    </when>
+                </choose>
+            </if>
+            <if test="SEARCHBRDTYPE != null and SEARCHBRDTYPE != ''">
+            AND cc.BOARD_MNG_TYPE = #{SEARCHBRDTYPE}
+            </if>
+            <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+                <choose>
+                    <when test='SEARCHKIND == "SEARCHSUBJECT"'>
+                    AND  bb.SUBJECT LIKE '%'||#{SEARCHTEXT}||'%'
+                    </when>
+                    <when test='SEARCHKIND == "SEARCHNAME"'>
+                    AND  bb.CREATENAME LIKE '%'||#{SEARCHTEXT}||'%'
+                    </when>
+                    <when test='SEARCHKIND == "SEARCHCONTENT"'>
+                    AND  bb.CONTENT LIKE '%'||#{SEARCHTEXT}||'%'
+                    </when>
+                </choose>
+            </if>
+            <if test='(SDATE != null and SDATE != "") or (EDATE != null and EDATE != "") '>
+                <if test='SDATE != null and SDATE != ""'>
+            AND bb.REG_DT <![CDATA[ >= ]]> TO_DATE('${SDATE}')
+                </if>
+                <if test='EDATE != null and EDATE != ""'>
+            AND bb.REG_DT <![CDATA[ < ]]> TO_DATE('${EDATE}') + 1
+                </if>
+          </if>
+        ) C
+        CONNECT BY PRIOR BOARD_SEQ = PARENT_BOARD_SEQ
+        ORDER SIBLINGS BY NOTICE_TOP_YN DESC ,  BOARD_SEQ DESC
+    </select>
+
+    <select id="getIsReply" parameterType="hashMap" resultType="int">
+        SELECT
+            COUNT(*) CNT
+        FROM  TB_BOARD
+        WHERE PARENT_BOARD_SEQ = #{BOARDVIEW_SEQ}
+    </select>
+
+    <select id="getBoardDetail" parameterType="hashMap" resultMap="testMap" >
+        SELECT
+        <if test="BOARDVIEWPARENT_SEQ != null and BOARDVIEWPARENT_SEQ != 0">
+            (SELECT CONTENT FROM TB_BOARD WHERE BOARD_SEQ = a.PARENT_BOARD_SEQ) ORIGIN ,
+            (SELECT REG_ID FROM TB_BOARD WHERE BOARD_SEQ = a.PARENT_BOARD_SEQ) ORIGIN_REG_ID ,
+            (SELECT CREATENAME FROM TB_BOARD WHERE BOARD_SEQ = a.PARENT_BOARD_SEQ) ORIGIN_CREATNAME ,
+        </if>
+            BOARD_MNG_SEQ,
+            BOARD_SEQ,
+            OPEN_YN,
+            SUBJECT,
+            CONTENT,
+            ANSWER,
+            FILE_PATH,
+            FILE_NAME,
+            REAL_FILE_NAME ,
+            PARENT_BOARD_SEQ,
+            NOTICE_TOP_YN ,
+            TO_CHAR(REG_DT , 'yyyy-mm-dd HH24:MI:SS')  REG_DT ,
+            REG_ID,
+            UPD_DT,
+            UPD_ID,
+            HITS,
+            CREATENAME  ,
+            THUMBNAIL_FILE_PATH,
+            THUMBNAIL_FILE_NAME,
+            THUMBNAIL_FILE_REAL_NAME,
+            ISSUE,
+            RECOMMEND,
+            PROF_ID,
+            (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = PROF_ID) AS PROF_NM,
+            DIVICE_TYPE,
+            BOARD_REPLY,
+            CASE
+			WHEN 
+			(SELECT NVL2(BOARD_SEQ , 'Y' , 'N') 
+			FROM TB_BOARD 
+			WHERE BOARD_MNG_SEQ = a.BOARD_MNG_SEQ 
+			AND PARENT_BOARD_SEQ = a.BOARD_SEQ) = 'Y' THEN '답변완료'
+			WHEN a.PARENT_BOARD_SEQ <![CDATA[ > ]]> 0 THEN '답변완료'
+			ELSE DECODE(a.BOARD_REPLY,'C','처리중(CS)','A','처리중(운영)','Y','답변완료','답변대기')
+			END BOARD_REPLY_NM,
+			EXAM_TYPE,EXAM_AREA,
+			FN_GET_CODE_NM('PUB_TYPE', EXAM_TYPE) EXAM_TYPE_NM,
+			FN_GET_CODE_NM('PUB_AREA', EXAM_AREA) EXAM_AREA_NM,
+			NVL(a.CATEGORY_CODE,'N') UPDATE_MAIN, DECODE(NVL(a.CATEGORY_CODE,'N'),'Y','노출','비노출') UPDATE_MAIN_NM
+        FROM  TB_BOARD a
+        WHERE BOARD_SEQ = #{BOARDVIEW_SEQ}
+    </select>
+
+    <update id="updateBoardHits" parameterType="hashMap">
+        UPDATE TB_BOARD set HITS = HITS+1 where BOARD_SEQ = #{BOARDVIEW_SEQ}
+    </update>
+
+    <update id="updateISSUE" parameterType="hashMap">
+        UPDATE TB_BOARD set ISSUE = #{IS_CHK} WHERE BOARD_SEQ = #{IS_BOARD_SEQ}
+    </update>
+
+    <update id="updateRECOMMEND" parameterType="hashMap">
+        UPDATE TB_BOARD set RECOMMEND = #{RE_CHK} WHERE BOARD_SEQ = #{RE_BOARD_SEQ}
+    </update>
+
+    <update id="updateOPEN_YN" parameterType="hashMap">
+        UPDATE TB_BOARD set OPEN_YN = #{OPEN_CHK} WHERE BOARD_SEQ = #{IS_BOARD_SEQ}
+    </update>
+
+    <update id="updateMAIN_YN" parameterType="hashMap">
+        UPDATE TB_BOARD set CATEGORY_CODE = #{MAIN_CHK} WHERE BOARD_SEQ = #{IS_BOARD_SEQ}
+    </update>
+
+    <select id="getRankCode" parameterType="hashMap" resultType="hashMap">
+	    SELECT AA.* FROM 
+		  (SELECT ID,
+		         CODE,
+		         NAME,
+		         ISUSE,
+		         DECODE (ISUSE,  'Y', '활성',  'N', '비활성') ISUSENM,
+		         REG_DT,
+		         REG_ID,
+		         UPD_DT,
+		         UPD_ID
+		    FROM TB_CATEGORY_INFO
+		   WHERE ISUSE = 'Y' 
+		    <if test='ONOFF_DIV != null and ONOFF_DIV == "O" '>
+	       	 AND USE_ON = 'Y'
+	        </if>
+	        <if test='ONOFF_DIV != null and ONOFF_DIV == "F" '>
+	        	AND USE_OFF = 'Y'
+	        </if>
+		 <if test='POPUP_YN != null and POPUP_YN == "Y" '>
+		    UNION ALL         
+		        SELECT             
+		        null AS ID, 'MAIN' AS CODE, '메인' AS NAME, 'Y' AS ISUSE, '활성' AS ISUSENM         
+		, SYSDATE AS REG_DT, '' AS REG_ID, SYSDATE AS UPD_DT, '' AS UPD_ID       
+		 FROM DUAL
+		 </if>
+		 ) AA
+		 ORDER BY DECODE(AA.CODE, 'MAIN', '1', AA.CODE)  ASC
+    </select>
+
+    <select id="getboardCodeList" parameterType="hashMap" resultType="hashMap">
+        SELECT CATEGORY_CODE  FROM TB_BOARD_CATEGORY_INFO WHERE BOARD_MNG_SEQ=#{BOARD_MNG_SEQ} AND BOARD_SEQ=#{BOARDVIEW_SEQ}
+    </select>
+
+    <select id="getBoardKind" parameterType="hashMap" resultType="hashMap">
+        SELECT
+            BOARD_MNG_SEQ ,
+            BOARD_MNG_NAME ,
+            ONOFF_DIV ,
+            BOARD_MNG_TYPE,
+            ATTACH_FILE_YN ,
+            OPEN_YN ,
+            REPLY_YN
+        FROM TB_BOARD_MNG
+        WHERE  BOARD_MNG_SEQ = #{BOARD_MNG_SEQ}
+    </select>
+
+    <delete id="deleteBoardData" parameterType="hashMap" >
+        DELETE FROM TB_BOARD
+        WHERE BOARD_MNG_SEQ=#{BOARD_MNG_SEQ}
+        AND BOARD_SEQ=#{BOARDVIEW_SEQ}
+    </delete>
+
+    <delete id="deleteBoardCatInfo" parameterType="hashMap" >
+        DELETE FROM TB_BOARD_CATEGORY_INFO
+        WHERE BOARD_SEQ=#{BOARDVIEW_SEQ}
+        AND BOARD_MNG_SEQ=#{BOARD_MNG_SEQ}
+    </delete>
+
+    <delete id="deleteBoardFile" parameterType="hashMap" >
+        DELETE FROM TB_TATTACHFILE
+        WHERE ATTACHFILEID=#{ATTACHFILEID}
+    </delete>
+
+    <delete id="updateBoardFile" parameterType="hashMap" >
+        <if test="FILETYPE != null and FILETYPE == 'default'">
+        UPDATE TB_BOARD
+        SET
+            FILE_PATH  = '' ,
+            FILE_NAME  = '' ,
+            REAL_FILE_NAME  = ''
+        WHERE BOARD_SEQ = #{BOARD_SEQ}
+        AND FILE_PATH = #{FILE_PATH}
+        </if>
+        <if test="FILETYPE != null and FILETYPE == 'thumb'">
+        UPDATE TB_BOARD
+        SET
+            THUMBNAIL_FILE_PATH  = '' ,
+            THUMBNAIL_FILE_NAME  = '' ,
+            THUMBNAIL_FILE_REAL_NAME  = ''
+        WHERE BOARD_SEQ = #{BOARD_SEQ}
+        AND  THUMBNAIL_FILE_PATH = #{FILE_PATH}
+        </if>
+    </delete>
+
+    <select id="getFileInfo" parameterType="hashMap" resultType="hashMap">
+        SELECT
+            ATTACHFILEID ,
+            FILENAME ,
+            FILEPATH,
+            FILESIZE,
+            REGDATE
+        FROM TB_TATTACHFILE WHERE ATTACHFILEID =#{ATTACHFILEID}
+    </select>
+
+    <insert id="insertBoardFile" parameterType="hashMap" flushCache="true" >
+        INSERT INTO TB_BOARD_FILE(BOARD_MNG_SEQ, BOARD_SEQ, FILE_NO, FILE_NAME, FILE_PATH, REG_ID, REG_DT, UPD_ID, UPD_DT)
+        VALUES(#{BOARD_MNG_SEQ}, #{BOARD_SEQ}, (SELECT NVL(MAX(TO_NUMBER(FILE_NO)) , 0)+1  FROM TB_BOARD_FILE), #{FILE_NAME}, #{FILE_PATH}, #{REG_ID}, SYSDATE, #{REG_ID}, SYSDATE)
+    </insert>
+
+    <insert id="boardInsertProcess" parameterType="hashMap" flushCache="true" keyProperty="bContentId" keyColumn="bContentId">
+        INSERT INTO TB_BOARD(
+                BOARD_MNG_SEQ
+                , BOARD_SEQ
+                , OPEN_YN
+                , SUBJECT
+                , CONTENT
+                , PARENT_BOARD_SEQ
+                , NOTICE_TOP_YN
+                , REG_DT
+                , REG_ID
+                , UPD_DT
+                , UPD_ID
+                , HITS
+                , CREATENAME
+                , THUMBNAIL_FILE_PATH
+                , THUMBNAIL_FILE_NAME
+                , THUMBNAIL_FILE_REAL_NAME
+                , ISSUE
+                , RECOMMEND
+                , FILE_PATH
+                , PROF_ID
+            <if test="DIVICE_TYPE !=null and DIVICE_TYPE != '' ">
+                , DIVICE_TYPE
+            </if>
+            <if test="MOCKCODE != null and MOCKCODE != ''">
+                , MOCKCODE
+            </if>
+            <if test="EXAM_TYPE !=null and EXAM_TYPE != '' ">
+                , EXAM_TYPE
+            </if>
+            <if test="EXAM_AREA != null and EXAM_AREA != ''">
+                , EXAM_AREA
+            </if>
+            <if test="UPDATE_MAIN != null and UPDATE_MAIN != ''">
+                , CATEGORY_CODE
+            </if>
+        )VALUES(
+                #{BOARD_MNG_SEQ}
+                , (SELECT NVL(MAX(TO_NUMBER(BOARD_SEQ)) , 0)+1  FROM TB_BOARD)
+                , #{OPEN_YN}
+                , #{SUBJECT}
+                , #{CONTENT}
+                , '0'
+                , #{NOTICE_TOP_YN}
+                , SYSDATE
+                , #{REG_ID}
+                , SYSDATE
+                , #{REG_ID}
+                , '0'
+                , #{CREATENAME}
+                , #{THUMBNAIL_FILE_PATH}
+                , #{THUMBNAIL_FILE_NAME}
+                , #{THUMBNAIL_FILE_REAL_NAME}
+                , #{ISSUE}
+                , #{RECOMMEND}
+                , #{FILE_PATH}
+                , #{PROF_ID}
+            <if test="DIVICE_TYPE !=null and DIVICE_TYPE != '' ">
+                , #{DIVICE_TYPE}
+            </if>
+            <if test="MOCKCODE != null and MOCKCODE != ''">
+                , #{MOCKCODE}
+            </if>
+            <if test="EXAM_TYPE !=null and EXAM_TYPE != '' ">
+                , #{EXAM_TYPE}
+            </if>
+            <if test="EXAM_AREA != null and EXAM_AREA != ''">
+                , #{EXAM_AREA}
+            </if>
+            <if test="UPDATE_MAIN != null and UPDATE_MAIN != ''">
+                , #{UPDATE_MAIN}
+            </if>
+        )
+        <selectKey keyProperty="BOARD_SEQ" resultType="int">SELECT NVL(MAX(TO_NUMBER(BOARD_SEQ)) , 0)  FROM TB_BOARD</selectKey>
+    </insert>
+
+    <insert id="boardFAQInsertProcess" parameterType="hashMap" flushCache="true" keyProperty="bContentId" keyColumn="bContentId">
+        INSERT INTO TB_BOARD(
+                BOARD_MNG_SEQ,
+                BOARD_SEQ,
+                OPEN_YN,
+                SUBJECT,
+                ANSWER,
+                FILE_PATH,
+                FILE_NAME,
+                REAL_FILE_NAME ,
+                PARENT_BOARD_SEQ,
+                NOTICE_TOP_YN ,
+                REG_DT,
+                REG_ID,
+                UPD_DT,
+                UPD_ID,
+                HITS,
+                CREATENAME,
+                PROF_ID
+        )VALUES(
+                #{BOARD_MNG_SEQ},
+                (SELECT NVL(MAX(TO_NUMBER(BOARD_SEQ)) , 0)+1  FROM TB_BOARD),
+                #{OPEN_YN},
+                #{SUBJECT},
+                #{ANSWER},
+                #{FILE_PATH},
+                #{FILE_NAME},
+                #{REAL_FILE_NAME} ,
+                '0',
+                #{NOTICE_TOP_YN} ,
+                SYSDATE,
+                #{REG_ID},
+                SYSDATE,
+                #{REG_ID},
+                '0',
+                #{CREATENAME},
+                #{PROF_ID}
+        )
+        <selectKey keyProperty="BOARD_SEQ" resultType="int">SELECT NVL(MAX(TO_NUMBER(BOARD_SEQ)) , 0)  FROM TB_BOARD</selectKey>
+    </insert>
+
+    <insert id="boardReplyInsertProcess" parameterType="hashMap" flushCache="true" keyProperty="bContentId" keyColumn="bContentId">
+        INSERT INTO TB_BOARD(
+                BOARD_MNG_SEQ
+                , BOARD_SEQ
+                , OPEN_YN
+                , SUBJECT
+                , CONTENT
+                , FILE_PATH
+                , FILE_NAME
+                , REAL_FILE_NAME
+                , PARENT_BOARD_SEQ
+                , NOTICE_TOP_YN
+                , REG_DT
+                , REG_ID
+                , UPD_DT
+                , UPD_ID
+                , HITS
+                , CREATENAME
+                , PROF_ID
+            <if test="MOCKCODE != null and MOCKCODE != ''">
+                , MOCKCODE
+            </if>
+        )VALUES(
+                #{BOARD_MNG_SEQ}
+                , (SELECT NVL(MAX(TO_NUMBER(BOARD_SEQ)) , 0)+1  FROM TB_BOARD)
+                , #{OPEN_YN}
+                , #{SUBJECT}
+                , #{CONTENT}
+                , #{FILE_PATH}
+                , #{FILE_NAME}
+                , #{REAL_FILE_NAME}
+                , #{BOARDVIEW_SEQ}
+                , #{NOTICE_TOP_YN}
+                , SYSDATE
+                , #{REG_ID}
+                , SYSDATE
+                , #{REG_ID}
+                , '0'
+                , #{CREATENAME}
+                , #{PROF_ID}
+            <if test="MOCKCODE != null and MOCKCODE != ''">
+                , #{MOCKCODE}
+            </if>
+        )
+        <selectKey keyProperty="bContentId" resultType="int">SELECT NVL(MAX(TO_NUMBER(BOARD_SEQ)) , 0)  FROM TB_BOARD</selectKey>
+    </insert>
+
+    <update id="boardUpdateProcess" parameterType="hashMap">
+        UPDATE TB_BOARD
+        SET
+            <if test='board_gubun =="ORIGIN"'>
+              NOTICE_TOP_YN          = #{NOTICE_TOP_YN} ,
+            </if>
+              OPEN_YN         = #{OPEN_YN},
+              SUBJECT           = #{SUBJECT}  ,
+
+             <if test="THUMBNAIL_FILE_PATH !=null and THUMBNAIL_FILE_PATH != '' ">
+                THUMBNAIL_FILE_PATH=#{THUMBNAIL_FILE_PATH},
+                THUMBNAIL_FILE_NAME =#{THUMBNAIL_FILE_NAME},
+                THUMBNAIL_FILE_REAL_NAME=#{THUMBNAIL_FILE_REAL_NAME} ,
+              </if>
+              <if test="ISSUE !=null and ISSUE != '' ">
+                ISSUE=#{ISSUE} ,
+              </if>
+              <if test="RECOMMEND !=null and RECOMMEND != '' ">
+                RECOMMEND=#{RECOMMEND} ,
+              </if>
+              <if test="FILE_PATH !=null and FILE_PATH != '' ">
+                FILE_PATH=#{FILE_PATH} ,
+              </if>
+              <if test="PROF_ID !=null and PROF_ID != '' ">
+                PROF_ID=#{PROF_ID} ,
+              </if>
+             <if test="DIVICE_TYPE !=null and DIVICE_TYPE != '' ">
+                DIVICE_TYPE = #{DIVICE_TYPE},
+              </if>
+            <if test="MOCKCODE != null and MOCKCODE != ''">
+                MOCKCODE = #{MOCKCODE},
+            </if>
+            <if test="EXAM_TYPE !=null and EXAM_TYPE != '' ">
+                EXAM_TYPE=#{EXAM_TYPE} ,
+             </if>
+             <if test="EXAM_AREA !=null and EXAM_AREA != '' ">
+                EXAM_AREA=#{EXAM_AREA} ,
+              </if>
+               <if test="UPDATE_MAIN !=null and UPDATE_MAIN != '' ">
+                CATEGORY_CODE=#{UPDATE_MAIN} ,
+              </if>
+              UPD_DT    = SYSDATE,
+              UPD_ID    = #{REG_ID},
+              CONTENT = #{CONTENT}
+        where BOARD_SEQ = #{BOARDVIEW_SEQ}
+    </update>
+
+    <update id="boardFAQUpdateProcess" parameterType="hashMap">
+        UPDATE TB_BOARD
+        SET
+              NOTICE_TOP_YN          = #{NOTICE_TOP_YN} ,
+              OPEN_YN         = #{OPEN_YN},
+              SUBJECT           = #{SUBJECT}  ,
+             <if test="FILE_PATH !=null and FILE_PATH != '' ">
+                FILE_PATH=#{FILE_PATH},
+                FILE_NAME =#{FILE_NAME},
+                REAL_FILE_NAME=#{REAL_FILE_NAME} ,
+              </if>
+              UPD_DT    = SYSDATE,
+              UPD_ID    = #{REG_ID},
+              ANSWER = #{ANSWER}
+        where BOARD_SEQ = #{BOARDVIEW_SEQ}
+    </update>
+
+    <update id="boardReplyUpdateProcess" parameterType="hashMap">
+        UPDATE TB_TBOARDTEST
+        SET
+              TITLE           = #{title}  ,
+             <if test="ATTACHFILEID !=null and ATTACHFILEID != '' ">
+                ATTACHFILEID = #{ATTACHFILEID},
+              </if>
+              UPD_DT    = SYSDATE,
+              CONTENT        = #{content}
+        where BCONTENTID = #{BOARDVIEWID}
+    </update>
+
+    <insert id="insertBoardCatInfo" parameterType="hashMap">
+        INSERT INTO TB_BOARD_CATEGORY_INFO(
+            BOARD_MNG_SEQ ,
+            BOARD_SEQ,
+            CATEGORY_CODE
+        )
+        VALUES(
+            #{BOARD_MNG_SEQ} ,
+            #{BOARD_SEQ} ,
+            #{CATEGORY_CODE}
+        )
+    </insert>
+
+    <select id="getReplyData" parameterType="hashMap" resultType="hashMap">
+        SELECT
+            BOARD_SEQ ,
+            FILE_PATH
+        FROM TB_BOARD
+        WHERE BOARD_MNG_SEQ=#{BOARD_MNG_SEQ}
+        AND     PARENT_BOARD_SEQ=#{BOARDVIEW_SEQ}
+    </select>
+
+    <select id="boardAttachFile" parameterType="hashMap" resultMap="testMap">
+        SELECT  BOARD_SEQ,
+                FILE_NO,
+                FILE_NAME,
+                FILE_PATH
+        FROM   TB_BOARD_FILE
+        WHERE  BOARD_SEQ = #{BOARDVIEW_SEQ}
+    </select>
+
+    <select id="boardAttachFile_Img" parameterType="hashMap" resultMap="testMap">
+        SELECT BOARD_SEQ,
+               FILE_NO,
+               FILE_NAME,
+               FILE_PATH
+        FROM   TB_BOARD_FILE
+        WHERE  BOARD_SEQ = #{BOARDVIEW_SEQ}
+        AND    (SUBSTR(FILE_NAME, -3) = 'jpg'
+                 OR SUBSTR(FILE_NAME, -3) = 'JPG'
+                 OR SUBSTR(FILE_NAME, -3) = 'peg'
+                 OR SUBSTR(FILE_NAME, -3) = 'PEG'
+                 OR SUBSTR(FILE_NAME, -3) = 'png'
+                 OR SUBSTR(FILE_NAME, -3) = 'PNG'
+                 OR SUBSTR(FILE_NAME, -3) = 'bmp'
+                 OR SUBSTR(FILE_NAME, -3) = 'BMP'
+                 OR SUBSTR(FILE_NAME, -3) = 'gif'
+                 OR SUBSTR(FILE_NAME, -3) = 'GIF'
+                )
+    </select>
+
+    <delete id="Modify_deleteBoardFileData" parameterType="hashMap" >
+        DELETE  FROM TB_BOARD_FILE
+        WHERE   FILE_PATH = #{FILE_PATH}
+        AND     BOARD_SEQ = #{BOARD_SEQ}
+    </delete>
+
+    <delete id="deleteBoardFileData" parameterType="hashMap" >
+        DELETE  FROM TB_BOARD_FILE
+        WHERE   BOARD_MNG_SEQ=#{BOARD_MNG_SEQ}
+        AND     BOARD_SEQ=#{BOARDVIEW_SEQ}
+    </delete>
+
+    <insert id="insertBoardReplyFile" parameterType="hashMap" flushCache="true" >
+        INSERT INTO TB_BOARD_FILE(BOARD_MNG_SEQ, BOARD_SEQ, FILE_NO, FILE_NAME, FILE_PATH, REG_ID, REG_DT, UPD_ID, UPD_DT, PARENT_BOARD_SEQ)
+        VALUES(#{BOARD_MNG_SEQ}, #{BOARD_SEQ}, (SELECT NVL(MAX(TO_NUMBER(FILE_NO)) , 0)+1  FROM TB_BOARD_FILE), #{FILE_NAME}, #{FILE_PATH}, #{REG_ID}, SYSDATE, #{REG_ID}, SYSDATE, #{BOARDVIEWPARENT_SEQ})
+    </insert>
+
+    <select id="getBoardDetail_Origin" parameterType="hashMap" resultMap="testMap" >
+        SELECT
+            BOARD_MNG_SEQ,
+            BOARD_SEQ,
+            OPEN_YN,
+            SUBJECT,
+            CONTENT,
+            ANSWER,
+            FILE_PATH,
+            FILE_NAME,
+            REAL_FILE_NAME ,
+            PARENT_BOARD_SEQ,
+            NOTICE_TOP_YN ,
+            TO_CHAR(REG_DT , 'yyyy-mm-dd HH24:MI:SS')  REG_DT ,
+            REG_ID,
+            UPD_DT,
+            UPD_ID,
+            HITS,
+            CREATENAME  ,
+            THUMBNAIL_FILE_PATH,
+            THUMBNAIL_FILE_NAME,
+            THUMBNAIL_FILE_REAL_NAME,
+            ISSUE,
+            RECOMMEND,
+            PROF_ID,
+            (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = PROF_ID) AS PROF_NM,
+            DIVICE_TYPE,
+            BOARD_REPLY,
+            CASE
+			WHEN 
+			(SELECT NVL2(BOARD_SEQ , 'Y' , 'N') 
+			FROM TB_BOARD 
+			WHERE BOARD_MNG_SEQ = a.BOARD_MNG_SEQ 
+			AND PARENT_BOARD_SEQ = a.BOARD_SEQ) = 'Y' THEN '답변완료'
+			WHEN a.PARENT_BOARD_SEQ <![CDATA[ > ]]> 0 THEN '답변완료'
+			ELSE DECODE(a.BOARD_REPLY,'C','처리중(CS)','A','처리중(운영)','Y','답변완료','답변대기')
+			END BOARD_REPLY_NM
+        FROM  TB_BOARD a
+        WHERE BOARD_SEQ = #{PARENT_BOARD_SEQ}
+    </select>
+    
+    <update id="updateBoardReply" parameterType="hashMap" >
+   		UPDATE TB_BOARD
+		SET
+		    BOARD_REPLY = #{BOARD_REPLY}
+		where BOARD_SEQ = #{BOARDVIEW_SEQ}
+		AND BOARD_MNG_SEQ = #{BOARDVIEW_MNG_SEQ}
+   	</update>
+   	
+   	<!-- 상담 게시판 코멘트 -->
+   	<select id="selectBoardCmmntList" parameterType="hashMap" resultType="hashMap">
+        SELECT * FROM   (
+            SELECT C.*, ROWNUM rnum
+            FROM (
+                SELECT * FROM (
+                    SELECT
+                        a.SEQ ,
+                        a.BOARD_MNG_SEQ ,
+                        a.BOARD_SEQ ,
+                        a.USER_ID,
+                        a.USER_NAME USER_NM,
+                        a.TITLE ,
+                        a.CONTENT ,
+                        a.CHOICE_POINT ,
+                        TO_CHAR(a.REG_DT , 'yyyy-mm-dd HH24:MI:SS')  REG_DT
+                    FROM TB_BOARD_COMMENT a
+                    WHERE 1 = 1
+                    AND a.BOARD_MNG_SEQ = #{CMMT_BOARD_MNG_SEQ}
+                    AND a.BOARD_SEQ = #{CMMT_BOARD_SEQ}
+                    ORDER BY a.SEQ DESC
+                ) AA
+                WHERE 1=1
+            ) C
+            WHERE rownum &lt;= #{endNo}
+        )
+        WHERE rnum &gt; #{startNo}
+    </select>
+
+    <select id="selectBoardCmmntListCount" parameterType="hashMap" resultType="int">
+        SELECT COUNT(*) CNT
+        FROM (
+            SELECT
+                a.SEQ ,
+                a.BOARD_MNG_SEQ ,
+                a.BOARD_SEQ ,
+                a.USER_ID,
+                a.USER_NAME,
+                a.TITLE ,
+                a.CONTENT ,
+                a.CHOICE_POINT ,
+                TO_CHAR(a.REG_DT , 'yyyy-mm-dd HH24:MI:SS')  REG_DT
+            FROM TB_BOARD_COMMENT a
+            WHERE 1 = 1
+            AND a.BOARD_MNG_SEQ = #{CMMT_BOARD_MNG_SEQ}
+            AND a.BOARD_SEQ = #{CMMT_BOARD_SEQ}
+        ) AA
+    </select>
+    
+    <insert id="insertBoardCmmnt" parameterType="hashMap" flushCache="true">
+        INSERT INTO TB_BOARD_COMMENT (
+            SEQ,
+            BOARD_MNG_SEQ,
+            BOARD_SEQ,
+            USER_ID,
+            USER_NAME,
+            TITLE,
+            CONTENT,
+            CHOICE_POINT ,
+            REG_DT
+          )VALUES(
+            (SELECT NVL(MAX(TO_NUMBER(SEQ)) , 0)+1  FROM TB_BOARD_COMMENT),
+            #{CMMT_BOARD_MNG_SEQ},
+            #{CMMT_BOARD_SEQ},
+            #{USER_ID},
+            (SELECT A.USER_NM FROM TB_MA_MEMBER A WHERE A.USER_ID = #{USER_ID}),
+            '',
+            #{CONTENT},
+            '0',
+            SYSDATE
+        )
+    </insert>
+     
+    <delete id="deleteBoardCmmnt" parameterType="hashMap">
+        DELETE FROM TB_BOARD_COMMENT WHERE SEQ=#{DELETE_SEQ}
+    </delete>
+</mapper>

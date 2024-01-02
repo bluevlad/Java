@@ -1,0 +1,3266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--  last modified 2014-08-20 -->
+
+<mapper namespace="productOrder">
+
+	<resultMap type="java.util.HashMap" id="testMap">
+		<result column="REMARK" property="REMARK" javaType="java.lang.String" jdbcType="CLOB" />
+		<result column="CONTENT" property="CONTENT" javaType="java.lang.String" jdbcType="CLOB" />
+	</resultMap>
+
+	<!-- 상태코드 셀렉트박스 리스트 -->
+	<select id="getOrderStatuscodeList" parameterType="hashMap" resultType="hashMap">
+		SELECT CODE_VAL, CODE_NM
+		FROM TB_BA_CONFIG_CD
+		where SYS_CD = 'ORDER_STATUSCODE'
+		and ISUSE = 'Y'
+		order by CODE_NO
+	</select>
+
+	<!-- 쿠폰번호 채번 -->
+	<select id="getCcode" parameterType="hashMap" resultType="hashMap">
+		SELECT TO_CHAR(NVL(MAX(substr(CCODE,6,5)),0)+1,'00000') CCODE
+		FROM TB_TM_COUPON
+		WHERE CCODE LIKE '%'||#{PREFIX}||'%'
+	</select>
+
+	<!-- 지급방법 셀렉트박스 리스트 -->
+	<select id="getPaymentList" parameterType="hashMap" resultType="hashMap">
+		SELECT CODE_VAL, CODE_NM
+		FROM TB_BA_CONFIG_CD
+		where SYS_CD = 'PAYMENT_CODE'
+		and ISUSE = 'Y'
+		order by CODE_NO
+	</select>
+	
+	<!-- 전체상품주문관리 리스트 -->
+	<select id="getOrderListDB" parameterType="hashMap" resultType="hashMap">
+        SELECT * 
+            FROM (
+                SELECT ROWNUM AS RNUM, H.* 
+                    FROM (
+                        SELECT DISTINCT(G.ORDERNO) ORDERNO,
+                            G.ORDERS_USERID, G.ORDERS_USERNAME, G.ORDERS_TELNO, G.ORDERS_CELLNO, G.ORDERS_ZIPCD,
+                            G.ORDERS_ADDR, G.ORDERS_EMAIL, G.ORDERS_REGDATE, G.DELIVERS_SENDNO, G.DELIVERS_USERNAME,
+                            G.DELIVERS_TELNO, G.DELIVERS_CELLNO, G.DELIVERS_ZIPCD, G.DELIVERS_ADDR, G.DELIVERS_MEMO,
+                            G.DELIVERS_REGDATE, G.DELIVERS_SENDDATE, G.APPROVALS_PRICE, G.APPROVALS_ADDPRICE, G.APPROVALS_PAYCODE,
+                            G.APPROVALS_ACCTNOCODE, G.APPROVALS_PAYNAME, G.APPROVALS_POINT, G.REFUND_POINT, G.APPROVALS_RETURNVALUE,
+                            G.APPROVALS_REGDATE, G.APPROVALS_REPRICE, G.APPROVALS_PAYCODENAME, G.APPROVALS_ACCTNONAME,G.STATUSCODE,G.USER_CANCEL,
+                            G.OPEN_ADMIN_ID, (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = G.OPEN_ADMIN_ID) OPEN_ADMIN_NM,
+                            G.ROWCNT, G.SENDDATE, G.BANNER_NAME, G.TID,G.USE_DEL_COUPON_CNT,BOOK_SUM
+                        FROM(
+                            SELECT A.ORDERNO, A.USER_ID AS ORDERS_USERID, A.USER_NM AS ORDERS_USERNAME,
+                                A.TEL_NO AS ORDERS_TELNO, A.PHONE_NO AS ORDERS_CELLNO,
+                                A.ZIP_CODE AS ORDERS_ZIPCD, A.ADDRESS1 AS ORDERS_ADDR,
+                                A.EMAIL AS ORDERS_EMAIL, TO_CHAR(A.REG_DT, 'YYYY-MM-DD') AS ORDERS_REGDATE, A.TID,
+                                B.SENDNO AS DELIVERS_SENDNO, B.USERNAME AS DELIVERS_USERNAME,
+                                B.TELNO AS DELIVERS_TELNO, B.CELLNO AS DELIVERS_CELLNO,
+                                B.ZIPCD AS DELIVERS_ZIPCD, B.ADDR AS DELIVERS_ADDR,
+                                B.MEMO AS DELIVERS_MEMO, B.REG_DT AS DELIVERS_REGDATE,
+                                B.SEND_DT AS DELIVERS_SENDDATE, C.PRICE AS APPROVALS_PRICE,
+                                NVL(C.ADDPRICE,0) AS APPROVALS_ADDPRICE, C.PAYCODE AS APPROVALS_PAYCODE,
+                                (
+						        SELECT COUNT (*)
+								   FROM TB_TM_MYCOUPON e, TB_TM_COUPON f
+								  WHERE e.CCODE = f.CCODE AND f.ADD_FLAG = 'B' AND
+								  ORDERNO = A.ORDERNO AND e.ORDER_FLAG = 1 
+								  AND ROWNUM = 1
+						        ) USE_DEL_COUPON_CNT,
+						         (SELECT SUM(PRICE) FROM TB_ORDER_MGNT_NO WHERE ORDERNO = A.ORDERNO 
+                                                    AND PTYPE ='L' AND PRICE <![CDATA[ > ]]> 0) AS BOOK_SUM,
+                                C.ACCTNOCODE AS APPROVALS_ACCTNOCODE, C.PAYNAME AS APPROVALS_PAYNAME,
+                                C.POINT AS APPROVALS_POINT, C.REFUND_POINT AS REFUND_POINT,
+                                C.RETURNVALUE AS APPROVALS_RETURNVALUE, C.REG_DT AS APPROVALS_REGDATE,
+                                C.REPRICE AS APPROVALS_REPRICE, C.PAYCODE APPROVALS_PAYCODENAME,
+                                C.ACCTNOCODE APPROVALS_ACCTNONAME, C.BANNER_NAME,
+                                (SELECT STATUSCODE FROM TB_ORDER_MGNT_NO WHERE ORDERNO = A.ORDERNO 
+                                                    AND ROWNUM =1) AS STATUSCODE,
+                                (SELECT DECODE(USER_CANCEL,'Y','Y','N') FROM TB_ORDER_MGNT_NO WHERE ORDERNO = A.ORDERNO 
+                                                    AND ROWNUM =1) AS USER_CANCEL,
+                                (SELECT OPEN_ADMIN_ID FROM TB_ORDER_MGNT_NO WHERE ORDERNO = A.ORDERNO 
+                                                    AND ROWNUM =1) AS OPEN_ADMIN_ID,
+                                (SELECT COUNT(*) FROM TB_ORDER_MGNT_NO
+                                                WHERE ORDERNO = A.ORDERNO
+                                                <if test="orderstatuscode !=null and orderstatuscode != '' ">
+                                                AND STATUSCODE = #{orderstatuscode}
+                                                </if>
+
+                                ) AS ROWCNT,
+                                TO_CHAR(B.SEND_DT, 'YYYY-MM-DD hh24miss') SENDDATE
+                            FROM TB_ORDERS A
+                            LEFT OUTER JOIN TB_DELIVERS B
+                            ON B.ORDERNO = A.ORDERNO
+                            LEFT JOIN TB_APPROVALS C
+                            ON
+                            <choose>
+                                <when test="search_date_type == '배송일'">
+                                    C.ORDERNO = B.ORDERNO
+                                </when>
+                                <when test="searchtype == 'c.payName'">
+                                    C.ORDERNO = B.ORDERNO
+                                </when>
+                                <otherwise>
+                                    C.ORDERNO = A.ORDERNO
+                                </otherwise>
+                            </choose>
+                            LEFT OUTER JOIN TB_ORDER_MGNT_NO D
+                            ON D.ORDERNO = A.ORDERNO
+                            LEFT OUTER JOIN TB_LEC_MST E
+                            ON E.LECCODE = D.MGNTNO
+                            LEFT OUTER JOIN TB_CA_BOOK F
+                            ON F.RSC_ID = D.MGNTNO
+                            WHERE 1=1
+                            <if test="ucancel !=null and ucancel != '' ">
+                            AND D.USER_CANCEL = #{ucancel}
+                            </if>
+                            <if test="orderstatuscode !=null and orderstatuscode != '' ">
+                            AND A.ORDERNO IN (SELECT ORDERNO FROM TB_ORDER_MGNT_NO
+                                            WHERE ORDERNO = A.ORDERNO
+                                            AND STATUSCODE = #{orderstatuscode} )
+                            </if>
+                            <if test="paycode !=null and paycode != '' ">
+                            AND C.PAYCODE = #{paycode}
+                            </if>
+                            <choose>
+                                <when test="search_date_type == '등록일'">
+                                AND TO_CHAR(A.REG_DT, 'YYYYMMDD') BETWEEN #{sdate} AND #{edate}
+                                </when>
+                                <otherwise>
+                                AND TO_CHAR(B.SEND_DT, 'YYYYMMDD') BETWEEN #{sdate} AND #{edate}
+                                </otherwise>
+                            </choose>
+                            <if test="searchkey !=null and searchkey != '' ">
+                                <if test="searchtype !=null and searchtype != '' ">
+                                    <choose>
+                                        <when test="searchtype != 'all'">
+                                        AND INSTR(${searchtype}, #{searchkey}) <![CDATA[ > ]]> 0
+                                        </when>
+                                        <when test="searchtype == 'all'">
+                                            AND (
+                                                INSTR(A.ORDERNO, #{searchkey}) <![CDATA[ > ]]> 0
+                                                OR INSTR(A.USER_ID, #{searchkey}) <![CDATA[ > ]]> 0
+                                                OR INSTR(A.USER_NM, #{searchkey}) <![CDATA[ > ]]> 0
+                                                OR INSTR(D.MGNTNO, #{searchkey}) <![CDATA[ > ]]> 0
+                                                <if test="search_date_type == '배송일 '">
+                                                OR INSTR(B.USERNAME, #{SEARCHKEY}) <![CDATA[ > ]]> 0
+                                                </if>
+                                                <if test="searchtype == 'c.payName' ">
+                                                OR INSTR(B.USERNAME, #{searchkey}) <![CDATA[ > ]]> 0
+                                                </if>
+                                                OR INSTR(C.PAYNAME, #{searchkey}) <![CDATA[ > ]]> 0
+                                            )
+                                        </when>
+                                    </choose>
+                                </if>
+                            </if>
+							<if test="payall == 0 ">
+								and c.price <![CDATA[ <> ]]> 0
+							</if>
+							<if test="payall == 1 ">
+								and (c.price = 0 or c.price <![CDATA[ <> ]]> 0)
+							</if>
+							AND D.PTYPE <![CDATA[ <> ]]> 'F'
+                        ) G
+                    WHERE ROWCNT > 0
+                    ORDER BY ORDERS_REGDATE DESC, ORDERNO DESC
+                    ) H 
+                WHERE ROWNUM <![CDATA[ <= ]]> #{endNo}
+            ) WHERE RNUM <![CDATA[ > ]]> #{startNo}
+	</select>
+
+	<!-- 전체상품주문관리 카운트 -->
+	<select id="getOrderListCount" parameterType="hashMap" resultType="int">
+		SELECT COUNT(distinct(a.orderno))
+                            FROM TB_ORDERS A
+                            LEFT OUTER JOIN TB_DELIVERS B
+                            ON B.ORDERNO = A.ORDERNO
+                            LEFT JOIN TB_APPROVALS C
+                            ON
+                            <choose>
+                                <when test="search_date_type == '배송일'">
+                                    C.ORDERNO = B.ORDERNO
+                                </when>
+                                <when test="searchtype == 'c.payName'">
+                                    C.ORDERNO = B.ORDERNO
+                                </when>
+                                <otherwise>
+                                    C.ORDERNO = A.ORDERNO
+                                </otherwise>
+                            </choose>
+                            LEFT OUTER JOIN TB_ORDER_MGNT_NO D
+                            ON D.ORDERNO = A.ORDERNO
+                            LEFT OUTER JOIN TB_LEC_MST E
+                            ON E.LECCODE = D.MGNTNO
+                            LEFT OUTER JOIN TB_CA_BOOK F
+                            ON F.RSC_ID = D.MGNTNO
+                            WHERE 1=1
+                            <if test="ucancel !=null and ucancel != '' ">
+                            AND D.USER_CANCEL = #{ucancel}
+                            </if>
+                            <if test="orderstatuscode !=null and orderstatuscode != '' ">
+                            AND A.ORDERNO IN (SELECT ORDERNO FROM TB_ORDER_MGNT_NO
+                                            WHERE ORDERNO = A.ORDERNO
+                                            AND STATUSCODE = #{orderstatuscode} )
+                            </if>
+                            <if test="paycode !=null and paycode != '' ">
+                            AND C.PAYCODE = #{paycode}
+                            </if>
+                            <choose>
+                                <when test="search_date_type == '등록일'">
+                                AND TO_CHAR(A.REG_DT, 'YYYYMMDD') BETWEEN #{sdate} AND #{edate}
+                                </when>
+                                <otherwise>
+                                AND TO_CHAR(B.SEND_DT, 'YYYYMMDD') BETWEEN #{sdate} AND #{edate}
+                                </otherwise>
+                            </choose>
+                            <if test="searchkey !=null and searchkey != '' ">
+                                <if test="searchtype !=null and searchtype != '' ">
+                                    <choose>
+                                        <when test="searchtype != 'all'">
+                                        AND INSTR(${searchtype}, #{searchkey}) <![CDATA[ > ]]> 0
+                                        </when>
+                                        <when test="searchtype == 'all'">
+                                            AND (
+                                                INSTR(A.ORDERNO, #{searchkey}) <![CDATA[ > ]]> 0
+                                                OR INSTR(A.USER_ID, #{searchkey}) <![CDATA[ > ]]> 0
+                                                OR INSTR(A.USER_NM, #{searchkey}) <![CDATA[ > ]]> 0
+                                                OR INSTR(D.MGNTNO, #{searchkey}) <![CDATA[ > ]]> 0
+                                                <if test="search_date_type == '배송일 '">
+                                                OR INSTR(B.USERNAME, #{SEARCHKEY}) <![CDATA[ > ]]> 0
+                                                </if>
+                                                <if test="searchtype == 'c.payName' ">
+                                                OR INSTR(B.USERNAME, #{searchkey}) <![CDATA[ > ]]> 0
+                                                </if>
+                                                OR INSTR(C.PAYNAME, #{searchkey}) <![CDATA[ > ]]> 0
+                                            )
+                                        </when>
+                                    </choose>
+                                </if>
+                            </if>
+							<if test="payall == 0 ">
+								and c.price <![CDATA[ <> ]]> 0
+							</if>
+							<if test="payall == 1 ">
+								and (c.price = 0 or c.price <![CDATA[ <> ]]> 0)
+							</if>
+							AND D.PTYPE <![CDATA[ <> ]]> 'F'
+	</select>
+
+	<!-- 전체상품주문관리 리스트 2번째 -->
+	<select id="getTblOrderMgntListDB" parameterType="hashMap" resultType="hashMap">
+	    SELECT 
+            AA.MGNTNO, AA.NAME, AA.CNT, NVL(DECODE (AA.GIFT_YN, 'Y', 0, AA.PRICE), 0) AS PRICE, NVL(AA.STATUSCODE, 'DLV000') AS STATUSCODE,
+            AA.WMV_PMP, AA.USER_PACKAGE_FLAG, AA.CONFIRM_DT, AA.CANCEL_DT, AA.REALPRICE, AA.ISCANCEL, AA.GIFT_YN,
+            DECODE (AA.GIFT_YN, 'Y', '사은품', '') GIFT_NAME, AA.COOP_CD
+        FROM(
+                SELECT B.LECCODE AS MGNTNO, B.SUBJECT_TITLE AS NAME, A.CNT, A.PRICE, A.STATUSCODE,
+                    A.WMV_PMP, A.USER_PACKAGE_FLAG, 
+                    DECODE(A.CONFIRM_DT, NULL, TO_CHAR(SYSDATE , 'YYYY-MM-DD'), '', TO_CHAR(SYSDATE, 'YYYY-MM-DD'), TO_CHAR(A.CONFIRM_DT, 'YYYY-MM-DD')) CONFIRM_DT, 
+                    A.CANCEL_DT, 
+                    (CASE A.WMV_PMP
+                        WHEN 'VOD' THEN B.SUBJECT_MOVIE
+                        WHEN 'PMP' THEN B.SUBJECT_PMP
+                        WHEN 'VOD+PMP' THEN B.SUBJECT_MOVIE_PMP
+                    END) AS REALPRICE,
+                    A.ISCANCEL, A.GIFT_YN,
+                   (SELECT COOP_CD FROM TB_LEC_COOP WHERE LECCODE = MGNTNO) COOP_CD
+                FROM TB_ORDER_MGNT_NO A, TB_LEC_MST B
+                WHERE A.ORDERNO = #{orderno}
+                AND A.MGNTNO = B.LECCODE
+				<if test="orderstatuscode !=null and orderstatuscode != '' ">
+				AND A.STATUSCODE = #{orderstatuscode}
+				</if>
+        
+                UNION ALL
+
+                SELECT B.RSC_ID AS MGNTNO, B.BOOK_NM AS NAME, A.CNT, A.PRICE, A.STATUSCODE,
+                    A.WMV_PMP, A.USER_PACKAGE_FLAG, 
+                    DECODE(A.CONFIRM_DT, NULL, TO_CHAR(SYSDATE , 'YYYY-MM-DD'), '', TO_CHAR(SYSDATE, 'YYYY-MM-DD'), TO_CHAR(A.CONFIRM_DT, 'YYYY-MM-DD')) CONFIRM_DT,
+                    A.CANCEL_DT,
+                    B.PRICE AS REALPRICE,
+                    A.ISCANCEL, A.GIFT_YN,
+                    (SELECT COOP_CD FROM TB_LEC_COOP WHERE LECCODE = MGNTNO) COOP_CD
+                FROM TB_ORDER_MGNT_NO A, TB_CA_BOOK B
+                WHERE A.ORDERNO = #{orderno}
+                AND A.MGNTNO = B.RSC_ID
+				<if test="orderstatuscode !=null and orderstatuscode != '' ">
+				AND A.STATUSCODE = #{orderstatuscode}
+				</if>
+        )AA
+        ORDER BY AA.MGNTNO
+	</select>
+
+	<!-- 전체상품주문관리 엑셀 리스트 -->
+	<select id="getOrderExcelListDB" parameterType="hashMap" resultType="hashMap">
+		<!-- SELECT * FROM ( SELECT ROWNUM AS RNUM, A.* FROM ( -->
+		select ROWNUM RNUM,H.orderNo,
+		H.orders_userId,
+		H.orders_userName || '(' || H.orders_userId || ')' orders_userName,
+		H.orders_telNo,
+		H.orders_cellNo,
+		H.orders_zipcd,
+		H.orders_addr,
+		H.orders_email,
+		TO_CHAR(H.orders_regDate, 'YYYY-MM-DD') orders_regDate,
+		<if test="search_date_type == '배송일' ">
+			H.delivers_sendNo,
+			H.delivers_userName,
+			H.delivers_telNo,
+			H.delivers_cellNo,
+			H.delivers_zipcd,
+			H.delivers_addr,
+			H.delivers_memo,
+			H.delivers_regDate,
+			H.delivers_sendDate,
+		</if>
+		H.approvals_price,
+		H.approvals_addPrice,
+		H.approvals_payCode,
+		H.approvals_AcctNoCode,
+		H.approvals_payName,
+		H.approvals_point,
+		H.refund_point,
+		H.approvals_returnValue,
+		H.approvals_regDate,
+		H.approvals_RePrice,
+		DECODE(H.approvals_payCodeName, 'PAY100', '무통장입금', 'PAY110', '카드결제', 'PAY120', '가상계좌', 'PAY130',
+		'계좌이체', '','없음') approvals_payCodeName,
+		H.approvals_acctNoName,
+		H.rowCnt
+		from(
+		select DISTINCT(G.orderNo),
+		G.orders_userId,
+		G.orders_userName,
+		G.orders_telNo,
+		G.orders_cellNo,
+		G.orders_zipcd,
+		G.orders_addr,
+		G.orders_email,
+		G.orders_regDate,
+		<if test="search_date_type == '배송일' ">
+			G.delivers_sendNo,
+			G.delivers_userName,
+			G.delivers_telNo,
+			G.delivers_cellNo,
+			G.delivers_zipcd,
+			G.delivers_addr,
+			G.delivers_memo,
+			G.delivers_regDate,
+			G.delivers_sendDate,
+		</if>
+		G.approvals_price,
+		NVL(G.approvals_addPrice,0) as approvals_addPrice,
+		G.approvals_payCode,
+		G.approvals_AcctNoCode,
+		G.approvals_payName,
+		G.approvals_point,
+		G.refund_point,
+		G.approvals_returnValue,
+		G.approvals_regDate,
+		G.approvals_RePrice,
+		G.approvals_payCodeName,
+		G.approvals_acctNoName,
+		G.rowCnt
+		from(
+		select a.orderNo,
+		a.USER_ID as orders_userId,
+		a.USER_NM as orders_userName,
+		a.TEL_NO as orders_telNo,
+		a.PHONE_NO as orders_cellNo,
+		a.ZIP_CODE as orders_zipcd,
+		a.ADDRESS1 as orders_addr,
+		a.email as orders_email,
+		a.REG_DT as orders_regDate,
+
+		<if test="search_date_type == '배송일' ">
+			b.sendNo as delivers_sendNo,
+			b.userName as delivers_userName,
+			b.telNo as delivers_telNo,
+			b.cellNo as delivers_cellNo,
+			b.zipcd as delivers_zipcd,
+			b.addr as delivers_addr,
+			b.memo as delivers_memo,
+			b.reg_Dt as delivers_regDate,
+			b.send_Dt as delivers_sendDate,
+		</if>
+		c.price as approvals_price,
+		c.addPrice as approvals_addPrice,
+		NVL(c.payCode,0) as approvals_payCode,
+		c.AcctNoCode as approvals_AcctNoCode,
+		c.payName as approvals_payName,
+		c.point as approvals_point,
+		c.refund_point as refund_point,
+		c.returnValue as approvals_returnValue,
+		c.REG_DT as approvals_regDate,
+		c.RePrice as approvals_RePrice,
+		c.payCode approvals_payCodeName,
+		c.acctNoCode approvals_acctNoName,
+		(select count(*)
+		from tb_order_mgnt_no
+		where orderNo = a.orderNo
+
+		<if test="orderstatuscode !=null and orderstatuscode != '' ">
+			and statusCode = #{orderstatuscode}
+		</if>
+
+		) as rowCnt
+
+		from tb_orders a
+
+		<if test="search_date_type == '배송일' ">
+			left outer join tb_delivers b
+			on b.orderNo = a.orderNo
+		</if>
+
+		left join tb_approvals c
+		on
+
+		<choose>
+			<when test="search_date_type == '배송일'">
+				c.orderNo = b.orderNo
+			</when>
+
+			<otherwise>
+				c.orderNo = a.orderNo
+			</otherwise>
+		</choose>
+
+		LEFT OUTER JOIN tb_order_mgnt_no D
+		ON D.ORDERNO = A.ORDERNO
+		LEFT OUTER JOIN TB_LEC_MST E
+		ON E.LECCODE = D.MGNTNO
+		LEFT OUTER JOIN tb_CA_BOOK F
+		ON F.RSC_ID = D.MGNTNO
+
+		where 1=1
+
+		<if test="orderstatuscode !=null and orderstatuscode != '' ">
+			and a.orderNo in ( select orderNo
+			from tb_order_mgnt_no
+			where orderNo = a.orderNo
+			and statusCode = #{orderstatuscode} )
+		</if>
+
+		<if test="paycode !=null and paycode != '' ">
+			and c.payCode = #{paycode}
+		</if>
+
+		<choose>
+			<when test="search_date_type == '등록일'">
+				and TO_CHAR(a.REG_DT, 'YYYYMMDD') between #{sdate} and #{edate}
+			</when>
+
+			<otherwise>
+				and TO_CHAR(b.send_Dt, 'YYYYMMDD') between #{sdate} and #{edate}
+			</otherwise>
+		</choose>
+
+		<if test="searchkey !=null and searchkey != '' ">
+			<if test="searchtype !=null and searchtype != '' ">
+				<choose>
+					<when test="searchtype != 'all'">
+						<choose>
+							<when test="search_date_type == '배송일'">
+								and ${searchtype} like '%'||#{searchkey}||'%'
+							</when>
+
+							<otherwise>
+								<choose>
+									<when test="searchtype == 'b.username'">
+										and 0 = 0
+									</when>
+
+									<otherwise>
+										and ${searchtype} like '%'||#{searchkey}||'%'
+									</otherwise>
+								</choose>
+							</otherwise>
+
+						</choose>
+					</when>
+
+					<when test="searchtype == 'all'">
+						and (
+						a.orderNo like '%'||#{searchkey}||'%'
+						or a.USER_ID like '%'||#{searchkey}||'%'
+						or a.USER_NM like '%'||#{searchkey}||'%'
+
+						<if test="search_date_type == '배송일 '">
+							or b.username like '%'||#{searchkey}||'%'
+						</if>
+
+						or c.payName like '%'||#{searchkey}||'%'
+						or c.price like '%'||#{searchkey}||'%'
+						)
+					</when>
+
+				</choose>
+			</if>
+		</if>
+
+		<if test="payall == 3 ">
+			and c.price = 0
+		</if>
+
+		<if test="payall == 0 ">
+			and c.price <![CDATA[ <> ]]>
+			0
+		</if>
+
+		<if test="payall == 1 ">
+			and (c.price = 0 or c.price <![CDATA[ <> ]]>
+			0)
+		</if>
+		) G
+		) H
+		order by H.orders_regDate desc, H.orderNo desc
+	</select>
+
+	<!-- 카드변경 -->
+	<update id="setPayKindUpdate" parameterType="hashMap">
+		update tb_approvals
+		set payCode = 'PAY110',
+		acctNoCode = 'ACT999'
+		where orderNo = #{orderno}
+	</update>
+
+	<!-- 입금상태저장 수정 -->
+	<update id="updateDepositStatus1" parameterType="hashMap">
+		update tb_order_mgnt_no
+		set isCancel = 1,
+		<if test="statuscode2 != null">statusCode = #{statuscode2},</if>
+		cancel1_Dt = sysdate,
+		upd_id = #{userid},
+		upd_dt = sysdate
+		where orderNo = #{orderno2}
+		and mgntNo = #{mgntno2}
+		and iscancel <![CDATA[ <> ]]> 2
+	</update>
+
+	<!-- 입금확인중, 입금완료, 배송완료 카운트 -->
+	<select id="getDepositStatusCount" parameterType="hashMap"
+		resultType="int">
+		SELECT COUNT(*)
+		from tb_order_mgnt_no
+		where (statusCode = 'DLV105' or statusCode = 'DLV130' or statusCode =
+		'DLV100')
+		and orderNo = #{orderno2}
+	</select>
+
+	<!-- 사용자정보에 포인트 추가 수정 -->
+	<update id="updateDepositStatus2" parameterType="hashMap">
+		update TB_MA_MEMBER
+		set
+		USER_POINT = USER_POINT + #{point2}
+		where USER_ID = #{userids2}
+	</update>
+
+	<!-- 입금상태를 입금완료 상태로 수정시 -->
+	<update id="updateDepositStatus3" parameterType="hashMap">
+		update tb_order_mgnt_no
+		set isCancel = 0
+		<if test="statuscode2 != null and statuscode2 != ''">,statusCode = #{statuscode2}</if>
+		<if test="confirmdate2 != null and confirmdate2 != ''">,confirmDate = TO_DATE(#{confirmdate2}, 'YYYYMMDD
+			hh24miss')</if>
+		<if test="userid != null and userid != ''">,confirmId = #{userid}</if>
+		<if test="isconfirm2 != null and isconfirm2 != ''">,sdate = #{isconfirm2}</if>
+		,updateid = #{userid}
+		,updatedate = sysdate
+		where orderNo = #{orderno2}
+		and mgntNo = #{mgntno2}
+		and iscancel <![CDATA[ <> ]]>
+		2
+	</update>
+
+	<!-- 입금상태를 입금완료 상태로 수정시 수강신청정보 수정 -->
+	<update id="updateDepositStatus4" parameterType="hashMap">
+		update tb_mylecture
+		set PLAYYN = 'Y'
+		where orderNo = #{orderno2}
+		and lecture_no = #{mgntno2}
+		<if test="userids2 != null and userids2 != ''">and userid = #{userids2}</if>
+	</update>
+
+	<update id="updateBookStockPlus" parameterType="hashMap">
+		UPDATE TB_CA_BOOK
+		SET BOOK_STOCK =
+		BOOK_STOCK
+		+ NVL (
+		(SELECT CNT
+		FROM TB_ORDER_MGNT_NO
+		WHERE orderno = #{orderno2} AND mgntno = #{mgntno2})
+		,
+		0)
+		WHERE RSC_ID = #{mgntno2}
+	</update>
+
+	<!-- 입금상태를 입금확인중 배송준비중 배송중으로 수정시 -->
+	<update id="updateDepositStatus5" parameterType="hashMap">
+		update tb_order_mgnt_no
+		set isCancel = 0
+		,cancel_Dt = NULL
+		<if test="statuscode2 != null and statuscode2 != ''">,statusCode = #{statuscode2}</if>
+		,upd_id = #{userid}
+		,upd_dt = sysdate
+		where orderNo = #{orderno2}
+		and mgntNo = #{mgntno2}
+		and iscancel <![CDATA[ <> ]]> 2
+	</update>
+
+	<!-- 상품명 팝업 pmp 다운받은 내역 조회 -->
+	<select id="getPmpdownloadListPop" parameterType="hashMap" resultType="hashMap">
+		select b.movie_order1, b.movie_order2, b.movie_name, TO_CHAR(a.pmp_regdate,
+		'YYYY-MM-DD hh24miss') pmp_regdate
+		from tb_pmp_downlog a, TB_MOVIE b
+		where a.Downloginfo = 'N-' || #{orderno} || '-' || #{package_no}
+		and a.ContentID = b.movie_no
+	</select>
+	
+	<select id="getMobiledownloadListPop" parameterType="hashMap" resultType="hashMap">
+			SELECT B.MOVIE_ORDER1,
+			       B.MOVIE_ORDER2,
+			       B.MOVIE_NAME,
+			       TO_CHAR (A.MOBILE_REGDATE, 'YYYY-MM-DD hh24miss'),
+			       MOBILE_REGDATE
+			  FROM TB_MOBILE_DOWNLOG A, TB_MOVIE B
+			 WHERE ORDERNO = #{orderno}
+			    AND PACKAGE_NO = #{package_no}
+			    AND A.CONTENTID = B.MOVIE_NO
+	</select>
+
+	<!-- 상품명 팝업 아이디,이름 조회 -->
+	<select id="getTblOrderList" parameterType="hashMap" resultType="hashMap">
+		select USER_ID, USER_NM
+		FROM TB_ORDERS
+		WHERE ORDERNO = #{orderno}
+	</select>
+
+	<!-- 상품명 팝업 리스트 -->
+	<select id="getOrderListPopDB" parameterType="hashMap" resultType="hashMap">
+		select distinct bb.package_no,
+		bb.USERID user_id,
+		bb.orderno,
+		bb.lecture_no,
+		TO_CHAR(bb.START_DATE, 'YYYYMMDD') mylecture_start_date,
+		TO_CHAR(bb.END_DATE, 'YYYYMMDD') mylecture_end_date,
+		bb.PERIOD mylecture_period,
+		cc.subject_period,
+		cc.subject_title package_name,
+		nvl(dd.mylecture_paused_count, 0) as mylecture_paused_count,
+		nvl(dd.mylecture_paused_period, 0) as mylecture_paused_period,
+		nvl(TO_CHAR(dd.mylecture_paused_date1, 'YYYYMMDD'), '') as mylecture_paused_date1,
+		nvl(dd.mylecture_paused_period1, 0) as mylecture_paused_period1,
+		nvl(TO_CHAR(dd.mylecture_paused_date2, 'YYYYMMDD'), '') as
+		mylecture_paused_date2,
+		nvl(dd.mylecture_paused_period2, 0) as mylecture_paused_period2,
+		nvl(TO_CHAR(dd.mylecture_paused_date3, 'YYYYMMDD'), '') as
+		mylecture_paused_date3,
+		nvl(dd.mylecture_paused_period3, 0) as mylecture_paused_period3,
+		nvl(aa.spo,'') spo,
+		(select bridge_leccode from tb_lec_bridge where leccode = bb.lecture_no)
+		bridge_leccode
+		from (select a.USER_ID as user_id, a.ORDERNO, b.mgntNo as package_no,
+		b.wmv_pmp, b.price, b.spo
+		from tb_orders a, tb_order_mgnt_no b
+		where a.orderNo = b.orderNo
+		and b.PTYPE <![CDATA[ <> ]]>
+		'L'
+		) aa
+		join TB_MYLECTURE bb on aa.orderno = bb.orderno and aa.package_no =
+		bb.package_no
+		join TB_LEC_MST cc on bb.lecture_no = cc.leccode
+		left outer join TB_MYLECTURE_PAUSE dd on aa.user_id = dd.USER_ID
+		and bb.USERID = dd.user_id
+		and aa.orderNo = dd.orderNo
+		and bb.orderNo = dd.orderNo
+		and aa.package_no = dd.package_no
+		and bb.lecture_no = dd.lecture_no
+
+		where bb.USERID = #{userid}
+		and aa.orderno = #{orderno}
+		and bb.package_no = #{package_no}
+
+		order by cc.subject_title asc
+	</select>
+
+	<!-- 구입금액 -->
+	<select id="getTblOrderMgntNoPopViewList" parameterType="hashMap" resultType="hashMap">
+		SELECT a.orderNo,
+		b.leccode mgntNo,
+		c.USER_NM,
+		c.USER_ID,
+		d.payName,
+		d.point,
+		b.subject_title name,
+		a.cnt,
+		a.price as price,
+		a.statusCode,
+		TO_CHAR(a.confirm_Dt, 'YYYY-MM-DD') confirm_Dt,
+		a.cancel_Dt,
+		b.subject_price realprice,
+		a.isCancel,
+		c.TID,
+		d.payCode approvals_payCodeName,
+		a.statusCode statusName,
+		TO_CHAR(d.REG_DT, 'YYYYMMDD') REG_DT,
+		TO_CHAR(sysdate, 'YYYYMMDD') TO_DT
+		FROM tb_order_mgnt_no a, TB_LEC_MST b, tb_orders c, tb_approvals d
+		WHERE a.orderNo = #{orderno}
+		AND a.mgntNo = b.leccode
+		AND a.orderNo = c.orderNo
+		AND a.orderNo = d.orderNo
+		AND a.mgntNo= #{mgntno}
+		AND a.isCancel in (0,1)
+
+		union all
+
+		SELECT a.orderNo,
+		b.rsc_id mgntNo,
+		c.USER_NM,
+		c.USER_ID,
+		d.payName,
+		d.point,
+		b.book_nm name,
+		a.cnt,
+		a.price as price,
+		a.statusCode,
+		TO_CHAR(a.confirm_Dt, 'YYYY-MM-DD') confirm_Dt,
+		a.cancel_Dt,
+		b.price realprice,
+		a.isCancel,
+		c.TID,
+		d.payCode approvals_payCodeName,
+		a.statusCode statusName,
+		TO_CHAR(d.REG_DT, 'YYYYMMDD') REG_DT,
+		TO_CHAR(sysdate, 'YYYYMMDD') TO_DT
+		FROM tb_order_mgnt_no a, TB_CA_BOOK b, TB_ORDERS c, TB_APPROVALS d
+		WHERE a.orderNo = #{orderno}
+		AND a.mgntNo = b.rsc_id
+		AND a.orderNo = c.orderNo
+		AND a.orderNo = d.orderNo
+		AND a.mgntNo = #{mgntno}
+		AND a.isCancel in (0,1)
+	</select>
+
+	<!-- 구입금액 -->
+	<select id="getTblOrderMgntNoPopViewCount" parameterType="hashMap"
+		resultType="int">
+		select count(*)
+		from tb_order_mgnt_no
+		where orderNo = #{orderno}
+		and mgntNo = #{mgntno}
+		and iscancel = 2
+	</select>
+
+	<!-- 구입금액 -->
+	<select id="getPrice_Sum" parameterType="hashMap" resultType="int">
+		SELECT (
+		SELECT SUM(TOTAL_SUM) FROM (
+		SELECT nvl(SUM(c.price) , 0) AS TOTAL_SUM
+		FROM tb_orders a, tb_order_mgnt_no c
+		WHERE a.orderNo = c.orderNo
+		AND (a.orderNo = #{orderno})
+		AND c.isCancel IN (0) group by c.cnt)
+		) -
+
+		(SELECT nvl(b.point , 0)
+		FROM tb_orders a, tb_approvals b
+		WHERE a.orderNo = b.orderNo
+		AND (a.orderNo = #{orderno})) +
+
+		(SELECT nvl((SELECT SUM(c.price)
+		FROM tb_orders a, tb_order_mgnt_no c
+		WHERE a.orderNo = c.orderNo
+		AND (a.orderNo = #{orderno})
+		AND c.isCancel IN (2)
+		AND c.mgntNo NOT IN (#{mgntno})), 0)
+		from dual)
+		from dual
+	</select>
+
+	<!-- 구입금액 -->
+	<select id="getCourse_type_code" parameterType="hashMap" resultType="hashMap">
+		select LEC_TYPE_CHOICE course_type_code
+		from TB_LEC_MST
+		where leccode=#{mgntno}
+	</select>
+
+	<!-- 구입금액 -->
+	<select id="getPlayyn" parameterType="hashMap" resultType="hashMap">
+		select nvl((select distinct playyn
+		from TB_MYLECTURE
+		where orderNo = #{orderno}
+		and package_no=#{mgntno} and rownum = 1),'N') playyn
+		, nvl((select distinct nvl(MYLECTURE_PAUSED_COUNT, 0)
+		from TB_MYLECTURE_PAUSE
+		where orderNo = #{orderno}
+		and package_no=#{mgntno}
+		and USER_ID=#{orders_userid} and rownum = 1),0) MYLECTURE_PAUSED_COUNT
+		, nvl((select distinct nvl(STUDY_PERCENT, 0)
+		from TB_MYLECTURE
+		where orderNo = #{orderno}
+		and package_no=#{mgntno} and rownum = 1),0) STUDY_PERCENT
+		, nvl((select nvl(SUBJECT_PRICE, 0) / nvl(SUBJECT_PERIOD, 0)
+		from TB_LEC_MST
+		where leccode=#{mgntno}),0) DAY_PRICE
+		, nvl((select distinct TO_CHAR(START_DATE, 'YYYYMMDD')
+		from TB_MYLECTURE
+		where orderNo = #{orderno}
+		and package_no=#{mgntno} and rownum = 1),TO_CHAR(sysdate, 'YYYYMMDD')) START_DATE
+		from dual
+	</select>
+
+	<!-- 구입금액 -->
+	<select id="getPoint" parameterType="hashMap" resultType="hashMap">
+		select nvl(refund_point,0) point
+		from tb_approvals
+		where orderNo = #{orderno}
+	</select>
+
+	<!-- 구입금액 -->
+	<select id="getOldRefundViewCount" parameterType="hashMap" resultType="int">
+		SELECT COUNT(*)
+		FROM tb_order_mgnt_no a INNER Join
+		tb_approvals d ON a.orderNo = d.orderNo
+		WHERE (a.orderNo = #{orderno})
+		AND (a.isCancel = 2)
+		AND (a.mgntNo = #{mgntno})
+	</select>
+
+	<!-- 구입금액 -->
+	<select id="getRefund_Point" parameterType="hashMap" resultType="hashMap">
+		select nvl(point, 0) refund_point
+		from tb_mileage_history
+		where orderNo = #{orderno}
+		and userid = #{orders_userid}
+		and mgntno = #{mgntno}
+		order by idx desc
+	</select>
+
+	<!-- 구입금액 -->
+	<select id="getOldRefundView" parameterType="hashMap" resultType="hashMap">
+		SELECT ABS(a.price) oldRefund
+		, a.memo
+		, TO_CHAR(a.confirmDate, 'YYYYMMDD') confirmDate
+		FROM tb_order_mgnt_no a INNER Join
+		tb_approvals d ON a.orderNo = d.orderNo
+		WHERE (a.orderNo = #{orderno})
+		AND (a.isCancel = 2)
+		AND (a.mgntNo = #{mgntno})
+	</select>
+
+	<!-- 택배비 -->
+	<select id="getTblDeliver_refund_list" parameterType="hashMap" resultType="hashMap">
+		Select addprice
+		From tb_approvals
+		Where orderNo = #{orderno}
+	</select>
+
+	<!-- 전체상품주문관리 주문번호 상세 -->
+	<select id="getTblApprovalsViewList" parameterType="hashMap" resultType="hashMap">
+		select b.price,
+		a.addPrice,
+		a.payCode payCodeName,
+		case when (a.payCode = 'PAY120') then a.Vacct else a.payCode end as
+		acctNoName,
+		case when (a.vcdbank = '') then null else a.vcdbank end as VcdBank,
+		a.payName,
+		a.paycode,
+		a.point,
+		a.returnValue,
+		a.vacct,
+		(select statuscode from tb_order_mgnt_no where orderno = a.orderno and rownum = 1) statuscode,
+		DECODE((select statuscode from tb_order_mgnt_no where orderno = a.orderno and rownum = 1),'DLV105','입금완료','DLV100','입금대기중','DLV110','배송준비중','DLV120','배송중','DLV130','배송완료'
+	            ,'DLV140','취소요청','DLV150','취소완료','DLV160','교환요청','DLV170','교환배송중','DLV180','교환완료','DLV220','환불요청'
+	            ,'DLV230','환불완료',' ') STATUS_NM,
+	   CASE WHEN a.PAYCODE  <![CDATA[ = ]]> 'PAY120' THEN
+        	DECODE((select statuscode from tb_order_mgnt_no where orderno = a.orderno and rownum = 1),'DLV100',NVL(a.INPUT_DT,TO_CHAR(a.REG_DT+7,'YYYY.MM.DD')),'DLV105',TO_CHAR((SELECT DD.CONFIRM_DT FROM TB_ORDER_MGNT_NO DD WHERE DD.ORDERNO = b.ORDERNO AND ROWNUM=1),'YYYY-MM-DD.HH24:MI.SS'),'') 
+        ELSE  ''
+        END STATUS_DT,
+        (SELECT COUNT(*) FROM TB_TM_MYCOUPON WHERE ORDERNO = a.ORDERNO AND ORDER_FLAG = 1 AND ROWNUM = 1) USE_DEL_COUPON_CNT
+		from tb_approvals a,
+		( select orderNo, sum(price*cnt) price
+		from tb_order_mgnt_no
+		where orderNo = #{orderno}
+		group by orderNo ) b
+		where a.orderNo = #{orderno}
+		and a.orderNo = b.orderNo
+	</select>
+
+	<!-- 전체상품주문관리 주문번호 상세 카운트 -->
+	<select id="getTblDeliversViewListCount" parameterType="hashMap" resultType="int">
+		select count(*)
+		from tb_delivers
+		where orderNo = #{orderno}
+	</select>
+
+	<!-- 전체상품주문관리 주문번호 상세 -->
+	<select id="getTblDeliversViewList" parameterType="hashMap" resultType="hashMap">
+		select a.sendNo, a.userName, a.telNo,
+		a.cellNo, a.zipcd,
+		SUBSTR(a.zipcd,1,3) zipcd_set1,
+		decode(length(a.zipcd), 6, SUBSTR(a.zipcd,4,3), SUBSTR(a.zipcd,5,3)) zipcd_set2,
+		a.addr, a.memo,
+		a.send_Dt,
+		a.dleorder,
+		decode(a.dleorder,'DLE100','택배수령','DLE110','직접수령',' ') dleorder_nm
+		from tb_delivers a
+		where a.orderNo = #{orderno}
+	</select>
+
+	<!-- 전체상품주문관리 주문번호 상세 -->
+	<select id="getTblOrdersViewList" parameterType="hashMap" resultType="hashMap">
+		select TO_CHAR(a.REG_DT, 'YYYY-MM-DD hh24:mi:ss') REG_DT,
+		a.USER_NM,
+		a.TEL_NO,
+		a.PHONE_NO,
+		a.ZIP_CODE,
+		a.ADDRESS1,
+		a.EMAIL,
+		b.BIRTH_DAY birth_dt
+		from tb_orders a
+		left outer join TB_MA_MEMBER b
+		on a.USER_ID = b.USER_ID
+		where a.orderNo = #{orderno}
+	</select>
+
+	<!-- 전체상품주문관리 주문번호 상세 -->
+	<select id="getLecMstViewList" parameterType="hashMap" resultType="hashMap">
+		<choose>
+			<when test="NEW !=null and NEW != ''">
+        SELECT DD.USER_ID, AA.ORDERNO, AA.MGNTNO, 
+               '동영상강좌' GBNNAME,
+               AA.ISCANCEL, AA.CNT, 
+               BB.PRICE, BB.SUBJECT_DISCOUNT RATE, BB.REALPRICE,
+               AA.STATUSCODE, FN_GET_CODE_NM('ORDER_STATUSCODE', AA.STATUSCODE) STATUSCODENAME, 
+               DECODE(AA.CONFIRM_DT, NULL, TO_CHAR(SYSDATE , 'YYYY-MM-DD'), '', TO_CHAR(SYSDATE, 'YYYY-MM-DD'), TO_CHAR(AA.CONFIRM_DT, 'YYYY-MM-DD')) CONFIRM_DT,
+               DECODE(AA.CONFIRM_DT, NULL, TO_CHAR(SYSDATE, 'YYYY-MM-DD hh24:mi:ss'),
+               '', TO_CHAR(SYSDATE, 'YYYY-MM-DD hh24:mi:ss'), TO_CHAR(AA.CONFIRM_DT, 'YYYY-MM-DD hh24:mi:ss')) CONFIRMDATE2,
+               AA.CANCEL_DT, '', TO_CHAR(SYSDATE, 'YYYY-MM-DD'), 
+               AA.WMV_PMP, AA.PTYPE,
+               BB.SUBJECT_TITLE NAME, 
+               AA.PRICE TOT_PRICE,
+               (1-(AA.PRICE/BB.REALPRICE))*100 PRICE_PER, 
+               AA.COUPON_NO CCODE, 
+               (SELECT REGTYPE FROM TB_TM_COUPON WHERE CCODE = AA.COUPON_NO) REGTYPE, 
+               (SELECT REGPRICE FROM TB_TM_COUPON WHERE CCODE = AA.COUPON_NO) REGPRICE,
+               DD.TID,
+              (SELECT ROUND(SUM(STUDY_PERCENT)/COUNT(*)) FROM TB_MYLECTURE WHERE ORDERNO = DD.ORDERNO AND PACKAGE_NO = BB.LECCODE) STUDY_PER
+        FROM TB_ORDERS DD, TB_ORDER_MGNT_NO AA,
+             (SELECT LECCODE, SUBJECT_TITLE, SUBJECT_PRICE PRICE, SUBJECT_DISCOUNT, SUBJECT_MOVIE AS REALPRICE 
+              FROM TB_LEC_MST
+              UNION ALL
+              SELECT RSC_ID, BOOK_NM, PRICE, DISCOUNT AS SUBJECT_DISCOUNT, DISCOUNT_PRICE AS REALPRICE
+              FROM TB_CA_BOOK) BB, TB_TM_MYCOUPON CC
+        WHERE AA.MGNTNO = BB.LECCODE
+        AND DD.ORDERNO = AA.ORDERNO
+        AND AA.ORDERNO = CC.ORDERNO(+)
+        AND AA.COUPON_NO = CC.CCODE(+)
+        AND AA.ORDERNO = #{orderno}
+        ORDER BY AA.MGNTNO
+            </when>
+            <otherwise>
+		select a.leccode mgntNo,
+		b.sdate,
+		c.orderNo,
+		c.USER_ID userId,
+		'동영상강좌' gbnName,
+		a.subject_title name,
+		NVL (DECODE (b.gift_yn, 'Y', 0, a.subject_price), 0) AS price,
+		a.SUBJECT_DISCOUNT rate,
+		(case b.wmv_pmp when 'VOD' then a.SUBJECT_MOVIE when 'PMP' then
+		a.SUBJECT_PMP when 'VOD+PMP' then a.SUBJECT_MOVIE_PMP end) as
+		realprice,
+		b.cnt,
+		b.statusCode ,
+		b.wmv_pmp,
+		NVL (DECODE (b.gift_yn, 'Y', 0, (b.Price * b.cnt) ), 0) AS tot_price,
+		b.statusCode statusCodeName,
+		b.discountper,
+		b.iscancel,
+		c.TID,
+		(select ROUND(sum(study_percent)/count(*)) from tb_mylecture where orderno = c.orderno and package_no = a.leccode) study_per,
+		b.gift_yn,b.memo
+		from TB_LEC_MST a,
+		TB_ORDER_MGNT_NO b,
+		tb_orders c
+		where a.leccode = b.mgntNo
+		and b.orderNo = c.orderNo
+		and c.orderNo = #{orderno}
+
+		union all
+
+		select a.rsc_id mgntNo,
+		b.sdate,
+		c.orderNo,
+		c.USER_ID userId,
+		'도서' gbnName,
+		a.book_nm name,
+		NVL (DECODE (b.gift_yn, 'Y', 0, a.price ), 0) AS price,
+		a.discount rate,
+		b.price realprice,
+		b.cnt,
+		b.statusCode ,
+		'도서' wmv_pmp,
+		<!-- NVL (DECODE (b.gift_yn, 'Y', 0, (b.Price * b.cnt)), 0) AS tot_price, -->
+		NVL (DECODE (b.gift_yn, 'Y', 0, (b.Price)), 0) AS tot_price,
+		b.statusCode statusCodeName,
+		b.discountper,
+		b.iscancel,
+		c.TID,
+		0 study_per,
+		b.gift_yn,b.memo
+		from TB_CA_BOOK a,
+		TB_ORDER_MGNT_NO b,
+		tb_orders c
+		where a.rsc_id = b.mgntNo
+		and b.orderNo = c.orderNo
+		and c.orderNo = #{orderno}
+            </otherwise>
+		</choose>
+	</select>
+
+	<!-- 전체상품주문관리 주문번호 수정 -->
+	<update id="updateDelivers" parameterType="hashMap">
+		update tb_delivers
+		set
+		sendNo = #{sendno},
+		username = #{d_name},
+		telno = #{d_telno},
+		cellno = #{d_cellno},
+		zipcd = #{zipcd},
+		addr = #{juso},
+		memo = #{d_memo}
+		where orderNo = #{orderno}
+	</update>
+
+	<!-- 전체상품주문관리 주문번호 수정 -->
+	<update id="updateApprovals" parameterType="hashMap">
+		update tb_approvals
+		set
+		payName = #{payname}
+		where orderNo = #{orderno}
+	</update>
+
+	<!-- 전체상품주문관리 주문번호 상세페이지 상품구분 셀렉트 박스 onchange -->
+	<update id="updateDeliversWmv" parameterType="hashMap">
+		update tb_order_mgnt_no
+		set
+		wmv_pmp = #{wmv_pmp}
+		where orderNo = #{orderno}
+		and mgntNO = #{mgntno}
+	</update>
+
+	<!-- 전체상품주문관리 주문번호 상세페이지 금액수정 버튼 수정 -->
+	<update id="updateMoney1" parameterType="hashMap">
+		update tb_order_mgnt_no
+		set
+		price = #{realprice}
+		where orderNo = #{orderno}
+		and mgntNo = #{mgntno}
+		and isCancel = #{iscancle}
+	</update>
+
+	<!-- 전체상품주문관리 주문번호 상세페이지 금액수정 버튼 합계 -->
+	<select id="getMoneySum" parameterType="hashMap" resultType="int">
+		select sum(price)
+		from tb_order_mgnt_no
+		where orderNo = #{orderno}
+	</select>
+
+	<!-- 전체상품주문관리 주문번호 상세페이지 금액수정 버튼 -->
+	<update id="updateMoney2" parameterType="hashMap">
+		update tb_approvals
+		set price = #{totalPrice}
+		where orderNo = #{orderno}
+	</update>
+
+	<!-- 전체상품주문관리 주문번호 상세페이지 상태코드 삭제 -->
+	<delete id="refund_money_delete" parameterType="hashMap">
+		delete tb_order_mgnt_no
+		where mgntno = #{mgntno}
+		and orderno = #{orderno}
+		and iscancel = #{iscancle}
+	</delete>
+
+	<!-- 상품명 클릭 팝업 수정하기 버튼 -->
+	<select id="getMylecture" parameterType="hashMap" resultType="hashMap">
+		select PERIOD
+		, TO_CHAR(START_DATE,'YYYYMMDD') START_DATE
+		from TB_MYLECTURE
+		where USERID = #{user_id}
+		and orderno = #{orderno}
+		and package_no = #{package_no}
+		<if test="lecture_no2 !=null and lecture_no2 != '' ">and lecture_no = #{lecture_no2}</if>
+	</select>
+
+	<!-- 상품명 클릭 팝업 수정하기 버튼 -->
+	<update id="updateMylecture1" parameterType="hashMap">
+		update TB_MYLECTURE
+		set
+		PERIOD = #{mylecture_period},
+
+		<choose>
+			<when test="mylecture_period !=null or mylecture_period != '' ">
+				<if test="mylecture_paused_period_sts == '1' ">
+					END_DATE = TO_DATE(TO_CHAR(to_date(#{mylecture_start_date},
+					'YYYYMMDD')+#{mylecture_period}-1, 'YYYYMMDD'),
+					'YYYYMMDD')+#{mylecture_paused_period},
+				</if>
+
+				<if test="mylecture_paused_period_sts != '1' ">
+					END_DATE = to_date(#{mylecture_start_date},
+					'YYYYMMDD')+#{mylecture_period}-1,
+				</if>
+
+			</when>
+
+			<otherwise>
+				<if test="mylecture_paused_period_sts == '1' ">
+					END_DATE = TO_DATE(TO_CHAR(to_date(#{START_DATE}, 'YYYYMMDD')+#{PERIOD}-1,
+					'YYYYMMDD'), 'YYYYMMDD')+#{mylecture_paused_period},
+				</if>
+
+				<if test="mylecture_paused_period_sts != '1' ">
+					END_DATE = to_date(#{START_DATE}, 'YYYYMMDD')+#{PERIOD}-1,
+				</if>
+			</otherwise>
+
+		</choose>
+		START_DATE = TO_DATE(#{mylecture_start_date}, 'YYYYMMDD')
+
+		where USERID = #{user_id}
+		and ORDERNO = #{orderno}
+		and PACKAGE_NO = #{package_no}
+		<if test="lecture_no2 !=null and lecture_no2 != '' ">and lecture_no = #{lecture_no2}</if>
+	</update>
+
+	<!-- 상품명 클릭 팝업 수정하기 버튼 -->
+	<update id="updateMylecture2" parameterType="hashMap">
+		update TB_MYLECTURE
+		set
+		<choose>
+			<when test="mylecture_period !=null or mylecture_period != '' ">
+				<if test="mylecture_paused_period_sts == '1' ">
+					END_DATE = TO_DATE(TO_CHAR(to_date(#{mylecture_start_date},
+					'YYYYMMDD')+#{mylecture_period}-1, 'YYYYMMDD'),
+					'YYYYMMDD')+#{mylecture_paused_period},
+				</if>
+
+				<if test="mylecture_paused_period_sts != '1' ">
+					END_DATE = to_date(#{mylecture_start_date},
+					'YYYYMMDD')+#{mylecture_period}-1,
+				</if>
+
+			</when>
+
+			<otherwise>
+				<if test="mylecture_paused_period_sts == '1' ">
+					END_DATE = TO_DATE(TO_CHAR(to_date(#{START_DATE}, 'YYYYMMDD')+#{PERIOD}-1,
+					'YYYYMMDD'), 'YYYYMMDD')+#{mylecture_paused_period},
+				</if>
+
+				<if test="mylecture_paused_period_sts != '1' ">
+					END_DATE = to_date(#{START_DATE}, 'YYYYMMDD')+#{PERIOD}-1,
+				</if>
+			</otherwise>
+		</choose>
+
+		PERIOD = #{mylecture_period}
+
+		where USERID = #{user_id}
+		and ORDERNO = #{orderno}
+		and PACKAGE_NO = #{package_no}
+		<if test="lecture_no2 !=null and lecture_no2 != '' ">and lecture_no = #{lecture_no2}</if>
+	</update>
+
+	<!-- 상품명 클릭 팝업 수정하기 버튼 -->
+	<update id="updateMylecture3" parameterType="hashMap">
+		update TB_MYLECTURE
+		set
+		<choose>
+			<when test="mylecture_period !=null or mylecture_period != '' ">
+				<if test="mylecture_paused_period_sts == '1' ">
+					END_DATE = TO_DATE(TO_CHAR(to_date(#{mylecture_start_date},
+					'YYYYMMDD')+#{mylecture_period}-1, 'YYYYMMDD'),
+					'YYYYMMDD')+#{mylecture_paused_period},
+				</if>
+
+				<if test="mylecture_paused_period_sts != '1' ">
+					END_DATE = to_date(#{mylecture_start_date},
+					'YYYYMMDD')+#{mylecture_period}-1,
+				</if>
+
+			</when>
+
+			<otherwise>
+				<if test="mylecture_paused_period_sts == '1' ">
+					END_DATE = TO_DATE(TO_CHAR(to_date(#{START_DATE}, 'YYYYMMDD')+#{PERIOD}-1,
+					'YYYYMMDD'), 'YYYYMMDD')+#{mylecture_paused_period},
+				</if>
+
+				<if test="mylecture_paused_period_sts != '1' ">
+					END_DATE = to_date(#{START_DATE}, 'YYYYMMDD')+#{PERIOD}-1,
+				</if>
+			</otherwise>
+		</choose>
+
+		START_DATE = to_date(#{mylecture_start_date}, 'YYYYMMDD')
+
+		where USERID = #{user_id}
+		and ORDERNO = #{orderno}
+		and PACKAGE_NO = #{package_no}
+		<if test="lecture_no2 !=null and lecture_no2 != '' ">and lecture_no = #{lecture_no2}</if>
+	</update>
+
+	<!-- 상품명 클릭 팝업 수정하기 버튼 -->
+	<update id="updateMylecture4" parameterType="hashMap">
+		update TB_MYLECTURE
+		set
+		<choose>
+			<when test="mylecture_period !=null or mylecture_period != '' ">
+				<if test="mylecture_paused_period_sts == '1' ">
+					END_DATE = TO_DATE(TO_CHAR(to_date(#{mylecture_start_date},
+					'YYYYMMDD')+#{mylecture_period}-1, 'YYYYMMDD'),
+					'YYYYMMDD')+#{mylecture_paused_period}
+				</if>
+
+				<if test="mylecture_paused_period_sts != '1' ">
+					END_DATE = to_date(#{mylecture_start_date},
+					'YYYYMMDD')+#{mylecture_period}-1
+				</if>
+
+			</when>
+
+			<otherwise>
+				<if test="mylecture_paused_period_sts == '1' ">
+					END_DATE = TO_DATE(TO_CHAR(to_date(#{START_DATE}, 'YYYYMMDD')+#{PERIOD}-1,
+					'YYYYMMDD'), 'YYYYMMDD')+#{mylecture_paused_period}
+				</if>
+
+				<if test="mylecture_paused_period_sts != '1' ">
+					END_DATE = to_date(#{START_DATE}, 'YYYYMMDD')+#{PERIOD}-1
+				</if>
+			</otherwise>
+		</choose>
+
+		where USERID = #{user_id}
+		and ORDERNO = #{orderno}
+		and PACKAGE_NO = #{package_no}
+		<if test="lecture_no2 !=null and lecture_no2 != '' ">and lecture_no = #{lecture_no2}</if>
+	</update>
+
+	<update id="updateEndDateMyLecture" parameterType="hashMap">
+		UPDATE TB_MYLECTURE
+		SET
+		END_DATE = ( SELECT
+		( aa.START_DATE + ( aa.PERIOD + NVL(cc.MYLECTURE_PAUSED_PERIOD, 0) - 1
+		) )
+		FROM
+		TB_MYLECTURE aa
+		LEFT JOIN TB_MYLECTURE_PAUSE cc ON cc.USER_ID = aa.USERID AND aa.ORDERNO =
+		cc.ORDERNO
+		AND aa.PACKAGE_NO = cc.PACKAGE_NO AND aa.LECTURE_NO = cc.LECTURE_NO
+		WHERE aa.USERID = #{user_id}
+		AND aa.ORDERNO = #{orderno}
+		AND aa.PACKAGE_NO = #{package_no}
+		<if test="lecture_no2 !=null and lecture_no2 != '' ">AND aa.LECTURE_NO = #{lecture_no2}</if>
+		)
+		WHERE USERID = #{user_id}
+		AND ORDERNO = #{orderno}
+		AND PACKAGE_NO = #{package_no}
+		<if test="lecture_no2 !=null and lecture_no2 != '' ">AND LECTURE_NO = #{lecture_no2}</if>
+	</update>
+
+	<!-- 상품명 클릭 팝업 수정하기 버튼 -->
+	<select id="getMylectureCount" parameterType="hashMap" resultType="int">
+		select count(*)
+		from TB_MYLECTURE_PAUSE
+		where USER_ID = #{user_id}
+		and ORDERNO = #{orderno}
+		and PACKAGE_NO = #{package_no}
+		<if test="lecture_no2 !=null and lecture_no2 != '' ">and lecture_no = #{lecture_no2}</if>
+	</select>
+
+	<!-- 상품명 클릭 팝업 수정하기 버튼 -->
+	<update id="updateMylecture5" parameterType="hashMap">
+		update TB_MYLECTURE_PAUSE
+		set
+		<if test="mylecture_paused_period !=null and mylecture_paused_period != '' or  mylecture_paused_period == 0">
+			mylecture_paused_period = #{mylecture_paused_period},
+		</if>
+		<if test="mylecture_paused_date1 !=null and mylecture_paused_date1 != '' ">
+			<choose>
+				<when test="mylecture_paused_period1 !=null and mylecture_paused_period1 == 0">
+						mylecture_paused_date1 = null,
+						mylecture_paused_period1 = null,
+				</when>
+
+				<otherwise>
+					mylecture_paused_date1 = to_date(#{mylecture_paused_date1}, 'YYYYMMDD'),
+					mylecture_paused_period1 = #{mylecture_paused_period1},
+				</otherwise>
+			</choose>
+		</if>
+		<if test="mylecture_paused_date2 !=null and mylecture_paused_date2 != '' ">
+			<choose>
+				<when test="mylecture_paused_period2 !=null and mylecture_paused_period2 == 0">
+						mylecture_paused_date2 = null,
+						mylecture_paused_period2 = null,
+				</when>
+
+				<otherwise>
+					mylecture_paused_date2 = to_date(#{mylecture_paused_date2}, 'YYYYMMDD'),
+					mylecture_paused_period2 = #{mylecture_paused_period2},
+				</otherwise>
+			</choose>
+		</if>
+		<choose>
+			<when test="mylecture_paused_period3 !=null and mylecture_paused_period3 == 0">
+
+				<if test="mylecture_paused_period2 !=null and mylecture_paused_period2 == 0">
+					<if test="mylecture_paused_period1 !=null and mylecture_paused_period1== 0">
+						mylecture_paused_count = 0,
+					</if>
+					<if test="mylecture_paused_period1 !=null and mylecture_paused_period1!= 0">
+						mylecture_paused_count = 1,
+					</if>
+				</if>
+				<if test="mylecture_paused_period2 != null and mylecture_paused_period2 != 0">
+					mylecture_paused_count = 2,
+				</if>
+
+				mylecture_paused_date3 = null,
+				mylecture_paused_period3 = null
+			</when>
+
+			<otherwise>
+				mylecture_paused_count = #{mylecture_paused_count},
+				mylecture_paused_date3 = to_date(#{mylecture_paused_date3}, 'YYYYMMDD'),
+				mylecture_paused_period3 = #{mylecture_paused_period3}
+			</otherwise>
+		</choose>
+		where USER_ID = #{user_id}
+		and ORDERNO = #{orderno}
+		and PACKAGE_NO = #{package_no}
+		<if test="lecture_no2 !=null and lecture_no2 != '' ">and lecture_no = #{lecture_no2}</if>
+	</update>
+
+	<!-- 상품명 클릭 팝업 수정하기 버튼 -->
+	<insert id="insertMylecture6" parameterType="hashMap">
+		INSERT INTO TB_MYLECTURE_PAUSE
+		( USER_ID
+		, ORDERNO
+		, PACKAGE_NO
+		,
+		LECTURE_NO
+		<if test="mylecture_paused_count !=null and mylecture_paused_count != '' ">
+			, MYLECTURE_PAUSED
+			, MYLECTURE_PAUSED_COUNT
+		</if>
+		<if test="mylecture_paused_period !=null and mylecture_paused_period != '' ">
+			, MYLECTURE_PAUSED_PERIOD
+		</if>
+		<if test="mylecture_paused_date1 !=null and mylecture_paused_date1 != '' ">
+			, MYLECTURE_PAUSED_DATE1
+			, MYLECTURE_PAUSED_PERIOD1
+		</if>
+		<if test="mylecture_paused_date2 !=null and mylecture_paused_date2 != '' ">
+			, MYLECTURE_PAUSED_DATE2
+			, MYLECTURE_PAUSED_PERIOD2
+		</if>
+		<if test="mylecture_paused_date3 !=null and mylecture_paused_date3 != '' ">
+			, MYLECTURE_PAUSED_DATE3
+			, MYLECTURE_PAUSED_PERIOD3
+		</if>
+		)
+		VALUES
+		( #{user_id}
+		, #{orderno}
+		, #{package_no}
+		<choose>
+			<when test="lecture_no2 ==null or lecture_no2 == '' ">, #{package_no}</when>
+			<otherwise>, #{lecture_no2}</otherwise>
+		</choose>
+		<if test="mylecture_paused_count != null and mylecture_paused_count != '' ">
+			, 'Y'
+			, #{mylecture_paused_count}
+		</if>
+		<if
+			test="mylecture_paused_period != null and mylecture_paused_period != '' ">
+			, #{mylecture_paused_period}
+		</if>
+		<if test="mylecture_paused_date1 !=null and mylecture_paused_date1 != '' ">
+			, to_date(#{mylecture_paused_date1}, 'YYYYMMDD')
+			, #{mylecture_paused_period1}
+		</if>
+		<if test="mylecture_paused_date2 !=null and mylecture_paused_date2 != '' ">
+			, to_date(#{mylecture_paused_date2}, 'YYYYMMDD')
+			, #{mylecture_paused_period2}
+		</if>
+		<if test="mylecture_paused_date3 !=null and mylecture_paused_date3 != '' ">
+			, to_date(#{mylecture_paused_date3}, 'YYYYMMDD')
+			, #{mylecture_paused_period3}
+		</if>
+		)
+	</insert>
+
+
+	<!-- 구입금액 팝업 등록 버튼 -->
+	<insert id="insertOrderMgntNo1" parameterType="hashMap">
+		INSERT INTO tb_order_mgnt_no
+		(orderNo, mgntNo, cnt, isCancel, cancel_dt,
+		statuscode, price, confirm_Dt, memo,PTYPE)
+		VALUES
+		(#{orderno}, #{mgntno}, 1, 2, SYSDATE, 'DLV230', -(#{price}+#{point}),
+		to_date(#{confirm_dt}, 'YYYYMMDD'), #{memo},SUBSTR(#{mgntno},1,1))
+	</insert>
+	
+	<insert id="updateOrderMgntNo2" parameterType="hashMap">
+		update tb_order_mgnt_no
+		set
+		cancel_dt = SYSDATE
+
+		where orderno = #{orderno}
+	</insert>
+	<insert id="updateOrderMgntNo3" parameterType="hashMap">
+		update tb_order_mgnt_no
+		set
+		cancel_dt = ''
+
+		where orderno = #{orderno}
+	</insert>
+
+	<insert id="insertOrderMgntNo2" parameterType="hashMap">
+		INSERT INTO tb_order_mgnt_no
+		(orderNo, mgntNo, cnt, isCancel, cancel_dt,
+		statuscode, price, confirm_Dt, memo, PTYPE)
+		VALUES
+		(#{orderno}, #{mgntno}, 1, 2, SYSDATE, 'DLV230', -#{point},
+		to_date(#{confirm_dt}, 'YYYYMMDD'), #{memo},SUBSTR(#{mgntno},1,1))
+	</insert>
+
+	<update id="updateApprovals2" parameterType="hashMap">
+		update TB_APPROVALS
+		set
+		REFUND_POINT = REFUND_POINT - #{point}
+		where orderno = #{orderno}
+	</update>
+
+	<insert id="insertMileageHistory" parameterType="hashMap">
+		insert into tb_mileage_history
+		(IDX,USERID, POINT, ORDERNO, MGNTNO, REGDATE,
+		COMMENT1, MANAGER, SITE)
+		values
+		(SEQ_TB_MILEAGE_IDX.NEXTVAL, #{orders_userid}, #{point}, #{orderno}, #{mgntno}, sysdate, '포인트 환불 '
+		|| #{point}, #{userid}, 'www.willbesgosi.net')
+	</insert>
+
+	<update id="updateMaMember" parameterType="hashMap">
+		update TB_MA_MEMBER
+		set
+		USER_POINT = USER_POINT + #{point}
+
+		where USER_ID = #{orders_userid}
+	</update>
+
+	<update id="updateMylecture_1" parameterType="hashMap">
+		update TB_MYLECTURE
+		set
+		PLAYYN = 'N'
+
+		WHERE orderNo = #{orderno}
+		and package_no = #{mgntno}
+	</update>
+
+	<update id="updateMylecture_2" parameterType="hashMap">
+		update TB_MYLECTURE
+		set
+		PLAYYN = 'Y'
+
+		WHERE orderNo = #{orderno}
+		and package_no = #{mgntno}
+	</update>
+
+	<update id="updateOrderMgntNo1" parameterType="hashMap">
+		update tb_order_mgnt_no
+		set
+		orderNo = #{orderno}
+		, mgntNo = #{mgntno}
+		, PTYPE = SUBSTR(#{mgntno},1,1)
+		, isCancel = 2
+		, cancel_dt = SYSDATE
+		, statuscode = 'DLV230'
+		, price = -(#{price}+#{point})
+		, confirm_Dt = to_date(#{confirm_dt}, 'YYYYMMDD')
+		, memo= #{memo}
+		Where orderNo = #{orderno}
+		and mgntNo = #{mgntno}
+		and isCancel = 2
+	</update>
+
+	<update id="updateMileageHistory" parameterType="hashMap">
+		update tb_mileage_history
+		set
+		point = #{point}
+		, comment1 = '포인트 환불 ' || #{point}
+		where orderno = #{orderno}
+		and mgntno = #{mgntno}
+		and userid = #{orders_userid}
+	</update>
+
+	<update id="updateMaMember2" parameterType="hashMap">
+		update TB_MA_MEMBER
+		set
+		USER_POINT = TO_CHAR(TO_NUMBER(USER_POINT) + TO_NUMBER(#{point_gap}))
+		where USER_ID = #{orders_userid}
+	</update>
+
+	<update id="updateApprovals3" parameterType="hashMap">
+		update tb_approvals
+		set
+		refund_point = refund_point - #{point_gap}
+		where orderno = #{orderno}
+	</update>
+
+	<delete id="deleteOrderMgntNo" parameterType="Map">
+		delete from tb_order_mgnt_no
+		Where orderNo=#{orderno}
+		and mgntNo=#{mgntno}
+		and isCancel=2
+	</delete>
+
+	<update id="updateMaMember3" parameterType="hashMap">
+		update TB_MA_MEMBER
+		set
+		USER_POINT = USER_POINT - #{point}
+		where USER_ID = #{orders_userid}
+	</update>
+
+	<update id="updateApprovals4" parameterType="hashMap">
+		update tb_approvals
+		set
+		refund_point = refund_point + #{point}
+		where orderno = #{orderno}
+	</update>
+
+	<insert id="insertMileageHistory2" parameterType="hashMap">
+		insert into tb_mileage_history
+		(IDX, USERID, POINT, ORDERNO, MGNTNO, REGDATE,
+		COMMENT1, MANAGER, SITE)
+		values
+		(SEQ_TB_MILEAGE_IDX.NEXTVAL, #{orders_userid}, -#{point}, #{orderno}, #{mgntno}, sysdate, '포인트
+		환불취소 '|| -#{point}, #{userid}, 'www.willbesgosi.net')
+	</insert>
+
+	<insert id="insertMileageHistory3" parameterType="hashMap">
+		insert into tb_mileage_history
+		(IDX, USERID, POINT, ORDERNO, MGNTNO, REGDATE,
+		COMMENT1, MANAGER, SITE)
+		values
+		(SEQ_TB_MILEAGE_IDX.NEXTVAL, #{userid}, #{temp_point}, '', '', sysdate, #{comment1}, #{admin_id}, 'www.willbesgosi.net')
+	</insert>
+
+	<!-- 상품명 클릭 팝업 수정하기 버튼 -->
+	<select id="getSelectBefore_Point" parameterType="hashMap" resultType="int">
+		SELECT USER_POINT FROM TB_MA_MEMBER
+		WHERE USER_ID = #{userid}
+	</select>
+
+	<update id="updateMylecture_3" parameterType="hashMap">
+		UPDATE TB_MYLECTURE
+		SET
+		PLAYYN = 'Y'
+		WHERE orderNo = #{orderno}
+		and package_no = #{mgntno}
+	</update>
+
+	<update id="updateApprovals5" parameterType="hashMap">
+		Update tb_approvals
+		Set
+		RePrice = -#{price}
+		, RePriceDate = to_date(#{confirmdate}, 'YYYYMMDD')
+		Where orderNo = #{orderno}
+	</update>
+
+	<!-- SMS보내기 -->
+	<insert id="insertSendMsgMultiSendUser" parameterType="hashMap">
+		<if test='is_mms == "Y"'>
+		CALL SP_INS_MMS_MSG (
+		   #{phone, mode=IN}, #{send_no, mode=IN}, #{message, mode=IN}
+		)
+		</if>
+		<if test='is_mms == "N"'>
+		CALL SP_INS_SC_TRAN (
+		   #{phone, mode=IN}, #{send_no, mode=IN}, #{message, mode=IN}
+		)
+		</if>
+	</insert>
+
+	<!-- 사용자 팝업 개인 수강내역 -->
+	<select id="getTmMember_View" parameterType="hashMap" resultMap="testMap">
+		select TO_CHAR(REG_DT, 'YYYY-MM-DD hh24:mi:ss') regDate,
+		NVL(USER_NM,'') as user_nm,
+		NVL(USER_ID,'') as userid,
+		DECODE(SEX,'M','남','F','여','') SEX,
+		NVL(ZIP_CODE,'') as zipcd,
+		NVL(ADDRESS1,'') as juso,
+		NVL(ADDRESS2,'') as juso2,
+		NVL(TEL_NO,'') as telep_no,
+		NVL(PHONE_NO,'') as celp_no,
+		NVL(EMAIL,'') as email,
+		NVL(USER_POINT,'0') as point,
+        USER_ROLE, 
+        DECODE(USER_POSITION, 'COP' ,'경찰', 'PUB', '공무원', 'GWJ', '광주', '공무원') USER_POSITION,
+		REMARK, BIRTH_DAY
+		from TB_MA_MEMBER
+		where USER_ID = #{userid}
+	</select>
+
+	<!-- Cs상담내역 등록 셀렉트박스 -->
+	<select id="getCsccode" parameterType="hashMap" resultType="hashMap">
+		SELECT CODE_VAL
+		, CODE_NM
+		FROM TB_BA_CONFIG_CD
+		where SYS_CD = #{CODE_VAL}
+		and ISUSE = 'Y'
+		order by CODE_NO
+	</select>
+
+	<!-- 사용자 팝업 Cs상담내역 리스트 -->
+	<select id="Cs_board_list" parameterType="hashMap" resultMap="testMap">
+		SELECT ROWNUM CNT
+		, TO_CHAR(REG_DT, 'YYYY-MM-DD hh24:mi:ss') REG_DT
+		, COUNSELOR_ID
+		, (SELECT USER_NM
+		FROM TB_MA_MEMBER
+		WHERE USER_ID = A.COUNSELOR_ID) COUNSELOR_NM
+		, CS_DIV
+		, (SELECT CODE_NM
+		FROM TB_BA_CONFIG_CD
+		WHERE CODE_VAL = A.CS_DIV
+		AND SYS_CD = 'CSBOARD_GUBUN') CS_DIV_NM
+		, CS_KIND
+		, (SELECT CODE_NM
+		FROM TB_BA_CONFIG_CD
+		WHERE CODE_VAL = A.CS_KIND) CS_KIND_NM
+		, DECODE(ACTION_YN, 'Y', '조치', 'N', '미조치', '') ACTION_YN
+		, CONTENT
+		FROM TB_BOARD_CS A
+		WHERE BOARD_MNG_SEQ = 'CSBOARD_ON'
+		AND REG_ID = #{userid}
+		<if test="sdate !=null and sdate != '' and edate !=null and edate != '' ">
+			AND TO_CHAR(REG_DT, 'YYYYMMDD') between #{sdate} and #{edate}
+		</if>
+
+		ORDER BY REG_DT DESC, BOARD_SEQ DESC
+	</select>
+
+	<!-- 사용자 팝업 Cs상담내역 총건수 -->
+	<select id="getCsBoardListCount" parameterType="hashMap"
+		resultType="int">
+		SELECT COUNT(*)
+		FROM TB_BOARD_CS A
+		WHERE BOARD_MNG_SEQ = 'CSBOARD_ON'
+		AND REG_ID = #{userid}
+		<if test="sdate !=null and sdate != '' and edate !=null and edate != '' ">
+			AND TO_CHAR(REG_DT, 'YYYYMMDD') between #{sdate} and #{edate}
+		</if>
+	</select>
+
+	<!-- 사용자 팝업 내쿠폰 리스트 --> 
+	<select id="getTm_mycoupon_list_admin" parameterType="hashMap" resultType="hashMap">
+		SELECT ROWNUM CNT, X.*
+		FROM(
+				SELECT ROWNUM CNT,A.IDX,A.CCODE,A.USERID,A.REGDATE,A.EXPDATES,TO_CHAR(TO_DATE(TO_CHAR(A.REGDATE,' yyyy-mm-dd'),'yyyy-mm-dd')+B.EXPDAY-1 , 'yyyy-mm-dd') EXPDATEE,A.ORDERNO,A.ORDERDATE,A.ORDER_FLAG,A.REG_ID,B.REGPRICE,B.REGTYPE,B.CNAME,B.TCLASSCAT
+				FROM TB_TM_MYCOUPON A, TB_TM_COUPON B
+				WHERE TRIM(A.CCODE) = B.CCODE
+				AND A.USERID=#{userid}
+
+				ORDER BY A.REGDATE DESC
+			)X
+	</select>
+
+	<!-- 사용자 팝업 내쿠폰 리스트 총건수 -->
+	<select id="getTm_mycoupon_listCount_admin" parameterType="hashMap" resultType="int">
+		select COUNT(*)
+		from TB_TM_MYCOUPON a
+		right outer join TB_TM_COUPON b
+		on a.ccode = b.ccode
+		where a.userid=#{userid}
+	</select>
+
+	<!-- 사용자 팝업 사용자 수강내역 리스트 -->
+	<select id="Tm_Class_List" parameterType="hashMap" resultType="hashMap">
+        SELECT OO.ORDERNO, OO.USER_ID USERID, OO.USER_NM USERNAME,
+        (SELECT SUBJECT_TITLE FROM TB_LEC_MST WHERE LECCODE = DECODE(OM.PTYPE, 'D', TM.PACKAGE_NO, TM.LECTURE_NO)) SUBJECT_TITLE, 
+        OM.PRICE, 
+        OM.OPEN_ADMIN_ID, OM.MEMO,
+        TM.PACKAGE_NO, TM.LECTURE_NO,
+        TO_CHAR(TM.START_DATE, 'YYYY-MM-DD') MYLECTURE_START_DATE,
+        TO_CHAR(TM.END_DATE, 'YYYY-MM-DD') MYLECTURE_END_DATE,
+        TM.STUDY_PERCENT MYLECTURE_STUDY_PERCENT
+        FROM TB_ORDERS OO
+        LEFT JOIN TB_ORDER_MGNT_NO OM
+        ON OM.ORDERNO = OO.ORDERNO
+        LEFT OUTER JOIN TB_MYLECTURE TM
+        ON TM.USERID = OO.USER_ID
+        AND TM.ORDERNO = OO.ORDERNO
+        AND TM.PACKAGE_NO=OM.MGNTNO
+        WHERE SUBSTR(OM.MGNTNO,1,1) IN ('D', 'J', 'N', 'P')
+        AND OM.ISCANCEL = 0
+        AND OM.STATUSCODE IN ('DLV105', 'DLV230')
+        AND OO.USER_ID = #{userid}
+        ORDER BY OO.ORDERNO DESC, SUBJECT_TITLE, OM.SDATE DESC
+	</select>
+
+	<!-- 사용자 팝업 사용자 수강내역 총건수 -->
+	<select id="getTmClassListCount" parameterType="hashMap" resultType="int">
+		SELECT COUNT(*)
+		FROM tb_orders OO
+		left join tb_order_mgnt_no OM
+		on OM.orderNo = OO.orderNo
+		Left Outer Join TB_MYLECTURE TM
+		On TM.USERID = OO.USER_ID
+		And TM.orderNo = OO.orderNo
+		And TM.package_no=OM.mgntNo
+        WHERE SUBSTR(OM.MGNTNO,1,1) IN ('D', 'J', 'N', 'P')
+		and OM.isCancel = 0
+		and OM.STATUSCODE IN ('DLV105', 'DLV230')
+		and OO.USER_ID = #{userid}
+	</select>
+
+	<!-- 사용자 팝업 학원 수강내역 리스트 -->
+	<select id="Off_Class_List" parameterType="hashMap" resultType="hashMap">
+		SELECT A.ORDERNO, A.REG_DT, A.USER_ID, A.USER_NM, A.TID,
+		B.MGNTNO, B.PRICE, B.PTYPE, D.PRICE_DISCOUNT_REASON,
+		C.SUBJECT_TITLE, C.SUBJECT_REAL_PRICE, C.SUBJECT_OPEN_DATE
+		FROM TB_OFF_ORDERS A, TB_OFF_ORDER_MGNT_NO B, TB_OFF_LEC_MST C, TB_OFF_APPROVALS D
+		WHERE A.ORDERNO = B.ORDERNO
+		AND B.STATUSCODE = 'DLV105'
+		AND B.MGNTNO = C.LECCODE
+        AND A.ORDERNO = D.ORDERNO
+		AND A.USER_ID = #{userid}
+		order by A.ORDERNO desc, C.SUBJECT_OPEN_DATE desc
+	</select>
+
+	<!-- 사용자 팝업 문자,쪽지 리스트 -->
+	<select id="getMemoList" parameterType="hashMap" resultType="hashMap">
+        SELECT ROWNUM CNT, SEND_DT, READ_DT
+        , '쪽지' STS
+        , CONT
+        , READ_YN
+        FROM TB_NOTE_SEND_INFO
+   		WHERE FROM_USERID = #{userid}
+		<if test="sdate !=null and sdate != '' and edate !=null and edate != '' ">
+			AND TO_CHAR(SEND_DT, 'YYYYMMDD') between #{sdate} and #{edate}
+		</if>
+	</select>
+
+	<!-- 사용자 팝업 문자,쪽지 리스트 총건수 -->
+	<select id="getMemoListCount" parameterType="hashMap"
+		resultType="int">
+		SELECT COUNT(*)
+		FROM(
+		SELECT TO_CHAR(SEND_DT, 'YYYY-MM-DD') SEND_DT
+		, '쪽지' STS
+		, CONT
+		, READ_YN
+		FROM TB_NOTE_SEND_INFO
+		WHERE FROM_USERID = #{userid}
+
+		<if test="sdate !=null and sdate != '' and edate !=null and edate != '' ">
+			AND TO_CHAR(SEND_DT, 'YYYYMMDD') between #{sdate} and #{edate}
+		</if>
+
+		UNION ALL
+
+		SELECT TO_CHAR(SEND_DT, 'YYYY-MM-DD') SEND_DT
+		, '문자' STS
+		, CONT
+		, READ_YN
+		FROM TB_MAIL_SEND_INFO
+		WHERE FROM_USERID = #{userid}
+
+		<if test="sdate !=null and sdate != '' and edate !=null and edate != '' ">
+			AND TO_CHAR(SEND_DT, 'YYYYMMDD') between #{sdate} and #{edate}
+		</if>
+		) A
+	</select>
+
+	<!-- 사용자 팝업 메모 및 point 변경 수정 -->
+	<update id="updateMemo" parameterType="hashMap">
+		UPDATE TB_MA_MEMBER
+		SET
+		USER_POINT = #{point}
+		<if test="memo != null">, REMARK = #{memo}</if>
+		WHERE USER_ID = #{userid}
+	</update>
+
+	<!-- CS상담내용 등록처리 등록 -->
+	<insert id="insertBoardCs" parameterType="hashMap">
+		INSERT INTO TB_BOARD_CS
+		( REG_DT
+		, BOARD_MNG_SEQ
+		, BOARD_SEQ
+		<if test="ccode_top != null">, CS_DIV</if>
+		<if test="ccode != null">, CS_KIND</if>
+		, OPEN_YN
+		<if test="ccode != null">, SUBJECT</if>
+		<if test="content != null">, CONTENT</if>
+		<if test="userid != null">, REG_ID</if>
+		<if test="username != null">, REG_NM</if>
+		<if test="actionflag != null">, ACTION_YN</if>
+		<if test="USER_ID != null">, COUNSELOR_ID</if>
+		<if test="USER_NM != null">, CREATENAME</if>
+		)
+		VALUES
+		( SYSDATE
+		, 'CSBOARD_ON'
+		, SEQ_TB_BOARD_CS_SEQ.NEXTVAL
+		<if test="ccode_top != null">, #{ccode_top}</if>
+		<if test="ccode != null">, #{ccode}</if>
+		, 'N'
+		<if test="ccode != null">, (SELECT CODE_NM
+			FROM TB_BA_CONFIG_CD
+			WHERE CODE_VAL = #{ccode_top} AND SYS_CD = 'CSBOARD_GUBUN') || ' ' || (SELECT CODE_NM
+			FROM TB_BA_CONFIG_CD
+			WHERE CODE_VAL = #{ccode})
+		</if>
+		<if test="content != null">, #{content}</if>
+		<if test="userid != null">, #{userid}</if>
+		<if test="username != null">, #{username}</if>
+		<if test="actionflag != null">, #{actionflag}</if>
+		<if test="USER_ID != null">, #{USER_ID}</if>
+		<if test="USER_NM != null">, #{USER_NM}</if>
+		)
+	</insert>
+
+	<!-- TM상담내용 등록처리 등록 -->
+	<insert id="insertTmBoard" parameterType="hashMap">
+		INSERT INTO TB_TM_BOARD
+		(
+		IDX
+		,VOCCODE
+		,DUTYCODE
+		,CONTENT
+		,REQUSERID
+		,REQUSERNAME
+		,REGUSERID
+		,REGUSERNAME
+		,REGDATE
+		)
+		VALUES
+		(
+		SEQ_TB_TM_BOARD_IDX.NEXTVAL
+		,#{VOCCODE}
+		,#{DUTYCODE}
+		,#{TMBCONTENT}
+		,#{userid}
+		,#{username}
+		,#{USER_ID}
+		,#{USER_NM}
+		,SYSDATE
+		)
+	</insert>
+
+	<!-- TM 상담내역 리스트(선택된 회원) -->
+	<select id="getTmBoardList" parameterType="hashMap" resultType="hashMap">
+		SELECT ROWNUM CNT, IDX ,VOCCODE
+		,DECODE(VOCCODE,'A','통화','B','재통화','C','부재중','D','거절','E','번호오류','F','관심회원')
+		VOCCODE_NM
+		,DUTYCODE
+		,DECODE(DUTYCODE,'001','9급공무원','002','7급공무원','003','법원/검찰/교정','005','세무/관세','006','소방공무원','007','군무원','008','경찰공무원','999','독서실','')
+		DUTYCODE_NM
+		,CONTENT ,REQUSERID ,REQUSERNAME ,REGUSERID ,REGUSERNAME
+		,TO_CHAR(REGDATE,'YYYY-MM-DD HH24:MM') REG_DT ,
+		TO_CHAR(UPDDATE,'YYYY-MM-DD HH24:MM') UPD_DT
+		FROM TB_TM_BOARD
+		WHERE REQUSERID = #{userid}
+		ORDER BY IDX DESC
+	</select>
+
+	<!-- TM관리 분류 항목들 조회 -->
+	<select id="getVOCCODEList" parameterType="hashMap" resultType="hashMap">
+		SELECT CODE_VAL , CODE_NM
+		FROM TB_BA_CONFIG_CD
+		WHERE SYS_CD='TM_VOCCODE'
+		ORDER BY CODE_VAL
+	</select>
+
+	<!-- TM관리 구분 항목들 조회 -->
+	<select id="getDUTYCODEList" parameterType="hashMap" resultType="hashMap">
+		SELECT
+		ID, CODE, NAME, ISUSE, DECODE(ISUSE, 'Y', '활성', 'N', '비활성') ISUSE_NM
+		, REG_DT, REG_ID, UPD_DT, UPD_ID
+		FROM TB_CATEGORY_INFO
+		WHERE ISUSE = 'Y'
+		AND USE_ON = 'Y'
+        AND P_CODE = 'CLASSCODE'
+		ORDER BY CODE ASC
+	</select>
+
+	<!-- 포인트 내역 리스트 -->
+	<select id="getTmPointHistory" parameterType="hashMap" resultType="hashMap">
+        SELECT * FROM (
+	        SELECT *
+	        FROM TB_MILEAGE_HISTORY
+	        WHERE USERID = #{userid}
+	        UNION ALL
+	        SELECT *
+	        FROM TB_MILEAGE_HISTORY@WILLBESGOSI_NEW
+	        WHERE USERID = #{userid}
+        )
+        ORDER BY REGDATE DESC
+	</select>
+
+	<!-- 쿠폰발행 팝업 리스트 -->
+	<select id="getTmCoupon" parameterType="hashMap" resultType="hashMap">
+        SELECT 
+        A.CCODE, A.CNAME, A.CCONTENT, A.REGDATE, A.REGTYPE, A.REGPRICE
+        ,A.EXPDATES, A.EXPDATEE, A.EXPDAY, A.TCLASS, A.TCLASSCAT, A.PUB_COUPON_GUBUN
+        , SYSDATE THISTIME
+		<if test="userid !=null and userid != '' ">
+        ,(SELECT COUNT(*) FROM TB_TM_MYCOUPON WHERE CCODE = A.CCODE AND USERID = #{userid}) AS ISALLOC
+		</if>
+        FROM TB_TM_COUPON A
+        WHERE IS_USE = 'Y'
+        ORDER BY TO_CHAR(EXPDATEE, 'YYYY-MM-DD') DESC, TCLASSCAT DESC, REGPRICE DESC
+	</select>
+
+	<!-- 쿠폰발행 팝업 리스트 -->
+	<select id="getTmCouponList" parameterType="hashMap" resultType="hashMap">
+		select
+			A.CCODE, A.CNAME, A.CCONTENT, A.REG_DT, A.REGTYPE, A.REGPRICE, A.EXPDATES, A.EXPDATEE, A.EXPDAY, A.TCLASS, A.TCLASSCAT, A.PUB_COUPON_GUBUN, SYSDATE THISTIME
+		<if test="userid !=null and userid != '' ">
+			,(select count(*) from TB_TM_MYCOUPON where CCODE = A.CCODE and USERID = #{userid}) as ISALLOC
+		</if>
+		from TB_TM_COUPON A
+		WHERE 0=0 AND (ADD_FLAG = 'O' OR ADD_FLAG IS NULL)
+
+		<if test='SEARCHGIFTTEXT != null and SEARCHGIFTTEXT != ""'>
+			<if test='GIFT_SEARCHTYPE != null and GIFT_SEARCHTYPE != ""'>
+				<if test='GIFT_SEARCHTYPE == "1"'>
+					AND A.CCODE LIKE '%'||#{SEARCHGIFTTEXT}||'%'
+				</if>
+				<if test='GIFT_SEARCHTYPE == "2"'>
+					AND A.CNAME like '%'||#{SEARCHGIFTTEXT}||'%'
+				</if>
+			</if>
+			<if test='GIFT_SEARCHTYPE == null or GIFT_SEARCHTYPE == ""'>
+				AND (A.CCODE like '%'||#{SEARCHGIFTTEXT}||'%'
+					OR A.CNAME like '%'||#{SEARCHGIFTTEXT}||'%')
+			</if>
+		</if>
+		ORDER BY TO_CHAR(EXPDATEE, 'YYYY-MM-DD') desc, TCLASSCAT desc, regprice desc
+	</select>
+
+	<!-- 쿠폰발행 팝업 리스트 -->
+	<select id="getTmMoCouponList" parameterType="hashMap" resultType="hashMap">
+		select
+			A.CCODE, A.CNAME, A.CCONTENT, A.REG_DT, A.REGTYPE, A.REGPRICE, A.EXPDATES, A.EXPDATEE, A.EXPDAY, A.TCLASS, A.TCLASSCAT, A.PUB_COUPON_GUBUN, SYSDATE	THISTIME
+		<if test="userid !=null and userid != '' ">
+			,(select count(*) from TB_TM_MYCOUPON where CCODE = A.CCODE and USERID = #{userid}) as ISALLOC
+		</if>
+		from TB_TM_COUPON A
+		WHERE 0=0 AND ADD_FLAG = 'M'
+
+		<if test='SEARCHMOTEXT != null and SEARCHMOTEXT != ""'>
+			<if test='MO_SEARCHTYPE != null and MO_SEARCHTYPE != ""'>
+				<if test='MO_SEARCHTYPE == "1"'>
+					AND A.CCODE LIKE '%'||#{SEARCHMOTEXT}||'%'
+				</if>
+				<if test='MO_SEARCHTYPE == "2"'>
+					AND A.CNAME like '%'||#{SEARCHMOTEXT}||'%'
+				</if>
+			</if>
+			<if test='MO_SEARCHTYPE == null or MO_SEARCHTYPE == ""'>
+				AND (A.CCODE like '%'||#{SEARCHMOTEXT}||'%'
+					OR A.CNAME like '%'||#{SEARCHMOTEXT}||'%')
+			</if>
+		</if>
+		ORDER BY TO_CHAR(EXPDATEE, 'YYYY-MM-DD') desc, TCLASSCAT desc, regprice desc
+	</select>
+
+	<!-- 쿠폰발행 팝업 총건수 -->
+	<select id="getTmCouponCount" parameterType="hashMap" resultType="int">
+		select COUNT(*)
+		from TB_TM_COUPON
+		WHERE 0=0 AND (ADD_FLAG = 'O' OR ADD_FLAG IS NULL)
+
+		<if test='SEARCHGIFTTEXT != null and SEARCHGIFTTEXT != ""'>
+			<if test='GIFT_SEARCHTYPE != null and GIFT_SEARCHTYPE != ""'>
+				<if test='GIFT_SEARCHTYPE == "1"'>
+					AND CCODE LIKE '%'||#{SEARCHGIFTTEXT}||'%'
+				</if>
+				<if test='GIFT_SEARCHTYPE == "2"'>
+					AND CNAME like '%'||#{SEARCHGIFTTEXT}||'%'
+				</if>
+			</if>
+			<if test='GIFT_SEARCHTYPE == null or GIFT_SEARCHTYPE == ""'>
+				AND (CCODE like '%'||#{SEARCHGIFTTEXT}||'%'
+					OR CNAME like '%'||#{SEARCHGIFTTEXT}||'%')
+			</if>
+		</if>
+	</select>
+	<!-- 쿠폰발행 팝업 총건수 -->
+	<select id="getTmMoCouponCount" parameterType="hashMap" resultType="int">
+		select COUNT(*)
+		from TB_TM_COUPON
+		WHERE 0=0 AND ADD_FLAG = 'M'
+
+		<if test='SEARCHMOTEXT != null and SEARCHMOTEXT != ""'>
+			<if test='MO_SEARCHTYPE != null and MO_SEARCHTYPE != ""'>
+				<if test='MO_SEARCHTYPE == "1"'>
+					AND CCODE LIKE '%'||#{SEARCHMOTEXT}||'%'
+				</if>
+				<if test='MO_SEARCHTYPE == "2"'>
+					AND CNAME like '%'||#{SEARCHMOTEXT}||'%'
+				</if>
+			</if>
+			<if test='MO_SEARCHTYPE == null or MO_SEARCHTYPE == ""'>
+				AND (CCODE like '%'||#{SEARCHMOTEXT}||'%'
+					OR CNAME like '%'||#{SEARCHMOTEXT}||'%')
+			</if>
+		</if>
+	</select>
+
+	<!-- 선택한 쿠폰 사용자에게 발행 총건수 모든 사용자 쿠폰 사용 가능 하게 변경 140411-->
+	<select id="getCouponCount" parameterType="hashMap" resultType="int">
+		select COUNT(*)
+		from TB_TM_MYCOUPON
+		where ccode = #{ccode} and 1 = 2
+		and userid = #{userid}
+	</select>
+
+	<!-- 쿠폰을 새로 등록 -->
+	<insert id="insertTmCoupon" parameterType="hashMap">
+		INSERT INTO TB_TM_COUPON(
+  			CCODE, CNAME, CCONTENT, REG_DT, REGTYPE, REGPRICE, EXPDATES, EXPDATEE, EXPDAY, TCLASS, TCLASSCAT, PUB_COUPON_GUBUN, ADD_FLAG
+		) VALUES(
+  			#{CCODE}, #{CNAME}, #{CCONTENT}, SYSDATE, #{REGTYPE}, #{REGPRICE}, #{EXPDATES}, #{EXPDATEE}, #{EXPDAY}, #{TCLASS}, #{TCLASSCAT}, #{PUB_COUPON_GUBUN}, #{ADD_FLAG}
+		)
+	</insert>
+
+	<!-- 선택한 쿠폰 사용자에게 발행 등록 -->
+	<insert id="insertMyCoupon" parameterType="hashMap">
+		INSERT INTO TB_TM_MYCOUPON ( 
+			IDX, CCODE, USER_ID, REG_DT, EXPDATES, EXPDATEE, ORDER_FLAG, REG_ID
+		) VALUES ( 
+			(SELECT NVL(MAX(IDX), 0) + 1 FROM TB_TM_MYCOUPON), #{ccode}, #{userid}, SYSDATE, SYSDATE
+		, to_date(TO_CHAR(SYSDATE, 'YYYYMMDD'), 'YYYYMMDD')+#{eday}
+		, '0', #{USER_ID}
+		)
+	</insert>
+
+	<!-- off 전체상품주문관리 리스트 -->
+	<select id="getOffOrderListDB" parameterType="hashMap"  resultType="hashMap">
+		SELECT * 
+		FROM (SELECT ROWNUM AS RNUM, H.* 
+		      FROM (SELECT A.ORDERNO, A.ORDER_TYPE
+		                 , DECODE(A.ORDER_TYPE, 'ON', '온라인신청', 'OFF', '학원방문', '데스크접수') ORDER_TYPE_NM
+		, TO_CHAR(A.REG_DT, 'YYYY-MM-DD') AS REG_DT
+		                 , A.USER_ID, A.USER_NM, A.PHONE_NO, A.TICKET_PRINT_DT, D.SUBJECT_TITLE
+		                 , AA.CNT SUBJECT_CNT, B.PRICE, C.STATUSCODE
+		, SUBSTR(C.MGNTNO,1,1) MGNTNO
+		                 , DECODE(C.STATUSCODE, 'DLV105', '결제완료', 'DLV230', '환불완료', 'DLV250', '대기중', '') STATUSCODE_NM
+						 , FN_GET_OFF_PAY_NM(A.ORDERNO) PRICE_STS
+						 ,D.CATEGORY_CD, (SELECT E.NAME FROM TB_CATEGORY_INFO E WHERE E.CODE = D.CATEGORY_CD) CATEGORY_NM
+		            FROM (SELECT B.ORDERNO, TO_CHAR(B.ISCONFIRM, 'YYYY-MM-DD') ISCONFIRM, COUNT(C.LECTURE_NO) CNT
+      	FROM TB_OFF_ORDERS A, TB_OFF_ORDER_MGNT_NO B, TB_OFF_MYLECTURE C
+      	WHERE A.ORDERNO = B.ORDERNO
+        AND A.ORDERNO = C.ORDERNO
+	    AND B.MGNTNO = C.PACKAGE_NO
+      	AND B.STATUSCODE IN ('DLV105', 'DLV250')
+						  <if test="sdate !=null and sdate != '' and edate !=null and edate != '' ">
+		                  AND TO_CHAR(B.ISCONFIRM, 'YYYYMMDD') BETWEEN #{sdate} AND #{edate}
+						  </if>
+		                  GROUP BY B.ORDERNO, TO_CHAR(B.ISCONFIRM, 'YYYY-MM-DD')) AA, 
+		                 (SELECT ORDERNO, MAX(STATUSCODE) STATUSCODE, MAX(MGNTNO) MGNTNO
+		FROM TB_OFF_ORDER_MGNT_NO
+		WHERE PTYPE NOT IN('S','T')
+		                  GROUP BY ORDERNO) C, TB_OFF_ORDERS A,  TB_OFF_APPROVALS B, TB_OFF_LEC_MST D
+		WHERE C.ORDERNO = A.ORDERNO(+)
+		AND C.ORDERNO = B.ORDERNO(+)
+        AND C.ORDERNO = AA.ORDERNO(+)
+        AND C.MGNTNO = D.LECCODE
+
+		<if test="ordertype !=null and ordertype != '' ">
+			AND A.ORDER_TYPE = #{ordertype}
+		</if>
+        
+		<if test="orderstatuscode !=null and orderstatuscode != '' ">
+			AND C.STATUSCODE = #{orderstatuscode}
+		</if>
+		<if test="orderpaycode !=null and orderpaycode != '' ">
+			AND B.PAYCODE = #{orderpaycode}
+		</if>
+		<if test="sdate !=null and sdate != '' and edate !=null and edate != '' ">
+					AND REPLACE(ISCONFIRM, '-','') BETWEEN #{sdate} and 	#{edate}
+		</if>
+		<if test="s_cat_cd !=null and s_cat_cd != '' ">
+			    AND D.CATEGORY_CD = #{s_cat_cd}
+		</if>
+		<if test="searchkey !=null and searchkey != '' ">
+			<if test="searchtype !=null and searchtype != '' ">
+				<choose>
+					<when test="searchtype != 'all'">
+					AND INSTR(${searchtype}, #{searchkey}) <![CDATA[ > ]]> 0
+					</when>
+					<when test="searchtype == 'all'">
+					AND (	INSTR(A.ORDERNO, #{searchkey}) <![CDATA[ > ]]> 0
+						    OR INSTR(A.USER_NM, #{searchkey}) <![CDATA[ > ]]> 0)
+					</when>
+
+				</choose>
+			</if>
+		</if>
+		            ORDER BY A.REG_DT DESC, A.ORDERNO DESC) H 
+		      WHERE ROWNUM <![CDATA[ <= ]]> #{endNo} )
+		WHERE RNUM <![CDATA[ > ]]> #{startNo}
+	</select>
+
+	<!-- off 전체상품주문관리 카운트 -->
+	<select id="getOffOrderListCount" parameterType="hashMap" resultType="int">
+		      SELECT count(*)
+		            FROM (SELECT B.ORDERNO, TO_CHAR(B.ISCONFIRM, 'YYYY-MM-DD') ISCONFIRM, COUNT(C.LECTURE_NO) CNT
+      	FROM TB_OFF_ORDERS A, TB_OFF_ORDER_MGNT_NO B, TB_OFF_MYLECTURE C
+      	WHERE A.ORDERNO = B.ORDERNO
+        AND A.ORDERNO = C.ORDERNO
+	    AND B.MGNTNO = C.PACKAGE_NO
+      	AND B.STATUSCODE IN ('DLV105', 'DLV250')
+						  <if test="sdate !=null and sdate != '' and edate !=null and edate != '' ">
+		                  AND TO_CHAR(B.ISCONFIRM, 'YYYYMMDD') BETWEEN #{sdate} AND #{edate}
+						  </if>
+		                  GROUP BY B.ORDERNO, TO_CHAR(B.ISCONFIRM, 'YYYY-MM-DD')) AA, 
+		                 (SELECT ORDERNO, MAX(STATUSCODE) STATUSCODE, MAX(MGNTNO) MGNTNO
+		FROM TB_OFF_ORDER_MGNT_NO
+		WHERE PTYPE NOT IN('S','T')
+		                  GROUP BY ORDERNO) C, TB_OFF_ORDERS A,  TB_OFF_APPROVALS B, TB_OFF_LEC_MST D
+		WHERE C.ORDERNO = A.ORDERNO(+)
+		AND C.ORDERNO = B.ORDERNO(+)
+        AND C.ORDERNO = AA.ORDERNO(+)
+        AND C.MGNTNO = D.LECCODE
+
+		<if test="ordertype !=null and ordertype != '' ">
+			AND A.ORDER_TYPE = #{ordertype}
+		</if>
+        
+		<if test="orderstatuscode !=null and orderstatuscode != '' ">
+			AND C.STATUSCODE = #{orderstatuscode}
+		</if>
+		<if test="orderpaycode !=null and orderpaycode != '' ">
+			AND B.PAYCODE = #{orderpaycode}
+		</if>
+		<if test="sdate !=null and sdate != '' and edate !=null and edate != '' ">
+					AND REPLACE(ISCONFIRM, '-','') BETWEEN #{sdate} and 	#{edate}
+		</if>
+		<if test="s_cat_cd !=null and s_cat_cd != '' ">
+			AND D.CATEGORY_CD = #{s_cat_cd}
+		</if>
+		<if test="searchkey !=null and searchkey != '' ">
+			<if test="searchtype !=null and searchtype != '' ">
+				<choose>
+					<when test="searchtype != 'all'">
+					AND INSTR(${searchtype}, #{searchkey}) <![CDATA[ > ]]> 0
+					</when>
+					<when test="searchtype == 'all'">
+					AND (	INSTR(A.ORDERNO, #{searchkey}) <![CDATA[ > ]]> 0
+						    OR INSTR(A.USER_NM, #{searchkey}) <![CDATA[ > ]]> 0)
+					</when>
+
+				</choose>
+			</if>
+		</if>
+	</select>
+
+	<!-- 전체상품주문관리 리스트 2번째 -->
+	<select id="getOffTblOrderMgntListDB" parameterType="hashMap" resultType="hashMap">
+		select aa.mgntNo,
+		aa.name,
+		aa.cnt,
+		nvl(aa.price,0) as price,
+		nvl(aa.statusCode,'DLV000') as statusCode,
+		aa.statusCodeNm,
+		aa.wmv_pmp,
+		aa.user_package_flag,
+		aa.confirm_Dt,
+		aa.cancel_Dt,
+		aa.realprice,
+		aa.isCancel
+		from(
+		select b.leccode as mgntNo,
+		b.subject_title as name,
+		a.cnt,
+		a.price,
+		a.statusCode,
+		(SELECT NVL(CODE_NM,' ')
+		FROM TB_BA_CONFIG_CD
+		where SYS_CD = 'ORDER_STATUSCODE'
+		and ISUSE = 'Y'
+		and CODE_VAL = a.statusCode) statusCodeNm,
+		a.wmv_pmp,
+		a.user_package_flag,
+		decode(a.confirm_Dt, null, TO_CHAR(SYSDATE , 'YYYY-MM-DD'), '', TO_CHAR(SYSDATE, 'YYYY-MM-DD'), TO_CHAR(a.confirm_Dt, 'YYYY-MM-DD')) confirm_Dt,
+		decode(a.confirm_Dt, null, TO_CHAR(SYSDATE, 'YYYY-MM-DD hh24:mi:ss'),
+		'', TO_CHAR(SYSDATE, 'YYYY-MM-DD hh24:mi:ss'), TO_CHAR(a.confirm_Dt, 'YYYY-MM-DD hh24:mi:ss')) confirmDate2,
+		a.cancel_Dt,
+		'', TO_CHAR(SYSDATE, 'YYYY-MM-DD'), 
+		0 AS realprice,
+		a.isCancel
+		from TB_OFF_ORDER_MGNT_NO a, TB_OFF_LEC_MST b
+		where a.orderNo = #{orderno}
+		and a.mgntNo = b.leccode
+
+		<if test="orderstatuscode !=null and orderstatuscode != '' ">
+			and a.statusCode = #{orderstatuscode}
+		</if>
+
+		union all
+
+		select b.rsc_id as mgntNo,
+		b.book_nm as name,
+		a.cnt,
+		a.price,
+		a.statusCode,
+		(SELECT NVL(CODE_NM, ' ')
+		FROM TB_BA_CONFIG_CD
+		where SYS_CD = 'ORDER_STATUSCODE'
+		and ISUSE = 'Y'
+		and CODE_VAL = a.statusCode) statusCodeNm,
+		a.wmv_pmp,
+		a.user_package_flag,
+		TO_CHAR(a.confirm_Dt, 'YYYY-MM-DD') confirm_Dt,
+		decode(a.confirm_Dt, null, TO_CHAR(SYSDATE, 'YYYY-MM-DD hh24:mi:ss'), '', TO_CHAR(SYSDATE, 'YYYY-MM-DD hh24:mi:ss'), 
+		TO_CHAR(a.confirm_Dt, 'YYYY-MM-DD hh24:mi:ss')) confirmDate2,
+		a.cancel_Dt,
+		b.price as realprice,
+		a.isCancel
+		from TB_OFF_ORDER_MGNT_NO a, TB_CA_BOOK b
+		where a.orderNo = #{orderno}
+		and a.mgntNo = b.rsc_id
+
+		<if test="orderstatuscode !=null and orderstatuscode != '' ">
+			and a.statusCode = #{orderstatuscode}
+		</if>
+		)aa
+		order by aa.mgntNo
+	</select>
+
+	<!-- off 전체상품주문관리 엑셀 리스트 -->
+	<select id="getOffOrderExcelListDB" parameterType="hashMap" resultType="hashMap">
+		select ROWNUM RNUM,H.orderNo,
+		H.orders_userId,
+		H.orders_userName || '(' || H.orders_cellNo || ')' orders_userName,
+		H.orders_telNo,
+		H.orders_cellNo,
+		H.orders_zipcd,
+		H.orders_addr,
+		H.orders_email,
+		H.ORDER_TYPE,
+		H.TICKET_PRINT_DT,
+		TO_CHAR(H.orders_regDate, 'YYYY-MM-DD') orders_regDate,
+		H.approvals_price,
+		H.approvals_addPrice,
+		H.approvals_payCode,
+		H.approvals_AcctNoCode,
+		H.approvals_payName,
+		H.approvals_point,
+		H.refund_point,
+		H.approvals_returnValue,
+		H.approvals_regDate,
+		H.approvals_RePrice,
+		DECODE(H.approvals_payCodeName, 'PAY100', '무통장입금' || H.approvals_acctNoName, 'PAY110', '카드결제' ||
+		H.approvals_acctNoName, 'PAY120', '가상계좌' || H.approvals_acctNoName,
+		'PAY130', '계좌이체' || H.approvals_acctNoName, '없음' ||
+		H.approvals_acctNoName) approvals_payCodeName,
+		H.approvals_acctNoName,
+
+		NVL(H.ACC_BANK_NAME,' ') ACC_BANK_NAME,
+		NVL(H.ACC_BANK_NUM,' ') ACC_BANK_NUM,
+		NVL(H.ACC_BANK_DEPOSITOR,' ') ACC_BANK_DEPOSITOR,
+
+		H.price_sts,H.CATEGORY_NM,
+
+		H.rowCnt
+		from(
+		select DISTINCT(G.orderNo),
+		G.orders_userId,
+		G.orders_userName,
+		G.orders_telNo,
+		G.orders_cellNo,
+		G.orders_zipcd,
+		G.orders_addr,
+		G.orders_email,
+
+		G.ORDER_TYPE,
+		G.TICKET_PRINT_DT,
+
+		G.orders_regDate,
+		G.approvals_price,
+		G.approvals_addPrice,
+		G.approvals_payCode,
+		G.approvals_AcctNoCode,
+		G.approvals_payName,
+		G.approvals_point,
+		G.refund_point,
+		G.approvals_returnValue,
+		G.approvals_regDate,
+		G.approvals_RePrice,
+		G.approvals_payCodeName,
+		G.approvals_acctNoName,
+
+		G.ACC_BANK_NAME,
+		G.ACC_BANK_NUM,
+		G.ACC_BANK_DEPOSITOR,
+
+		G.price_sts,G.CATEGORY_NM,
+
+		G.rowCnt
+		from(
+		select a.orderNo,
+		a.USER_ID as orders_userId,
+		a.USER_NM as orders_userName,
+		a.TEL_NO as orders_telNo,
+		a.PHONE_NO as orders_cellNo,
+		a.ZIP_CODE as orders_zipcd,
+		a.ADDRESS1 as orders_addr,
+		a.email as orders_email,
+
+		decode(a.ORDER_TYPE, 'ON', '온라인신청', 'OFF', '학원방문', '데스크접수') as ORDER_TYPE,
+		decode(a.TICKET_PRINT_DT, null, 'N', 'Y') as TICKET_PRINT_DT,
+
+		a.REG_DT as orders_regDate,
+		c.price as approvals_price,
+		NVL(c.addPrice,0) as approvals_addPrice,
+		c.payCode as approvals_payCode,
+		c.AcctNoCode as approvals_AcctNoCode,
+		c.payName as approvals_payName,
+		c.point as approvals_point,
+		c.refund_point as refund_point,
+		c.returnValue as approvals_returnValue,
+		c.REG_DT as approvals_regDate,
+		c.RePrice as approvals_RePrice,
+		c.payCode approvals_payCodeName,
+		c.acctNoCode approvals_acctNoName,
+
+		P.ACC_BANK_NAME,
+		P.ACC_BANK_NUM,
+		P.ACC_BANK_DEPOSITOR,
+
+		FN_GET_OFF_PAY_NM(a.ORDERNO) AS price_sts,
+		
+		(SELECT EE.NAME FROM TB_CATEGORY_INFO EE WHERE EE.CODE = E.CATEGORY_CD) CATEGORY_NM,
+
+		(select count(*)
+		from TB_OFF_ORDER_MGNT_NO
+		where orderNo = a.orderNo
+
+		<if test="orderstatuscode !=null and orderstatuscode != '' ">
+			and statusCode = #{orderstatuscode}
+		</if>
+
+		) as rowCnt
+
+		from TB_OFF_ORDERS a
+
+		left join TB_OFF_APPROVALS c
+		on c.orderNo = a.orderNo
+
+		LEFT OUTER JOIN TB_OFF_ORDER_MGNT_NO D
+		ON D.ORDERNO = A.ORDERNO
+		LEFT OUTER JOIN TB_OFF_LEC_MST E
+		ON E.LECCODE = D.MGNTNO
+		LEFT OUTER JOIN tb_CA_BOOK F
+		ON F.RSC_ID = D.MGNTNO
+		LEFT OUTER JOIN TB_OFF_REFUND P
+		ON P.ORDER_ID = A.ORDERNO
+
+		where 1=1
+
+		<if test="orderstatuscode !=null and orderstatuscode != '' ">
+			and a.orderNo in ( select orderNo
+			from TB_OFF_ORDER_MGNT_NO
+			where orderNo = a.orderNo
+			and statusCode = #{orderstatuscode} )
+		</if>
+
+		<if test="paycode !=null and paycode != '' ">
+			and a.ORDER_TYPE = #{paycode}
+		</if>
+
+		and TO_CHAR(a.REG_DT, 'YYYYMMDD') between #{sdate} and #{edate}
+
+		<if test="searchkey !=null and searchkey != '' ">
+			<if test="searchtype !=null and searchtype != '' ">
+				<choose>
+					<when test="searchtype != 'all'">
+						and ${searchtype} like '%'||#{searchkey}||'%'
+					</when>
+
+					<when test="searchtype == 'all'">
+						and (
+						a.orderNo like '%'||#{searchkey}||'%'
+						or a.USER_NM like '%'||#{searchkey}||'%'
+						)
+					</when>
+
+				</choose>
+			</if>
+		</if>
+
+		and d.PTYPE not in('S','T')
+
+		order by a.orderNo asc
+		) G
+		) H
+	</select>
+
+	<!-- id체크 -->
+	<select id="getIdChk" parameterType="hashMap" resultType="hashMap">
+		SELECT USER_ID
+		, USER_NM
+		, PHONE_NO
+		, EMAIL
+		FROM TB_MA_MEMBER
+		WHERE USER_ID = #{USER_ID}
+	</select>
+
+	<!-- 수강증출력 팝업 -->
+	<select id="getPrintPop" parameterType="hashMap" resultType="hashMap">
+		select USER_ID
+		, USER_NM
+		, (SELECT COUNT(*)
+		FROM TB_OFF_ORDER_MGNT_NO
+		WHERE ORDERNO = #{ORDERNO}
+		AND ISCANCEL = 0) CNT
+		from TB_OFF_ORDERS
+		WHERE ORDERNO = #{ORDERNO}
+	</select>
+
+	<!-- 수강증출력 수정 -->
+	<update id="updatePrintOffOrders1" parameterType="hashMap">
+		UPDATE TB_OFF_ORDERS
+		SET
+		TICKET_PRINT_DT = SYSDATE
+		WHERE ORDERNO = #{ORDERNO}
+	</update>
+
+	<!-- 수강증출력 복원 수정 -->
+	<update id="updatePrintOffOrders2" parameterType="hashMap">
+		UPDATE TB_OFF_ORDERS
+		SET
+		TICKET_PRINT_DT = ''
+		WHERE ORDERNO = #{ORDERNO}
+	</update>
+
+
+	<!-- 품목변경 팝업 카테고리 셀렉트박스 리스트 -->
+	<select id="getCaCatCdList" parameterType="hashMap" resultType="hashMap">
+		select CODE
+		, NAME
+		from TB_CATEGORY_INFO
+		where ISUSE = 'Y'
+		and CODE is not null
+		and CODE != 'HOME'
+		and CODE != '999'
+
+		order by CODE asc
+	</select>
+
+	<!-- 품목변경 팝업 학습형태 셀렉트박스 리스트 -->
+	<select id="getVwMenuMstTree_lec" parameterType="hashMap"
+		resultType="hashMap">
+		SELECT CODE
+		, (SELECT CODE_NM FROM TB_BA_CONFIG_CD WHERE SYS_CD = 'LEC_FORM'
+		AND CODE_VAL = A.LEC_DIV AND ISUSE = 'Y') || '-' || NAME AS NAME
+		FROM TB_LEARNING_FORM_INFO A
+		where ISUSE = 'Y'
+
+		order by CODE
+	</select>
+
+	<!-- 품목변경 팝업 과목 셀렉트박스 리스트 -->
+	<select id="getCaSubjectCdList" parameterType="hashMap" resultType="hashMap">
+		SELECT SUBJECT_CD , SUBJECT_NM
+		FROM TB_SUBJECT_INFO
+		WHERE ISUSE = 'Y'
+		ORDER BY SUBJECT_CD
+	</select>
+
+	<!-- 품목변경 팝업 리스트 -->
+	<select id="getCbLecMstFreeOrderList" parameterType="hashMap" resultType="hashMap">
+		SELECT * FROM (
+			SELECT ROWNUM AS RNUM, AA.*
+			FROM (
+			    SELECT A.LECCODE, A.CATEGORY_CD, A.LEARNING_CD, A.SUBJECT_SJT_CD, A.SUBJECT_TITLE, A.LEC_SCHEDULE, A.SUBJECT_REAL_PRICE, A.LEC_TYPE_CHOICE,
+			           DECODE(A.SUBJECT_TYPE, '1', '실강', '2', '실시간 영상') SUBJECT_TYPE_NM,
+			           B.ST_LEC_DATE, B.ED_LEC_DATE,
+			           C.NAME CATEGORY_NM, D.NAME LEARNING_NM,
+			           E.SUBJECT_NM, F.USER_NM TEACHER_NM,
+			           CASE WHEN B.ST_LEC_DATE <![CDATA[ > ]]> TO_CHAR(SYSDATE, 'YYYY-MM-DD') THEN '진행전'
+			                WHEN TO_CHAR(SYSDATE, 'YYYY-MM-DD') BETWEEN B.ST_LEC_DATE AND B.ED_LEC_DATE THEN '진행중'
+			                ELSE '종강' 
+			           END LEC_STAT
+			    FROM TB_OFF_LEC_MST A, (SELECT LECCODE, MIN(LEC_DATE) ST_LEC_DATE, MAX(LEC_DATE) ED_LEC_DATE
+			                            FROM TB_OFF_LECTURE_DATE
+			                            GROUP BY LECCODE) B, 
+			         TB_CATEGORY_INFO C, TB_LEARNING_FORM_INFO D, TB_SUBJECT_INFO E, TB_MA_MEMBER F
+			    WHERE A.LECCODE = B.LECCODE
+			    AND A.LEC_TYPE_CHOICE = 'D'
+			    AND A.CATEGORY_CD = C.CODE
+			    AND A.LEARNING_CD = D.CODE
+			    AND A.SUBJECT_SJT_CD = E.SUBJECT_CD
+			    AND A.SUBJECT_TEACHER = F.USER_ID
+			    ORDER BY A.SUBJECT_OPEN_DATE DESC) AA
+			    WHERE AA.LEC_TYPE_CHOICE = 'D'  
+				<if test="s_cat_cd !=null and s_cat_cd != '' ">
+			    AND AA.CATEGORY_CD = #{s_cat_cd}
+				</if>
+				<if test="s_menu_id !=null and s_menu_id != '' ">
+			    AND AA.LEARNING_CD = #{s_menu_id}
+			    </if>
+				<if test="s_sjt_cd !=null and s_sjt_cd != '' ">
+			    AND AA.SUBJECT_SJT_CD = #{s_sjt_cd}
+			    </if>
+				<if test="search_keyword != null and search_keyword != '' ">
+					<choose>
+						<when test="search_type == 1">
+						    AND INSTR(AA.TEACHER_NM, #{search_keyword}) <![CDATA[ > ]]> 0
+						</when>
+						<when test="search_type == 2">
+						    AND AA.LECCODE = #{search_keyword}
+						</when>
+						<when test="search_type == 3">
+						    AND INSTR(AA.SUBJECT_TITLE, #{search_keyword}) <![CDATA[ > ]]> 0
+						</when>
+					</choose>
+				</if>
+		) H 
+		WHERE ROWNUM <![CDATA[ <= ]]> #{endNo} 
+		AND RNUM <![CDATA[ > ]]> #{startNo} 
+	</select>
+
+	<!-- 품목변경 팝업 카운트 -->
+	<select id="getCbLecMstListFreeOrderCount" parameterType="hashMap" resultType="int">
+		SELECT COUNT(*) from (
+			SELECT AA.*
+			FROM (
+			    SELECT A.LECCODE, A.CATEGORY_CD, A.LEARNING_CD, A.SUBJECT_SJT_CD, A.SUBJECT_TITLE, A.LEC_SCHEDULE, A.SUBJECT_REAL_PRICE, A.LEC_TYPE_CHOICE,
+			           DECODE(A.SUBJECT_TYPE, '1', '실강', '2', '실시간 영상') SUBJECT_TYPE_NM,
+			           B.ST_LEC_DATE, B.ED_LEC_DATE,
+			           C.NAME CATEGORY_NM, D.NAME LEARNING_NM,
+			           E.SUBJECT_NM, F.USER_NM TEACHER_NM,
+			           CASE WHEN B.ST_LEC_DATE <![CDATA[ > ]]> TO_CHAR(SYSDATE, 'YYYY-MM-DD') THEN '진행전'
+			                WHEN TO_CHAR(SYSDATE, 'YYYY-MM-DD') BETWEEN B.ST_LEC_DATE AND B.ED_LEC_DATE THEN '진행중'
+			                ELSE '종강' 
+			           END LEC_STAT
+			    FROM TB_OFF_LEC_MST A, (SELECT LECCODE, MIN(LEC_DATE) ST_LEC_DATE, MAX(LEC_DATE) ED_LEC_DATE
+			                            FROM TB_OFF_LECTURE_DATE
+			                            GROUP BY LECCODE) B, 
+			         TB_CATEGORY_INFO C, TB_LEARNING_FORM_INFO D, TB_SUBJECT_INFO E, TB_MA_MEMBER F
+			    WHERE A.LECCODE = B.LECCODE
+			    AND A.LEC_TYPE_CHOICE = 'D'
+			    AND A.CATEGORY_CD = C.CODE
+			    AND A.LEARNING_CD = D.CODE
+			    AND A.SUBJECT_SJT_CD = E.SUBJECT_CD
+			    AND A.SUBJECT_TEACHER = F.USER_ID
+			    ORDER BY A.SUBJECT_OPEN_DATE DESC) AA
+			    WHERE AA.LEC_TYPE_CHOICE = 'D'  
+				<if test="s_cat_cd !=null and s_cat_cd != '' ">
+			    AND AA.CATEGORY_CD = #{s_cat_cd}
+				</if>
+				<if test="s_menu_id !=null and s_menu_id != '' ">
+			    AND AA.LEARNING_CD = #{s_menu_id}
+			    </if>
+				<if test="s_sjt_cd !=null and s_sjt_cd != '' ">
+			    AND AA.SUBJECT_SJT_CD = #{s_sjt_cd}
+			    </if>
+				<if test="search_keyword != null and search_keyword != '' ">
+					<choose>
+						<when test="search_type == 1">
+						    AND INSTR(AA.TEACHER_NM, #{search_keyword}) <![CDATA[ > ]]> 0
+						</when>
+						<when test="search_type == 2">
+						    AND AA.LECCODE = #{search_keyword}
+						</when>
+						<when test="search_type == 3">
+						    AND INSTR(AA.SUBJECT_TITLE, #{search_keyword}) <![CDATA[ > ]]> 0
+						</when>
+					</choose>
+				</if>
+			) H
+	</select>
+
+	<!-- 변경 버튼 -->
+	<select id="getChangePrice" parameterType="hashMap" resultType="hashMap">
+		select LECCODE
+		, NVL(SUBJECT_REAL_PRICE,0) SUBJECT_REAL_PRICE
+		, NVL(LEC_SCHEDULE,0) LEC_SCHEDULE
+		, DECODE(NVL(LEC_SCHEDULE,0),0,0,NVL(NVL(SUBJECT_REAL_PRICE,0) /
+		NVL(LEC_SCHEDULE,0),0)) DAY_PRICE
+		, (select COUNT(*)
+		from TB_OFF_LECTURE_DATE
+		where LECCODE = #{LECCODE}
+		AND LEC_DATE <![CDATA[ <= ]]>
+		SYSDATE) USE_SCHEDULE
+		, (NVL(LEC_SCHEDULE,0) - (select COUNT(*)
+		from TB_OFF_LECTURE_DATE
+		where LECCODE = #{LECCODE}
+		AND LEC_DATE <![CDATA[ <= ]]>
+		SYSDATE)) *
+		(DECODE(NVL(LEC_SCHEDULE,0),0,0,NVL(NVL(SUBJECT_REAL_PRICE,0) /
+		NVL(LEC_SCHEDULE,0),0))) PRICE
+		from TB_OFF_LEC_MST
+		where LECCODE = #{LECCODE}
+	</select>
+
+	<!-- 수강신청 등록 팝업 등록처리 채번 -->
+	<select id="getUCount" parameterType="hashMap" resultType="hashMap">
+		select GET_NEXTSEQ_OFFORDERNO(#{USER_ID}) USER_ID
+		from dual
+	</select>
+
+	<!-- 장바구니 등록 -->
+	<insert id="insertCart" parameterType="hashMap">
+		INSERT INTO TB_OFF_CC_CART
+		( SEQ
+		<if test="USER_ID != null">, USER_ID</if>
+		<if test="LECCODE != null">, LECCODE</if>
+		<if test="KIND_TYPE != null">, KIND_TYPE</if>
+		, REGDATE
+		)
+		VALUES
+		( (SELECT NVL(MAX(SEQ), 0) + 1
+		FROM TB_OFF_CC_CART)
+		<if test="USER_ID != null">, #{USER_ID}</if>
+		<if test="LECCODE != null">, #{LECCODE}</if>
+		<if test="KIND_TYPE != null">, #{KIND_TYPE}</if>
+		, SYSDATE
+		)
+	</insert>
+
+	<!-- 장바구니 리스트 비동기 -->
+	<select id="getSubCode2" parameterType="hashMap" resultType="hashMap">
+		SELECT (SELECT SUBJECT_TITLE
+		FROM TB_OFF_LEC_MST
+		WHERE LECCODE = A.LECCODE) || '(' || decode((SELECT SUBJECT_TYPE
+		FROM TB_OFF_LEC_MST
+		WHERE LECCODE = A.LECCODE), '1', '실강', '2', '실시간 영상') || ') ' || (select
+		(CASE WHEN TO_CHAR(min(LEC_DATE), 'YYYYMMDD') <![CDATA[ > ]]>
+		TO_CHAR(sysdate, 'YYYYMMDD') THEN '진행전'
+		WHEN TO_CHAR(min(LEC_DATE), 'YYYYMMDD') <![CDATA[ <= ]]>
+		TO_CHAR(sysdate, 'YYYYMMDD') and TO_CHAR(max(LEC_DATE), 'YYYYMMDD') <![CDATA[ >= ]]>
+		TO_CHAR(sysdate, 'YYYYMMDD') THEN '진행중'
+		ELSE '종강'
+		END)
+		from TB_OFF_LECTURE_DATE
+		where LECCODE = A.LECCODE) SUBJECT_TITLE
+
+		, (SELECT SUBJECT_REAL_PRICE
+		FROM TB_OFF_LEC_MST
+		WHERE LECCODE = A.LECCODE) SUBJECT_REAL_PRICE
+		, A.LECCODE
+		, A.USER_ID
+		FROM TB_OFF_CC_CART A
+		WHERE A.USER_ID = #{USER_ID}
+
+		ORDER BY A.SEQ
+	</select>
+
+	<!-- 장바구니 삭제 -->
+	<delete id="deleteCart" parameterType="hashMap">
+		DELETE FROM TB_OFF_CC_CART
+		WHERE USER_ID = #{USER_ID}
+		AND LECCODE = #{LECCODE}
+	</delete>
+
+	<!-- 장바구니 비우기 -->
+	<delete id="deleteAllCart" parameterType="hashMap">
+		DELETE FROM TB_OFF_CC_CART
+		WHERE USER_ID = #{USER_ID}
+	</delete>
+
+	<!-- 수강신청 등록 팝업 등록처리 채번 -->
+	<select id="getMCount" parameterType="hashMap" resultType="hashMap">
+		select GET_NEXTSEQ_OFFORDERNO('M') ORDERNO
+		from dual
+	</select>
+
+	<!-- 수강신청 등록 등록 -->
+	<insert id="insertOffOrders" parameterType="hashMap">
+		INSERT INTO TB_OFF_ORDERS
+		( REG_DT
+		<if test="ORDERNO != null">, ORDERNO</if>
+		<if test="USER_ID != null">, USER_ID</if>
+		<if test="USER_NM != null">, USER_NM</if>
+		<if test="PHONE_NO != null">, PHONE_NO</if>
+		<if test="EMAIL != null">, EMAIL</if>
+		<if test="USERID != null">, REG_ID</if>
+		, FREE_MOVIE
+		, OFF_LINE
+		, ORDER_TYPE
+		)
+		VALUES
+		( SYSDATE
+		<if test="ORDERNO != null">, #{ORDERNO}</if>
+		<if test="USER_ID != null">, #{USER_ID}</if>
+		<if test="USER_NM != null">, #{USER_NM}</if>
+		<if test="PHONE_NO != null">, #{PHONE_NO}</if>
+		<if test="EMAIL != null">, #{EMAIL}</if>
+		<if test="USERID != null">, #{USERID}</if>
+		, '0'
+		, '0'
+		, 'DESK'
+		)
+	</insert>
+
+	<!-- 수강신청 등록 등록 -->
+	<insert id="insertOffApprovals" parameterType="hashMap">
+		INSERT INTO TB_OFF_APPROVALS
+		( ADDPRICE
+		<if test="ORDERNO != null">, ORDERNO</if>
+		<if test="PRICE != null">, PRICE</if>
+		<if test="PAYCODE != null">, PAYCODE</if>
+		, ACCTNOCODE
+		<if test="USER_NM != null">, PAYNAME</if>
+		, POINT
+		<if test="PRICE_CARD != null">, PRICE_CARD</if>
+		<if test="PRICE_CASH != null">, PRICE_CASH</if>
+		<if test="PRICE_BANK != null">, PRICE_BANK</if>
+		<if test="PRICE_UNPAID != null">, PRICE_UNPAID</if>
+		<if test="PRICE_DISCOUNT != null">, PRICE_DISCOUNT</if>
+		<if test="PRICE_DISCOUNT_TYPE != null">, PRICE_DISCOUNT_TYPE</if>
+		<if test="PRICE_DISCOUNT_REASON != null">, PRICE_DISCOUNT_REASON</if>
+		<if test="CARD_NAME != null">, CARD_NAME</if>
+		<if test="DUE_DT != null">, DUE_DT</if>
+		<if test="REG_DT != null">, REG_DT</if>
+		<if test="MEMO != null">, MEMO</if>
+		)
+		VALUES
+		( 0
+		<if test="ORDERNO != null">, #{ORDERNO}</if>
+		<if test="PRICE != null">, #{PRICE}</if>
+		<if test="PAYCODE != null">, #{PAYCODE}</if>
+		, 'ACT888'
+		<if test="USER_NM != null">, #{USER_NM}</if>
+		, 0
+		<if test="PRICE_CARD != null">, #{PRICE_CARD}</if>
+		<if test="PRICE_CASH != null">, #{PRICE_CASH}</if>
+		<if test="PRICE_BANK != null">, #{PRICE_BANK}</if>
+		<if test="PRICE_UNPAID != null">, #{PRICE_UNPAID}</if>
+		<if test="PRICE_DISCOUNT != null">, #{PRICE_DISCOUNT}</if>
+		<if test="PRICE_DISCOUNT_TYPE != null">, #{PRICE_DISCOUNT_TYPE}</if>
+		<if test="PRICE_DISCOUNT_REASON != null">, #{PRICE_DISCOUNT_REASON}</if>
+		<if test="CARD_NAME != null">, #{CARD_NAME}</if>
+		<if test="DUE_DT != null">, TO_DATE(#{DUE_DT}, 'YYYYMMDD')</if>
+		<if test="REG_DT != null">, TO_DATE(#{REG_DT}, 'YYYY-MM-DD')</if>
+		<if test="MEMO != null">, #{MEMO}</if>
+		)
+	</insert>
+
+	<!-- 수강신청 등록 등록 -->
+	<insert id="insertOffOrderMgntNo" parameterType="hashMap">
+		INSERT INTO TB_OFF_ORDER_MGNT_NO
+		( ISCANCEL
+		<if test="ORDERNO != null">, ORDERNO</if>
+		<if test="MGNTNO != null">, MGNTNO</if>
+		<if test="SUBJECT_REAL_PRICE != null">, PRICE</if>
+		, CNT
+		, STATUSCODE
+		, CONFIRMDATE
+		, ISCONFIRM
+		<if test="USERID != null">, CONFIRMID</if>
+		<if test="USERID != null">, REG_ID</if>
+		, REG_DT
+		, PTYPE
+		)
+		VALUES
+		( 0
+		<if test="ORDERNO != null">, #{ORDERNO}</if>
+		<if test="MGNTNO != null">, #{MGNTNO}</if>
+		<if test="SUBJECT_REAL_PRICE != null">, #{SUBJECT_REAL_PRICE}</if>
+		, 1
+		, 'DLV105'
+		, SYSDATE
+		, #{REG_DT}
+		<if test="USERID != null">, #{USERID}</if>
+		<if test="USERID != null">, #{USERID}</if>
+		, SYSDATE
+		, SUBSTR(#{MGNTNO},1,1)
+		)
+	</insert>
+
+	<!-- 단과 수강신청 등록 등록 -->
+	<insert id="insertOffMylecture" parameterType="hashMap">
+		INSERT INTO TB_OFF_MYLECTURE
+		( REG_DT
+		<if test="ORDERNO != null">, ORDERNO</if>
+		<if test="USER_ID != null">, USERID</if>
+		<if test="MGNTNO != null">, PACKAGE_NO</if>
+		<if test="MGNTNO != null">, LECTURE_NO</if>
+		<if test="SUBJECT_REAL_PRICE != null">, REALPRICE</if>
+		)
+		VALUES
+		( SYSDATE
+		<if test="ORDERNO != null">, #{ORDERNO}</if>
+		<if test="USER_ID != null">, #{USER_ID}</if>
+		<if test="MGNTNO != null">, #{MGNTNO}</if>
+		<if test="MGNTNO != null">, #{MGNTNO}</if>
+		<if test="SUBJECT_REAL_PRICE != null">, #{SUBJECT_REAL_PRICE}</if>
+		)
+	</insert>
+
+	<!-- 종합반 수강신청 등록 -->
+	<insert id="insertOffMylecture_N" parameterType="hashMap">
+		INSERT INTO TB_OFF_MYLECTURE
+		( REG_DT
+		<if test="ORDERNO != null">, ORDERNO</if>
+		<if test="USER_ID != null">, USERID</if>
+		<if test="MGNTNO != null">, PACKAGE_NO</if>
+		<if test="MGNTNO != null">, LECTURE_NO</if>
+		<if test="SUBJECT_REAL_PRICE != null">, REALPRICE</if>
+		)
+		VALUES
+		( SYSDATE
+		<if test="ORDERNO != null">, #{ORDERNO}</if>
+		<if test="USER_ID != null">, #{USER_ID}</if>
+		<if test="MGNTNO != null">, #{PACKAGE_NO}</if>
+		<if test="MGNTNO != null">, #{LECTURE_NO}</if>
+		<if test="SUBJECT_REAL_PRICE != null">, #{SUBJECT_REAL_PRICE}</if>
+		)
+	</insert>
+
+	<!-- 수강강의 변경 등록 -->
+	<update id="modifyOffMylecture" parameterType="hashMap">
+		UPDATE TB_OFF_MYLECTURE
+		SET
+		REG_DT = SYSDATE,
+		PACKAGE_NO = #{PACKAGE_NO},
+		LECTURE_NO = #{LECTURE_NO},
+		REALPRICE = #{REAL_PRICE}
+		WHERE
+		ORDERNO = #{ORDERNO}
+		AND USERID = #{USER_ID}
+		AND PACKAGE_NO = #{ORG_PACKAGE_NO}
+		AND LECTURE_NO = #{ORG_LECTURE_NO}
+	</update>
+
+	<!-- 수강주문 내역 수정 -->
+	<update id="updateOffMgntNo" parameterType="hashMap">
+		UPDATE TB_OFF_ORDER_MGNT_NO
+		SET
+		MGNTNO = #{MGNTNO}
+		, PRICE = #{REAL_PRICE}
+		, ISCONFIRM = TO_DATE(#{ISCONFIRM})
+		, STATUSCODE = 'DLV105'
+		WHERE ORDERNO = #{ORDERNO}
+		and MGNTNO = #{ORG_MGNTNO}
+	</update>
+
+	<!-- 수강주문 내역 수정 -->
+	<update id="updateOffMgntNo_N" parameterType="hashMap">
+		UPDATE TB_OFF_ORDER_MGNT_NO
+		SET
+		PRICE = PRICE + #{REAL_PRICE}
+		, ISCONFIRM = TO_DATE(#{ISCONFIRM})
+		, STATUSCODE = 'DLV105'
+		WHERE ORDERNO = #{ORDERNO}
+		and MGNTNO = #{ORG_MGNTNO}
+	</update>
+
+	<!-- 수강신청 상세 -->
+	<select id="getUpdateDetail" parameterType="hashMap" resultType="hashMap">
+		SELECT A.ORDERNO
+		, A.USER_ID
+		, A.USER_NM
+		, A.PHONE_NO
+		, A.EMAIL
+		, A.TICKET_PRINT_DT
+		, B.PRICE_DISCOUNT_TYPE
+		, B.PRICE_DISCOUNT
+		, B.PRICE_DISCOUNT_REASON
+		, B.PRICE
+		, B.PRICE_CARD
+		, B.PRICE_CASH
+		, B.PRICE_BANK
+		, B.PRICE_UNPAID
+		, B.CARD_NAME
+		, B.MEMO
+        , TO_CHAR(DECODE(B.REG_DT, NULL, A.REG_DT, B.REG_DT), 'YYYYMMDD') ISCONFIRM
+		, TO_CHAR(B.DUE_DT, 'YYYYMMDD') DUE_DT
+		, TO_CHAR(A.REG_DT, 'YYYY-MM-DD') REG_DT
+		, C.REFUND_PAY
+		, C.REFUND_CARD
+		, C.REFUND_CASH
+		, C.ACC_BANK_NAME
+		, C.ACC_BANK_NUM
+		, C.ACC_BANK_DEPOSITOR
+		, C.REFUND_MEMO
+		, TO_CHAR(C.SET_DATE, 'YYYYMMDD') SET_DATE
+		FROM TB_OFF_ORDERS A
+		LEFT OUTER JOIN TB_OFF_APPROVALS B
+		ON A.ORDERNO = B.ORDERNO
+		LEFT OUTER JOIN TB_OFF_REFUND C
+		ON A.ORDERNO = C.ORDER_ID
+		WHERE A.ORDERNO = #{ORDERNO}
+	</select>
+
+	<!-- 주문상품 전체 리스트 (주문 + 환불) -->
+	<select id="getSubList" parameterType="hashMap" resultType="hashMap">
+        SELECT ROWNUM NUM, MGNTNO, 
+				DECODE(LECTURE_NO, NULL, MGNTNO, LECTURE_NO) LECTURE_NO, 
+					SUBJECT_REAL_PRICE, PRICE, SUBJECT_TITLE, REALPRICE, LEC_TYPE_CHOICE, O_TYPE
+        FROM (
+                SELECT DISTINCT A.MGNTNO, A.MGNTNO LECTURE_NO, C.SUBJECT_REAL_PRICE, A.PRICE, C.SUBJECT_TITLE, A.PRICE REALPRICE, C.LEC_TYPE_CHOICE, 'M' O_TYPE
+                FROM TB_OFF_ORDER_MGNT_NO A, TB_OFF_MYLECTURE B, TB_OFF_LEC_MST C
+                WHERE A.ORDERNO = B.ORDERNO
+                AND A.MGNTNO = B.PACKAGE_NO
+                AND A.MGNTNO = C.LECCODE
+                AND A.ORDERNO = #{ORDERNO}
+				<if test='REFUND == "Y"'>
+                AND A.STATUSCODE = 'DLV105'
+                </if>
+                UNION ALL
+                SELECT A.MGNTNO, B.LECTURE_NO, C.SUBJECT_REAL_PRICE, A.PRICE, C.SUBJECT_TITLE, ABS(B.REALPRICE), C.LEC_TYPE_CHOICE, 'S' O_TYPE
+                FROM TB_OFF_ORDER_MGNT_NO A, TB_OFF_MYLECTURE B, TB_OFF_LEC_MST C
+                WHERE A.ORDERNO = B.ORDERNO
+                AND A.MGNTNO = B.PACKAGE_NO
+                AND B.LECTURE_NO = C.LECCODE
+                AND A.PTYPE IN ('N', 'J', 'P')
+                AND A.ORDERNO = #{ORDERNO}
+				<if test='REFUND == "Y"'>
+                AND A.STATUSCODE = 'DLV105'
+                </if>
+                ORDER BY MGNTNO, LEC_TYPE_CHOICE desc
+        ) TT
+	</select>
+
+	<!-- 상세 품목 리스트 비동기 -->
+	<select id="getSubCodeUp" parameterType="hashMap" resultType="hashMap">
+		SELECT (SELECT SUBJECT_TITLE
+		FROM TB_OFF_LEC_MST
+		WHERE LECCODE = A.MGNTNO) || '(' || decode((SELECT SUBJECT_TYPE
+		FROM TB_OFF_LEC_MST
+		WHERE LECCODE = A.MGNTNO), '1', '실강', '2', '실시간 영상') || ') ' || (select
+		(CASE WHEN TO_CHAR(min(LEC_DATE), 'YYYYMMDD') <![CDATA[ > ]]>
+		TO_CHAR(sysdate, 'YYYYMMDD') THEN '진행전'
+		WHEN TO_CHAR(min(LEC_DATE), 'YYYYMMDD') <![CDATA[ <= ]]>
+		TO_CHAR(sysdate, 'YYYYMMDD') and TO_CHAR(max(LEC_DATE), 'YYYYMMDD') <![CDATA[ >= ]]>
+		TO_CHAR(sysdate, 'YYYYMMDD') THEN '진행중'
+		ELSE '종강'
+		END)
+		from TB_OFF_LECTURE_DATE
+		where LECCODE = A.MGNTNO) SUBJECT_TITLE
+		, (SELECT SUBJECT_TITLE
+		FROM TB_OFF_LEC_MST
+		WHERE LECCODE = A.MGNTNO) SUBJECT_TITLE2
+		, (SELECT NVL(SUBJECT_REAL_PRICE,0)
+		FROM TB_OFF_LEC_MST
+		WHERE LECCODE = A.MGNTNO) SUBJECT_REAL_PRICE
+		, (SELECT NVL(LEC_SCHEDULE,0)
+		FROM TB_OFF_LEC_MST
+		WHERE LECCODE = A.MGNTNO) LEC_SCHEDULE
+		, A.PRICE
+		, A.MGNTNO LECCODE
+		, 'Y' LIST_YN
+        , PTYPE
+		FROM TB_OFF_ORDER_MGNT_NO A
+		WHERE A.ORDERNO = #{ORDERNO}
+		AND A.ISCANCEL = 0
+		<if test='MGNTNO == "N"'>
+			UNION ALL
+            SELECT SUBJECT_TITLE, SUBJECT_TITLE, SUBJECT_REAL_PRICE, LEC_SCHEDULE,
+            B.REALPRICE, LECCODE, 'N' LIST_YN
+            , A.LEC_TYPE_CHOICE PTYPE 
+            FROM TB_OFF_LEC_MST A, TB_OFF_MYLECTURE B
+            WHERE A.LECCODE = B.LECTURE_NO
+            AND B.PACKAGE_NO <![CDATA[ <> ]]> B.LECTURE_NO
+            AND B.ORDERNO = #{ORDERNO}
+		</if>
+	</select>
+
+	<select id="getSubCodeUpDetail" parameterType="hashMap"
+		resultType="hashMap">
+		SELECT SUBJECT_TITLE, SUBJECT_PRICE FROM TB_OFF_LEC_MST
+		WHERE LECCODE IN (SELECT LECTURE_NO FROM TB_OFF_MYLECTURE WHERE ORDERNO =
+		#{ORDERNO})
+	</select>
+
+	<select id="getOffApprovalsCount" parameterType="hashMap"
+		resultType="hashMap">
+		SELECT ORDERNO
+		FROM TB_OFF_APPROVALS
+		WHERE ORDERNO = #{ORDERNO}
+	</select>
+
+	<!-- 수강신청 수정 -->
+	<update id="updateOffOrders" parameterType="hashMap">
+		UPDATE TB_OFF_ORDERS
+		SET
+		USER_NM = #{USER_NM}
+		<if test="PHONE_NO != null">, PHONE_NO = #{PHONE_NO}</if>
+		<if test="EMAIL != null">, EMAIL = #{EMAIL}</if>
+		WHERE ORDERNO = #{ORDERNO}
+	</update>
+
+	<update id="Coupon_Del" parameterType="hashMap">
+		UPDATE TB_TM_MYCOUPON SET ORDER_FLAG = '2'
+		WHERE IDX = #{IDX}
+		AND USERID = #{USERID}
+		AND CCODE = #{CCODE}
+	</update>
+
+	<!-- 수강신청 수정 -->
+	<update id="updateOffApprovals" parameterType="hashMap">
+		UPDATE TB_OFF_APPROVALS
+		SET
+		PRICE = #{PRICE}
+		<if test="PAYCODE != null">, PAYCODE = #{PAYCODE}</if>
+		<if test="USER_NM != null">, PAYNAME = #{USER_NM}</if>
+		<if test="PRICE_CARD != null">, PRICE_CARD = #{PRICE_CARD}</if>
+		<if test="PRICE_CASH != null">, PRICE_CASH = #{PRICE_CASH}</if>
+		<if test="PRICE_BANK != null">, PRICE_BANK = #{PRICE_BANK}</if>
+		<if test="PRICE_UNPAID != null">, PRICE_UNPAID = #{PRICE_UNPAID}</if>
+		<if test="CARD_NAME != null">, CARD_NAME = #{CARD_NAME}</if>
+		<if test="PRICE_DISCOUNT != null">, PRICE_DISCOUNT = #{PRICE_DISCOUNT}</if>
+		<if test="PRICE_DISCOUNT_TYPE != null">, PRICE_DISCOUNT_TYPE = #{PRICE_DISCOUNT_TYPE}</if>
+		<if test="PRICE_DISCOUNT_REASON != null">, PRICE_DISCOUNT_REASON = #{PRICE_DISCOUNT_REASON}</if>
+		<if test="DUE_DT != null">, DUE_DT = TO_DATE(#{DUE_DT}, 'YYYYMMDD')</if>
+		<if test="ISCONFIRM != null">, REG_DT = TO_DATE(#{ISCONFIRM}, 'YYYY-MM-DD')</if>
+		<if test="MEMO != null">, MEMO = #{MEMO}</if>
+		WHERE ORDERNO = #{ORDERNO}
+	</update>
+
+	<!-- 수강신청 삭제 -->
+	<delete id="deleteOffOrderMgntNo" parameterType="Map">
+		DELETE FROM TB_OFF_ORDER_MGNT_NO
+		WHERE ORDERNO = #{ORDERNO}
+	</delete>
+
+	<!-- 수강신청 삭제 -->
+	<delete id="deleteOffMylecture" parameterType="Map">
+		DELETE FROM TB_OFF_MYLECTURE
+		WHERE ORDERNO = #{ORDERNO}
+	</delete>
+
+	<!-- 수강신청 삭제 -->
+	<delete id="deleteOffApprovals" parameterType="Map">
+		DELETE FROM TB_OFF_APPROVALS
+		WHERE ORDERNO = #{ORDERNO}
+	</delete>
+
+	<!-- 수강신청 삭제 -->
+	<delete id="deleteOffOrders" parameterType="Map">
+		DELETE FROM TB_OFF_ORDERS
+		WHERE ORDERNO = #{ORDERNO}
+	</delete>
+
+	<!-- 환불관리 확인 수정 -->
+	<update id="updateOffRefund" parameterType="hashMap">
+		UPDATE TB_OFF_REFUND
+		SET
+		REFUND_PAY = #{REFUND_CARD} + #{REFUND_CASH}
+		<if test="SET_DATE != null">, SET_DATE = TO_DATE(#{SET_DATE}, 'YYYYMMDD')</if>
+		<if test="ACC_BANK_NAME != null">, ACC_BANK_NAME = #{ACC_BANK_NAME}</if>
+		<if test="ACC_BANK_NUM != null">, ACC_BANK_NUM = #{ACC_BANK_NUM}</if>
+		<if test="REFUND_CARD != null">, REFUND_CARD = #{REFUND_CARD}</if>
+		<if test="REFUND_CASH != null">, REFUND_CASH = #{REFUND_CASH}</if>
+		<if test="ACC_BANK_DEPOSITOR != null">, ACC_BANK_DEPOSITOR = #{ACC_BANK_DEPOSITOR}</if>
+		<if test="REFUND_MEMO != null">, REFUND_MEMO = #{REFUND_MEMO}</if>
+		WHERE ORDER_ID = #{ORDERNO}
+	</update>
+
+	<!-- 환불관리 확인 등록 -->
+	<insert id="insertRefundOffOrderMgntNo" parameterType="hashMap">
+		INSERT INTO TB_OFF_ORDER_MGNT_NO
+		( ISCANCEL
+		<if test="ORDERNO != null">, ORDERNO</if>
+		<if test="MGNTNO != null">, MGNTNO</if>
+		<if test="SUBJECT_REAL_PRICE != null">, PRICE</if>
+		, CNT
+		, STATUSCODE
+		, CONFIRM_DT
+		, CANCEL_DT
+		<if test="USERID != null">, REG_ID</if>
+		, REG_DT
+		, PTYPE
+		)
+		VALUES
+		( 2
+		<if test="ORDERNO != null">, #{ORDERNO}</if>
+		<if test="MGNTNO != null">, #{MGNTNO}</if>
+		<if test="SUBJECT_REAL_PRICE != null">, #{SUBJECT_REAL_PRICE}</if>
+		, 1
+		, 'DLV230'
+		, SYSDATE
+		, SYSDATE
+		, SYSDATE
+		<if test="USERID != null">, #{USERID}</if>
+		<if test="USERID != null">, #{USERID}</if>
+		, SYSDATE
+		, SUBSTR(#{MGNTNO},1,1)
+		)
+	</insert>
+
+	<!-- 환불관리 확인 수정 -->
+	<update id="updateOffMylecture" parameterType="hashMap">
+		UPDATE TB_OFF_MYLECTURE
+		SET
+		PLAYYN = 'N'
+		<if test='REFUND == "Y"'>,REALPRICE =  #{SUBJECT_REAL_PRICE}</if>
+		WHERE ORDERNO = #{ORDERNO}
+		AND USER_ID = #{USER_ID}
+		AND PACKAGE_NO = #{MGNTNO}
+		AND LECTURE_NO = #{MGNTNO}
+	</update>
+
+	<!-- 환불관리 확인 수정 -->
+	<update id="updateOffMylectureRefund" parameterType="hashMap">
+		UPDATE TB_OFF_MYLECTURE
+		SET PLAYYN = 'N',
+		REALPRICE = REALPRICE * -1
+		WHERE ORDERNO = #{ORDERNO}
+		AND USER_ID = #{USER_ID}
+		AND PACKAGE_NO = #{MGNTNO}
+	</update>
+
+	<!-- 환불관리 확인 등록 -->
+	<insert id="insertOffRefund" parameterType="hashMap">
+		INSERT INTO TB_OFF_REFUND
+		( IDX
+		<if test="ORDERNO != null">, ORDER_ID</if>
+		, REFUND_PAY
+		, SET_YN
+		, SET_DATE
+		, REG_DATE
+		<if test="ACC_BANK_NAME != null">, ACC_BANK_NAME</if>
+		<if test="ACC_BANK_NUM != null">, ACC_BANK_NUM</if>
+		<if test="REFUND_CARD != null">, REFUND_CARD</if>
+		<if test="REFUND_CASH != null">, REFUND_CASH</if>
+		<if test="ACC_BANK_DEPOSITOR != null">, ACC_BANK_DEPOSITOR</if>
+		<if test="REFUND_MEMO != null">, REFUND_MEMO</if>
+		)
+		VALUES
+		( SEQ_TB_OFF_REFUND_IDX.NEXTVAL
+		<if test="ORDERNO != null">, #{ORDERNO}</if>
+		, #{REFUND_CARD} + #{REFUND_CASH}
+		, 'N'
+		<if test="SET_DATE != null">, TO_DATE(#{SET_DATE}, 'YYYYMMDD')</if>
+		, SYSDATE
+		<if test="ACC_BANK_NAME != null">, #{ACC_BANK_NAME}</if>
+		<if test="ACC_BANK_NUM != null">, #{ACC_BANK_NUM}</if>
+		<if test="REFUND_CARD != null">, #{REFUND_CARD}</if>
+		<if test="REFUND_CASH != null">, #{REFUND_CASH}</if>
+		<if test="ACC_BANK_DEPOSITOR != null">, #{ACC_BANK_DEPOSITOR}</if>
+		<if test="REFUND_MEMO != null">, #{REFUND_MEMO}</if>
+		)
+	</insert>
+
+	<!-- 환불관리 환불취소 -->
+	<delete id="deleteOffCancelOrderMgntNo" parameterType="Map">
+		DELETE FROM TB_OFF_ORDER_MGNT_NO
+		WHERE ORDERNO=#{ORDERNO}
+		AND MGNTNO=#{MGNTNO}
+		AND ISCANCEL=2
+	</delete>
+
+	<!-- 환불관리 환불취소 -->
+	<delete id="deleteOffCancelRefund" parameterType="Map">
+		DELETE FROM TB_OFF_REFUND
+		WHERE ORDER_ID=#{ORDERNO}
+	</delete>
+
+	<!-- 환불관리 환불취소 -->
+	<update id="updateOffCancelMylecture" parameterType="hashMap">
+		UPDATE TB_OFF_MYLECTURE
+		SET
+		PLAYYN = 'Y'
+		<if test='REFUND == "Y"'>,REALPRICE = ABS(REALPRICE)</if>
+		WHERE ORDERNO = #{ORDERNO}
+		AND USERID = #{USER_ID}
+		AND PACKAGE_NO = #{MGNTNO}
+	</update>
+
+	<!-- 전체상품주문관리 주문번호 상세페이지 진도율수정 버튼 수정 -->
+	<update id="updateStudy_Per" parameterType="hashMap">
+		UPDATE TB_MYLECTURE
+		SET STUDY_PERCENT = #{study_percent}
+		WHERE ORDERNO = #{orderno}
+		AND PACKAGE_NO = #{mgntno}
+	</update>
+
+	<!-- 내 강의실 단과반 등록 -->
+	<insert id="insertMyLecture" parameterType="hashMap">
+		INSERT INTO TB_MYLECTURE (
+		  USERID, ORDERNO, PACKAGE_NO, LECTURE_NO,
+		  START_DATE, END_DATE, PERIOD, REG_DT,
+		  STUDY_PERCENT, STOP_LECTURE, PLUS_BUY, ADD_LENGTH
+		) 
+		SELECT A.USER_ID, A.ORDERNO, B.MGNTNO, B.MGNTNO,
+		       SYSDATE, (SYSDATE + (C.SUBJECT_PERIOD-1)), C.SUBJECT_PERIOD, A.REG_DT,
+		       0, 'T', 0, 0 
+		FROM TB_ORDERS A, TB_ORDER_MGNT_NO B, TB_LEC_MST C
+		WHERE A.ORDERNO = B.ORDERNO 
+		AND B.MGNTNO = C.LECCODE
+		AND A.ORDERNO = #{ORDERNO}
+		AND B.MGNTNO = #{MGNTNO}
+	</insert>
+
+	<insert id="insertMyLectureN" parameterType="hashMap">
+		INSERT INTO TB_MYLECTURE (
+		  USERID, ORDERNO, PACKAGE_NO, LECTURE_NO,
+		  START_DATE, END_DATE, PERIOD,
+		  STUDY_PERCENT, STOP_LECTURE, PLUS_BUY, ADD_LENGTH
+		) 
+		SELECT A.USER_ID, A.ORDERNO, B.MGNTNO, D.LECCODE,
+		       SYSDATE, (SYSDATE + (D.SUBJECT_PERIOD-1)), D.SUBJECT_PERIOD,
+		       0, 'T', 0, 0 
+		FROM TB_ORDERS A, TB_ORDER_MGNT_NO B, TB_LEC_JONG C, TB_LEC_MST D 
+		WHERE A.ORDERNO = B.ORDERNO 
+		AND B.MGNTNO = C.LECCODE
+		AND C.MST_LECCODE = D.LECCODE
+		AND A.ORDERNO = #{ORDERNO}
+		AND B.MGNTNO = #{MGNTNO}
+	</insert>
+	
+	<update id="Delete_Year_Package_Point" statementType="CALLABLE" parameterType="hashMap">
+		CALL PKG_CART.DELETE_YEAR_PACKAGE_POINT(
+		        #{orderno, mode=IN}
+		)
+	</update>
+	
+	<select id="getPlusPoint" parameterType="hashMap" resultType="int">
+		SELECT POINT FROM TB_CA_BOOK
+		WHERE RSC_ID = #{mgntno}
+	</select>
+	
+	<insert id="BookPointIns" statementType="CALLABLE" parameterType="Map">
+		CALL PKG_ORDERS.SP_INSERT_BOOK_POINT(
+		        #{orderno, mode=IN}
+		)
+	</insert>
+	
+	<update id="BookPointDel" statementType="CALLABLE" parameterType="Map">
+		CALL PKG_ORDERS.SP_DELETE_BOOK_POINT(
+		        #{orderno, mode=IN}
+		)
+	</update>
+
+	<!-- 학원 주문정보 변경 로그 관리 -->
+	<insert id="insertOffOrderLog" parameterType="hashMap">
+		INSERT INTO TB_OFF_ORDERS_LOG (
+			ORDERNO, REG_ID, REG_DT, PRICE, ACT_TYPE
+		<if test='ACT_TYPE == "D"'>
+			,ACT_MEMO
+		</if>
+		) VALUES (
+			#{ORDERNO}, #{REG_ID}, SYSDATE, #{PRICE}, #{ACT_TYPE}
+		<if test='ACT_TYPE == "D"'>
+			, FN_GET_OFF_ORDER_INFO(#{ORDERNO})
+		</if>
+		)
+	</insert>
+
+</mapper>

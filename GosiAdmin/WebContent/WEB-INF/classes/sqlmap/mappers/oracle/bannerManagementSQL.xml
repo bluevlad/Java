@@ -1,0 +1,559 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="bannerManagement">
+
+    <select id="getCateKindList" parameterType="hashMap" resultType="hashMap">
+        SELECT
+            CODE, MENU_NM AS NAME
+        FROM TB_SG_MENU_MST2
+        WHERE 1 = 1
+    <if test="MENUTYPE != null and MENUTYPE != ''">
+      <choose><when test='MENUTYPE == "FM_ROOT"'>
+        AND ONOFF_DIV = 'F'
+        AND P_MENUID = 'FM_001'
+      </when><when test='MENUTYPE == "OM_ROOT"'>
+        AND ONOFF_DIV = 'O'
+        AND P_MENUID = 'OM_001'
+      </when></choose>
+    </if>
+        AND ISUSE = 'Y'
+        ORDER BY MENU_SEQ , MENU_ID
+    </select>
+
+    <select id="getMenuKindList" parameterType="hashMap" resultType="hashMap">
+        SELECT
+            MENU_ID AS CODE, MENU_NM AS NAME
+        FROM TB_SG_MENU_MST2
+        WHERE 1 = 1
+    <if test="MENUTYPE != null and MENUTYPE != ''">
+      <choose><when test='MENUTYPE == "FM_ROOT"'>
+        AND ONOFF_DIV = 'F'
+        AND P_MENUID = 'FM_PASS_ROOT'
+      </when><when test='MENUTYPE == "OM_ROOT"'>
+        AND ONOFF_DIV = 'O'
+        AND P_MENUID = 'OM_PASS_ROOT'
+      </when></choose>
+    </if>
+        AND ISUSE = 'Y'
+        ORDER BY MENU_SEQ , MENU_ID
+    </select>
+
+    <select id="getBannerList" parameterType="hashMap" resultType="hashMap" >
+        SELECT * FROM   (
+            SELECT A.*, ROWNUM rnum
+            FROM (
+                SELECT SEQ,
+                    ONOFF_DIV,
+                    SCREEN_GUBUN,
+                    CATEGORY_CD,
+                    CASE WHEN SCREEN_GUBUN = 'M' THEN '메인홈'
+                         WHEN SCREEN_GUBUN = 'H' THEN '모바일홈'
+                         WHEN SUBSTR(A.CATEGORY_CD,0,1) = 'O' OR SUBSTR(A.CATEGORY_CD,0,1) = 'F'
+                             THEN (SELECT MENU_NM FROM TB_SG_MENU_MST2 WHERE MENU_ID = A.CATEGORY_CD)
+                         ELSE (SELECT NAME FROM TB_CATEGORY_INFO WHERE ISUSE = 'Y' AND CODE = A.CATEGORY_CD)
+                    END AS CATEGORY_NM,
+                    BANNER_NO,
+                    BANNER_TITLE,
+                    BANNER_TYP,
+                    TO_CHAR(OPEN_STARTDATE, 'YYYY-MM-DD') OPEN_STARTDATE,
+                    TO_CHAR(OPEN_ENDDATE, 'YYYY-MM-DD') OPEN_ENDDATE,
+                    ISUSE,
+                    VIEW_COUNT,
+                    TO_CHAR(REG_DT,'YYYY-MM-DD') REG_DT,
+                    REG_ID,
+                    TO_CHAR(UPD_DT,'YYYY-MM-DD') UPD_DT,
+                    UPD_ID,
+                    (SELECT COUNT(B.SEQ) FROM TB_BANNER_ITEM B WHERE B.P_SEQ = A.SEQ ) AS LINK_COUNT
+                FROM TB_BANNER A
+                WHERE 1=1
+                <if test="MENUTYPE != null and MENUTYPE != '' and MENUTYPE == 'FM_ROOT'">
+                    AND ONOFF_DIV = 'F'
+                </if>
+                <if test="MENUTYPE != null and MENUTYPE != '' and MENUTYPE == 'OM_ROOT'">
+                    AND ONOFF_DIV = 'O'
+                </if>
+                <if test="SEARCHCATEGORY != null and SEARCHCATEGORY != ''">
+                    <choose>
+                        <when test='SEARCHCATEGORY == "H"'>
+                            AND SCREEN_GUBUN = #{SEARCHCATEGORY}
+                        </when>
+                        <when test='SEARCHCATEGORY != "000"'>
+                            AND CATEGORY_CD = #{SEARCHCATEGORY}
+                        </when>
+                    </choose>
+                </if>
+                <if test="SEARCHBANNERNO != null and SEARCHBANNERNO != ''">
+                    AND BANNER_NO = #{SEARCHBANNERNO}
+                </if>
+                <if test="SEARCHISUSE != null and SEARCHISUSE != ''">
+                    AND ISUSE = #{SEARCHISUSE}
+                </if>
+                ORDER BY ISUSE DESC, CATEGORY_CD DESC, BANNER_NO ASC
+            ) A
+            WHERE rownum &lt;= #{endNo}
+        )
+        WHERE rnum &gt; #{startNo}
+    </select>
+
+    <select id="getBannerListCount" parameterType="hashMap" resultType="int">
+        SELECT
+            COUNT(*) CNT
+        FROM TB_BANNER
+        WHERE 1=1
+        <if test="MENUTYPE != null and MENUTYPE != '' and MENUTYPE == 'FM_ROOT'">
+            AND ONOFF_DIV = 'F'
+        </if>
+        <if test="MENUTYPE != null and MENUTYPE != '' and MENUTYPE == 'OM_ROOT'">
+            AND ONOFF_DIV = 'O'
+        </if>
+        <if test="SEARCHCATEGORY != null and SEARCHCATEGORY != ''">
+            <choose>
+                <when test='SEARCHCATEGORY == "H"'>
+                    AND SCREEN_GUBUN = #{SEARCHCATEGORY}
+                </when>
+                <when test='SEARCHCATEGORY != "000"'>
+                    AND CATEGORY_CD = #{SEARCHCATEGORY}
+                </when>
+            </choose>
+        </if>
+        <if test="SEARCHBANNERNO != null and SEARCHBANNERNO != ''">
+            AND BANNER_NO = #{SEARCHBANNERNO}
+        </if>
+        <if test="SEARCHISUSE != null and SEARCHISUSE != ''">
+            AND ISUSE = #{SEARCHISUSE}
+        </if>
+    </select>
+
+    <update id="changeProcess" parameterType="hashMap">
+        UPDATE TB_BANNER
+        SET
+            BANNER_TYP = #{BANNER_TYP},
+            UPD_DT = SYSDATE,
+            UPD_ID = #{REG_ID}
+        WHERE SEQ = #{SEQ}
+    </update>
+
+    <insert id="insertProcess" parameterType="hashMap" flushCache="true" >
+        INSERT INTO TB_BANNER (
+            SEQ,
+            ONOFF_DIV,
+            SCREEN_GUBUN,
+            CATEGORY_CD,
+            BANNER_NO,
+            BANNER_TITLE,
+            BANNER_TYP,
+            <if test="OPEN_STARTDATE != null and OPEN_STARTDATE != ''">
+            OPEN_STARTDATE,
+            </if>
+            <if test="OPEN_ENDDATE != null and OPEN_ENDDATE != ''">
+            OPEN_ENDDATE,
+            </if>
+            ISUSE,
+            VIEW_COUNT,
+            REG_DT,
+            REG_ID,
+            UPD_DT,
+            UPD_ID
+        )VALUES(
+            SEQ_TB_BANNER.NEXTVAL,
+            #{ONOFF_DIV},
+            #{SCREEN_GUBUN},
+            #{CATEGORY_CD},
+            #{BANNER_NO},
+            #{BANNER_TITLE},
+            #{BANNER_TYP},
+            <if test="OPEN_STARTDATE != null and OPEN_STARTDATE != ''">
+            TO_DATE(#{OPEN_STARTDATE}, 'YYYY-MM-DD'),
+            </if>
+            <if test="OPEN_ENDDATE != null and OPEN_ENDDATE != ''">
+            TO_DATE(#{OPEN_ENDDATE}, 'YYYY-MM-DD'),
+            </if>
+            #{ISUSE},
+            0,
+            SYSDATE,
+            #{REG_ID},
+            SYSDATE,
+            #{REG_ID}
+        )
+    </insert>
+
+    <select id="view" parameterType="hashMap" resultType="hashMap">
+        SELECT A.SEQ,
+            A.ONOFF_DIV,
+            A.SCREEN_GUBUN,
+            A.CATEGORY_CD,
+            CASE WHEN A.SCREEN_GUBUN = 'M' THEN '메인홈'
+                 WHEN A.SCREEN_GUBUN = 'H' THEN '모바일홈'
+                 WHEN SUBSTR(A.CATEGORY_CD,0,1) = 'O' OR SUBSTR(A.CATEGORY_CD,0,1) = 'F'
+                     THEN (SELECT MENU_NM FROM TB_SG_MENU_MST2 WHERE MENU_ID = A.CATEGORY_CD)
+                 ELSE (SELECT NAME FROM TB_CATEGORY_INFO WHERE ISUSE = 'Y' AND CODE = A.CATEGORY_CD)
+            END AS CATEGORY_NM,
+            A.BANNER_NO,
+            A.BANNER_TITLE,
+            A.BANNER_TYP,
+            TO_CHAR (A.OPEN_STARTDATE, 'YYYYMMDD') OPEN_STARTDATE,
+            TO_CHAR (A.OPEN_ENDDATE, 'YYYYMMDD') OPEN_ENDDATE,
+            A.ISUSE,
+            A.VIEW_COUNT,
+            A.REG_DT,
+            A.REG_ID,
+            A.UPD_DT,
+            A.UPD_ID
+        FROM TB_BANNER A
+        WHERE SEQ = #{SEQ}
+    </select>
+
+    <update id="updateProcess" parameterType="hashMap">
+        UPDATE TB_BANNER
+        SET
+            SCREEN_GUBUN = #{SCREEN_GUBUN} ,
+            CATEGORY_CD = #{CATEGORY_CD},
+            BANNER_NO = #{BANNER_NO},
+            BANNER_TITLE = #{BANNER_TITLE},
+            BANNER_TYP = #{BANNER_TYP},
+            <if test="OPEN_STARTDATE != null and OPEN_STARTDATE != ''">
+            OPEN_STARTDATE = TO_DATE(#{OPEN_STARTDATE}, 'YYYY-MM-DD'),
+            </if>
+            <if test="OPEN_ENDDATE != null and OPEN_ENDDATE != ''">
+            OPEN_ENDDATE = TO_DATE(#{OPEN_ENDDATE}, 'YYYY-MM-DD'),
+            </if>
+            ISUSE = #{ISUSE},
+            UPD_DT = SYSDATE,
+            UPD_ID = #{REG_ID}
+        WHERE SEQ = #{SEQ}
+    </update>
+
+    <delete id="deleteProcess" parameterType="hashMap">
+        DELETE FROM TB_BANNER WHERE SEQ = #{SEQ}
+    </delete>
+
+    <delete id="deleteItemProcess" parameterType="hashMap">
+        DELETE FROM TB_BANNER_ITEM WHERE P_SEQ = #{SEQ}
+    </delete>
+
+    <select id="getBannerSubList" parameterType="hashMap" resultType="hashMap" >
+        SELECT * FROM   (
+            SELECT A.*, ROWNUM rnum
+            FROM (
+                SELECT SEQ,
+                    P_SEQ,
+                    ROL_IDX,
+                    BANNER_SUBTITLE,
+                    BANNER_NOTE,
+                    BANNER_IMAGE,
+                    BANNER_THUMBNAIL_IMAGE,
+                    TO_CHAR(BANNER_SDT, 'YYYY-MM-DD') BANNER_SDT,
+                    TO_CHAR(BANNER_EDT, 'YYYY-MM-DD') BANNER_EDT,
+                    CLICK_CNT,
+                    ISUSE,
+                    TO_CHAR(REG_DT,'YYYY-MM-DD') REG_DT,
+                    REG_ID,
+                    TO_CHAR(UPD_DT,'YYYY-MM-DD') UPD_DT,
+                    UPD_ID,
+                    G_SEQ
+                FROM TB_BANNER_ITEM
+                WHERE 1=1
+                AND P_SEQ = #{P_SEQ}
+                <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+                AND BANNER_SUBTITLE LIKE '%'||#{SEARCHTEXT}||'%'
+                </if>
+                <if test="SEARCHROLIDX != null and SEARCHROLIDX != ''">
+                AND ROL_IDX = #{SEARCHROLIDX}
+                </if>
+                <if test="SEARCHISUSE != null and SEARCHISUSE != ''">
+                AND ISUSE = #{SEARCHISUSE}
+                </if>
+                <if test="SEARCHSUBCATEGORY != null and SEARCHSUBCATEGORY != ''">
+                    <choose>
+                        <when test='SEARCHSUBCATEGORY == "H"'>
+                            AND SCREEN_GUBUN = #{SEARCHSUBCATEGORY}
+                        </when>
+                        <when test='SEARCHSUBCATEGORY != "000"'>
+                            AND CATEGORY_CD = #{SEARCHSUBCATEGORY}
+                        </when>
+                    </choose>
+                </if>
+                ORDER BY ROL_IDX ASC, SEQ DESC
+            ) A
+            WHERE rownum &lt;= #{endNo}
+        )
+        WHERE rnum &gt; #{startNo}
+    </select>
+
+    <select id="getBannerSubListCount" parameterType="hashMap" resultType="int">
+        SELECT
+            COUNT(*) CNT
+        FROM TB_BANNER_ITEM
+        WHERE 1=1
+        AND P_SEQ = #{P_SEQ}
+        <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+        AND BANNER_SUBTITLE LIKE '%'||#{SEARCHTEXT}||'%'
+        </if>
+        <if test="SEARCHROLIDX != null and SEARCHROLIDX != ''">
+        AND ROL_IDX = #{SEARCHROLIDX}
+        </if>
+        <if test="SEARCHSUBCATEGORY != null and SEARCHSUBCATEGORY != ''">
+            <choose>
+                <when test='SEARCHSUBCATEGORY == "H"'>
+                    AND SCREEN_GUBUN = #{SEARCHSUBCATEGORY}
+                </when>
+                <when test='SEARCHSUBCATEGORY != "000"'>
+                    AND CATEGORY_CD = #{SEARCHSUBCATEGORY}
+                </when>
+            </choose>
+        </if>
+    </select>
+
+    <insert id="bannerInsertProcess" parameterType="hashMap" flushCache="true" >
+        INSERT INTO TB_BANNER_ITEM(
+            SEQ,
+            P_SEQ,
+            ROL_IDX,
+            BANNER_SUBTITLE,
+            BANNER_NOTE,
+            <if test="BANNER_IMAGE != null and BANNER_IMAGE != ''">
+            BANNER_IMAGE,
+            </if>
+            <if test="BANNER_THUMBNAIL_IMAGE != null and BANNER_THUMBNAIL_IMAGE != ''">
+            BANNER_THUMBNAIL_IMAGE,
+            </if>
+            BANNER_LINK,
+            BANNER_LINK_TARGET,
+            BANNER_SDT,
+            BANNER_EDT,
+            CLICK_CNT,
+            ISUSE,
+            REG_DT,
+            REG_ID,
+            UPD_DT,
+            UPD_ID,
+            G_SEQ
+        )VALUES(
+            SEQ_TB_BANNER_ITEM.NEXTVAL,
+            #{P_SEQ},
+            #{ROL_IDX},
+            #{BANNER_SUBTITLE},
+            #{BANNER_NOTE},
+            <if test="BANNER_IMAGE != null and BANNER_IMAGE != ''">
+            #{BANNER_IMAGE},
+            </if>
+            <if test="BANNER_THUMBNAIL_IMAGE != null and BANNER_THUMBNAIL_IMAGE != ''">
+            #{BANNER_THUMBNAIL_IMAGE},
+            </if>
+            #{BANNER_LINK},
+            #{BANNER_LINK_TARGET},
+            TO_DATE(#{BANNER_SDT}, 'YYYY-MM-DD'),
+            TO_DATE(#{BANNER_EDT}, 'YYYY-MM-DD'),
+            0,
+            #{ISUSE},
+            SYSDATE,
+            #{REG_ID},
+            SYSDATE,
+            #{REG_ID},
+            (SELECT NVL(MAX(G_SEQ),0)+1 FROM TB_BANNER_ITEM)
+        )
+    </insert>
+
+    <select id="bannerDetail" parameterType="hashMap" resultType="hashMap">
+        SELECT B.SEQ,
+            B.P_SEQ,
+            B.ROL_IDX,
+            B.BANNER_SUBTITLE,
+            B.BANNER_NOTE,
+            B.BANNER_IMAGE,
+            B.BANNER_THUMBNAIL_IMAGE,
+            B.BANNER_LINK,
+            B.BANNER_LINK_TARGET,
+            TO_CHAR (B.BANNER_SDT, 'YYYYMMDD') BANNER_SDT,
+            TO_CHAR (B.BANNER_EDT, 'YYYYMMDD') BANNER_EDT,
+            B.CLICK_CNT,
+            B.ISUSE,
+            B.REG_DT,
+            B.REG_ID,
+            B.UPD_DT,
+            B.UPD_ID,
+            B.G_SEQ,
+            CASE WHEN A.BANNER_TYP = 'I' THEN B.BANNER_IMAGE
+            <if test="MENUTYPE != null and MENUTYPE != ''">
+              <choose><when test='MENUTYPE == "FM_ROOT"'>
+                 WHEN A.BANNER_TYP = 'L' THEN
+                     (SELECT SUBJECT_TITLE FROM TB_OFF_LEC_MST WHERE LECCODE = B.BANNER_LINK)
+              </when><when test='MENUTYPE == "OM_ROOT"'>
+                 WHEN A.BANNER_TYP = 'L' THEN
+                     (SELECT SUBJECT_TITLE FROM TB_LEC_MST WHERE LECCODE = B.BANNER_LINK)
+              </when></choose>
+            </if>
+                 WHEN A.BANNER_TYP = 'B' THEN
+                     (SELECT SUBJECT FROM TB_BOARD WHERE BOARD_SEQ = B.BANNER_LINK)
+                 WHEN A.BANNER_TYP = 'P' THEN
+                     (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = B.BANNER_LINK)
+                 WHEN A.BANNER_TYP = 'T' THEN
+                     (SELECT MOCKNAME FROM TB_TMOCKREGISTRATION WHERE MOCKCODE = B.BANNER_LINK)
+            END AS BANNER_LINK_TXT
+        FROM TB_BANNER A, TB_BANNER_ITEM B
+        WHERE 1= 1
+        AND A.SEQ = B.P_SEQ
+        AND B.SEQ = #{SEQ}
+    </select>
+
+    <update id="bannerUpdateProcess" parameterType="hashMap">
+        UPDATE TB_BANNER_ITEM
+        SET
+            ROL_IDX = #{ROL_IDX} ,
+            BANNER_SUBTITLE = #{BANNER_SUBTITLE},
+            BANNER_NOTE = #{BANNER_NOTE},
+            <if test="BANNER_IMAGE != null and BANNER_IMAGE != ''">
+            BANNER_IMAGE = #{BANNER_IMAGE},
+            </if>
+            <if test="BANNER_THUMBNAIL_IMAGE != null and BANNER_THUMBNAIL_IMAGE != ''">
+            BANNER_THUMBNAIL_IMAGE = #{BANNER_THUMBNAIL_IMAGE},
+            </if>
+            BANNER_LINK = #{BANNER_LINK},
+            BANNER_LINK_TARGET = #{BANNER_LINK_TARGET},
+            BANNER_SDT = TO_DATE(#{BANNER_SDT}, 'YYYY-MM-DD'),
+            BANNER_EDT = TO_DATE(#{BANNER_EDT}, 'YYYY-MM-DD'),
+            ISUSE = #{ISUSE},
+            UPD_DT = SYSDATE,
+            UPD_ID = #{REG_ID}
+        WHERE SEQ = #{SEQ}
+    </update>
+
+    <delete id="bannerDelete" parameterType="hashMap">
+        DELETE FROM TB_BANNER_ITEM WHERE SEQ = #{SEQ}
+    </delete>
+
+    <update id="updateItemOrder" parameterType="hashMap">
+        UPDATE TB_BANNER_ITEM
+        SET
+            ROL_IDX = #{ROL_IDX},
+            UPD_DT = SYSDATE,
+            <if test="ISUSE != null and ISUSE != ''">
+            ISUSE = #{ISUSE},
+            </if>
+            UPD_ID = #{REG_ID}
+        WHERE SEQ = #{SEQ}
+    </update>
+
+    <select id="getCateBannerList" parameterType="hashMap" resultType="hashMap">
+        SELECT
+            DISTINCT C.CODE , C.NAME
+            , CASE
+                WHEN (SELECT COUNT(BANNER_NO) FROM TB_BANNER B, TB_BANNER_ITEM BI
+                    WHERE B.SEQ = BI.P_SEQ
+                    AND B.CATEGORY_CD = C.CODE
+                    AND B.BANNER_NO = A.BANNER_NO) > 0 THEN 'Y'
+                ELSE 'N'
+             END AS USE_YN
+        FROM TB_BANNER A, TB_CATEGORY_INFO C
+        WHERE 1 = 1
+        AND C.ISUSE = 'Y'
+        AND A.SCREEN_GUBUN = 'S'
+        AND A.CATEGORY_CD = C.CODE
+        AND A.ONOFF_DIV = #{ONOFF_DIV}
+        AND A.BANNER_NO = #{BANNER_NO}
+        ORDER BY C.CODE
+    </select>
+
+    <select id="getBannerCountByCate" parameterType="hashMap" resultType="int">
+        SELECT
+            COUNT(*) CNT
+        FROM TB_BANNER
+        WHERE 1=1
+      <if test="ONOFF_DIV != null and ONOFF_DIV != ''">
+        AND ONOFF_DIV = #{ONOFF_DIV}
+      </if>
+      <if test="SCREEN_GUBUN != null and SCREEN_GUBUN != ''">
+        AND SCREEN_GUBUN = #{SCREEN_GUBUN}
+      </if>
+      <if test="CATEGORY_CD != null and CATEGORY_CD != ''">
+        AND CATEGORY_CD = #{CATEGORY_CD}
+      </if>
+      <if test="BANNER_NO != null and BANNER_NO != ''">
+        AND BANNER_NO = #{BANNER_NO}
+      </if>
+    </select>
+
+    <insert id="bannerInsertProcessByBannerNo" parameterType="hashMap" flushCache="true" >
+        INSERT INTO TB_BANNER_ITEM (
+            SEQ,
+            P_SEQ,
+            ROL_IDX,
+            BANNER_SUBTITLE,
+            BANNER_NOTE,
+            <if test="BANNER_IMAGE != null and BANNER_IMAGE != ''">
+            BANNER_IMAGE,
+            </if>
+            <if test="BANNER_THUMBNAIL_IMAGE != null and BANNER_THUMBNAIL_IMAGE != ''">
+            BANNER_THUMBNAIL_IMAGE,
+            </if>
+            BANNER_LINK,
+            BANNER_LINK_TARGET,
+            BANNER_SDT,
+            BANNER_EDT,
+            CLICK_CNT,
+            ISUSE,
+            REG_DT,
+            REG_ID,
+            UPD_DT,
+            UPD_ID,
+            G_SEQ
+        )
+        SELECT
+            SEQ_TB_BANNER_ITEM.NEXTVAL,
+            A.SEQ AS P_SEQ,
+            #{ROL_IDX},
+            #{BANNER_SUBTITLE},
+            #{BANNER_NOTE},
+            <if test="BANNER_IMAGE != null and BANNER_IMAGE != ''">
+            #{BANNER_IMAGE},
+            </if>
+            <if test="BANNER_THUMBNAIL_IMAGE != null and BANNER_THUMBNAIL_IMAGE != ''">
+            #{BANNER_THUMBNAIL_IMAGE},
+            </if>
+            #{BANNER_LINK},
+            #{BANNER_LINK_TARGET},
+            TO_DATE(#{BANNER_SDT}, 'YYYY-MM-DD'),
+            TO_DATE(#{BANNER_EDT}, 'YYYY-MM-DD'),
+            0,
+            #{ISUSE},
+            SYSDATE,
+            #{REG_ID},
+            SYSDATE,
+            #{REG_ID},
+            (SELECT NVL(MAX(G_SEQ),0)+1 FROM TB_BANNER_ITEM)
+        FROM TB_BANNER A
+        WHERE A.ONOFF_DIV = #{ONOFF_DIV}
+        AND A.SCREEN_GUBUN = #{SCREEN_GUBUN}
+        AND A.CATEGORY_CD = #{CATEGORY_CD}
+        AND A.BANNER_NO = #{BANNER_NO}
+    </insert>
+
+    <select id="getCateBannerListWGseq" parameterType="hashMap" resultType="hashMap">
+        SELECT
+            DISTINCT C.CODE , C.NAME
+      <choose>
+        <when test='G_SEQ != null and G_SEQ != "" and G_SEQ != "null"'>
+        , CASE
+            WHEN (SELECT COUNT(BANNER_NO) FROM TB_BANNER B, TB_BANNER_ITEM BI
+                WHERE B.SEQ = BI.P_SEQ
+                AND B.CATEGORY_CD = C.CODE
+                AND B.BANNER_NO = A.BANNER_NO
+                AND BI.G_SEQ = #{G_SEQ}) > 0 THEN 'Y'
+            ELSE 'N'
+         END AS USE_YN
+        </when>
+        <otherwise>
+         , 'N' AS USE_YN
+        </otherwise>
+      </choose>
+        FROM TB_BANNER A, TB_CATEGORY_INFO C
+        WHERE 1 = 1
+        AND C.ISUSE = 'Y'
+        AND A.SCREEN_GUBUN = 'S'
+        AND A.CATEGORY_CD = C.CODE
+        AND A.ONOFF_DIV = #{ONOFF_DIV}
+        AND A.BANNER_NO = #{BANNER_NO}
+        ORDER BY C.CODE
+    </select>
+
+</mapper>

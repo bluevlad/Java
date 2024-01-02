@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+    <context:property-placeholder location="classpath:/globalProps/globals.properties" />
+
+    <!-- 프로퍼티 정보 설정 -->
+    <bean name="propertiesService" class="egovframework.rte.fdl.property.impl.EgovPropertyServiceImpl" destroy-method="destroy">
+        <property name="properties">
+            <map>
+                <entry key="pageUnit" value="20"/>
+                <entry key="pageSize" value="10"/>
+                <entry key="posblAtchFileSize" value="5242880"/>
+                <entry key="Globals.fileStorePath" value="${Globals.fileStorePath}"/>
+                <entry key="Globals.addedOptions" value="false"/>
+                <entry key="maxUnitSize" value="500000"/>
+                <entry key="Globals.DomainURL" value="${Globals.DomainURL}"/>
+                <entry key="Globals.Image.URL" value="${Globals.DomainURL}"/>
+                <entry key="Globals.Context.RealPath" value="${Globals.Context.RealPath}"/>
+                <entry key="image.noImage" value="${image.noImage}"/>
+                <entry key="EMAIL_FROM_USR" value="${EMAIL_FROM_USR}"/>
+                <entry key="EMAIL_FROM_USR_NM" value="${EMAIL_FROM_USR_NM}"/>
+                <entry key="EMAIL_SUBJECT" value="${EMAIL_SUBJECT}"/>
+                <entry key="EMAIL_USR_REG_SUBJECT" value="${EMAIL_USR_REG_SUBJECT}"/>
+                <entry key="EMAIL_USR_REG_VM_FILE" value="${EMAIL_USR_REG_VM_FILE}"/>
+                <entry key="EMAIL_GO_URL_01" value="${EMAIL_GO_URL_01}"/>
+                <entry key="EMAIL_GO_URL_99" value="${EMAIL_GO_URL_99}"/>
+            </map>
+        </property>
+    </bean>
+</beans>

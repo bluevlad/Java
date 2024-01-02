@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lectureYear">
+
+	<select id="onPayList" parameterType="hashMap" resultType="hashMap">
+	<![CDATA[
+		SELECT YYYYMM, COUNT(LECCODE) CNT, SUM(ORDER_CNT) ORDER_CNT, SUM(REFUND_CNT) REFUND_CNT, SUM(ADD_POINT) ADD_POINT
+		FROM TB_ORDER_YPKG_POINT
+		GROUP BY YYYYMM
+		ORDER BY YYYYMM
+	]]>
+	</select>
+
+	<select id="onOrderList" parameterType="hashMap" resultType="hashMap">
+	<![CDATA[
+        SELECT NVL(AA.MGNTNO, BB.MGNTNO) MGNTNO,
+                (SELECT SUBJECT_TITLE FROM TB_LEC_MST WHERE LECCODE = NVL(AA.MGNTNO, BB.MGNTNO)) SUBJECT_TITLE, 
+               NVL(AA.CNT,0) CNT, NVL(BB.CNT,0) REP_CNT,
+               NVL(AA.PRICE, 0) PRICE, 
+               NVL(BB.REP_PRICE,0) REP_PRICE
+        FROM (
+                SELECT B.MGNTNO, COUNT(A.USER_ID) CNT, SUM(B.PRICE) PRICE
+                FROM TB_ORDERS A, TB_ORDER_MGNT_NO B
+                WHERE A.ORDERNO = B.ORDERNO
+                AND B.PTYPE = 'Y'
+                AND B.STATUSCODE = 'DLV105'
+                AND B.PRICE > 0
+                AND TO_CHAR(B.ISCONFIRM,'YYYYMMDD') BETWEEN #{searchStartDate} AND #{searchEndDate}
+                GROUP BY B.MGNTNO 
+                ) AA FULL OUTER JOIN (        
+                SELECT B.MGNTNO, COUNT(A.USER_ID) CNT, SUM(B.PRICE) REP_PRICE
+                FROM TB_ORDERS A, TB_ORDER_MGNT_NO B
+                WHERE A.ORDERNO = B.ORDERNO
+                AND B.PTYPE = 'Y'
+                AND B.STATUSCODE = 'DLV230'
+                AND TO_CHAR(B.ISCONFIRM,'YYYYMMDD') BETWEEN #{searchStartDate} AND #{searchEndDate}
+                GROUP BY B.MGNTNO
+                ) BB
+        ON AA.MGNTNO = BB.MGNTNO
+        ORDER BY NVL(AA.MGNTNO, BB.MGNTNO)   
+	]]>
+	</select>
+	
+	<select id="payUserListByLeccode" parameterType="hashMap" resultType="hashMap">
+		 SELECT G.*
+		    FROM (
+		    SELECT O.*, ROWNUM RNUM FROM(
+		    SELECT H.* FROM(
+			SELECT 
+			A.ORDERNO,
+	       (SELECT USER_NM  FROM TB_MA_MEMBER WHERE USER_ID = A.USER_ID) AS USER_NM,
+	       (SELECT PHONE_NO FROM TB_MA_MEMBER WHERE USER_ID = A.USER_ID) AS PHONE_NO,
+	       ISCONFIRM AS START_DATE,
+	       (ISCONFIRM + FN_GET_YEAR_PACKAGE_DAY@WILLBESGOSI_NEW(C.SUBJECT_PERIOD)) AS END_DATE,
+	       (SELECT CODE_NM FROM TB_BA_CONFIG_CD D WHERE D.CODE_VAL = B.STATUSCODE) AS STATUSCODE_NM,
+			B.MGNTNO,B.STATUSCODE, C.SUBJECT_TITLE, A.USER_ID,TO_CHAR(B.ISCONFIRM,'YYYY-MM-DD') AS IS_CONFIRM_DD
+	        FROM TB_ORDERS A, TB_ORDER_MGNT_NO B, TB_LEC_MST C
+	        WHERE A.ORDERNO = B.ORDERNO
+	        AND B.PTYPE = 'Y'
+	        AND B.MGNTNO = C.LECCODE
+         	AND B.MGNTNO=#{LECCODE}
+	        AND B.STATUSCODE=#{STATUSCODE}
+	        <if test='searchStartDate != null and searchStartDate != ""'>
+	        AND    (TO_CHAR(B.ISCONFIRM,'YYYYMMDD') BETWEEN #{searchStartDate} AND #{searchEndDate})
+	        </if>
+	        ORDER BY B.ISCONFIRM DESC,A.USER_ID ASC
+	         )H
+	         WHERE 1=1
+          	<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+				<if test='SEARCHTYPE == "1"'>
+					AND H.USER_NM like '%'||#{SEARCHTEXT}||'%'
+				</if>
+				<if test='SEARCHTYPE == "2"'>
+					AND H.USER_NM like '%'||#{SEARCHTEXT}||'%'
+				</if>
+			</if>
+			<if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+				AND ((H.USER_NM like '%'||#{SEARCHTEXT}||'%') OR (H.USER_NM like '%'||#{SEARCHTEXT}||'%'))
+			</if>
+			)O
+                   WHERE ROWNUM <![CDATA[ <= ]]> #{endNo}
+            ) G 
+	        WHERE RNUM <![CDATA[ > ]]> #{startNo}
+     </select>
+     
+     <select id="payUserListByLeccodeCount" parameterType="hashMap" resultType="int">
+			    SELECT COUNT(*) FROM(
+    	SELECT H.* FROM(
+            SELECT 
+           (SELECT USER_NM  FROM TB_MA_MEMBER WHERE USER_ID = A.USER_ID) AS USER_NM,A.USER_ID
+            FROM TB_ORDERS A, TB_ORDER_MGNT_NO B, TB_LEC_MST C
+	        WHERE A.ORDERNO = B.ORDERNO
+	        AND B.PTYPE = 'Y'
+	        AND B.MGNTNO = C.LECCODE
+         	AND B.MGNTNO=#{LECCODE}
+	        AND B.STATUSCODE=#{STATUSCODE}
+	        <if test='searchStartDate != null and searchStartDate != ""'>
+	        AND    (TO_CHAR(B.ISCONFIRM,'YYYYMMDD') BETWEEN #{searchStartDate} AND #{searchEndDate})
+	         )H
+	        WHERE 1=1
+	         <if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+				<if test='SEARCHTYPE == "1"'>
+					AND (H.USER_NM like '%'||#{SEARCHTEXT}||'%'
+						OR H.USER_NM like '%'||#{SEARCHTEXT}||'%')
+				</if>
+				<if test='SEARCHTYPE == "2"'>
+					AND H.USER_NM like '%'||#{SEARCHTEXT}||'%'
+				</if>
+			</if>
+			<if test='SEARCHTYPE == null or SEARCHTYPE == ""'>
+				AND ((H.USER_NM like '%'||#{SEARCHTEXT}||'%') OR (H.USER_NM like '%'||#{SEARCHTEXT}||'%'))
+			</if>
+            )O
+	        </if>
+     </select>
+
+	<select id="onLecOrderView" parameterType="hashMap" resultType="hashMap">
+	<![CDATA[
+    SELECT NVL(AA.MGNTNO, BB.MGNTNO) LECCODE, NVL(AA.ORD_CNT,0) ORD_CNT, NVL(BB.MY_CNT,0) MY_CNT
+    FROM 
+        (SELECT B.MGNTNO, COUNT(C.MST_LECCODE) ORD_CNT
+        FROM TB_ORDERS A, TB_ORDER_MGNT_NO B, TB_LEC_JONG C
+        WHERE A.ORDERNO = B.ORDERNO
+        AND B.MGNTNO = C.LECCODE
+        AND B.PTYPE = 'Y'
+        AND B.PRICE > 0
+        AND B.STATUSCODE = 'DLV105'
+        AND TO_CHAR(B.ISCONFIRM, 'YYYYMMDD') BETWEEN #{searchStartDate} AND #{searchEndDate}
+        GROUP BY B.MGNTNO) AA FULL OUTER JOIN 
+        (SELECT B.MGNTNO, COUNT(C.LECTURE_NO) MY_CNT
+        FROM TB_ORDERS A, TB_ORDER_MGNT_NO B, TB_MYLECTURE C
+        WHERE A.ORDERNO = B.ORDERNO
+        AND B.ORDERNO = C.ORDERNO
+        AND B.MGNTNO = C.PACKAGE_NO
+        AND B.PTYPE = 'Y'
+        AND B.PRICE > 0
+        AND B.STATUSCODE = 'DLV105'
+        AND TO_CHAR(C.REG_DT, 'YYYYMMDD') BETWEEN #{searchStartDate} AND #{searchEndDate}
+        GROUP BY MGNTNO) BB
+        ON AA.MGNTNO = BB.MGNTNO
+    ORDER BY NVL(AA.MGNTNO, BB.MGNTNO)
+	]]>
+	</select>
+
+</mapper>

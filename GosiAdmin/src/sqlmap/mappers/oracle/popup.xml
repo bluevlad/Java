@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="popup">
+	<select id="popupList" parameterType="hashMap" resultType="hashMap">
+		SELECT * FROM 	(
+						SELECT A.*, ROWNUM rnum
+					  	FROM (
+									SELECT
+												NO,
+												TO_CHAR(REG_DT , 'yyyy-mm-dd HH24:MI:SS')  REG_DT ,
+				                                CATEGORY_CODE ,
+				                                POPUP_IMG ,
+				                                THUMBNAIL ,
+				                                TITLE,
+				                                TO_CHAR(TO_DATE(START_DATE) , 'yyyy-mm-dd')||' '||START_TIME||'시'  START_DATE ,
+				                                TO_CHAR(TO_DATE(END_DATE) , 'yyyy-mm-dd')||' '||END_TIME||'시'  END_DATE ,
+				                                DECODE(OPEN_YN, 'Y', '적용', 'N', '미적용') OPEN_YN_NM ,
+				                                HIT
+									FROM TB_POPUP_INFO
+									WHERE 1 = 1
+							  		<if test='ONOFF_DIV != null and ONOFF_DIV == "O" '>
+									AND    	ONOFF_DIV = 'O'
+									</if>
+									<if test='ONOFF_DIV != null and ONOFF_DIV == "F" '>
+									AND    	ONOFF_DIV = 'F'
+									</if>
+							  		<if test='SEARCHKIND != null and SEARCHKIND != ""'>
+							  			AND CATEGORY_CODE like '%'||#{SEARCHKIND}||'%'
+							  		</if>
+								 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+										AND TITLE like '%'||#{SEARCHTEXT}||'%'
+									</if>
+									ORDER BY NO DESC
+								) A
+	                 	WHERE rownum &lt;= #{endNo}
+						)
+		WHERE rnum &gt; #{startNo}
+	</select>
+
+	<select id="popupListCount" parameterType="hashMap" resultType="int">
+		SELECT COUNT(*) CNT
+		FROM TB_POPUP_INFO
+		WHERE 1 = 1
+		<if test='ONOFF_DIV != null and ONOFF_DIV == "O" '>
+		AND    	ONOFF_DIV = 'O'
+		</if>
+		<if test='ONOFF_DIV != null and ONOFF_DIV == "F" '>
+		AND    	ONOFF_DIV = 'F'
+		</if>
+  		<if test='SEARCHKIND != null and SEARCHKIND != ""'>
+  			AND CATEGORY_CODE like '%'||#{SEARCHKIND}||'%'
+  		</if>
+	 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+			AND TITLE like '%'||#{SEARCHTEXT}||'%'
+		</if>
+	</select>
+
+	<insert id="popupInsert" parameterType="hashMap" flushCache="true">
+		INSERT INTO TB_POPUP_INFO(
+		        NO,
+		        ONOFF_DIV,
+		        CATEGORY_CODE,
+		        START_DATE,
+		        START_TIME,
+		        END_DATE,
+		        END_TIME,
+		        OPEN_YN ,
+		        HIT,
+		        TITLE ,
+		        POPUP_IMG,
+		        THUMBNAIL,
+		        LINK_ADDR,
+		        LINK_TARGET,
+		        REG_ID,
+		        REG_DT ,
+		        UPD_ID,
+				UPD_DT,
+				POPUP_IMG_NM,
+				THUMBNAIL_NM
+		)VALUES(
+		        (SELECT NVL(MAX(TO_NUMBER(NO)) , 0)+1  FROM TB_POPUP_INFO),
+		        #{ONOFF_DIV},
+		        #{CATEGORY_CODE},
+		        #{START_DATE},
+		        #{START_TIME},
+		        #{END_DATE},
+		        #{END_TIME},
+		        #{OPEN_YN} ,
+		        0,
+		        #{TITLE} ,
+		        #{POPUP_IMG},
+		        #{THUMBNAIL},
+		        #{LINK_ADDR},
+		        #{LINK_TARGET},
+		        #{REG_ID},
+		        SYSDATE ,
+		        #{UPD_ID},
+				SYSDATE,
+				#{POPUP_IMG_NM},
+				#{THUMBNAIL_NM}
+		)
+	</insert>
+
+	<select id="popupView" parameterType="hashMap" resultType="hashMap">
+		SELECT
+		          NO ,
+		          CATEGORY_CODE ,
+		          TO_CHAR(REG_DT , 'yyyy-mm-dd HH24:MI:SS')  REG_DT ,
+		          HIT ,
+		          START_DATE,
+		          START_TIME ,
+		          END_DATE ,
+		          END_TIME ,
+		          OPEN_YN ,
+		          TITLE ,
+		          POPUP_IMG ,
+		          POPUP_IMG_NM ,
+		          THUMBNAIL ,
+		          THUMBNAIL_NM ,
+		          LINK_ADDR,
+		          LINK_TARGET
+		FROM 	TB_POPUP_INFO
+		WHERE NO =  #{NO}
+	</select>
+
+	<update id="popupUpdate" parameterType="hashMap">
+		UPDATE TB_POPUP_INFO
+			SET
+	         CATEGORY_CODE =#{CATEGORY_CODE}
+	       , START_DATE = #{START_DATE}
+	       , START_TIME = #{START_TIME}
+	       , END_DATE = #{END_DATE}
+	       , END_TIME = #{END_TIME}
+	       , OPEN_YN = #{OPEN_YN}
+	       , TITLE 	 = #{TITLE}
+	       , LINK_ADDR = #{LINK_ADDR}
+	       , LINK_TARGET = #{LINK_TARGET}
+			<if test='POPUP_IMG_DEL == "Y" and POPUP_IMG == ""'>, POPUP_IMG = '' , POPUP_IMG_NM=''</if>
+			<if test='POPUP_IMG != ""'>, POPUP_IMG = #{POPUP_IMG} , POPUP_IMG_NM = #{POPUP_IMG_NM}</if>
+			<if test='THUMBNAIL_DEL == "Y" and THUMBNAIL == ""'>, THUMBNAIL = '' ,THUMBNAIL_NM = ''</if>
+			<if test='THUMBNAIL != ""'>, THUMBNAIL = #{THUMBNAIL} , THUMBNAIL_NM = #{THUMBNAIL_NM}</if>
+			, UPD_DT = SYSDATE
+			, UPD_ID = #{UPD_ID}
+		WHERE NO = #{NO}
+	</update>
+
+	<delete id="popupDelete" parameterType="hashMap" flushCache="true">
+		DELETE FROM TB_POPUP_INFO
+		WHERE NO = #{NO}
+	</delete>
+	<delete id="popupCheckDelete" parameterType="hashMap" flushCache="true">
+		DELETE FROM TB_POPUP_INFO
+		WHERE NO IN(${NO_ARR})
+	</delete>
+	<update id="popupCheckOPENY" parameterType="hashMap">
+		UPDATE TB_POPUP_INFO
+			SET OPEN_YN = 'Y'
+		WHERE NO IN(${OPEN_YN_ARR})
+	</update>
+	<update id="popupCheckOPENN" parameterType="hashMap">
+		UPDATE TB_POPUP_INFO
+			SET OPEN_YN = 'N'
+		WHERE NO IN(${OPEN_YN_ARR})
+	</update>
+
+
+
+</mapper>
