@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+	수정일          수정자                          수정내용
+  ===========      ========    =================
+ *  2020.04.00			rainend				시험/과목 관리
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SurveyManage">
+
+	<select id="selectSurveyList" parameterType="egovframework.com.academy.survey.service.SurveyVO" 
+										resultType="egovframework.com.academy.survey.service.SurveyVO">
+		SELECT SURVEY_ID, SURVEY_TITLE, SURVEY_DESC, SURVEY_SDAT, SURVEY_EDAT, SET_ID, IS_USE, SURVEY_TARGET
+		FROM acm_survey_mst
+		WHERE 1=1
+        <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchKeyword)">
+        AND SURVEY_TITLE LIKE '%' #{searchKeyword} '%'
+        </if>
+		ORDER BY SURVEY_ID DESC
+		LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+	</select>
+
+	<select id="selectSurveyListCnt" parameterType="egovframework.com.academy.survey.service.SurveyVO" resultType="int">
+		SELECT COUNT(*) totcnt
+		FROM acm_survey_mst
+		WHERE 1=1
+        <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchKeyword)">
+        AND SURVEY_TITLE LIKE '%' #{searchKeyword} '%'
+        </if>
+	</select>
+
+	<select id="selectSuveyDetail" parameterType="egovframework.com.academy.survey.service.SurveyVO" 
+										resultType="egovframework.com.academy.survey.service.SurveyVO">
+        SELECT SURVEY_ID, SURVEY_TITLE, SURVEY_DESC, SURVEY_SDAT, SURVEY_EDAT, SET_ID, IS_USE, SURVEY_TARGET
+		FROM acm_survey_mst
+		WHERE SURVEY_ID = #{surveyId}
+	</select>
+
+	<insert id="insertSurvey" keyProperty="surveyId" keyColumn="surveyId">
+		INSERT INTO acm_survey_mst (
+			SURVEY_TITLE, SURVEY_DESC, SURVEY_SDAT, SURVEY_EDAT, SET_ID, IS_USE, SURVEY_TARGET
+		) VALUES (
+			#{surveyTitle}, #{surveyDesc}, #{surveySdat}, #{surveyEdat}, #{setId}, #{isUse}, #{surveyTarget}
+		)
+		<selectKey keyProperty="surveyId" resultType="java.lang.Integer">
+			SELECT MAX(SURVEY_ID) AS SURVEY_ID FROM acm_survey_mst
+		</selectKey>			
+	</insert>
+
+	<update id="updateSurvey">
+		UPDATE acm_survey_mst
+		SET 
+			SURVEY_TITLE = #{surveyTitle},
+			SURVEY_DESC = #{surveyDesc},
+			SURVEY_SDAT = #{surveySdat},
+			SURVEY_EDAT = #{surveyEdat},
+			SET_ID = #{setId},
+			SURVEY_TARGET = #{surveyTarget},
+			IS_USE = #{isUse}
+		WHERE SURVEY_ID = #{surveyId}
+	</update>
+
+	<delete id="deleteSurvey">
+		DELETE acm_survey_mst
+		WHERE SURVEY_ID = #{surveyId}
+	</delete>
+
+	<select id="SurveyRstList" parameterType="egovframework.com.academy.survey.service.SurveyVO" 
+										resultType="egovframework.com.academy.survey.service.SurveyVO">
+    	SELECT 
+            QUE_ID, QUE_TITLE, QUE_COUNT, QUE_TYPE,
+            QUE_VIW1, QUE_VIW2, QUE_VIW3, QUE_VIW4, QUE_VIW5,
+            QUE_VIW6, QUE_VIW7, QUE_VIW8, QUE_VIW9, QUE_VIW10,
+            IFNULL(QUE, QUE_ID) QUE,
+            IFNULL(A1, 0) ANS_1, IFNULL(A2, 0) ANS_2, IFNULL(A3, 0) ANS_3, IFNULL(A4, 0) ANS_4, IFNULL(A5, 0) ANS_5,
+            IFNULL(A6, 0) ANS_6, IFNULL(A7, 0) ANS_7, IFNULL(A8, 0) ANS_8, IFNULL(A9, 0) ANS_9, IFNULL(A10, 0) ANS_10,
+            IFNULL(ASUM, 1) ANS_SUM
+		FROM (SELECT DISTINCT
+              		B.QUE_ID, B.QUE_TITLE, B.QUE_COUNT, B.QUE_TYPE,
+                  	B.QUE_VIW1, B.QUE_VIW2, B.QUE_VIW3, B.QUE_VIW4, B.QUE_VIW5,
+                  	B.QUE_VIW6, B.QUE_VIW7, B.QUE_VIW8, B.QUE_VIW9, B.QUE_VIW10
+              	FROM ACM_SURVEY_BNK B, ACM_SURVEY_SET_ITEM I, acm_survey_set D, ACM_SURVEY_MST C
+              	WHERE B.QUE_ID = I.QUE_ID
+		        <if test="surveyId > 0">
+				AND C.SURVEY_ID = #{surveyId}
+		        </if>
+		        <if test="queId > 0">
+				AND B.QUE_ID = #{queId}
+		        </if>
+              	AND I.SET_ID = D.SET_ID
+              	AND D.SET_ID = C.SET_ID) AA,  
+           	(SELECT QUE_ID QUE,
+                	SUM(A1) A1, SUM(A2) A2, SUM(A3) A3, SUM(A4) A4, SUM(A5) A5,
+                    SUM(A6) A6, SUM(A7) A7, SUM(A8) A8, SUM(A9) A9, SUM(A10) A10,
+                    SUM(A1+A2+A3+A4+A5+A6+A7+A8+A9+A10) ASUM
+               	FROM (SELECT USER_ID, QUE_ID, USER_ANSW,
+                		INSTR(IFNULL(USER_ANSW,0), 1) A1, INSTR(IFNULL(USER_ANSW,0), 2) A2,
+                        INSTR(IFNULL(USER_ANSW,0), 3) A3, INSTR(IFNULL(USER_ANSW,0), 4) A4,
+                        INSTR(IFNULL(USER_ANSW,0), 5) A5, INSTR(IFNULL(USER_ANSW,0), 6) A6,
+                        INSTR(IFNULL(USER_ANSW,0), 7) A7, INSTR(IFNULL(USER_ANSW,0), 8) A8,
+                        INSTR(IFNULL(USER_ANSW,0), 9) A9, INSTR(IFNULL(USER_ANSW,0), 10) A10
+                     	FROM acm_survey_rst_item
+                     	WHERE 1 = 1
+					    <if test="surveyId > 0">
+						AND SURVEY_ID = #{surveyId}
+					    </if>
+					    <if test="queId > 0">
+						AND QUE_ID = #{queId}
+					    </if>
+						) K
+                GROUP BY QUE_ID) BB
+        WHERE AA.QUE_ID = BB.QUE				
+    </select>
+
+	<select id="SurveyAnswerList" parameterType="egovframework.com.academy.survey.service.SurveyVO" 
+										resultType="egovframework.com.academy.survey.service.SurveyVO">
+		SELECT A.SURVEY_ID, B.QUE_SEQ, B.QUE_ID, B.USER_ANSW, C.QUE_TYPE
+		FROM ACM_SURVEY_RST A, acm_survey_rst_item B, ACM_SURVEY_BNK C
+		WHERE A.SURVEY_ID = B.SURVEY_ID
+		AND A.USER_ID = B.USER_ID
+		AND B.QUE_ID = C.QUE_ID
+        AND B.QUE_ID = #{queId}
+      	ORDER BY A.SURVEY_ID, B.QUE_ID, A.USER_ID, B.QUE_SEQ
+    </select>
+
+	<select id="SurveyUserList" parameterType="egovframework.com.academy.survey.service.SurveyVO" 
+										resultType="egovframework.com.academy.survey.service.SurveyVO">
+		SELECT USER_ID, REG_DT
+		FROM ACM_SURVEY_RST
+		WHERE SURVEY_ID = #{surveyId}
+      	ORDER BY USER_ID
+    </select>
+
+	<select id="SurveyBankList" parameterType="egovframework.com.academy.survey.service.SurveyVO" 
+										resultType="egovframework.com.academy.survey.service.SurveyVO">
+		SELECT a.SURVEY_ID, a.SET_ID, b.QUE_ID, b.QUE_SEQ, 
+		       c.QUE_TITLE, c.QUE_COUNT, c.QUE_TYPE,
+		       c.QUE_VIW1, c.QUE_VIW2, c.QUE_VIW3, c.QUE_VIW4, c.QUE_VIW5,
+		       c.QUE_VIW6, c.QUE_VIW7, c.QUE_VIW8, c.QUE_VIW9, c.QUE_VIW10
+		FROM acm_survey_mst a, acm_survey_set_item b, acm_survey_bnk c
+		WHERE a.SET_ID = b.SET_ID
+		AND b.QUE_ID = c.QUE_ID										
+		AND a.SURVEY_ID = #{surveyId}
+		ORDER BY b.QUE_SEQ
+    </select>
+
+</mapper>

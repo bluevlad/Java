@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="box">
+
+	<select id="selectBoxList" parameterType="egovframework.com.academy.box.service.BoxVO" 
+										resultType="egovframework.com.academy.box.service.BoxVO">
+		SELECT BOX_CD, BOX_NM, BOX_COUNT, BOX_PRICE, DEPOSIT, ROW_COUNT, ROW_NUM, UPD_DT, UPD_ID, START_NUM, END_NUM,
+		(SELECT COUNT(BOX_NUM) FROM ACM_BOX_NUM WHERE BOX_CD = AB.BOX_CD AND BOX_FLAG = 'Y') AS USE_CNT,
+		(SELECT COUNT(BOX_NUM) FROM ACM_BOX_NUM WHERE BOX_CD = AB.BOX_CD AND BOX_FLAG = 'N') AS NOT_CNT
+		FROM ACM_BOX AB
+        <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchKeyword)">
+        WHERE BOX_NM LIKE '%' #{searchKeyword} '%'
+        </if>
+		ORDER BY AB.BOX_CD ASC
+		LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+	</select>
+
+	<select id="selectBoxListTotCnt" parameterType="egovframework.com.academy.box.service.BoxVO" resultType="int">
+		SELECT COUNT(*) totcnt
+		FROM ACM_BOX
+        <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchKeyword)">
+        WHERE BOX_NM LIKE '%' #{searchKeyword} '%'
+        </if>
+	</select>
+
+	<!-- 사물함정보 한개를 가져온다.  -->
+	<select id="selectBoxDetail" parameterType="egovframework.com.academy.box.service.BoxVO" 
+										resultType="egovframework.com.academy.box.service.BoxVO">
+		SELECT BOX_CD, #{boxNum} BOX_NUM, BOX_NM, BOX_COUNT, BOX_PRICE, DEPOSIT, ROW_COUNT, ROW_NUM, UPD_DT, UPD_ID, START_NUM, END_NUM,
+		(SELECT COUNT(BOX_NUM) FROM ACM_BOX_NUM WHERE BOX_CD = AB.BOX_CD AND BOX_FLAG = 'Y') USE_CNT,
+		(SELECT COUNT(BOX_NUM) FROM ACM_BOX_NUM WHERE BOX_CD = AB.BOX_CD AND BOX_FLAG = 'N') NOT_CNT
+		FROM ACM_BOX AB
+		WHERE AB.BOX_CD = #{boxCd}
+	</select>
+
+	<!-- 사물함 등록 처리 -->
+	<insert id="insertBox">
+		INSERT INTO ACM_BOX(
+			BOX_CD, BOX_NM, BOX_COUNT, BOX_PRICE, DEPOSIT, ROW_COUNT, ROW_NUM, UPD_DT, UPD_ID, START_NUM, END_NUM
+		)VALUES(
+			#{boxCd}, #{boxNm}, #{boxCount}, #{boxPrice}, #{deposit}, #{rowCount}, #{rowNum}, now(), #{updId}, #{startNum}, #{endNum}
+		)
+	</insert>
+
+	<!-- 사물함 등록 처리 -->
+	<insert id="insertBoxNum">
+		INSERT INTO ACM_BOX_NUM(
+			BOX_CD, BOX_NUM, USER_ID, BOX_FLAG, UPD_DT, UPD_ID
+		)VALUES(
+			#{boxCd}, #{boxNum}, '', 'N', now(), #{updId}
+		)
+	</insert>
+		
+	<!-- 사물함 정보를 업데이트한다. -->
+	<update id="updateBox">
+		UPDATE ACM_BOX 
+		SET 		
+			BOX_NM    = #{boxNm},
+			BOX_PRICE   = #{boxPrice},
+			DEPOSIT   = #{deposit},
+			UPD_DT = now(),
+			UPD_ID = #{updId}
+		WHERE 
+			BOX_CD = #{boxCd}
+	</update>
+
+	<!-- 사물함 세부정보를 가져온다.  -->
+	<select id="selectBoxNumList" parameterType="egovframework.com.academy.box.service.BoxVO" 
+										resultType="egovframework.com.academy.box.service.BoxVO">
+		SELECT BOX_CD, BOX_NUM, ABN.USER_ID, AM.USER_NM, BOX_FLAG, ABN.UPD_DT, ABN.UPD_ID, RENT_SEQ, RENT_MEMO   
+		FROM ACM_BOX_NUM ABN    
+		LEFT OUTER JOIN ACM_MEMBER AM ON ABN.USER_ID = AM.USER_ID
+		WHERE ABN.BOX_CD = #{boxCd}
+		ORDER BY ABN.BOX_NUM ASC
+	</select>
+
+	<!-- 사물함 상세정보 테이블에서 사용중인 사물함 갯수를 조회 -->
+	<select id="selectBoxNumUseCount" parameterType="egovframework.com.academy.box.service.BoxVO" resultType="int">
+		SELECT COUNT(BOX_NUM)
+		FROM ACM_BOX_NUM			
+		WHERE BOX_CD = #{boxCd} AND BOX_FLAG = 'Y'
+	</select>
+
+	<!-- 사물함 대여 신청 결제정보를 한개 가져온다.  -->
+	<select id="selectBoxNumRentDetail" parameterType="egovframework.com.academy.box.service.BoxVO" 
+										resultType="egovframework.com.academy.box.service.BoxVO">
+		SELECT ABN.BOX_CD, ABN.BOX_NUM, ABN.USER_ID, ABN.BOX_FLAG, ABN.RENT_SEQ, ABR.RENT_MEMO,
+				DATE_FORMAT(ABR.RENT_START, "%Y-%m-%d") RENT_START, DATE_FORMAT(ABR.RENT_END , "%Y-%m-%d") RENT_END,
+				ABR.DEPOSIT, ABR.DEPOSIT_YN, ABR.ORDERNO, ABR.EXTEND_YN, ABR.KEY_YN, ABR.RENT_TYPE, ABR.PAY_GUBUN, ABR.DEPOSIT_REFUND
+		FROM ACM_BOX AB INNER JOIN ACM_BOX_NUM ABN 
+		ON AB.BOX_CD = ABN.BOX_CD 
+		AND ABN.BOX_CD = #{boxCd}
+		AND ABN.BOX_NUM = #{boxNum}
+		LEFT OUTER JOIN ACM_BOX_RENT ABR
+		ON AB.BOX_CD = ABR.BOX_CD
+		AND ABN.BOX_NUM = ABR.BOX_NUM
+		AND ABR.RENT_SEQ = #{rentSeq}
+	</select>
+
+	<!-- 사물함 대여 현재 결제 정보를 가져온다.  -->
+	<select id="selectBoxNumRentOrderDetail" parameterType="egovframework.com.academy.box.service.BoxVO" 
+										resultType="egovframework.com.academy.box.service.BoxVO">
+		SELECT TOO.ORDERNO, TOO.USER_NM, TOO.REG_DT, TOO.OFF_LINE, TOO.USER_ID,
+       		TOA.PAYCODE, TOA.PRICE, TOA.PRICE_CARD, TOA.PRICE_CASH, TOA.PRICE_BANK, TOA.PAYNAME, 
+       		TOA.PRICE_DISCOUNT, TOA.PRICE_DISCOUNT_REASON
+		FROM ACM_ORDERS TOO, ACM_ORDER_ITEM TOM, ACM_ORDER_APPROVALS TOA
+		WHERE TOO.ORDERNO = TOM.ORDERNO
+		AND TOM.ORDERNO = TOA.ORDERNO
+		AND TOM.ISCANCEL= 0
+		AND TOO.ORDERNO = #{orderno}
+	</select>
+
+	<!-- 사물함 대여 현재 결제 정보를 가져온다.  -->
+	<select id="selectBoxOrderDetail" parameterType="egovframework.com.academy.box.service.BoxVO" 
+										resultType="egovframework.com.academy.box.service.BoxVO">
+         SELECT A.ORDERNO, A.USER_ID, A.USER_NM, A.EMAIL, A.REG_DT, A.ORDER_TYPE,
+              B.ITEMNO, B.STATUSCODE, B.ISCANCEL, E.BOX_PRICE,
+              C.PRICE PAY_TOTAL, C.PRICE_CARD, C.PRICE_CASH, C.PRICE_BANK, C.PRICE_UNPAID, C.PRICE_DISCOUNT, C.PRICE_DISCOUNT_TYPE, C.PRICE_DISCOUNT_REASON,
+              D.BOX_NUM, D.RENT_TYPE, E.BOX_NM, E.BOX_CD, D.RENT_MEMO, D.RENT_SEQ,
+              DATE_FORMAT(D.RENT_START, "%Y-%m-%d") RENT_START, DATE_FORMAT(D.RENT_END, "%Y-%m-%d") RENT_END
+         FROM ACM_ORDERS A, ACM_ORDER_ITEM B, ACM_ORDER_APPROVALS C, ACM_BOX_RENT D, ACM_BOX E
+         WHERE A.ORDERNO = B.ORDERNO
+         AND A.ORDERNO = C.ORDERNO
+         AND C.ORDERNO = D.ORDERNO
+         AND D.BOX_CD = E.BOX_CD
+		<if test="statuscode !=null and statuscode == 'DLV230' ">
+		 AND B.STATUSCODE = #{statuscode}
+		</if>
+   		 AND A.ORDERNO = #{orderno}
+ 	</select>
+ 
+
+	<!-- 사물함 대여 결제 이력 정보들을 가져온다.  -->
+	<select id="selectBoxNumRentOrderList" parameterType="egovframework.com.academy.box.service.BoxVO" 
+										resultType="egovframework.com.academy.box.service.BoxVO">
+		SELECT TOBR.USER_ID, TOBN.BOX_FLAG, TOBR.RENT_MEMO, TOBR.RENT_SEQ,
+			TOBR.RENT_START, TOBR.RENT_END,
+			CASE TOBR.DEPOSIT_YN WHEN 'Y' THEN '반환' ELSE '미반환' END DEPOSIT_YN,
+			CASE TOBR.EXTEND_YN WHEN 'R' THEN '대여' WHEN 'Y' THEN '연장' ELSE '비연장' END EXTEND_YN,
+			CASE TOBR.KEY_YN WHEN 'Y' THEN'반납' ELSE '미반납' END KEY_YN,
+			CASE TOBR.RENT_TYPE WHEN 'ON' THEN '온라인' ELSE '오프라인' END RENT_TYPE,
+			TOBR.DEPOSIT, TOBR.ORDERNO, TOBR.PAY_GUBUN, TOBR.DEPOSIT_REFUND, TMM.USER_NM
+		FROM ACM_BOX TOB INNER JOIN ACM_BOX_NUM TOBN 
+		ON TOB.BOX_CD = TOBN.BOX_CD 
+		LEFT OUTER JOIN ACM_BOX_RENT TOBR
+		ON TOB.BOX_CD = TOBR.BOX_CD
+		AND TOBN.BOX_NUM = TOBR.BOX_NUM
+		LEFT OUTER JOIN ACM_MEMBER TMM
+		ON TOBR.USER_ID = TMM.USER_ID 
+		WHERE TOBR.BOX_CD = #{boxCd}
+		AND TOBR.BOX_NUM = #{boxNum}
+		ORDER BY TOBR.RENT_END DESC
+	</select>
+
+	
+	<!-- 사물함 상태값 정보를 업데이트한다. -->
+	<update id="updateBoxFlag">
+		UPDATE ACM_BOX_NUM 
+		SET 
+			BOX_FLAG = #{boxFlag}
+			<if test='boxFlag !="Y"'>
+			, RENT_SEQ = NULL
+			</if>
+		WHERE 
+			BOX_CD = #{boxCd} AND BOX_NUM = #{boxNum}
+	</update>
+
+	<!-- 사물함 상세정보 테이블에서 사용중인 사물함 갯수를 조회 -->
+	<select id="selectOrderno" parameterType="egovframework.com.academy.box.service.BoxVO" resultType="String">
+		SELECT GET_ORDERNO('B')
+	</select>
+	 
+	<!--  오프라인 사물함 대여 주문 세부정보 등록 처리-->
+	<insert id="insertOrderItem">
+		INSERT INTO ACM_ORDER_ITEM ( 
+			ORDERNO, ITEMNO, CNT, PRICE, STATUSCODE, ISCANCEL, CONFIRM_DT, MEMO,
+			CONFIRMID, OPEN_ADMIN_ID, PTYPE, REG_DT, REG_ID, UPD_DT, UPD_ID		
+		) VALUES (
+			#{orderno}, #{itemno}, 1, #{payTotal}, 'DLV105', 0, now(), #{memo},
+			#{regId}, #{regId}, 'B', now(), #{regId}, now(), #{updId} 
+		)
+	</insert>
+	
+	<!-- 오프라인 사물함 대여 주문 등록 처리-->
+	<insert id="insertOrders">
+		INSERT INTO ACM_ORDERS (
+			ORDERNO, USER_ID, USER_NM, ZIP_CODE, ADDRESS1, ADDRESS2, EMAIL, REG_DT, REG_ID
+		 ) SELECT  
+			#{orderno}, #{userId}, USER_NM, ZIP_CODE, ADDRESS1, ADDRESS2, EMAIL, now(), #{regId}
+		FROM ACM_MEMBER
+			WHERE USER_ID = #{userId}
+	</insert>
+	
+	<!-- 오프라인 사물함 대여 결제정보 등록처리-->
+	<insert id="insertApprovals">
+		INSERT INTO ACM_ORDER_APPROVALS (
+			ORDERNO, PRICE, PRICE_CARD, PRICE_CASH, PRICE_DISCOUNT, PRICE_DISCOUNT_REASON, PRICE_DISCOUNT_TYPE, 
+			ADDPRICE, PAYCODE, POINT, REG_DT
+		) VALUES ( 
+			#{orderno}, #{payTotal}, #{priceCard}, #{priceCash}, #{priceDiscount}, #{priceDiscountReason}, 'W', 
+			0, #{payGubun}, 0, now()
+		)
+	</insert>
+	
+	<!-- 사물함 등록 처리 -->
+	<insert id="insertBoxRent">
+		INSERT INTO ACM_BOX_RENT(
+			BOX_CD, BOX_NUM, RENT_SEQ, USER_ID, RENT_START, RENT_END, DEPOSIT, DEPOSIT_YN, EXTEND_YN, KEY_YN,     
+			RENT_MEMO, UPD_DT, UPD_ID, RENT_TYPE, PAY_GUBUN, ORDERNO    
+		)VALUES(
+			#{boxCd}, #{boxNum}, #{rentSeq}, #{userId}, #{rentStart}, #{rentEnd}, #{deposit}, #{depositYn}, #{extendYn}, #{keyYn},
+			#{rentMemo}, now(), #{updId}, #{rentType}, #{payGubun}, #{orderno}
+		)
+	</insert>
+	
+	<!-- 사물함 대여 결제정보 테이블에서 최종 SEQ를 조회 -->
+	<select id="getBoxRentSeq" parameterType="egovframework.com.academy.box.service.BoxVO" resultType="int">
+		SELECT IFNULL(MAX(RENT_SEQ),0)+1
+		FROM ACM_BOX_RENT
+		WHERE BOX_CD = #{boxCd} AND BOX_NUM = #{boxNum}
+	</select>
+
+	<!-- 사물함 상세 정보를 업데이트한다. -->
+	<update id="updateBoxNum">
+		UPDATE ACM_BOX_NUM 
+		SET 
+			USER_ID    = #{userId},
+			BOX_FLAG  = #{boxFlag},
+			<if test="rentSeq !=null">
+			RENT_SEQ  = #{rentSeq},
+			</if> 
+			<if test="rentMemo !=null">
+			RENT_MEMO = #{rentMemo},
+			</if>
+			UPD_DT = now(),
+			UPD_ID = #{updId}
+		WHERE BOX_CD = #{boxCd} 
+		AND BOX_NUM = #{boxNum}
+	</update>
+
+	<!-- 사물함 대여 신청 정보를 업데이트한다. -->
+	<update id="updateBoxNumRent">
+		UPDATE ACM_BOX_RENT 
+		SET 
+			<if test="userId !=null and userId != '' ">
+			USER_ID	       = #{userId},
+			</if>
+			<if test="rentStart !=null and rentStart != '' ">
+			RENT_START     = #{rentStart},
+			</if>
+			<if test="rentEnd !=null and rentEnd != '' ">
+			RENT_END       = #{rentEnd},
+			</if>
+			<if test="deposit !=null and deposit != '' ">
+			DEPOSIT	       = #{deposit},
+			</if>
+			<if test="depositYn !=null and depositYn != '' ">
+			DEPOSIT_YN     = #{depositYn},
+			</if>
+			<if test="extendYn !=null and extendYn != '' ">
+			EXTEND_YN      = #{extendYn},
+			</if>
+			<if test="keyYn !=null and keyYn != '' ">
+			KEY_YN	       = #{keyYn},
+			</if>
+			<if test="updId !=null and updId != '' ">
+			UPD_ID      = #{updId},
+			</if>
+			<if test="rentType !=null and rentType != '' ">
+			RENT_TYPE      = #{rentType},
+			</if>
+			<if test="orderno !=null and orderno != '' ">
+			ORDERNO       = #{orderno},
+			</if>
+			<if test="payGubun !=null and payGubun != '' ">
+			PAY_GUBUN      = #{payGubun},
+			</if>
+			<if test="depositRefund !=null and depositRefund != '' ">
+			DEPOSIT_REFUND = #{depositRefund},
+			</if>
+			<if test="rentMemo !=null and rentMemo != '' ">
+			RENT_MEMO      = #{rentMemo},	
+			</if>
+			UPD_DT      = now()
+		WHERE 
+			BOX_CD = #{boxCd} AND BOX_NUM = #{boxNum} AND RENT_SEQ = #{rentSeq}
+	</update>
+
+	<!-- 사물함 대여신청 결제정보를 업데이트한다. -->
+	<update id="updateApprovals">
+		UPDATE acm_order_approvals 
+		SET 
+			PRICE       		= #{payTotal},
+			PRICE_DISCOUNT  	= #{priceDiscount},
+			PRICE_CARD        	= #{priceCard},
+			PRICE_CASH	      	= #{priceCash},
+			<if test="priceDiscountReason !=null and priceDiscountReason != '' ">
+			PRICE_DISCOUNT_REASON = #{priceDiscountReason},
+			</if>
+			PAYCODE = #{payGubun}	
+		WHERE 
+			ORDERNO = #{orderno}
+	</update>
+
+	<!-- 사물함 상세 테이블에 사물함 변경하기 업데이트한다. -->
+	<update id="updateboxNumChange">
+		UPDATE ACM_BOX_NUM
+		SET USER_ID = #{userId}, 
+		BOX_FLAG = #{boxFlag}, 
+		RENT_SEQ = #{rentSeq}, 
+		RENT_MEMO = #{rentMemo}
+		WHERE BOX_CD = #{boxCd}
+		AND BOX_NUM = #{boxNum}
+	</update>
+
+	<!-- 사물함 상세 테이블에 환불정보를 업데이트한다. -->
+	<update id="updateboxNumReset">
+		UPDATE ACM_BOX_NUM 
+		SET 
+			USER_ID    = '',
+			BOX_FLAG  = 'N',
+			RENT_SEQ  = NULL,
+			RENT_MEMO = '',
+			UPD_DT = now(),
+			UPD_ID = #{updId}
+		WHERE 
+			BOX_CD = #{usedBoxCd} AND BOX_NUM = #{usedBoxNum}
+			<if test="rentSeq !=null and rentSeq != '' ">
+			AND RENT_SEQ = #{rentSeq}
+			</if>
+	</update>
+
+	<!-- 사물함 변경시 정보를 업데이트한다. -->
+	<update id="updateBoxRentChange">
+		UPDATE ACM_BOX_RENT
+		SET 
+			BOX_CD		= #{boxCd}, 
+			BOX_NUM		= #{boxNum},
+			UPD_ID   = #{updId},
+			UPD_DT   = now()
+		WHERE 
+			RENT_SEQ = #{rentSeq}
+	</update>
+
+	<!-- 환불시 사물함 대여 신청 정보를 업데이트한다. -->
+	<update id="updateBoxNumRentRefund">
+		UPDATE ACM_BOX_RENT 
+		SET 
+			RENT_END       = now(),
+			DEPOSIT_YN      = 'Y',
+			KEY_YN	       = 'Y',
+			UPD_ID      = #{updId},
+			UPD_DT      = now()
+		WHERE 
+			BOX_CD = #{boxCd} AND BOX_NUM = #{boxNum} AND RENT_SEQ = #{rentSeq}
+	</update>
+
+	<!-- 사물함 대여 이력정보 삭제 (주문번호 이용) -->
+    <delete id="deleteBoxRentByOrderId">
+   		DELETE 
+   			FROM ACM_BOX_RENT 
+   			WHERE ORDERNO = #{orderno} 
+   	</delete>
+	
+	<update id="deleteBoxOrder" statementType="CALLABLE">
+		CALL SP_DELETE_ORDER(
+		        #{orderno, mode=IN}
+		)
+	</update>
+	
+	<!-- 사물함 환불 처리 -->
+	<insert id="insertOrderRefund">
+		INSERT INTO ACM_ORDER_REFUND(
+			ORDERNO, REFUND_PAY, REFUND_DT,
+			<if test="accBankName !=null and accBankName != '' ">
+			ACC_BANK_NAME,
+			</if>
+			<if test="accBankNum !=null and accBankNum != '' ">
+			ACC_BANK_NUM,
+			</if>
+			REG_DT
+		)VALUES(
+			#{orderno}, #{refundPrice}, #{refundDt},
+			<if test="accBankName !=null and accBankName != '' ">
+			#{accBankName},
+			</if>
+			<if test="accBankNum !=null and accBankNum != '' ">
+			#{accBankNum},
+			</if>
+			now()
+		)
+	</insert>
+	 
+	<!--  오프라인 사물함 대여 주문 세부정보 등록 처리-->
+	<insert id="insertOrderItemBox">
+		INSERT INTO ACM_ORDER_ITEM ( 
+			ORDERNO, ITEMNO, CNT, ISCANCEL,
+			<if test="cancelDt != null and cancelDt != '' ">
+			CANCEL_DT, 
+			</if>
+			PRICE, STATUSCODE, PTYPE, CONFIRM_DT, CONFIRMID, REG_ID, REG_DT
+		) VALUES (
+			#{orderno}, #{orderno}, 1, #{isCancel},
+			<if test="cancelDt != null and cancelDt != '0' ">
+			#{cancelDt}, 
+			</if>
+			#{payTotal}, #{statuscode}, 'S', now(), #{regId}, #{regId}, now()
+		)
+	</insert>
+
+	<!-- 사물함 대여신청 결제정보를 업데이트한다. -->
+	<update id="updateOrderApprovalsRefund">
+		UPDATE ACM_ORDER_APPROVALS
+		SET 
+			REFUND_PAY	= #{refundPrice},
+			REFUND_DT = TO_DATE(#{refundDt}, 'MM/DD/YYYY HH24:MI:SS')
+		WHERE 
+			ORDERNO = #{orderno}
+	</update>
+
+</mapper>

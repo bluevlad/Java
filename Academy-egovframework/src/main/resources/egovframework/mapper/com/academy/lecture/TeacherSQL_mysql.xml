@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+	수정일          		수정자                          수정내용
+  ===========      ========    =================
+ *2023.08.00		rainend		강사관리
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="teacher">
+
+<!-- 등록 완료 -->
+
+    <select id="selectTeacherList" parameterType="egovframework.com.academy.member.service.MemberVO"
+    							 resultType="egovframework.com.academy.member.service.MemberVO">
+        SELECT 
+            (SELECT GROUP_CONCAT(MC.CATEGORY_CD  ORDER BY MC.CATEGORY_CD ASC SEPARATOR '/')
+		          FROM ACM_MEMBER_CATEGORY MC, ACM_CATEGORY_INFO CI
+		          WHERE MC.USER_ID = M.USER_ID
+                  AND MC.CATEGORY_CD = CI.CATEGORY_CD) AS CATEGORY_CD, AA.CATEGORY_NM, 
+            MS.SUBJECT_CD, SI.SUBJECT_NM, M.USER_ID, M.USER_NM, M.USER_PWD, M.EMAIL, M.PAYMENT,
+            M.PIC, M.PROFILE, M.ACCOUNT, M.IS_USE, M.REG_DT, M.REG_ID, M.UPD_DT, M.UPD_ID
+        FROM ACM_MEMBER M, ACM_MEMBER_SUBJECT MS, ACM_SUBJECT_INFO SI,
+        (SELECT CI.CATEGORY_NM, MC.USER_ID, RANK() OVER(PARTITION BY MC.USER_ID ORDER BY CI.ORDR) RNK
+		      FROM ACM_MEMBER M, ACM_CATEGORY_INFO CI, ACM_MEMBER_CATEGORY MC
+		      WHERE M.USER_ID = MC.USER_ID
+		      AND M.USER_ROLE = 'PRF'
+		      AND CI.CATEGORY_CD = MC.CATEGORY_CD) AA
+        WHERE M.USER_ROLE = 'PRF'
+        AND M.USER_ID = MS.USER_ID
+        AND M.USER_ID = AA.USER_ID
+        AND MS.SUBJECT_CD = SI.SUBJECT_CD
+        AND AA.RNK = 1
+        <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchCategory)">
+        AND TBL.CATEGORY_CD = #{categoryCd}
+        </if>
+        <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchKeyword)">
+			<if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchCondition)">
+            	<if test="searchCondition == 1">
+		AND TBL.USER_ID LIKE '%' #{searchKeyword} '%'
+        		</if>
+                <if test="searchCondition == 2">
+		AND TBL.USER_NM LIKE '%' #{searchKeyword} '%'
+                </if>
+        	</if>
+        	<if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isEmpty(searchCondition)">
+        AND (TBL.USER_ID LIKE '%' #{searchKeyword} '%'
+				OR AND TBL.USER_NM LIKE '%' #{searchKeyword} '%')
+        	</if>
+        </if>
+        <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isEmpty(searchCategory)">
+        ORDER BY CATEGORY_CD, SUBJECT_CD, USER_NM
+        </if>
+        <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isEmpty(searchCategory)">
+        LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+        </if>
+    </select>
+
+    <select id="selectTeacherListCount" parameterType="egovframework.com.academy.member.service.MemberVO" resultType="int">
+		SELECT COUNT(*)
+        FROM ACM_MEMBER M, ACM_MEMBER_SUBJECT MS, ACM_SUBJECT_INFO SI,
+        (SELECT CI.CATEGORY_NM, MC.USER_ID,
+		            RANK() OVER(PARTITION BY MC.USER_ID ORDER BY CI.ORDR) RNK
+		      FROM ACM_MEMBER M, ACM_CATEGORY_INFO CI, ACM_MEMBER_CATEGORY MC
+		      WHERE M.USER_ID = MC.USER_ID
+		      AND M.USER_ROLE = 'PRF'
+		      AND CI.CATEGORY_CD = MC.CATEGORY_CD) AA
+        WHERE M.USER_ROLE = 'PRF'
+        AND M.USER_ID = MS.USER_ID
+        AND M.USER_ID = AA.USER_ID
+        AND MS.SUBJECT_CD = SI.SUBJECT_CD
+        AND AA.RNK = 1
+        <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchCategory)">
+        AND TBL.CATEGORY_CD = #{categoryCd}
+        </if>
+        <if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchKeyword)">
+			<if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isNotEmpty(searchCondition)">
+            	<if test="searchCondition == 1">
+		AND TBL.USER_ID LIKE '%' #{searchKeyword} '%'
+        		</if>
+                <if test="searchCondition == 2">
+		AND TBL.USER_NM LIKE '%' #{searchKeyword} '%'
+                </if>
+        	</if>
+        	<if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isEmpty(searchCondition)">
+        AND (TBL.USER_ID LIKE '%' #{searchKeyword} '%'
+				OR AND TBL.USER_NM LIKE '%' #{searchKeyword} '%')
+        	</if>
+        </if>
+    </select>
+
+    <select id="teacherDetail" parameterType="egovframework.com.academy.member.service.MemberVO"
+    							 resultType="egovframework.com.academy.member.service.MemberVO">
+        SELECT 
+            (SELECT GROUP_CONCAT(MC.CATEGORY_CD  ORDER BY MC.CATEGORY_CD ASC SEPARATOR '/')
+		          FROM ACM_MEMBER_CATEGORY MC, ACM_CATEGORY_INFO CI
+		          WHERE MC.USER_ID = M.USER_ID
+                AND MC.CATEGORY_CD = CI.CATEGORY_CD) AS CATEGORY_CD, 
+            MS.SUBJECT_CD,
+            SI.SUBJECT_NM, 
+        	   M.USER_ID, USER_NM, USER_PWD, USER_ROLE, EMAIL,
+            ZIP_CODE, ADDRESS1, ADDRESS2, USER_POINT, REMARK, MEMO, PAYMENT,
+            PIC, PROFILE, ACCOUNT, M.IS_USE, M.REG_DT, M.REG_ID, M.UPD_DT, M.UPD_ID
+        FROM ACM_MEMBER M, ACM_MEMBER_SUBJECT MS, ACM_SUBJECT_INFO SI
+        WHERE M.USER_ROLE = 'PRF'
+        AND M.USER_ID = MS.USER_ID
+        AND MS.SUBJECT_CD = SI.SUBJECT_CD
+        AND M.USER_ID = #{userId}
+    </select>
+
+    <insert id="insertTeacher">
+        INSERT INTO ACM_MEMBER(
+			USER_ID, USER_NM, USER_PWD, USER_ROLE, EMAIL, CATEGORY_CODE, PAYMENT, PIC, PROFILE, ACCOUNT, IPINDI, 
+			IS_USE, REG_DT, REG_ID, UPD_DT, UPD_ID
+		) VALUES(
+            #{userId}, #{userNm}, #{userPwd}, 'PRF', #{email}, #{categoryCode},#{payment}, #{pic}, #{profile}, #{account}, #{ipindi}, 
+            #{isUse}, now(), #{regId}, now(), #{updId}
+        )
+    </insert>
+	
+    <update id="updateTeacher">
+        UPDATE ACM_MEMBER
+            SET USER_NM = #{userNm}
+            , USER_PWD = #{userPwd}
+			, EMAIL = #{email}
+			, CATEGORY_CODE = #{categoryCode}
+			, SUBJECT_CD = #{subjectCd}
+			, PAYMENT = #{payment}
+			, PIC = #{pic}
+			, PROFILE = #{profile}
+			, ACCOUNT = #{account}
+			, IS_USE = #{isUse}
+			, UPD_DT = now()
+			, UPD_ID = #{updId}
+        WHERE USER_ID = #{userId}
+    </update>
+
+    <delete id="deleteTeacher">
+        DELETE FROM ACM_MEMBER WHERE USER_ID = #{userId}
+    </delete>
+
+</mapper>

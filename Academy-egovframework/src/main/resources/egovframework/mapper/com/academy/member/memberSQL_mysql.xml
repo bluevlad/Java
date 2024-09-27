@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="member">
+
+	<!-- 사물함정보 한개를 가져온다.  -->
+	<select id="selectMember" parameterType="egovframework.com.academy.member.service.MemberVO" 
+										resultType="egovframework.com.academy.member.service.MemberVO">
+		SELECT USER_ID, USER_NM
+		FROM ACM_MEMBER
+		WHERE USER_ID = #{userId}
+	</select>
+
+</mapper>
