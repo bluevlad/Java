@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath*:spring/com/context-*.xml</param-value>
+  </context-param>
+  <!-- XSS 방지를 위해 전체 애플리케이션에 HTML 인코딩을 적용. -->
+  <!--
+  <context-param>
+    <param-name>defaultHtmlEscape</param-name>
+    <param-value>true</param-value>
+  </context-param>
+   -->
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+
+  <servlet>
+    <servlet-name>appServlet</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>/WEB-INF/config/springmvc/*-servlet.xml</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+   <!-- <servlet>
+       <servlet-name>ReportServlet</servlet-name>
+       <servlet-class>com.willbes.platform.jasper.JasperReportServlet</servlet-class>
+   </servlet> -->
+  <servlet-mapping>
+    <servlet-name>appServlet</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+   <!-- <servlet-mapping>
+       <servlet-name>ReportServlet</servlet-name>
+       <url-pattern>/reports/*</url-pattern>
+    </servlet-mapping> -->
+  <filter>
+    <filter-name>encodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>encodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <filter>
+    <filter-name>sitemesh</filter-name>
+    <filter-class>com.opensymphony.module.sitemesh.filter.PageFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>sitemesh</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>FORWARD</dispatcher>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>INCLUDE</dispatcher>
+  </filter-mapping>
+    <!--
+        HTMLTagFilter의 경우는 파라미터에 대하여 XSS 오류 방지를 위한 변환을 처리합니다.
+       우선 HTMLTagFIlter의 경우는 JSP의 <c:out /> 등을 사용하지 못하는 특수한 상황에서 사용하시면 됩니다.
+       (<c:out />의 경우 뷰단에서 데이터 출력시 XSS 방지 처리가 됨)
+       부득히 HTMLTagFilter를 사용하셔야 하는 경우는 web.xml 상에
+       다음과 같이 CertProcessFilter 등록해 주시면 됩니다.
+       아래의 필터사용 대신 JSP 출력시 <c:out> 태그를 사용하는 것을 기본정책으로 한다
+    -->
+    <filter>
+        <filter-name>HTMLTagFilter</filter-name>
+        <filter-class>com.willbes.cmm.filter.HTMLTagFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>HTMLTagFilter</filter-name>
+        <url-pattern>*.do</url-pattern>
+    </filter-mapping>
+  <!--
+  <filter>
+    <filter-name>multipartFilter</filter-name>
+    <filter-class>org.springframework.web.multipart.support.MultipartFilter</filter-class>
+    <init-param>
+      <param-name>multipartResolverBeanName</param-name>
+      <param-value>multipartResolver</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>multipartFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <filter>
+    <filter-name>xssFilter</filter-name>
+    <filter-class>com.willbes.cmm.filter.XSSFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>xssFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping> -->
+
+  <error-page>
+    <error-code>404</error-code>
+    <location>/resources/html/exception/404.html</location>
+  </error-page>
+  <error-page>
+    <error-code>500</error-code>
+    <location>/resources/html/exception/500.html</location>
+  </error-page>
+  <session-config>
+    <session-timeout>300</session-timeout>
+  </session-config>
+</web-app>
