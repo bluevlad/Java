@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cmmUseDAO">
+
+    <resultMap id="cmmnDetailCode" type="com.willbes.cmm.service.CmmnDetailCode">
+        <result property="SYS_CD"	       column="SYS_CD"    />
+        <result property="SYS_NM"         column="SYS_NM"       />
+        <result property="CODE_NO"       column="CODE_NO"    />
+        <result property="CODE_NM"       column="CODE_NM"    />
+        <result property="CODE_VAL"       column="CODE_VAL"    />
+    </resultMap>
+
+    <select id="selectCmmCodeMap" parameterType="hashMap" resultType="hashMap">
+         SELECT SYS_CD, SYS_NM, CODE_NO, CODE_NM, CODE_VAL
+         FROM TB_BA_CONFIG_CD
+         WHERE ISUSE = 'Y'
+         AND SYS_CD = #{SYS_CD}
+         ORDER BY SYS_CD
+    </select>
+
+    <select id="selectCmmCodeMapSortNum" parameterType="hashMap" resultType="hashMap">
+         SELECT SYS_CD, SYS_NM, CODE_NO, CODE_NM, CODE_VAL
+         FROM TB_BA_CONFIG_CD
+         WHERE ISUSE = 'Y'
+         AND SYS_CD = #{SYS_CD}
+         ORDER BY SYS_CD, CODE_NO
+    </select>
+
+    <select id="selectCmmCodeMapSortStr" parameterType="hashMap" resultType="hashMap">
+         SELECT SYS_CD, SYS_NM, CODE_NO, CODE_NM, CODE_VAL
+         FROM TB_BA_CONFIG_CD
+         WHERE ISUSE = 'Y'
+         AND SYS_CD = #{SYS_CD}
+         ORDER BY CODE_NO ASC
+    </select>
+
+	<select id="selectCmmCodeByNo" parameterType="hashMap" resultType="hashMap">
+         SELECT SYS_CD, SYS_NM, CODE_NO, CODE_NM, CODE_VAL
+		 FROM TB_BA_CONFIG_CD
+		 WHERE CODE_NO = #{DETAIL_CODE_NO}
+	</select>
+
+    <select id="selectCmmCdMultiCondWthList" parameterType="hashMap" resultType="hashMap">
+         SELECT SYS_CD, SYS_NM, CODE_NO, CODE_NM, CODE_VAL
+         FROM TB_BA_CONFIG_CD
+         WHERE ISUSE = 'Y'
+         AND SYS_CD = #{SYS_CD}
+        <if test="list != null and list != ''">
+         AND SYS_CD IN
+         <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+           #{item}
+         </foreach>
+        </if>
+         ORDER BY CODE_NO ASC
+    </select>
+
+    <select id="selectCmmCdMultiCondWthArray" parameterType="hashMap" resultType="hashMap">
+         SELECT SYS_CD, SYS_NM, CODE_NO, CODE_NM, CODE_VAL
+         FROM TB_BA_CONFIG_CD
+         WHERE ISUSE = 'Y'
+         AND SYS_CD = #{SYS_CD}
+        <if test="array != null and array != ''">
+         AND SYS_CD IN
+         <foreach collection="array" item="item" index="index" open="(" separator="," close=")">
+           ${array[index]}
+         </foreach>
+        </if>
+         ORDER BY CODE_NO ASC
+    </select>
+
+    <select id="selectCmmCodeDetail" parameterType="com.willbes.cmm.ComDefaultCodeVO" resultType="com.willbes.cmm.service.CmmnDetailCode">
+         SELECT SYS_CD, SYS_NM, CODE_NO, CODE_NM, CODE_VAL
+         FROM TB_BA_CONFIG_CD
+         WHERE ISUSE = 'Y'
+         AND SYS_CD = #{SYS_CD}
+         ORDER BY SYS_CD, CODE_NO
+    </select>
+
+    <select id="selectUnivListMap" parameterType="hashMap" resultType="hashMap">
+         SELECT
+                  #{SYS_CD} AS SYS_CD ,
+                  '대학명' AS SYS_NM ,
+                  UNIV_NM AS CODE_NM,
+                  UNIV_CD AS CODE_VAL
+         FROM TB_UNIV_LIST
+        WHERE 1=1
+        <if test="SEARCHUNIVNM != null and SEARCHUNIVNM != ''">
+        AND (UNIV_NM LIKE '%'||#{SEARCHUNIVNM}||'%' OR UNIV_NM LIKE '%'||#{SEARCHUNIVNM}||'%' )
+        </if>
+        ORDER BY UNIV_NM ASC
+    </select>
+
+    <select id="selectUnivList" parameterType="com.willbes.cmm.ComDefaultCodeVO" resultType="com.willbes.cmm.service.CmmnDetailCode">
+         SELECT
+                  #{SYS_CD} AS SYS_CD ,
+                  '대학명' AS SYS_NM ,
+                  UNIV_NM AS CODE_NM,
+                  UNIV_CD AS CODE_VAL
+         FROM TB_UNIV_LIST
+        WHERE 1=1
+        <if test="SEARCHUNIVNM != null and SEARCHUNIVNM != ''">
+        AND (UNIV_NM LIKE '%'||#{SEARCHUNIVNM}||'%' OR UNIV_NM LIKE '%'||#{SEARCHUNIVNM}||'%' )
+        </if>
+        ORDER BY UNIV_NM ASC
+    </select>
+
+    <select id="selectSubjctListMap" parameterType="hashMap" resultType="hashMap">
+         SELECT
+                 #{SYS_CD} AS SYS_CD ,
+                  '학과명' AS SYS_NM ,
+                  SUBJCT_NM AS CODE_NM,
+                  SUBJCT_CD AS CODE_VAL
+         FROM TB_SUBJCT_LIST
+        WHERE 1=1
+        <if test="SEARCHSUBJCTNM != null and SEARCHSUBJCTNM != ''">
+        AND (SUBJCT_NM LIKE '%'||#{SEARCHSUBJCTNM}||'%' OR SUBJCT_NM LIKE '%'||#{SEARCHSUBJCTNM}||'%' )
+        </if>
+        ORDER BY SUBJCT_NM ASC
+    </select>
+
+    <select id="selectSubjctList" parameterType="com.willbes.cmm.ComDefaultCodeVO" resultType="com.willbes.cmm.service.CmmnDetailCode">
+         SELECT
+                 #{SYS_CD} AS SYS_CD ,
+                  '학과명' AS SYS_NM ,
+                  SUBJCT_NM AS CODE_NM,
+                  SUBJCT_CD AS CODE_VAL
+         FROM TB_SUBJCT_LIST
+        WHERE 1=1
+        <if test="SEARCHSUBJCTNM != null and SEARCHSUBJCTNM != ''">
+        AND (SUBJCT_NM LIKE '%'||#{SEARCHSUBJCTNM}||'%' OR SUBJCT_NM LIKE '%'||#{SEARCHSUBJCTNM}||'%' )
+        </if>
+        ORDER BY SUBJCT_NM ASC
+    </select>
+
+</mapper>

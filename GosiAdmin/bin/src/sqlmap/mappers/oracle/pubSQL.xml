@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pub">
+
+    <resultMap type="java.util.HashMap" id="boardMap">
+       <result column="CONTENT" property="CONTENT" javaType="java.lang.String" jdbcType="CLOB"/>
+    </resultMap>
+	
+	<select id="getPubList" parameterType="hashMap" resultType="hashMap">
+        SELECT * FROM   (
+            SELECT A.*, ROWNUM rnum
+            FROM (
+                SELECT
+                    TO_NUMBER(LEVEL) LISTLEVEL,
+                    CODENAME ,
+                    TO_NUMBER(BOARD_SEQ) BOARD_SEQ,
+                    SUBJECT,
+                    CONTENT,
+                    FILE_NAME,
+                    PARENT_BOARD_SEQ,
+                    NOTICE_TOP_YN,
+                    HITS ,
+                    TO_CHAR(REG_DT , 'yyyy-mm-dd HH24:MI:SS')  REG_DT ,
+                    (SELECT USER_NM FROM TB_MA_MEMBER WHERE USER_ID = C.REG_ID) USER_NM ,
+                    TO_CHAR(UPD_DT , 'yyyy-mm-dd HH24:MI:SS')  UPD_DT,
+                    UPD_ID ,
+                    CREATENAME,
+                    RECOMMEND,
+                    ISSUE,
+                    OPEN_YN,
+                    DIVICE_TYPE,
+                    BOARD_REPLY
+                FROM
+                    (SELECT
+                        (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE=#{SEARCHCATEGORY}) CODENAME,
+                        bb.BOARD_SEQ,
+                        bb.SUBJECT,
+                        bb.CONTENT,
+                        (SELECT FILE_NAME FROM TB_BOARD_FILE WHERE BOARD_SEQ = bb.BOARD_SEQ AND ROWNUM = 1) FILE_NAME,
+                        bb.PARENT_BOARD_SEQ,
+                        bb.NOTICE_TOP_YN,
+                        bb.REG_ID,
+                        bb.REG_DT,
+                        bb.UPD_ID,
+                        bb.UPD_DT,
+                        bb.HITS ,
+                        bb.CREATENAME,
+                        bb.RECOMMEND,
+                        bb.ISSUE,
+                        bb.OPEN_YN,
+                        bb.PROF_ID,
+                        bb.DIVICE_TYPE,
+                        bb.BOARD_REPLY,
+                       	(SELECT NVL2(BOARD_SEQ , 'Y' , 'N') FROM TB_BOARD WHERE BOARD_MNG_SEQ = bb.BOARD_MNG_SEQ AND PARENT_BOARD_SEQ = bb.BOARD_SEQ) ISREPLY
+                    FROM TB_BOARD_CATEGORY_INFO aa , TB_BOARD bb , TB_BOARD_MNG cc
+                    WHERE cc.BOARD_MNG_SEQ = aa.BOARD_MNG_SEQ
+                    AND aa.BOARD_MNG_SEQ = bb.BOARD_MNG_SEQ
+                    AND aa.CATEGORY_CODE = #{SEARCHCATEGORY}
+                    AND aa.BOARD_SEQ = bb.BOARD_SEQ
+                    AND aa.BOARD_MNG_SEQ = #{BOARD_MNG_SEQ}
+                    AND bb.BOARD_MNG_SEQ = #{BOARD_MNG_SEQ}
+                    AND cc.BOARD_MNG_SEQ = #{BOARD_MNG_SEQ}
+                <choose>
+                    <when test="SEARCHONOFFDIV != null and SEARCHONOFFDIV != ''">
+                        AND cc.ONOFF_DIV = #{SEARCHONOFFDIV}
+                    </when>
+                    <otherwise>
+                        <if test='ONOFF_DIV != null and ONOFF_DIV == "T" '>
+                        AND cc.ONOFF_DIV = 'T'
+                        </if>
+                    </otherwise>
+                </choose>
+                <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+                    <choose>
+                        <when test='SEARCHKIND == "SEARCHSUBJECT"'>
+                        AND bb.SUBJECT LIKE '%'||#{SEARCHTEXT}||'%'
+                        </when>
+                        <when test='SEARCHKIND == "SEARCHNAME"'>
+                        AND bb.CREATENAME LIKE '%'||#{SEARCHTEXT}||'%'
+                        </when>
+                        <when test='SEARCHKIND == "SEARCHCONTENT"'>
+                        AND bb.CONTENT LIKE '%'||#{SEARCHTEXT}||'%'
+                        </when>
+                        <otherwise>
+                        AND ( bb.SUBJECT LIKE '%'||#{SEARCHTEXT}||'%'
+                                OR bb.CREATENAME LIKE '%'||#{SEARCHTEXT}||'%'
+                                OR bb.CONTENT LIKE '%'||#{SEARCHTEXT}||'%' )
+                        </otherwise>
+                    </choose>
+                </if>
+                    ) C
+                    CONNECT BY PRIOR BOARD_SEQ = PARENT_BOARD_SEQ
+                    ORDER SIBLINGS BY NOTICE_TOP_YN DESC, TO_NUMBER(BOARD_SEQ) DESC
+            ) A
+            WHERE rownum <![CDATA[ <= ]]> #{endNo}
+        )
+        WHERE rnum <![CDATA[ > ]]> #{startNo}
+	</select>
+	
+	<select id="getPubListCount" parameterType="hashMap" resultType="int">
+	    SELECT
+	        COUNT(BOARD_SEQ) AS CNT
+	    FROM
+	        (SELECT
+	            (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE=#{SEARCHCATEGORY}) CODENAME,
+	            bb.BOARD_SEQ,
+	            bb.SUBJECT,
+	            bb.CONTENT,
+	            (SELECT FILE_NAME FROM TB_BOARD_FILE WHERE BOARD_SEQ = bb.BOARD_SEQ AND ROWNUM = 1) FILE_NAME,
+	            bb.PARENT_BOARD_SEQ,
+	            bb.NOTICE_TOP_YN,
+	            bb.REG_ID,
+	            bb.REG_DT,
+	            bb.UPD_ID,
+	            bb.UPD_DT,
+	            bb.HITS ,
+	            bb.CREATENAME,
+	            bb.RECOMMEND,
+	            bb.ISSUE,
+	            bb.OPEN_YN,
+	            bb.PROF_ID,
+	            bb.DIVICE_TYPE
+	        FROM TB_BOARD_CATEGORY_INFO aa , TB_BOARD bb , TB_BOARD_MNG cc
+	        WHERE cc.BOARD_MNG_SEQ = aa.BOARD_MNG_SEQ
+	        AND aa.BOARD_MNG_SEQ = bb.BOARD_MNG_SEQ
+	        AND aa.CATEGORY_CODE = #{SEARCHCATEGORY}
+	        AND aa.BOARD_SEQ = bb.BOARD_SEQ
+	        AND aa.BOARD_MNG_SEQ = #{BOARD_MNG_SEQ}
+	        AND bb.BOARD_MNG_SEQ = #{BOARD_MNG_SEQ}
+	        AND cc.BOARD_MNG_SEQ = #{BOARD_MNG_SEQ}
+    <choose>
+        <when test="SEARCHONOFFDIV != null and SEARCHONOFFDIV != ''">
+            AND cc.ONOFF_DIV = #{SEARCHONOFFDIV}
+        </when>
+        <otherwise>
+            <if test='ONOFF_DIV != null and ONOFF_DIV == "T" '>
+            AND cc.ONOFF_DIV = 'T'
+            </if>
+        </otherwise>
+    </choose>
+    <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+        <choose>
+            <when test='SEARCHKIND == "SEARCHSUBJECT"'>
+            AND bb.SUBJECT LIKE '%'||#{SEARCHTEXT}||'%'
+            </when>
+            <when test='SEARCHKIND == "SEARCHNAME"'>
+            AND bb.CREATENAME LIKE '%'||#{SEARCHTEXT}||'%'
+            </when>
+            <when test='SEARCHKIND == "SEARCHCONTENT"'>
+            AND bb.CONTENT LIKE '%'||#{SEARCHTEXT}||'%'
+            </when>
+            <otherwise>
+            AND ( bb.SUBJECT LIKE '%'||#{SEARCHTEXT}||'%'
+                    OR bb.CREATENAME LIKE '%'||#{SEARCHTEXT}||'%'
+                    OR bb.CONTENT LIKE '%'||#{SEARCHTEXT}||'%' )
+            </otherwise>
+        </choose>
+    </if>
+        ) C
+	</select>
+	
+	<select id="getPubOne" parameterType="hashMap" resultMap="boardMap">
+        SELECT
+            BOARD_MNG_SEQ,
+            BOARD_SEQ,
+            OPEN_YN,
+            SUBJECT,
+            CONTENT,
+            ANSWER,
+            FILE_PATH,
+            FILE_NAME,
+            REAL_FILE_NAME ,
+            PARENT_BOARD_SEQ,
+            NOTICE_TOP_YN ,
+            TO_CHAR(REG_DT , 'yyyy-mm-dd HH24:MI:SS')  REG_DT ,
+            REG_ID,
+            UPD_DT,
+            UPD_ID,
+            HITS,
+            CREATENAME  ,
+            THUMBNAIL_FILE_PATH,
+            THUMBNAIL_FILE_NAME,
+            THUMBNAIL_FILE_REAL_NAME,
+            ISSUE,
+            RECOMMEND,
+            PROF_ID,
+            DIVICE_TYPE,
+            BOARD_REPLY
+        FROM  TB_BOARD a
+        WHERE BOARD_SEQ = #{BOARDVIEW_SEQ}
+	</select>
+	
+	<select id="getPubFiles" parameterType="hashMap" resultType="hashMap">
+        SELECT  BOARD_SEQ,
+                FILE_NO,
+                FILE_NAME,
+                FILE_PATH
+        FROM   TB_BOARD_FILE
+        WHERE  BOARD_SEQ = #{BOARDVIEW_SEQ}
+	</select>
+
+	<insert id="Pub_Insert" parameterType="hashMap" flushCache="true">
+		INSERT INTO TB_GOSI_PUB_NOTICE (
+			PUB_NO,
+			PUB_YEAR,  PUB_CAT, MAIN_PID, SUB_PID, 
+			PUB_TITLE, PUB_CONTENTS, 
+			REG_DT, REG_ID, HITS
+		) VALUES(
+			(SELECT NVL(MAX(PUB_NO), 0)+1 FROM TB_GOSI_PUB_NOTICE),
+			#{PUB_YEAR}, #{PUB_CAT}, #{MAIN_PID}, #{SUB_PID},
+			#{PUB_TITLE}, #{PUB_CONTENTS},
+			SYSDATE, #{REG_ID}, 0
+		)
+	</insert>
+	
+	<update id="Pub_Update" parameterType="hashMap" flushCache="true">
+		UPDATE TB_GOSI_PUB_NOTICE
+		SET PUB_YEAR = #{PUB_YEAR},
+		PUB_CAT = #{PUB_CAT},
+		MAIN_PID = #{MAIN_PID},
+		SUB_PID = #{SUB_PID},
+		PUB_TITLE = #{PUB_TITLE},
+		PUB_CONTENTS = #{PUB_CONTENTS}
+		WHERE PUB_NO = #{PUB_NO}
+	</update>
+	
+	<delete id="Pub_delete" parameterType="hashMap">
+		DELETE 
+		FROM TB_GOSI_PUB_NOTICE
+		WHERE PUB_NO = #{PUB_NO}
+	</delete>
+
+	<select id="getMaxPubNo" parameterType="hashMap" resultType="int">
+	    SELECT MAX(PUB_NO) 
+	    FROM TB_GOSI_PUB_NOTICE
+	</select>
+	
+	<update id="AttachFile_insert" parameterType="hashMap" flushCache="true">
+		INSERT INTO TB_GOSI_PUB_FILE (
+			PUB_NO, 
+			FILE_NO, 
+			FILE_NAME, FILE_PATH, REG_ID, REG_DT
+		) VALUES(
+			#{PUB_NO}, 
+			(SELECT NVL(MAX(FILE_NO), 0)+1 FROM TB_GOSI_PUB_FILE),
+			#{FILE_NAME}, #{FILE_PATH}, #{REG_ID}, SYSDATE
+		)
+	</update>
+	
+	<update id="AttachFile_delete" parameterType="hashMap" flushCache="true">
+		DELETE 
+		FROM TB_GOSI_PUB_FILE
+		WHERE PUB_NO = #{PUB_NO}
+		AND FILE_NO = #{FILE_NO}
+	</update>
+	
+</mapper>

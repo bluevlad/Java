@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--  last modified 2015-04-24 -->
+
+<mapper namespace="CouponMng">
+
+	<select id="getCoopList" parameterType="hashMap" resultType="hashMap">
+		SELECT COOP_CD, COOP_NM
+        FROM COOP_MST
+        ORDER BY COOP_NM ASC
+	</select>
+
+	<!-- 쿠폰 리스트 -->
+	<select id="getCouponList" parameterType="hashMap" resultType="hashMap">
+	    SELECT TBL.*
+	    FROM (SELECT A.*, ROWNUM RNUM
+	          FROM (SELECT
+                      CCODE, CNAME, CCONTENT,
+                      TO_CHAR(REGDATE, 'YYYY-MM-DD') REGDATE, EXPDAY,
+                      REGTYPE, DECODE(REGTYPE, 'C', '할인율', 'P', '할인금액') REGTYPE_NM, 
+                      REGPRICE, (REGPRICE || DECODE(REGTYPE, 'C', '%', 'P', '원')) REGPRICE_NM,
+                      TO_CHAR(EXPDATES, 'YYYY-MM-DD') EXPDATES, TO_CHAR(EXPDATEE, 'YYYY-MM-DD') EXPDATEE, 
+                      FN_GET_DATE_EXPIRED(TO_CHAR(EXPDATEE, 'YYYYMMDD')) EXPD,
+                      TCLASS, TCLASSCAT, PUB_COUPON_GUBUN, TERM,
+                      DAN_JONG, DAN_MENU, SUBJECT, TEACHER, PRICE, ADD_FLAG, IS_USE,
+                      (SELECT NVL(COUNT(USERID), 0) FROM TB_TM_MYCOUPON WHERE CCODE = TM.CCODE) CNT,
+                      (SELECT NVL(COUNT(USERID), 0) FROM TB_TM_MYCOUPON WHERE CCODE = TM.CCODE AND ORDERNO IS NOT NULL) USE_CNT
+	        FROM TB_TM_COUPON TM
+	        ORDER BY CCODE DESC
+	                ) A 
+	                   WHERE ROWNUM <![CDATA[ <= ]]>   #{endNo}
+	            ) TBL 
+	        WHERE RNUM <![CDATA[ > ]]>  #{startNo}
+	</select>
+
+	<!-- 쿠폰 리스트 총건수 -->
+	<select id="getCouponListCount" parameterType="hashMap" resultType="int">
+		select COUNT(*)
+		FROM TB_TM_COUPON
+	</select>
+
+	<!-- 쿠폰 개별 정보를 가져온다.  -->
+	<select id="getCouponOne" parameterType="hashMap" resultType="hashMap">
+          SELECT  
+                  CCODE, CNAME, CCONTENT, 
+                  REGDATE, EXPDAY, REGTYPE, REGPRICE, 
+                  TO_CHAR(EXPDATES, 'YYYYMMDD') EXPDATES, TO_CHAR(EXPDATEE, 'YYYYMMDD') EXPDATEE, 
+                  TCLASS, TCLASSCAT, PUB_COUPON_GUBUN, TERM,
+                  DAN_JONG, DAN_MENU, SUBJECT, TEACHER, PRICE, ADD_FLAG, IS_USE
+        FROM TB_TM_COUPON
+		WHERE CCODE = #{CCODE}
+	</select>
+
+	<!-- 쿠폰을 새로 등록 -->
+	<insert id="insertCoupon" parameterType="hashMap">
+		INSERT INTO TB_TM_COUPON(
+  			CCODE, CNAME, CCONTENT, REGDATE, REGTYPE,
+  			REGPRICE, EXPDATES, EXPDATEE, EXPDAY, TCLASS,
+  			TCLASSCAT, ADD_FLAG, IS_USE
+		) VALUES(
+  			#{CCODE}, #{CNAME}, 	#{CCONTENT}, SYSDATE, #{REGTYPE},
+  			#{REGPRICE}, #{EXPDATES}, #{EXPDATEE}, #{EXPDAY}, #{TCLASS},
+  			#{TCLASSCAT}, #{ADD_FLAG}, 'Y'
+		)
+	</insert>
+
+	<update id="updateCoupon" parameterType="hashMap">
+		UPDATE TB_TM_COUPON
+		SET 
+		CNAME = #{CNAME},
+		CCONTENT = #{CCONTENT},
+		REGTYPE = #{REGTYPE},
+		REGPRICE = #{REGPRICE},
+		ADD_FLAG = #{ADD_FLAG},
+		IS_USE = #{IS_USE},
+		EXPDATES = TO_DATE(#{EXPDATES}),
+		EXPDATEE = TO_DATE(#{EXPDATEE}),
+		EXPDAY = #{EXPDAY}
+		WHERE CCODE = #{CCODE}
+	</update>
+	
+	<!-- 쿠폰 발급자 리스트 -->
+	<select id="getCouponUserList" parameterType="hashMap" resultType="hashMap">
+        SELECT TBL.*
+        FROM (SELECT AA.*, ROWNUM RNUM
+                 FROM (SELECT
+                               A.USERID, A.REGDATE, A.EXPDATEE, A.EVENT_NO, 
+                               B.ORDERNO, B.USER_NM, B.REG_DT,
+                               C.CNT, C.PRICE
+                           FROM TB_TM_MYCOUPON A, TB_ORDERS B, 
+                           (SELECT ORDERNO, COUNT(MGNTNO) CNT, SUM(PRICE) PRICE 
+                            FROM TB_ORDER_MGNT_NO 
+                            GROUP BY ORDERNO) C
+                 WHERE A.ORDERNO = B.ORDERNO(+)
+                 AND B.ORDERNO = C.ORDERNO(+)
+		         AND A.CCODE = #{CCODE}
+			 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+					<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+						<if test='SEARCHTYPE == "0"'>
+							AND (INSTR(A.USERID, #{SEARCHTEXT} ) > 0 OR INSTR(B.USER_NM, #{SEARCHTEXT} ) > 0)
+						</if>
+						<if test='SEARCHTYPE == "1"'>
+							AND INSTR(A.USERID, #{SEARCHTEXT} ) > 0
+						</if>
+						<if test='SEARCHTYPE == "2"'>
+							AND INSTR(B.USER_NM, #{SEARCHTEXT} ) > 0
+						</if>
+					</if>
+				 </if>
+                 ORDER BY REGDATE DESC
+                 ) AA 
+                WHERE ROWNUM <![CDATA[ <= ]]>  #{endNo}
+        ) TBL 
+        WHERE RNUM <![CDATA[ > ]]>  #{startNo}
+	</select>
+
+	<!-- 쿠폰 리스트 총건수 -->
+	<select id="getCouponUserListCount" parameterType="hashMap" resultType="int">
+		SELECT COUNT(*)
+        FROM TB_TM_MYCOUPON A, TB_ORDERS B, 
+                 (SELECT ORDERNO, COUNT(MGNTNO) CNT, SUM(PRICE) PRICE 
+                  FROM TB_ORDER_MGNT_NO 
+                  GROUP BY ORDERNO) C
+        WHERE A.ORDERNO = B.ORDERNO(+)
+        AND B.ORDERNO = C.ORDERNO(+)
+		AND A.CCODE = #{CCODE}
+	 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+			<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+				<if test='SEARCHTYPE == "0"'>
+					AND (INSTR(A.USERID, #{SEARCHTEXT} ) > 0 OR INSTR(B.USER_NM, #{SEARCHTEXT} ) > 0)
+				</if>
+				<if test='SEARCHTYPE == "1"'>
+					AND INSTR(A.USERID, #{SEARCHTEXT} ) > 0
+				</if>
+				<if test='SEARCHTYPE == "2"'>
+					AND INSTR(B.USER_NM, #{SEARCHTEXT} ) > 0
+				</if>
+			</if>
+		 </if>
+	</select>
+
+	<!-- 제휴사 쿠폰 리스트 -->
+	<select id="getCoopLectureList" parameterType="hashMap" resultType="hashMap">
+	    SELECT TBL.*
+	    FROM (SELECT A.*, ROWNUM RNUM
+	          FROM (SELECT
+                            P.COOP_NM, A.*, B.SUBJECT_TITLE, B.CATEGORY_CD, B.LEARNING_CD, B.LEC_TYPE_CHOICE
+						    --, (SELECT COUNT(*) FROM COOP_COUPON WHERE COOP_CD = A.COOP_CD AND LECCODE = A.LECCODE AND ISUSE = 'Y') CNT
+                        FROM COOP_MST P, COOP_COUPON_MST A, TB_LEC_MST B
+                        WHERE P.COOP_CD = A.COOP_CD
+                        AND A.LECCODE = B.LECCODE
+						<if test='S_COOP_CD != null and S_COOP_CD != ""'>
+						AND A.COOP_CD = #{S_COOP_CD}
+						</if>
+					 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+							<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+								<if test='SEARCHTYPE == "NM"'>
+								AND INSTR(A.COUPON_NM, #{SEARCHTEXT}) > 0
+								</if>
+								<if test='SEARCHTYPE == "TITLE"'>
+								AND INSTR(B.SUBJECT_TITLE, #{SEARCHTEXT}) > 0
+								</if>
+								<if test='SEARCHTYPE == "COUPON_CD"'>
+								AND A.LECCODE IN (SELECT LECCODE FROM COOP_COUPON WHERE C_CD = #{SEARCHTEXT})
+								</if>
+							</if>
+						 </if>
+						ORDER BY ST_DT DESC, ED_DT DESC
+	                ) A 
+	                   WHERE ROWNUM <![CDATA[ <= ]]>   #{endNo}
+	            ) TBL 
+	        WHERE RNUM <![CDATA[ > ]]>  #{startNo}
+	</select>
+
+	<!-- 제휴사 쿠폰 리스트 총건수 -->
+	<select id="getCoopLectureListCount" parameterType="hashMap" resultType="int">
+		select COUNT(*)
+		FROM COOP_COUPON_MST A, TB_LEC_MST B
+		WHERE A.LECCODE = B.LECCODE
+		<if test='S_COOP_CD != null and S_COOP_CD != ""'>
+		AND A.COOP_CD = #{S_COOP_CD}
+		</if>
+	 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+			<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+				<if test='SEARCHTYPE == "NM"'>
+				AND INSTR(A.COUPON_NM, #{SEARCHTEXT}) > 0
+				</if>
+				<if test='SEARCHTYPE == "TITLE"'>
+				AND INSTR(B.SUBJECT_TITLE, #{SEARCHTEXT}) > 0
+				</if>
+				<if test='SEARCHTYPE == "COUPON_CD"'>
+				AND A.LECCODE IN (SELECT LECCODE FROM COOP_COUPON WHERE C_CD = #{SEARCHTEXT})
+				</if>
+			</if>
+		 </if>
+	</select>
+
+	<!-- 제휴사 발급(인증) 쿠폰 리스트 -->
+	<select id="getCoopCouponList" parameterType="hashMap" resultType="hashMap">
+	    SELECT TBL.*
+	    FROM (SELECT A.*, ROWNUM RNUM
+	          FROM (SELECT
+                            A.C_CD, A.USER_ID, A.REG_DT
+                        FROM COOP_COUPON A, COOP_COUPON_MST B
+                        WHERE A.COOP_CD = B.COOP_CD
+                        AND A.LECCODE = B.LECCODE
+                        AND A.COOP_CD = #{COOP_CD}
+                        AND A.LECCODE = #{LECCODE}
+					 	<if test='ISUSE == "Y"'>
+                        AND A.ORDERNO IS NOT NULL
+					 	</if>
+					 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+							<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+								<if test='SEARCHTYPE == "1"'>
+								AND A.C_CD = #{SEARCHTEXT}
+								</if>
+								<if test='SEARCHTYPE == "2"'>
+								AND A.USER_ID = #{SEARCHTEXT}
+								</if>
+							</if>
+						 </if>
+                        ORDER BY C_CD ASC
+	                ) A 
+	                   WHERE ROWNUM <![CDATA[ <= ]]>   #{endNo}
+	            ) TBL 
+	        WHERE RNUM <![CDATA[ > ]]>  #{startNo}
+	</select>
+
+	<!-- 제휴사 발급(인증) 쿠폰 리스트 총건수 -->
+	<select id="getCoopCouponListCount" parameterType="hashMap" resultType="int">
+		select COUNT(*)
+                        FROM COOP_COUPON A, COOP_COUPON_MST B
+                        WHERE A.COOP_CD = B.COOP_CD
+                        AND A.LECCODE = B.LECCODE
+                        AND A.COOP_CD = #{COOP_CD}
+                        AND A.LECCODE = #{LECCODE}
+					 	<if test='ISUSE == "Y"'>
+                        AND A.ORDERNO IS NOT NULL
+					 	</if>
+					 	<if test='SEARCHTEXT != null and SEARCHTEXT != ""'>
+							<if test='SEARCHTYPE != null and SEARCHTYPE != ""'>
+								<if test='SEARCHTYPE == "1"'>
+								AND A.C_CD = #{SEARCHTEXT}
+								</if>
+								<if test='SEARCHTYPE == "2"'>
+								AND A.USER_ID = #{SEARCHTEXT}
+								</if>
+							</if>
+						 </if>
+	</select>
+
+	<!-- 제휴사 쿠폰을 새로 등록 -->
+	<insert id="insertCoopCoupon" parameterType="hashMap">
+		CALL PKG_COOP_COUPON.INSERT_COOP_COUPON(
+		        #{COOP_CD, mode=IN},
+		        #{COUPON_NM, mode=IN},
+		        #{LECCODE, mode=IN},
+		        #{ST_DT, mode=IN},
+		        #{ED_DT, mode=IN},
+		        #{COUPON_CNT, mode=IN}
+        )
+	</insert>
+
+	<delete id="deleteCoopCoupon" parameterType="hashMap">
+		CALL PKG_COOP_COUPON.DELETE_COOP_COUPON(
+		        #{COOP_CD, mode=IN},
+		        #{LECCODE, mode=IN}
+        )
+	</delete>
+
+	<select id="getCouponOrderList" parameterType="hashMap" resultType="hashMap">
+        SELECT 
+               DECODE(AA.REGTYPE, 'C', '비율', 'P', '포인트') REGTYPE, 
+		       <if test='RTYPE == "Y"'>AA.REGPRICE, </if> 
+		       <if test='CTYPE == "Y"'>BB.CNAME, </if> 
+               SUM(AA.USE_CNT) USE_CNT, 
+               SUM(BB.CNT) CNT, 
+               SUM(AA.PRICE) SALE_AMOUNT, SUM(AA.REAL_PRICE) ORG_AMOUNT
+        FROM
+        (SELECT 
+                    A.CCODE USE_CCODE, A.REGTYPE, A.REGPRICE, 
+                    COUNT(B.CCODE) USE_CNT, 
+                    SUM(D.PRICE) PRICE, 
+                    SUM(DECODE(D.WMV_PMP, 'VOD', E.SUBJECT_MOVIE, 'PMP', E.SUBJECT_PMP, 'VOD+PMP', E.SUBJECT_MOVIE_PMP, 'MP4', E.SUBJECT_MOVIE_MP4, 'VOD+MP4', E.SUBJECT_MOVIE_VOD_MP4)) REAL_PRICE
+              FROM TB_TM_COUPON A, TB_TM_MYCOUPON B, TB_ORDERS C, TB_ORDER_MGNT_NO D, TB_LEC_MST E
+             WHERE A.CCODE = B.CCODE
+             AND B.USERID = C.USER_ID
+             AND B.ORDERNO = C.ORDERNO
+             AND C.ORDERNO = D.ORDERNO
+             AND D.STATUSCODE = 'DLV105'
+             AND D.MGNTNO = E.LECCODE
+		 	<if test='REGTYPE != null and REGTYPE != ""'>
+			AND A.REGTYPE = #{REGTYPE}
+			</if>
+            <choose>
+                <when test='PTYPE == "D"'>
+                    AND D.PTYPE = 'D'
+                </when>
+                <when test='PTYPE == "N"'>
+                    AND D.PTYPE IN ('N', 'J', 'P')
+                </when>
+                <otherwise>
+                </otherwise>
+            </choose>
+	        <if test='SDATE != null and SDATE != ""'>
+	        AND TO_CHAR(B.ORDERDATE, 'YYYYMMDD') BETWEEN #{SDATE} AND #{EDATE}
+	        </if>
+             GROUP BY A.CCODE, A.REGTYPE, A.REGPRICE) AA,
+        (SELECT 
+                    A.CCODE, A.CNAME, COUNT(A.CCODE) CNT 
+              FROM TB_TM_COUPON A, TB_TM_MYCOUPON B
+             WHERE A.CCODE = B.CCODE
+		 	<if test='REGTYPE != null and REGTYPE != ""'>
+			AND A.REGTYPE = #{REGTYPE}
+			</if>
+	        <if test='SDATE != null and SDATE != ""'>
+	        AND TO_CHAR(B.REGDATE, 'YYYYMMDD') BETWEEN #{SDATE} AND #{EDATE}
+	        </if>
+        GROUP BY A.CCODE, A.CNAME) BB 
+        WHERE AA.USE_CCODE = BB.CCODE
+		GROUP BY AA.REGTYPE <if test='RTYPE == "Y"'>, AA.REGPRICE</if><if test='CTYPE == "Y"'>, BB.CNAME</if>
+		ORDER BY AA.REGTYPE <if test='RTYPE == "Y"'>, AA.REGPRICE</if><if test='CTYPE == "Y"'>, BB.CNAME</if>
+	</select>
+
+</mapper>	

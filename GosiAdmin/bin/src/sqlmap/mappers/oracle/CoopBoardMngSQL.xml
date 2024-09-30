@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CoopBoardMng">
+    <resultMap type="java.util.HashMap" id="coopMap">
+       <result column="CONTENT" property="CONTENT" javaType="java.lang.String" jdbcType="CLOB"/>
+    </resultMap>
+
+    <select id="getCoopboardList" parameterType="hashMap" resultType="hashMap">
+        SELECT * FROM   (
+            SELECT A.*, ROWNUM rnum
+            FROM (
+				SELECT 
+				        COOP_BOARD_SEQ, OPEN_YN, CREATENAME, SUBJECT, CONTENT,
+				        FILE_PATH, FILE_NAME, REAL_FILE_NAME,
+				        THUMBNAIL_FILE_PATH, THUMBNAIL_FILE_NAME, THUMBNAIL_FILE_REAL_NAME,
+				        NOTICE_TOP_YN, RECOMMEND,
+				        COOP_TYPE, COOP_AREA, COOP_CATE,
+				        FN_GET_CODE_NM('AREA', COOP_AREA) COOP_AREA_NM,
+				        REG_DT, REG_ID, UPD_DT, UPD_ID, HITS, COOP_RANK
+				FROM TB_BOARD_MEMBERSHIP
+				WHERE 1=1
+				 <if test="SEARCH_COOP_AREA !=null and SEARCH_COOP_AREA != '' ">
+				 AND COOP_AREA = #{SEARCH_COOP_AREA}
+				 </if>
+				 <if test="SEARCH_COOP_CATE !=null and SEARCH_COOP_CATE != '' ">
+				 AND COOP_CATE = #{SEARCH_COOP_CATE}
+				 </if>
+				 <if test="SEARCHKIND !=null and SEARCHKIND != '' ">
+					 <choose>
+					 	<when test='SEARCHKIND == "SEARCHSUBJECT"'>
+					 		AND  SUBJECT LIKE '%'||#{SEARCHTEXT}||'%'
+					 	</when>
+					 	<when test='SEARCHKIND == "SEARCHNAME"'>
+					 		AND  CREATENAME LIKE '%'||#{SEARCHTEXT}||'%'
+					 	</when>
+					 	<when test='SEARCHKIND == "SEARCHCONTENT"'>
+					 		AND  CONTENT LIKE '%'||#{SEARCHTEXT}||'%'
+					 	</when>
+					 	<when test='SEARCHKIND == "ALL"'>
+					 		AND  (SUBJECT LIKE '%'||#{SEARCHTEXT}||'%' OR CREATENAME LIKE '%'||#{SEARCHTEXT}||'%' OR CONTENT LIKE '%'||#{SEARCHTEXT}||'%')
+					 	</when>
+					 </choose>				 
+				 </if>
+				 ORDER BY REG_DT DESC
+            ) A
+            WHERE rownum <![CDATA[ <= ]]> #{endNo}
+        )
+        WHERE rnum <![CDATA[ > ]]> #{startNo}
+    </select>
+
+    <select id="getCoopboardListCount" parameterType="hashMap" resultType="int">
+            SELECT COUNT(*)
+            FROM (
+				SELECT 
+				        COOP_BOARD_SEQ, OPEN_YN, CREATENAME, SUBJECT, CONTENT,
+				        FILE_PATH, FILE_NAME, REAL_FILE_NAME,
+				        THUMBNAIL_FILE_PATH, THUMBNAIL_FILE_NAME, THUMBNAIL_FILE_REAL_NAME,
+				        NOTICE_TOP_YN, RECOMMEND,
+				        COOP_TYPE, COOP_AREA, COOP_CATE,
+				        REG_DT, REG_ID, UPD_DT, UPD_ID, HITS
+				FROM TB_BOARD_MEMBERSHIP
+				WHERE 1=1
+				 <if test="SEARCH_COOP_AREA !=null and SEARCH_COOP_AREA != '' ">
+				 AND COOP_AREA = #{SEARCH_COOP_AREA}
+				 </if>
+				 <if test="SEARCH_COOP_CATE !=null and SEARCH_COOP_CATE != '' ">
+				 AND COOP_CATE = #{SEARCH_COOP_CATE}
+				 </if>
+				 <if test="SEARCHKIND !=null and SEARCHKIND != '' ">
+					 <choose>
+					 	<when test='SEARCHKIND == "SEARCHSUBJECT"'>
+					 		AND  SUBJECT LIKE '%'||#{SEARCHTEXT}||'%'
+					 	</when>
+					 	<when test='SEARCHKIND == "SEARCHNAME"'>
+					 		AND  CREATENAME LIKE '%'||#{SEARCHTEXT}||'%'
+					 	</when>
+					 	<when test='SEARCHKIND == "SEARCHCONTENT"'>
+					 		AND  CONTENT LIKE '%'||#{SEARCHTEXT}||'%'
+					 	</when>
+					 	<when test='SEARCHKIND == "ALL"'>
+					 		AND  (SUBJECT LIKE '%'||#{SEARCHTEXT}||'%' OR CREATENAME LIKE '%'||#{SEARCHTEXT}||'%' OR CONTENT LIKE '%'||#{SEARCHTEXT}||'%')
+					 	</when>
+					 </choose>				 
+				 </if>
+            ) A
+    </select>
+
+    <select id="CoopboardView" parameterType="hashMap" resultMap="coopMap" >
+		SELECT 
+		        COOP_BOARD_SEQ, OPEN_YN, CREATENAME, SUBJECT, CONTENT,
+		        FILE_PATH, FILE_NAME, REAL_FILE_NAME,
+		        THUMBNAIL_FILE_PATH, THUMBNAIL_FILE_NAME, THUMBNAIL_FILE_REAL_NAME,
+		        NOTICE_TOP_YN, RECOMMEND,
+		        COOP_TYPE, COOP_AREA, COOP_CATE,
+		        REG_DT, REG_ID, UPD_DT, UPD_ID, HITS
+		FROM TB_BOARD_MEMBERSHIP
+        WHERE COOP_BOARD_SEQ = #{COOP_BOARD_SEQ}
+    </select>
+
+    <insert id="insertCoopboard" parameterType="hashMap" flushCache="true" keyProperty="bContentId" keyColumn="bContentId">
+        INSERT INTO TB_BOARD_MEMBERSHIP (
+	        COOP_BOARD_SEQ, OPEN_YN, CREATENAME, SUBJECT, CONTENT,
+	        <if test="FILE_NAME !=null and FILE_NAME != '' ">
+	        FILE_PATH, FILE_NAME, REAL_FILE_NAME,
+	        </if>
+	        <if test="THUMBNAIL_FILE_NAME !=null and THUMBNAIL_FILE_NAME != '' ">
+	        THUMBNAIL_FILE_PATH, THUMBNAIL_FILE_NAME, THUMBNAIL_FILE_REAL_NAME,
+	        </if>
+	        NOTICE_TOP_YN, RECOMMEND,
+	        COOP_TYPE, COOP_AREA, COOP_CATE,
+	        REG_DT, REG_ID, UPD_DT, UPD_ID
+        ) VALUES (
+	        SEQ_BOARD_BOARD_ID.NEXTVAL, #{OPEN_YN}, #{CREATENAME}, #{SUBJECT}, #{CONTENT},
+	        <if test="FILE_NAME !=null and FILE_NAME != '' ">
+	        #{FILE_PATH}, #{FILE_NAME}, #{REAL_FILE_NAME},
+	        </if>
+	        <if test="THUMBNAIL_FILE_NAME !=null and THUMBNAIL_FILE_NAME != '' ">
+	        #{THUMBNAIL_FILE_PATH}, #{THUMBNAIL_FILE_NAME}, #{THUMBNAIL_FILE_REAL_NAME},
+	        </if>
+	        #{NOTICE_TOP_YN}, #{RECOMMEND},
+	        #{COOP_TYPE}, #{COOP_AREA}, #{COOP_CATE},
+	        SYSDATE, #{REG_ID}, SYSDATE, #{UPD_ID}
+	    )
+    </insert>
+
+    <update id="updateCoopboard" parameterType="hashMap" keyProperty="bContentId" keyColumn="bContentId">
+        UPDATE TB_BOARD_MEMBERSHIP SET 
+	        OPEN_YN = #{OPEN_YN}, 
+	        CREATENAME = #{CREATENAME}, 
+	        SUBJECT = #{SUBJECT}, 
+	        CONTENT = #{CONTENT},
+	        <if test="FILE_NAME !=null and FILE_NAME != '' ">
+	        FILE_PATH = #{FILE_PATH}, 
+	        FILE_NAME = #{FILE_NAME}, 
+	        REAL_FILE_NAME = #{REAL_FILE_NAME},
+	        </if>
+	        <if test="THUMBNAIL_FILE_PATH !=null and THUMBNAIL_FILE_PATH != '' ">
+	        THUMBNAIL_FILE_PATH = #{THUMBNAIL_FILE_PATH}, 
+	        THUMBNAIL_FILE_NAME = #{THUMBNAIL_FILE_NAME}, 
+	        THUMBNAIL_FILE_REAL_NAME = #{THUMBNAIL_FILE_REAL_NAME},
+	        </if>
+	        NOTICE_TOP_YN = #{NOTICE_TOP_YN}, 
+	        RECOMMEND = #{RECOMMEND},
+	        COOP_TYPE = #{COOP_TYPE}, 
+	        COOP_AREA = #{COOP_AREA}, 
+	        COOP_CATE = #{COOP_CATE},
+	        UPD_DT = SYSDATE, 
+	        UPD_ID = #{UPD_ID}
+        WHERE COOP_BOARD_SEQ = #{COOP_BOARD_SEQ}
+    </update>
+
+
+    <update id="updateCoopRank" parameterType="hashMap">
+        UPDATE TB_BOARD_MEMBERSHIP SET 
+	        COOP_RANK = #{COOP_RANK}
+        WHERE COOP_BOARD_SEQ = #{COOP_BOARD_SEQ}
+    </update>
+
+    <update id="deleteCoopboard" parameterType="hashMap">
+        DELETE FROM TB_BOARD_MEMBERSHIP
+        WHERE COOP_BOARD_SEQ = #{COOP_BOARD_SEQ}
+    </update>
+    
+	<select id="getCoopCodeList" parameterType="hashMap" resultType="hashMap" >
+		SELECT SYS_CD, SYS_NM, CODE_NO, CODE_CD, CODE_NM, CODE_VAL
+		FROM TB_BA_CONFIG_CD
+		WHERE SYS_CD = #{SEARCHKEYWORD}
+		AND CODE_CD <![CDATA[ <> ]]> 'AL'
+		ORDER BY TO_NUMBER(CODE_NO) ASC
+	</select>
+	
+	<update id="CoopboardDeleteFile" parameterType="hashMap">
+		UPDATE TB_BOARD_MEMBERSHIP SET 
+
+	        <if test="FILETYPE == 'default' ">
+		        FILE_PATH = '',
+		        FILE_NAME = '',
+		        REAL_FILE_NAME = ''
+		    </if>
+		    <if test="FILETYPE == 'thumb' ">
+		        THUMBNAIL_FILE_PATH = '',
+		        THUMBNAIL_FILE_NAME = '',
+		        THUMBNAIL_FILE_REAL_NAME = ''
+		    </if>
+	        
+        WHERE COOP_BOARD_SEQ = #{COOP_BOARD_SEQ}
+    </update>
+
+</mapper>

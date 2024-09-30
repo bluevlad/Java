@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lectureFees">
+    <select id="lectureFeesList" parameterType="hashMap" resultType="hashMap">
+    SELECT * FROM   (
+        SELECT FF.*, ROWNUM rnum
+        FROM (
+            SELECT
+                TP.PROFCODE,
+                TP.TMEMBERNAME,
+                TO_CHAR(SUM(TP.MONEY),'9,999,999,999,999,999')  MONEY,
+                TO_CHAR(SUM((TP.ALLOWANCE-((TP.ALLOWANCE*0.03)+(TP.ALLOWANCE*0.01)-(TP.COMMITION))) - (TP.REFUNDALLOWANCE-((TP.REFUNDALLOWANCE*0.03)+(TP.REFUNDALLOWANCE*0.01))) ),'9,999,999,999,999,999') ALLOWANCE,
+                TO_CHAR(COUNT(DECODE(TP.REFUNDAMOUNT,0,1)),'9,999,999,999,999,999') CNT
+            FROM (
+                SELECT  AA.TMEMBERNAME ,
+                    AA.PROFCODE , -- 강사코드
+                    AA.USER_NM ,
+                    AA.EXAMTYPE   ,
+                    TO_CHAR(AA.REG_DT , 'YYYY-MM-DD' )  REG_DT,
+                    (AA.MONEY / AA.SUBJECTCNT)  MONEY ,
+                    AA.PROPERCENT  ,
+                    AA.PAYMENTTYPE,
+                    AA.PAYMENTPETCENT ,
+                    AA.ORIPAYMENTTYPE ,
+                    DECODE(AA.ORIPAYMENTTYPE, '3', AA.PAYMENTPETCENT ,
+                            ROUND(((AA.MONEY / AA.SUBJECTCNT) * (AA.PAYMENTPETCENT/100)) , 0)
+                        ) COMMITION ,
+                    DECODE(AA.ORIPAYMENTTYPE, '3', ROUND((((AA.MONEY / AA.SUBJECTCNT)*AA.PROPERCENT/100)- AA.PAYMENTPETCENT) , 0) ,
+                            ROUND((((AA.MONEY / AA.SUBJECTCNT)*AA.PROPERCENT/100)-((AA.MONEY / AA.SUBJECTCNT) * (AA.PAYMENTPETCENT/100))) , 0)
+                        ) ALLOWANCE ,
+                    (((NVL2(BB.REFUNDAMOUNT ,BB.REFUNDAMOUNT ,0) / AA.SUBJECTCNT)*AA.PROPERCENT/100)-(((NVL2(BB.REFUNDAMOUNT ,BB.REFUNDAMOUNT ,0) / AA.SUBJECTCNT)*AA.PROPERCENT/100) * (AA.PAYMENTPETCENT/100)))  REFUNDALLOWANCE ,
+                    NVL2(BB.REFUNDAMOUNT ,BB.REFUNDAMOUNT ,0) REFUNDAMOUNT
+                FROM (
+                    SELECT
+                        (SELECT USER_NM FROM TB_MA_MEMBER_PRF WHERE USER_ID = C.PROFCODE) AS TMEMBERNAME ,-- 강사이름
+                        A.IDENTYID , -- 응시번호
+                        D.REG_DT,
+                        (SELECT EXAMCOST FROM TB_TMOCKREGISTRATION WHERE MOCKCODE= A.EXAMCODE) AS MONEY ,
+                        C.FEE_PROF   AS PROPERCENT,
+                        (SELECT MOCKNAME FROM TB_TMOCKREGISTRATION WHERE MOCKCODE=  A.EXAMCODE) MOCKNAME , -- 모의고사명
+                        (SELECT COUNT(ID) FROM TB_TUSERCHOICESUBJECT WHERE IDENTYID=A.IDENTYID) SUBJECTCNT, -- 모의고사 과목수
+                        A.USER_NM ,    -- 응시자이름
+                        A.RECEIPTTYPE,
+                        DECODE(A.EXAMTYPE, '0', '온라인', '1', '오프라인') EXAMTYPE ,
+                        DECODE(D.PAYMENTTYPE, '0', '카드', '1', '현금' , '2', '계좌이체' , '3', '가상계좌') PAYMENTTYPE ,
+                        D.PAYMENTTYPE  ORIPAYMENTTYPE ,
+                        DECODE(A.RECEIPTTYPE ,'0' ,DECODE(D.PAYMENTTYPE, '0' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'CARDONCHARGE' AND SYS_CD = 'PAYMENTCHARGE'),
+                                                                         '1' , 0 ,
+                                                                         '2' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'REALTIMECHARGE' AND SYS_CD = 'PAYMENTCHARGE'),
+                                                                         '3' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'VACCOUNTCHARGE' AND SYS_CD = 'PAYMENTCHARGE')
+                                                    ) ,
+                                               '1'  ,DECODE(D.PAYMENTTYPE, '0' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'CARDOFFCHARGE' AND SYS_CD = 'PAYMENTCHARGE'),
+                                                                           '1' , 0 ,
+                                                                           '2' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'REALTIMECHARGE' AND SYS_CD = 'PAYMENTCHARGE'),
+                                                                           '3' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'VACCOUNTCHARGE' AND SYS_CD = 'PAYMENTCHARGE')
+                                                    ) ,
+                                              '2'  ,DECODE(D.PAYMENTTYPE, '0' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'CARDOFFCHARGE' AND SYS_CD = 'PAYMENTCHARGE'),
+                                                                          '1' , 0 ,
+                                                                          '2' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'REALTIMECHARGE' AND SYS_CD = 'PAYMENTCHARGE'),
+                                                                          '3' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'VACCOUNTCHARGE' AND SYS_CD = 'PAYMENTCHARGE')
+                                                    )
+                        ) PAYMENTPETCENT,
+                        C.ITEMID ,   -- 문제은행구분번호
+                        C.PROFCODE,  -- 강사코드
+                        D.TID        -- 결제거래번호
+                    FROM TB_TORDERS A , TB_TUSERCHOICESUBJECT B , TB_TITEM C , TB_TAPPROVALS D
+                    WHERE A.IDENTYID = B.IDENTYID
+                    AND    A.ORDERNO = B.ORDERNO
+                    AND    B.ITEMID = C.ITEMID
+                    AND    A.IDENTYID = D.IDENTYID
+                ) AA
+                LEFT JOIN TB_TREFUND BB  ON AA.TID = BB.TID
+                WHERE 1=1
+                <if test="SEARCHSDATE !=null and SEARCHSDATE != ''">
+                AND AA.REG_DT <![CDATA[>=]]> TO_DATE(CONCAT(#{SEARCHSDATE},' 00:00:00'),'YYYY/MM/DD HH24:MI:SS')
+                </if>
+                <if test="SEARCHEDATE !=null and SEARCHEDATE != ''">
+                AND  AA.REG_DT <![CDATA[<=]]>  TO_DATE(CONCAT(#{SEARCHEDATE},' 23:59:59'),'YYYY/MM/DD HH24:MI:SS')
+                </if>
+                <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+                AND TMEMBERNAME LIKE '%'||#{SEARCHTEXT}||'%'
+                </if>
+                ORDER BY AA.REG_DT
+            )TP
+            GROUP BY TP.TMEMBERNAME , TP.PROFCODE
+        ) FF
+        WHERE rownum &lt;= #{endNo}
+    )
+    WHERE rnum &gt; #{startNo}
+    </select>
+
+    <select id="lectureFeesListCount" parameterType="hashMap" resultType="int">
+    SELECT COUNT(*) CNT
+    FROM (
+        SELECT *
+        FROM(
+            SELECT  *
+            FROM (
+                SELECT
+                    (SELECT USER_NM FROM TB_MA_MEMBER_PRF WHERE USER_ID = C.PROFCODE) AS TMEMBERNAME ,-- 강사이름
+                    A.IDENTYID , -- 응시번호
+                    D.REG_DT,
+                    (SELECT EXAMCOST FROM TB_TMOCKREGISTRATION WHERE MOCKCODE= A.EXAMCODE) AS MONEY ,
+                    50   AS PROPERCENT,
+                    (SELECT MOCKNAME FROM TB_TMOCKREGISTRATION WHERE MOCKCODE=  A.EXAMCODE) MOCKNAME , -- 모의고사명
+                    (SELECT COUNT(ID) FROM TB_TUSERCHOICESUBJECT WHERE IDENTYID=A.IDENTYID) SUBJECTCNT, -- 모의고사 과목수
+                    A.USER_NM ,    -- 응시자이름
+                    A.RECEIPTTYPE,
+                    DECODE(A.EXAMTYPE, '0', '온라인', '1', '오프라인') EXAMTYPE ,
+                    DECODE(D.PAYMENTTYPE, '0', '카드', '1', '현금' , '2', '계좌이체' , '3', '가상계좌') PAYMENTTYPE ,
+                    D.PAYMENTTYPE  ORIPAYMENTTYPE ,
+                    DECODE(A.RECEIPTTYPE ,'0' ,DECODE(D.PAYMENTTYPE, '0' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'CARDONCHARGE' AND SYS_CD = 'PAYMENTCHARGE'),
+                                                                     '1' , 0 ,
+                                                                     '2' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'REALTIMECHARGE' AND SYS_CD = 'PAYMENTCHARGE'),
+                                                                     '3' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'VACCOUNTCHARGE' AND SYS_CD = 'PAYMENTCHARGE')
+                                                ) ,
+                                           '1'  ,DECODE(D.PAYMENTTYPE, '0' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'CARDOFFCHARGE' AND SYS_CD = 'PAYMENTCHARGE')
+                                                                       '1' , 0 ,
+                                                                       '2' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'REALTIMECHARGE' AND SYS_CD = 'PAYMENTCHARGE'),
+                                                                       '3' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'VACCOUNTCHARGE' AND SYS_CD = 'PAYMENTCHARGE')
+                                                ) ,
+                                           '2'  ,DECODE(D.PAYMENTTYPE, '0' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'CARDOFFCHARGE' AND SYS_CD = 'PAYMENTCHARGE'),
+                                                                       '1' , 0 ,
+                                                                       '2' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'REALTIMECHARGE' AND SYS_CD = 'PAYMENTCHARGE'),
+                                                                       '3' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'VACCOUNTCHARGE' AND SYS_CD = 'PAYMENTCHARGE')
+                                                )
+                    ) PAYMENTPETCENT,
+                    C.ITEMID ,   -- 문제은행구분번호
+                    C.PROFCODE,  -- 강사코드
+                    D.TID        -- 결제거래번호
+                FROM TB_TORDERS A , TB_TUSERCHOICESUBJECT B , TB_TITEM C , TB_TAPPROVALS D
+                WHERE A.IDENTYID = B.IDENTYID
+                AND    A.ORDERNO = B.ORDERNO
+                AND    B.ITEMID = C.ITEMID
+                AND    A.IDENTYID = D.IDENTYID
+            ) AA
+            LEFT JOIN TB_TREFUND BB ON AA.TID = BB.TID
+            WHERE 1=1
+             <if test="SEARCHSDATE !=null and SEARCHSDATE != ''">
+            AND AA.REG_DT <![CDATA[>=]]> TO_DATE(CONCAT(#{SEARCHSDATE},' 00:00:00'),'YYYY/MM/DD HH24:MI:SS')
+            </if>
+            <if test="SEARCHEDATE !=null and SEARCHEDATE != ''">
+            AND  AA.REG_DT <![CDATA[<=]]>  TO_DATE(CONCAT(#{SEARCHEDATE},' 23:59:59'),'YYYY/MM/DD HH24:MI:SS')
+            </if>
+            <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+            AND AA.TMEMBERNAME LIKE '%'||#{SEARCHTEXT}||'%'
+            </if>
+            ORDER BY AA.REG_DT
+        )TP
+        WHERE 1 =1
+        <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+        AND TMEMBERNAME LIKE '%'||#{SEARCHTEXT}||'%'
+        </if>
+        GROUP BY TP.TMEMBERNAME , TP.PROFCODE
+    )
+    </select>
+
+    <select id="lectureFeesDetailExcelList" parameterType="hashMap" resultType="hashMap">
+    SELECT  AA.TMEMBERNAME ,
+        AA.PROFCODE ,
+        CONCAT(AA.USER_NM|| '/' ,AA.USER_ID ) AS USRNAMEID ,
+        AA.EXAMTYPE ,
+        AA.MOCKNAME ,
+        TO_CHAR(AA.REG_DT , 'YYYY-MM-DD' )  REG_DT ,
+        ROUND((AA.MONEY / AA.SUBJECTCNT) , 0) MONEY ,
+        CONCAT(AA.PAYMENTTYPE|| '/' ,AA.PAYMENTPETCENT ) AS PAYMENTPARAM ,
+        AA.PAYMENTTYPE ,
+        AA.PAYMENTPETCENT ,
+        AA.ORIPAYMENTTYPE ,
+        DECODE(AA.ORIPAYMENTTYPE, '3', AA.PAYMENTPETCENT ,
+                ROUND(((AA.MONEY / AA.SUBJECTCNT) * (AA.PAYMENTPETCENT/100)) , 0)
+            ) COMMITION ,
+        AA.PROPERCENT ,
+        DECODE(AA.ORIPAYMENTTYPE, '3', ROUND((((AA.MONEY / AA.SUBJECTCNT)*AA.PROPERCENT/100)- AA.PAYMENTPETCENT) , 0) ,
+                ROUND((((AA.MONEY / AA.SUBJECTCNT)*AA.PROPERCENT/100)-((AA.MONEY / AA.SUBJECTCNT) * (AA.PAYMENTPETCENT/100))) , 0)
+            ) ALLOWANCE ,
+        ROUND((((NVL2(BB.REFUNDAMOUNT ,BB.REFUNDAMOUNT ,0) / AA.SUBJECTCNT)*AA.PROPERCENT/100)-(((NVL2(BB.REFUNDAMOUNT ,BB.REFUNDAMOUNT ,0) / AA.SUBJECTCNT)*AA.PROPERCENT/100) * (AA.PAYMENTPETCENT/100))) , 0) REFUNDALLOWANCE ,
+        NVL2(BB.REFUNDAMOUNT ,BB.REFUNDAMOUNT ,0) REFUNDAMOUNT
+    FROM (
+        SELECT
+            (SELECT USER_NM FROM TB_MA_MEMBER_PRF WHERE USER_ID = C.PROFCODE) AS TMEMBERNAME ,-- 강사이름
+            A.IDENTYID , -- 응시번호
+            D.REG_DT,
+            (SELECT EXAMCOST FROM TB_TMOCKREGISTRATION WHERE MOCKCODE= A.EXAMCODE) AS MONEY ,
+            C.FEE_PROF   AS PROPERCENT,
+            (SELECT MOCKNAME FROM TB_TMOCKREGISTRATION WHERE MOCKCODE=  A.EXAMCODE) MOCKNAME , -- 모의고사명
+            (SELECT COUNT(ID) FROM TB_TUSERCHOICESUBJECT WHERE IDENTYID=A.IDENTYID) SUBJECTCNT, -- 모의고사 과목수
+            A.USER_NM ,    -- 응시자이름
+            A.USER_ID ,
+            A.RECEIPTTYPE,
+            DECODE(A.EXAMTYPE, '0', '온라인', '1', '오프라인') EXAMTYPE ,
+            DECODE(D.PAYMENTTYPE, '0', '카드', '1', '현금' , '2', '계좌이체' , '3', '가상계좌') PAYMENTTYPE ,
+            D.PAYMENTTYPE  ORIPAYMENTTYPE ,
+            DECODE(A.RECEIPTTYPE ,'0' ,DECODE(D.PAYMENTTYPE, '0' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'CARDONCHARGE' AND SYS_CD = 'PAYMENTCHARGE'),
+                                                             '1' , 0 ,
+                                                             '2' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'REALTIMECHARGE' AND SYS_CD = 'PAYMENTCHARGE'),
+                                                             '3' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'VACCOUNTCHARGE' AND SYS_CD = 'PAYMENTCHARGE')
+                                            ) ,
+                                  '1'  ,DECODE(D.PAYMENTTYPE, '0' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'CARDOFFCHARGE' AND SYS_CD = 'PAYMENTCHARGE'),
+                                                              '1' , 0 ,
+                                                              '2' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'REALTIMECHARGE' AND SYS_CD = 'PAYMENTCHARGE'),
+                                                              '3' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'VACCOUNTCHARGE' AND SYS_CD = 'PAYMENTCHARGE')
+                                            ) ,
+                                  '2'  ,DECODE(D.PAYMENTTYPE, '0' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'CARDOFFCHARGE' AND SYS_CD = 'PAYMENTCHARGE'),
+                                                              '1' , 0 ,
+                                                              '2' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'REALTIMECHARGE' AND SYS_CD = 'PAYMENTCHARGE'),
+                                                              '3' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'VACCOUNTCHARGE' AND SYS_CD = 'PAYMENTCHARGE')
+                                            )
+            ) PAYMENTPETCENT,
+            C.ITEMID ,   -- 문제은행구분번호
+            C.PROFCODE,  -- 강사코드
+            D.TID            -- 결제거래번호
+        FROM TB_TORDERS A , TB_TUSERCHOICESUBJECT B , TB_TITEM C , TB_TAPPROVALS D
+        WHERE A.IDENTYID = B.IDENTYID
+        AND    A.ORDERNO = B.ORDERNO
+        AND    B.ITEMID = C.ITEMID
+        AND    A.IDENTYID = D.IDENTYID
+       <if test="SEARCHSDATE !=null and SEARCHSDATE != ''">
+        AND D.REG_DT <![CDATA[>=]]> TO_DATE(CONCAT(#{SEARCHSDATE},' 00:00:00'),'YYYY/MM/DD HH24:MI:SS')
+        </if>
+        <if test="SEARCHEDATE !=null and SEARCHEDATE != ''">
+        AND  D.REG_DT <![CDATA[<=]]>  TO_DATE(CONCAT(#{SEARCHEDATE},' 23:59:59'),'YYYY/MM/DD HH24:MI:SS')
+        </if>
+        AND C.PROFCODE=#{PROFCODE}
+    ) AA
+    LEFT JOIN TB_TREFUND BB ON AA.TID = BB.TID
+    ORDER BY AA.REG_DT
+    </select>
+
+    <select id="lectureFeesRefundDetailExcelList" parameterType="hashMap" resultType="hashMap">
+    SELECT   AA.TMEMBERNAME ,
+        AA.PROFCODE , -- 강사코드
+        AA.USER_NM ,
+        AA.IDENTYID ,
+        AA.TID ,
+        CONCAT(AA.USER_NM|| '/' ,AA.USER_ID ) AS USRNAMEID ,
+        AA.EXAMTYPE ,
+        AA.MOCKNAME ,
+        TO_CHAR(AA.REG_DT , 'YYYY-MM-DD' ) REG_DT,
+        ROUND((AA.MONEY / AA.SUBJECTCNT) ,0)*-1 MONEY ,
+        AA.PROPERCENT ,
+        CONCAT(AA.PAYMENTTYPE|| '/' ,AA.PAYMENTPETCENT ) AS PAYMENTPARAM ,
+        AA.PAYMENTTYPE,
+        AA.PAYMENTPETCENT ,
+        AA.ORIPAYMENTTYPE ,
+        DECODE(AA.ORIPAYMENTTYPE, '3', AA.PAYMENTPETCENT ,
+                ROUND((((AA.MONEY / AA.SUBJECTCNT)*AA.PROPERCENT/100) * (AA.PAYMENTPETCENT/100)) , 0)
+            )*-1 COMMITION ,
+        DECODE(AA.ORIPAYMENTTYPE, '3', ROUND((((AA.MONEY / AA.SUBJECTCNT)*AA.PROPERCENT/100)- AA.PAYMENTPETCENT) , 0) ,
+                ROUND((((AA.MONEY / AA.SUBJECTCNT)*AA.PROPERCENT/100)-(((AA.MONEY / AA.SUBJECTCNT)*AA.PROPERCENT/100) * (AA.PAYMENTPETCENT/100))) , 0)
+            )*-1 ALLOWANCE ,
+        ROUND((((NVL2(AA.REFUNDAMOUNT ,AA.REFUNDAMOUNT ,0) / AA.SUBJECTCNT)*AA.PROPERCENT/100)-(((NVL2(AA.REFUNDAMOUNT ,AA.REFUNDAMOUNT ,0) / AA.SUBJECTCNT)*AA.PROPERCENT/100) * (AA.PAYMENTPETCENT/100))) , 0) REFUNDALLOWANCE ,
+        NVL2(AA.REFUNDAMOUNT ,AA.REFUNDAMOUNT ,0) REFUNDAMOUNT
+    FROM (
+        SELECT
+            (SELECT USER_NM FROM TB_MA_MEMBER_PRF WHERE USER_ID = C.PROFCODE) AS TMEMBERNAME ,-- 강사이름
+            A.IDENTYID , -- 응시번호
+            D.REG_DT,
+            (SELECT EXAMCOST FROM TB_TMOCKREGISTRATION WHERE MOCKCODE= A.EXAMCODE) AS MONEY ,
+            C.FEE_PROF   AS PROPERCENT,
+            (SELECT MOCKNAME FROM TB_TMOCKREGISTRATION WHERE MOCKCODE=  A.EXAMCODE) MOCKNAME , -- 모의고사명
+            (SELECT COUNT(*) FROM TB_TUSERCHOICESUBJECT WHERE IDENTYID=A.IDENTYID) SUBJECTCNT, -- 모의고사 과목수
+            A.USER_NM ,    -- 응시자이름
+            A.USER_ID ,
+            A.RECEIPTTYPE,
+            DECODE(A.EXAMTYPE, '0', '온라인', '1', '오프라인') EXAMTYPE ,
+            DECODE(D.PAYMENTTYPE, '0', '카드', '1', '현금' , '2', '계좌이체' , '3', '가상계좌') PAYMENTTYPE ,
+            D.PAYMENTTYPE  ORIPAYMENTTYPE ,
+            DECODE(A.RECEIPTTYPE ,'0' ,DECODE(D.PAYMENTTYPE, '0' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'CARDONCHARGE' AND SYS_CD = 'PAYMENTCHARGE'),
+                                                             '1' , 0 ,
+                                                             '2' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'REALTIMECHARGE' AND SYS_CD = 'PAYMENTCHARGE'),
+                                                             '3' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'VACCOUNTCHARGE' AND SYS_CD = 'PAYMENTCHARGE')
+                                            ) ,
+                                    '1'  ,DECODE(D.PAYMENTTYPE, '0' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'CARDOFFCHARGE' AND SYS_CD = 'PAYMENTCHARGE'),
+                                                                '1' , 0 ,
+                                                                '2' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'REALTIMECHARGE' AND SYS_CD = 'PAYMENTCHARGE'),
+                                                                '3' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'VACCOUNTCHARGE' AND SYS_CD = 'PAYMENTCHARGE')
+                                            ) ,
+                                    '2'  ,DECODE(D.PAYMENTTYPE, '0' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'CARDOFFCHARGE' AND SYS_CD = 'PAYMENTCHARGE'),
+                                                                '1' , 0 ,
+                                                                '2' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'REALTIMECHARGE' AND SYS_CD = 'PAYMENTCHARGE'),
+                                                                '3' , (SELECT CODE_VAL FROM TB_BA_CONFIG_CD WHERE CODE_CD = 'VACCOUNTCHARGE' AND SYS_CD = 'PAYMENTCHARGE')
+                                            )
+            ) PAYMENTPETCENT,
+            C.ITEMID ,   -- 문제은행구분번호
+            C.PROFCODE,  -- 강사코드
+            D.TID       ,    -- 결제거래번호
+            F.REFUNDAMOUNT
+        FROM TB_TORDERS A  , TB_TUSERCHOICESUBJECT B ,TB_TITEM C , TB_TAPPROVALS D , TB_TREFUND F
+        WHERE A.IDENTYID = B.IDENTYID
+        AND    A.ORDERNO = B.ORDERNO
+        AND    B.ITEMID = C.ITEMID
+        AND    A.IDENTYID = D.IDENTYID
+        AND    D.TID = F.TID
+       <if test="SEARCHSDATE !=null and SEARCHSDATE != ''">
+        AND D.REG_DT <![CDATA[>=]]> TO_DATE(CONCAT(#{SEARCHSDATE},' 00:00:00'),'YYYY/MM/DD HH24:MI:SS')
+        </if>
+        <if test="SEARCHEDATE !=null and SEARCHEDATE != ''">
+        AND  D.REG_DT <![CDATA[<=]]>  TO_DATE(CONCAT(#{SEARCHEDATE},' 23:59:59'),'YYYY/MM/DD HH24:MI:SS')
+        </if>
+        AND C.PROFCODE=#{PROFCODE}
+    ) AA
+    ORDER BY AA.REG_DT
+    </select>
+
+</mapper>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="salesStat">
+
+	<select id="teacherList" parameterType="hashMap" resultType="hashMap">
+        SELECT USER_ID, USER_NM, TO_CHAR(REG_DT, 'YYYY-MM-DD') REG_DT, ISUSE
+        FROM TB_MA_MEMBER 
+        WHERE USER_ROLE = 'PRF'
+        ORDER BY ISUSE DESC, USER_NM
+	</select>
+
+	<select id="teacherSubjectList" parameterType="hashMap" resultType="hashMap">
+		SELECT A.SUBJECT_TEACHER, B.SUBJECT_CD, B.SUBJECT_NM
+		FROM TB_LEC_MST A, TB_SUBJECT_INFO B
+		WHERE A.SUBJECT_SJT_CD = B.SUBJECT_CD
+		GROUP BY A.SUBJECT_TEACHER, B.SUBJECT_CD, B.SUBJECT_NM
+	</select>
+
+	<select id="teacherOne" parameterType="hashMap" resultType="hashMap">
+        SELECT A.USER_ID, A.USER_NM, A.PROFILE_SUMMARY, A.BOOK_LOG_SUMMARY, A.PIC1 
+        FROM TB_MA_MEMBER A
+        WHERE USER_ROLE = 'PRF'
+        AND USER_ID = #{PRF_ID}
+	</select>
+
+	<select id="teacherSalesStatList" parameterType="hashMap" resultType="hashMap">
+        SELECT (S_YEAR||'-'||S_MONTH) YM,
+               SUM(ON_SALE_CNT) ON_SALE_CNT, SUM(ON_REFUND_CNT) ON_REFUND_CNT, SUM(ON_SALE_SUM) ON_SALE_SUM, SUM(ON_REFUND_SUM) ON_REFUND_SUM,
+               SUM(OF_SALE_CNT) OF_SALE_CNT, SUM(OF_REFUND_CNT) OF_REFUND_CNT, SUM(OF_SALE_SUM) OF_SALE_SUM, SUM(OF_REFUND_SUM) OF_REFUND_SUM
+        FROM (
+            SELECT S_YEAR, S_MONTH, 
+                   SUM(SALE_CNT) ON_SALE_CNT, SUM(REFUND_CNT) ON_REFUND_CNT, SUM(SALE_SUM) ON_SALE_SUM, SUM(REFUND_SUM) ON_REFUND_SUM,
+                   0 OF_SALE_CNT, 0 OF_REFUND_CNT, 0 OF_SALE_SUM, 0 OF_REFUND_SUM
+            FROM TB_STAT_PRF
+            WHERE S_TYPE = 'ON'
+            AND PRF_ID = #{PRF_ID}
+			<if test='sYear != null and sYear != ""'>
+				AND S_YEAR = #{sYear}
+			</if>
+			<if test='sMonth != null and sMonth != ""'>
+				AND S_MONTH = #{sMonth}
+			</if>
+            GROUP BY S_YEAR, S_MONTH
+            UNION ALL
+            SELECT S_YEAR, S_MONTH, 
+                   0 ON_SALE_CNT, 0 ON_REFUND_CNT, 0 ON_SALE_SUM, 0 ON_REFUND_SUM,
+                   SUM(SALE_CNT) OF_SALE_CNT, SUM(REFUND_CNT) OF_REFUND_CNT, SUM(SALE_SUM) OF_SALE_SUM, SUM(REFUND_SUM) OF_REFUND_SUM
+            FROM TB_STAT_PRF
+            WHERE S_TYPE = 'OF'
+            AND PRF_ID = #{PRF_ID}
+			<if test='sYear != null and sYear != ""'>
+				AND S_YEAR = #{sYear}
+			</if>
+			<if test='sMonth != null and sMonth != ""'>
+				AND S_MONTH = #{sMonth}
+			</if>
+            GROUP BY S_YEAR, S_MONTH
+            ) A
+        GROUP BY S_YEAR, S_MONTH
+        ORDER BY S_YEAR, S_MONTH
+	</select>
+
+	<update id="makeOnSalesStat" parameterType="hashMap" flushCache="true" statementType="CALLABLE">
+		CALL SP_MAKE_ON_SALES_STAT(
+		        #{YEAR, mode=IN},
+		        #{result, jdbcType=INTEGER, mode=OUT})
+	</update>
+
+	<update id="makeOffSalesStat" parameterType="hashMap" flushCache="true" statementType="CALLABLE">
+		CALL SP_MAKE_OFF_SALES_STAT(
+		        #{YEAR, mode=IN},
+		        #{result, jdbcType=INTEGER, mode=OUT})
+	</update>		
+
+	<select id="userBuyStatList" parameterType="hashMap" resultType="hashMap">
+		SELECT
+			COUNT(USER_ID) USER_CNT, 
+			COUNT(A.ALL_ON_ORD_SUM) ON_ORD_CNT, 
+			COUNT(A.ALL_OF_ORD_SUM) OF_ORD_CNT,
+			ROUND((COUNT(A.ALL_ON_ORD_SUM)/COUNT(USER_ID)),2) ON_ORD_AVR, 
+			ROUND((COUNT(A.ALL_OF_ORD_SUM)/COUNT(USER_ID)),2) OF_ORD_AVR,
+			SUM(A.ALL_ON_ORD_SUM) ON_ORD_SUM, 
+			SUM(A.ALL_OF_ORD_SUM) OF_ORD_SUM,
+			ROUND((SUM(A.ALL_ON_ORD_SUM)/COUNT(A.ALL_ON_ORD_SUM)),0) ON_ORD_PRICE, 
+			ROUND((SUM(A.ALL_OF_ORD_SUM)/COUNT(A.ALL_OF_ORD_SUM)),0) OF_ORD_PRICE,
+			ROUND((SUM(A.ALL_ON_ORD_SUM)/COUNT(USER_ID)),0) ON_ORD_ALL_PRICE, 
+            ROUND((SUM(A.ALL_OF_ORD_SUM)/COUNT(USER_ID)),0) OF_ORD_ALL_PRICE,
+            ROUND((SUM(TO_DATE(A.FST_ON_ORD_DT) - TO_DATE(A.REG_DT)) / COUNT(A.FST_ON_ORD_SUM)),1) FST_ON_ORD_DAY,
+            ROUND((SUM(TO_DATE(A.FST_OF_ORD_DT) - TO_DATE(A.REG_DT)) / COUNT(A.FST_OF_ORD_SUM)),1) FST_OF_ORD_DAY,
+            ROUND((SUM(TO_DATE(A.SND_ON_ORD_DT) - TO_DATE(A.REG_DT)) / COUNT(A.SND_ON_ORD_SUM)),1) SND_ON_ORD_DAY,
+            ROUND((SUM(TO_DATE(A.SND_OF_ORD_DT) - TO_DATE(A.REG_DT)) / COUNT(A.SND_OF_ORD_SUM)),1) SND_OF_ORD_DAY
+		FROM TB_STAT_USER_HISTORY A
+		WHERE REPLACE(REG_DT, '-', '') BETWEEN #{searchStartDate} AND #{searchEndDate}
+	</select>
+
+	<select id="searchKeywordList" parameterType="hashMap" resultType="hashMap">
+	    SELECT TBL.*
+	    FROM (SELECT A.*, ROWNUM RNUM
+	          FROM (SELECT IDX, SEARCH_KEYWORD, SEARCH_CNT, REG_DT, UPD_DT, SERCH_CLICK
+						FROM TB_SEARCH_LOG
+                        WHERE TO_CHAR(UPD_DT, 'YYYYMMDD') BETWEEN #{sdate} AND #{edate}
+						ORDER BY SEARCH_CNT DESC
+	                ) A 
+	                   WHERE ROWNUM <![CDATA[ <= ]]> #{endNo}
+	            ) TBL 
+	        WHERE RNUM <![CDATA[ > ]]> #{startNo}
+	</select>
+
+	<select id="searchKeywordCount" parameterType="hashMap" resultType="int">
+		SELECT COUNT(IDX)
+		FROM TB_SEARCH_LOG
+        WHERE TO_CHAR(UPD_DT, 'YYYYMMDD') BETWEEN #{sdate} AND #{edate}
+	</select>
+
+	<select id="searchKeywordSum" parameterType="hashMap" resultType="int">
+		SELECT SUM(SEARCH_CNT)
+		FROM TB_SEARCH_LOG
+        WHERE TO_CHAR(UPD_DT, 'YYYYMMDD') BETWEEN #{sdate} AND #{edate}
+	</select>
+			
+</mapper>

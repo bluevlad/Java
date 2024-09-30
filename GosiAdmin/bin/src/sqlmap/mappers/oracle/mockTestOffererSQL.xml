@@ -1,0 +1,560 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="offerer">
+
+    <select id="offererSeqGet" parameterType="hashMap" resultType="hashMap">
+        SELECT OYEAR, ONOFF, TO_CHAR(SEQMAX+1,'000000') AS SEQMAX FROM TB_TORDERNOSEQ WHERE OYEAR = #{OYEAR} AND ONOFF = #{ONOFF}
+    </select>
+
+    <update id="offererSeqUpdate" parameterType="hashMap" flushCache="true">
+        UPDATE TB_TORDERNOSEQ
+        SET
+            SEQMAX = #{SEQMAX}
+        WHERE OYEAR = #{OYEAR} AND ONOFF = #{ONOFF}
+    </update>
+
+    <insert id="offererSeqInsert" parameterType="hashMap" flushCache="true">
+        INSERT INTO TB_TORDERNOSEQ(OYEAR, ONOFF, SEQMAX)
+        VALUES (#{OYEAR}, #{ONOFF}, #{SEQMAX})
+    </insert>
+
+    <select id="offererClsClsList" parameterType="hashMap" resultType="hashMap">
+        SELECT * 
+        FROM TB_TCCSRSSUBJECTINFO
+        <if test="SRCHMOCCODE != null and SRCHMOCCODE != ''">
+        WHERE CLASSCODE = (SELECT CLASSCODE FROM TB_TMOCKREGISTRATION WHERE MOCKCODE = #{SRCHMOCCODE})
+       </if>
+    </select>
+
+    <select id="offererList" parameterType="hashMap" resultType="hashMap">
+        SELECT * FROM   (
+            SELECT A.*, ROWNUM rnum
+            FROM (
+                SELECT
+                    BB.MOCKNAME
+                    , CC.PAYMENTAMOUNT, NVL(CC.PAYMENTTYPE, 0) PAYMENTTYPE
+                    , CC.REG_DT AS PCREATETIME, NVL(TO_CHAR(CC.REG_DT, 'YYYY-MM-DD'), '-') PCTIME
+                    , AA.ORDERNO, AA.IDENTYID, AA.EXAMCODE, AA.USER_ID, AA.USER_NM, AA.PHONE_NO
+                    , AA.RECEIPTTYPE, AA.EXAMTYPE, AA.CLASSCODE, AA.CLASSSERIESCODE
+                    , AA.ADDPOINT1, AA.ADDPOINT2, AA.ADDPOINT3
+                    , AA.PRINTFLAG, AA.PRINTUSER, AA.PRINTTIME, AA.NOTE
+                    , AA.PAYMENTTARGETAMOUNT, AA.ADDDISCOUNTRATIO
+                    , AA.ADDDISCOUNTAMOUNT, AA.ADDDISCOUNTREASON
+                    , AA.PAYMENTDUEDATE, AA.PAYMENTSTATE
+                    , AA.EXAMSTATUS, AA.EXAMSTARTTIME, AA.EXAMENDTIME, AA.EXAMSPARETIME, AA.EXAMIP
+                    , AA.REG_ID
+                    , AA.REG_DT, TO_CHAR(AA.REG_DT, 'YYYY-MM-DD') CTIME
+                    , AA.UPD_ID, AA.UPD_DT, DD.REFUNDAMOUNT
+                FROM TB_TORDERS AA
+                INNER JOIN TB_TMOCKREGISTRATION BB ON AA.EXAMCODE = BB.MOCKCODE
+                LEFT JOIN TB_TAPPROVALS CC ON AA.IDENTYID = CC.IDENTYID
+                LEFT JOIN TB_TREFUND DD ON CC.TID = DD.TID
+                WHERE 1 = 1
+            <if test="LECCODE == null or LECCODE == ''">
+                AND BB.LECCODE IS NULL
+            </if>
+            <if test="MOCKCODE != null and MOCKCODE != ''">
+                AND AA.EXAMCODE = #{MOCKCODE}
+            </if>
+            <if test="PAYSTTUS_LIST != null ">
+              AND AA.PAYMENTSTATE IN
+              <foreach collection="PAYSTTUS_LIST" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+              </foreach>
+            </if>
+            <if test="SEARCHSDATE !=null and SEARCHSDATE != ''">
+                AND CC.REG_DT <![CDATA[>=]]> TO_DATE(CONCAT(#{SEARCHSDATE},' 00:00:00'),'YYYY/MM/DD HH24:MI:SS')
+            </if>
+            <if test="SEARCHEDATE !=null and SEARCHEDATE != ''">
+                AND CC.REG_DT <![CDATA[<=]]>  TO_DATE(CONCAT(#{SEARCHEDATE},' 23:59:59'),'YYYY/MM/DD HH24:MI:SS')
+            </if>
+            <if test="SEARCHRECEIPTTYPE != null and SEARCHRECEIPTTYPE != ''">
+                AND AA.RECEIPTTYPE = #{SEARCHRECEIPTTYPE}
+            </if>
+            <if test="SEARCHEXAMTYPE != null and SEARCHEXAMTYPE != ''">
+                AND AA.EXAMTYPE = #{SEARCHEXAMTYPE}
+            </if>
+            <if test="SEARCHPAYMENT != null and SEARCHPAYMENT != ''">
+                AND AA.PAYMENTSTATE = #{SEARCHPAYMENT}
+            </if>
+            <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+                AND (
+                    AA.ORDERNO like '%'||#{SEARCHTEXT}||'%'
+                    OR AA.IDENTYID like '%'||#{SEARCHTEXT}||'%'
+                    OR AA.USER_ID like '%'||#{SEARCHTEXT}||'%'
+                    OR AA.USER_NM like '%'||#{SEARCHTEXT}||'%'
+                    OR AA.PHONE_NO like '%'||#{SEARCHTEXT}||'%'
+                    OR BB.MOCKNAME like '%'||#{SEARCHTEXT}||'%'
+                )
+            </if>
+                ORDER BY AA.ID DESC
+            ) A
+            WHERE rownum <![CDATA[ <= ]]> #{endNo}
+        )
+        WHERE rnum <![CDATA[ > ]]> #{startNo}
+    </select>
+
+    <select id="offererListCount" parameterType="hashMap" resultType="int">
+        SELECT
+            COUNT(AA.IDENTYID)
+        FROM TB_TORDERS AA
+        INNER JOIN TB_TMOCKREGISTRATION BB ON AA.EXAMCODE = BB.MOCKCODE
+        LEFT JOIN TB_TAPPROVALS CC ON AA.IDENTYID = CC.IDENTYID
+        WHERE 1 = 1
+    <if test="LECCODE == null or LECCODE == ''">
+        AND BB.LECCODE IS NULL
+    </if>
+    <if test="MOCKCODE != null and MOCKCODE != ''">
+        AND AA.EXAMCODE = #{MOCKCODE}
+    </if>
+    <if test="PAYSTTUS_LIST != null ">
+        AND AA.PAYMENTSTATE IN
+      <foreach collection="PAYSTTUS_LIST" item="item" index="index" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    <if test="SEARCHSDATE !=null and SEARCHSDATE != ''">
+        AND CC.REG_DT <![CDATA[>=]]> TO_DATE(CONCAT(#{SEARCHSDATE},' 00:00:00'),'YYYY/MM/DD HH24:MI:SS')
+    </if>
+    <if test="SEARCHEDATE !=null and SEARCHEDATE != ''">
+        AND CC.REG_DT <![CDATA[<=]]>  TO_DATE(CONCAT(#{SEARCHEDATE},' 23:59:59'),'YYYY/MM/DD HH24:MI:SS')
+    </if>
+    <if test="SEARCHRECEIPTTYPE != null and SEARCHRECEIPTTYPE != ''">
+        AND AA.RECEIPTTYPE = #{SEARCHRECEIPTTYPE}
+    </if>
+    <if test="SEARCHEXAMTYPE != null and SEARCHEXAMTYPE != ''">
+        AND AA.EXAMTYPE = #{SEARCHEXAMTYPE}
+    </if>
+    <if test="SEARCHPAYMENT != null and SEARCHPAYMENT != ''">
+        AND AA.PAYMENTSTATE = #{SEARCHPAYMENT}
+    </if>
+    <if test="SEARCHTEXT != null and SEARCHTEXT != ''">
+        AND (
+            AA.ORDERNO like '%'||#{SEARCHTEXT}||'%'
+            OR AA.IDENTYID like '%'||#{SEARCHTEXT}||'%'
+            OR AA.USER_ID like '%'||#{SEARCHTEXT}||'%'
+            OR AA.USER_NM like '%'||#{SEARCHTEXT}||'%'
+            OR AA.PHONE_NO like '%'||#{SEARCHTEXT}||'%'
+            OR BB.MOCKNAME like '%'||#{SEARCHTEXT}||'%'
+        )
+    </if>
+    </select>
+
+    <select id="offererModifyMouiList" resultType="hashMap">
+        SELECT DD.SUBJECT_CD, DD.SUBJECT_NM, DD.ITEMID
+            , CC.MOCKCODE, CC.MOCKNAME, CC.EXAMYEAR, CC.EXAMROUND
+            , CC.OFFCLOSEPERSONNUMBER
+            , CC.EXAMSTARTTIME, CC.EXAMENDTIME, CC.EXAMPERIOD, CC.EXAMTIME, CC.CLASSCODE
+            , CC.RECEIPTSTARTTIME, CC.RECEIPTENDTIME, CC.EXAMCOST, CC.DISCOUNTRATIO, CC.SALEAMOUNTS
+            , CC.USEFLAG, CC.REG_ID, CC.REG_DT, CC.UPD_ID, CC.UPD_DT
+        FROM (
+            SELECT BB.*
+            FROM (SELECT EXAMYEAR, EXAMROUND FROM TB_TMOCKREGISTRATION WHERE MOCKCODE = #{MOCKCODE}) AA
+            LEFT JOIN TB_TMOCKREGISTRATION BB ON AA.EXAMYEAR = BB.EXAMYEAR AND AA.EXAMROUND = BB.EXAMROUND
+        ) CC
+        LEFT JOIN (
+            SELECT SA.SUBJECT_CD, SA.MOCKCODE, SB.SUBJECT_NM, SA.ITEMID
+            FROM TB_TMOCKSUBJECT SA
+            INNER JOIN TB_SUBJECT_INFO SB ON SA.SUBJECT_CD = SB.SUBJECT_CD WHERE SA.SUBJECTTYPEDIVISION = 2
+        ) DD ON CC.MOCKCODE = DD.MOCKCODE
+    </select>
+
+    <select id="offererModifyMouiClassInfo" resultType="hashMap">
+        SELECT CC.*, DD.CLASSSERIESCODE
+            , (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = CC.CLASSCODE) CLASSSCODENM
+            , (SELECT NAME FROM TB_CATEGORY_INFO WHERE P_CODE = CC.CLASSCODE AND CODE = DD.CLASSSERIESCODE ) CLASSSERIESCODENM
+        FROM (
+            SELECT
+                BB.MOCKCODE, BB.CLASSCODE, BB.MOCKNAME
+            FROM (
+                SELECT EXAMYEAR, EXAMROUND FROM TB_TMOCKREGISTRATION WHERE MOCKCODE = #{MOCKCODE}
+            ) AA
+            LEFT JOIN TB_TMOCKREGISTRATION BB ON AA.EXAMYEAR = BB.EXAMYEAR AND AA.EXAMROUND = BB.EXAMROUND
+        ) CC
+        LEFT JOIN TB_TMOCKCLSCLSSERIES DD ON CC.MOCKCODE = DD.MOCKCODE
+    </select>
+
+    <select id="offererMouiInfoList" resultType="hashMap">
+        SELECT
+            CC.MOCKCODE, CC.MOCKNAME, CC.EXAMYEAR, CC.EXAMROUND
+            , CC.OFFCLOSEPERSONNUMBER
+            , CC.EXAMSTARTTIME, CC.EXAMENDTIME, CC.EXAMPERIOD, CC.EXAMTIME, CC.CLASSCODE
+            , CC.RECEIPTSTARTTIME, CC.RECEIPTENDTIME, CC.EXAMCOST, CC.DISCOUNTRATIO, CC.SALEAMOUNTS
+            , CC.USEFLAG, CC.REG_ID, CC.REG_DT, CC.UPD_ID, CC.UPD_DT
+        FROM TB_TMOCKREGISTRATION CC
+        WHERE 1 = 1
+        AND CC.LECCODE IS NULL
+        AND ( (USEFLAG = '1'
+            <if test="GUBN == null or GUBN ==''">
+                AND EXAMSTARTTIME > TO_CHAR(SYSDATE, 'YYYYMMDDHH24MI')
+            </if>
+              )
+              OR USEFLAG = '3'
+            )
+        <if test="SRCHMOCCODE != null and SRCHMOCCODE !=''">
+        AND MOCKCODE = #{SRCHMOCCODE}
+        </if>
+        ORDER BY EXAMSTARTTIME DESC, EXAMYEAR DESC, EXAMROUND DESC
+    </select>
+
+    <select id="offererMouiInfoListCount" parameterType="hashMap" resultType="int">
+        SELECT COUNT(*)
+        FROM TB_TMOCKREGISTRATION CC
+        WHERE 1 = 1
+        AND CC.LECCODE IS NULL
+        AND ( (USEFLAG = '1'
+            <if test="GUBN == null or GUBN ==''">
+                AND EXAMSTARTTIME > TO_CHAR(SYSDATE, 'YYYYMMDDHH24MI')
+            </if>
+              )
+              OR USEFLAG = '3'
+            )
+        <if test="SRCHMOCCODE != null and SRCHMOCCODE !=''">
+        AND MOCKCODE = #{SRCHMOCCODE}
+        </if>
+        ORDER BY EXAMSTARTTIME ASC, EXAMYEAR ASC, EXAMROUND ASC
+    </select>
+
+    <select id="offererMouiList" resultType="hashMap">
+        SELECT DD.SUBJECT_CD, DD.SUBJECT_NM, DD.ITEMID
+            , CC.MOCKCODE, CC.MOCKNAME, CC.EXAMYEAR, CC.EXAMROUND
+            , CC.OFFCLOSEPERSONNUMBER
+            , CC.EXAMSTARTTIME, CC.EXAMENDTIME, CC.EXAMPERIOD, CC.EXAMTIME, CC.CLASSCODE
+            , CC.RECEIPTSTARTTIME, CC.RECEIPTENDTIME, CC.EXAMCOST, CC.DISCOUNTRATIO, CC.SALEAMOUNTS
+            , CC.USEFLAG, CC.REG_ID, CC.REG_DT, CC.UPD_ID, CC.UPD_DT
+            , (SELECT NAME FROM TB_CATEGORY_INFO WHERE CODE = CC.CLASSCODE) CLASSSCODENM
+        FROM (
+            SELECT BB.*
+            FROM (
+                SELECT AAA.*
+                FROM (
+                    SELECT EXAMYEAR, EXAMROUND, CLASSCODE 
+                    FROM TB_TMOCKREGISTRATION
+                    WHERE 1 = 1
+                    <if test="SRCHMOCCODE != null and SRCHMOCCODE !=''">
+                    AND MOCKCODE = #{SRCHMOCCODE}
+                    </if>
+                    AND ( (USEFLAG = '1'
+                        <if test="GUBN == null or GUBN ==''">
+                            AND EXAMSTARTTIME > TO_CHAR(SYSDATE, 'YYYYMMDDHH24MI')
+                        </if>
+                          )
+                          OR USEFLAG = '3'
+                        )
+                    ORDER BY EXAMSTARTTIME ASC, EXAMYEAR ASC, EXAMROUND ASC
+                ) AAA
+                WHERE  ROWNUM <![CDATA[ <= ]]> 1
+            ) AA
+            LEFT JOIN TB_TMOCKREGISTRATION BB ON AA.EXAMYEAR = BB.EXAMYEAR 
+            AND AA.EXAMROUND = BB.EXAMROUND 
+            AND AA.CLASSCODE = BB.CLASSCODE
+        ) CC
+        LEFT JOIN (
+            SELECT SA.SUBJECT_CD, SA.MOCKCODE, SB.SUBJECT_NM, SA.ITEMID
+            FROM TB_TMOCKSUBJECT SA INNER JOIN TB_SUBJECT_INFO SB ON SA.SUBJECT_CD = SB.SUBJECT_CD
+            WHERE SA.SUBJECTTYPEDIVISION = 2
+        ) DD ON CC.MOCKCODE = DD.MOCKCODE
+    </select>
+
+    <select id="offererMouiClassInfo" resultType="hashMap">
+        SELECT CC.*, DD.CLASSSERIESCODE
+            , (SELECT NAME FROM TB_CATEGORY_INFO WHERE P_CODE = CC.CLASSCODE AND CODE = DD.CLASSSERIESCODE ) CLASSSERIESCODENM
+        FROM (
+            SELECT
+                BB.MOCKCODE, BB.CLASSCODE, BB.MOCKNAME
+            FROM (
+                SELECT AAA.*
+                FROM (
+                    SELECT EXAMYEAR, EXAMROUND, CLASSCODE
+                    FROM TB_TMOCKREGISTRATION
+                    WHERE 1 = 1
+                    <if test="SRCHMOCCODE != null and SRCHMOCCODE !=''">
+                    AND MOCKCODE = #{SRCHMOCCODE}
+                    </if>
+                    AND ( (USEFLAG = '1'
+                        <if test="GUBN == null or GUBN ==''">
+                            AND EXAMSTARTTIME > TO_CHAR(SYSDATE, 'YYYYMMDDHH24MI')
+                        </if>
+                          )
+                          OR USEFLAG = '3'
+                        )
+                    ORDER BY EXAMSTARTTIME ASC, EXAMYEAR ASC, EXAMROUND ASC
+                ) AAA
+                WHERE  ROWNUM <![CDATA[ <= ]]> 1
+            ) AA
+            LEFT JOIN TB_TMOCKREGISTRATION BB ON AA.EXAMYEAR = BB.EXAMYEAR AND AA.EXAMROUND = BB.EXAMROUND AND AA.CLASSCODE = BB.CLASSCODE
+        ) CC
+        LEFT JOIN TB_TMOCKCLSCLSSERIES DD ON CC.MOCKCODE = DD.MOCKCODE
+    </select>
+
+    <select id="offererMouiSearchSel" parameterType="hashMap" resultType="hashMap">
+        SELECT EXAMYEAR, EXAMROUND
+        FROM TB_TMOCKREGISTRATION
+        GROUP BY EXAMYEAR, EXAMROUND
+    </select>
+
+    <!-- 주문번호 자동생성 리턴 EX: 113000103 -->
+    <select id="GetOffererId" parameterType="hashMap" resultType="String">
+        SELECT GET_EXAM_OFFERERID('O', #{paramVal}) AS ORDERNO FROM DUAL
+    </select>
+
+    <!-- 응시번호 자동생성 리턴 EX: 14019010101 -->
+    <select id="GetIdentyId" parameterType="hashMap" resultType="String">
+        SELECT GET_EXAM_IDENTYID('I',#{paramVal}) AS IDENTYID FROM DUAL
+    </select>
+
+    <select id="offererIdGet" resultType="String">
+        SELECT TO_CHAR(ORDERNO+1,'000000000') AS ORDERNO
+        FROM TB_TORDERS
+        WHERE SUBSTR(ORDERNO, 0, 3) = #{paramVal}
+        AND ROWNUM <![CDATA[ <= ]]> 1 ORDER BY ID DESC
+    </select>
+
+    <select id="identyIdGet" resultType="String">
+        SELECT TO_CHAR(IDENTYID+1,'00000000000') AS IDENTYID
+        FROM TB_TORDERS
+        WHERE SUBSTR(IDENTYID, 0, 7) = #{paramVal}
+        AND ROWNUM <![CDATA[ <= ]]> 1 ORDER BY ID DESC
+    </select>
+
+    <select id="commonCodeValueGet" parameterType="hashMap" resultType="String">
+        SELECT CODE_VAL AS CODEVALUE FROM TB_CATEGORY_INFO
+        WHERE CODE = #{CODE} AND P_CODE = #{PARENTCODE}
+    </select>
+
+    <insert id="offererInsert" parameterType="hashMap" flushCache="true">
+        INSERT INTO TB_TORDERS(
+            ID, ORDERNO, IDENTYID, EXAMCODE, USER_ID, USER_NM, PHONE_NO, RECEIPTTYPE
+            , EXAMTYPE, CLASSCODE, CLASSSERIESCODE, ADDPOINT1, ADDPOINT2, ADDPOINT3
+            , NOTE, PAYMENTTARGETAMOUNT, ADDDISCOUNTRATIO
+            , ADDDISCOUNTAMOUNT, ADDDISCOUNTREASON, PAYMENTDUEDATE, PAYMENTSTATE
+            , REG_ID, REG_DT, UPD_ID, UPD_DT
+        ) VALUES (
+            SEQ_TOFFERER_ID.NEXTVAL, #{ORDERNO}, #{IDENTYID}, #{EXAMCODE}, #{USER_ID}, #{USER_NM}, #{PHONE_NO}, #{RECEIPTTYPE}
+            , #{EXAMTYPE}, #{CLASSCODE}, #{CLASSSERIESCODE}, #{ADDPOINT1}, #{ADDPOINT2}, #{ADDPOINT3}
+            , #{NOTE}, #{PAYMENTTARGETAMOUNT}, #{ADDDISCOUNTRATIO}
+            , #{ADDDISCOUNTAMOUNT}, #{ADDDISCOUNTREASON}, SYSDATE, #{PAYMENTSTATE}
+            , #{USER_ID}, SYSDATE, #{USER_ID}, SYSDATE
+        )
+    </insert>
+
+    <insert id="offererDivSubjectInsert" parameterType="hashMap" flushCache="true">
+        INSERT INTO TB_TUSERCHOICESUBJECT (
+            ID, ITEMID, ORDERNO, IDENTYID
+            , REG_ID, REG_DT, UPD_ID, UPD_DT
+            , EXAMSTATUS, SUBJECTORDER, SUBJECTTYPEDIVISION
+        )
+        SELECT
+            SEQ_TUSERCHOICESUBJECT_ID.NEXTVAL, BB.ITEMID, #{ORDERNO}, #{IDENTYID}
+            , #{REG_ID}, SYSDATE, #{UPD_ID}, SYSDATE
+            , 0
+            , BB.SUBJECTORDER
+            , BB.SUBJECTTYPEDIVISION
+        FROM TB_TCCSRSSUBJECTINFO AA
+        LEFT JOIN TB_TMOCKSUBJECT BB ON AA.SUBJECT_CD = BB.SUBJECT_CD AND AA.SUBJECTTYPEDIVISION = 1
+        WHERE AA.CLASSCODE = #{CLASSCODE} AND AA.CLASSSERIESCODE = #{CLASSSERIESCODE} AND BB.MOCKCODE = #{EXAMCODE}
+    </insert>
+
+    <select id="offererSubjectOrderGet" parameterType="hashMap" resultType="String">
+        SELECT SUBJECTORDER
+        FROM TB_TMOCKSUBJECT
+        WHERE MOCKCODE = #{EXAMCODE} AND ITEMID = #{ITEMID}
+    </select>
+
+    <insert id="offererSubjectInsert" parameterType="hashMap" flushCache="true">
+        INSERT INTO TB_TUSERCHOICESUBJECT (
+            ID, ITEMID, ORDERNO, IDENTYID
+            , EXAMSTATUS, SUBJECTORDER, SUBJECTTYPEDIVISION
+            , REG_ID, REG_DT, UPD_ID, UPD_DT
+        ) VALUES (
+            SEQ_TUSERCHOICESUBJECT_ID.NEXTVAL, #{ITEMID}, #{ORDERNO}, #{IDENTYID}
+            , 0, #{SUBJECTORDER},  2
+            , #{REG_ID}, SYSDATE, #{UPD_ID}, SYSDATE
+        )
+    </insert>
+
+    <select id="offererView" parameterType="hashMap" resultType="hashMap">
+        SELECT AA.ID, AA.ORDERNO, AA.IDENTYID, AA.EXAMCODE
+            , AA.USER_ID, AA.USER_NM, AA.USER_NM USRNM, AA.PHONE_NO, AA.RECEIPTTYPE, AA.EXAMTYPE
+            , AA.CLASSCODE, (SELECT NAME FROM TB_CATEGORY_INFO WHERE P_CODE='CLASSCODE' AND CODE = AA.CLASSCODE) AS CLASSCODENM
+            , AA.CLASSSERIESCODE
+            , (SELECT NAME FROM TB_CATEGORY_INFO WHERE P_CODE = AA.CLASSCODE AND CODE = AA.CLASSSERIESCODE ) CLASSSERIESCODENM
+            , AA.ADDPOINT1, AA.ADDPOINT2, AA.ADDPOINT3
+            , AA.PRINTFLAG, AA.PRINTUSER, AA.PRINTTIME, AA.NOTE
+            , AA.PAYMENTTARGETAMOUNT, AA.ADDDISCOUNTRATIO, AA.ADDDISCOUNTAMOUNT, AA.ADDDISCOUNTREASON
+            , AA.PAYMENTDUEDATE, AA.PAYMENTSTATE, AA.EXAMSTATUS , BB.EXAMSTARTTIME, BB.EXAMENDTIME, BB.MOCKNAME, BB.EXAMYEAR, BB.EXAMROUND
+            , CONCAT(SUBSTR(BB.EXAMSTARTTIME,5,2),'/'|| SUBSTR(BB.EXAMSTARTTIME,7,2)) EXAMSTARTDATE
+            , CC.PAYMENTAMOUNT, CC.PAYMENTTYPE, CC.CARDKIND, CC.REG_DT AS PCREATETIME, CC.TID
+            , DD.DEPOSITBANK, DD.ACCOUNTNUMBER, DD.REFUNDREASON
+        FROM TB_TORDERS AA
+        INNER JOIN TB_TMOCKREGISTRATION BB ON AA.EXAMCODE = BB.MOCKCODE
+        LEFT JOIN TB_TAPPROVALS CC ON AA.IDENTYID = CC.IDENTYID
+        LEFT JOIN TB_TREFUND DD ON CC.TID = DD.TID
+        WHERE AA.IDENTYID = #{IDENTYID}
+    </select>
+
+    <select id="offererSubjectView" parameterType="hashMap" resultType="hashMap">
+        SELECT BB.MOCKCODE, CC.SUBJECT_NM, AA.*
+        FROM TB_TUSERCHOICESUBJECT AA
+        LEFT JOIN TB_TMOCKSUBJECT BB ON AA.ITEMID = BB.ITEMID
+        LEFT JOIN TB_SUBJECT_INFO CC ON BB.SUBJECT_CD = CC.SUBJECT_CD
+        WHERE AA.IDENTYID = #{IDENTYID}
+        <if test="MOCKCODE != null and MOCKCODE != ''">
+            AND BB.MOCKCODE = #{MOCKCODE}
+        </if>
+        <!-- AND (AA.SUBJECTTYPEDIVISION IS NULL OR AA.SUBJECTTYPEDIVISION = 0) -->
+    </select>
+
+    <delete id="offererSubjectDelete" parameterType="hashMap">
+        DELETE FROM TB_TUSERCHOICESUBJECT WHERE IDENTYID = #{IDENTYID}
+    </delete>
+
+    <delete id="offererDelete" parameterType="hashMap">
+        DELETE FROM TB_TORDERS WHERE IDENTYID = #{IDENTYID}
+    </delete>
+
+    <delete id="offererPaymentDelete" parameterType="hashMap">
+        DELETE FROM TB_TAPPROVALS WHERE IDENTYID = #{IDENTYID}
+    </delete>
+
+    <delete id="offererExamineeanswerDelete" parameterType="hashMap">
+        DELETE FROM TB_TEXAMINEEANSWER WHERE IDENTYID = #{IDENTYID}
+    </delete>
+
+    <delete id="offererWronganswernoteDelete" parameterType="hashMap">
+        DELETE FROM TB_TWRONGANSWERNOTE WHERE IDENTYID = #{IDENTYID}
+    </delete>
+
+    <delete id="offererMockgradeDelete" parameterType="hashMap">
+        DELETE FROM TB_TMOCKGRADE WHERE IDENTYID = #{IDENTYID}
+    </delete>
+
+    <update id="offererPrintDelete" parameterType="hashMap">
+        UPDATE TB_TORDERS
+        SET
+            PRINTFLAG = 0
+            , PRINTUSER = ''
+            , PRINTTIME = ''
+        WHERE IDENTYID = #{IDENTYID}
+    </update>
+
+    <update id="offererUpdate" parameterType="hashMap" flushCache="true">
+        UPDATE TB_TORDERS
+        SET
+            ADDPOINT1 = #{ADDPOINT1}
+            , ADDPOINT2 = #{ADDPOINT2}
+            , ADDPOINT3 = #{ADDPOINT3}
+            , UPD_ID = #{UPD_ID}
+            , UPD_DT = SYSDATE
+        WHERE IDENTYID = #{IDENTYID}
+    </update>
+
+    <update id="offererModifyUpdate" parameterType="hashMap" flushCache="true">
+        UPDATE TB_TORDERS
+        SET
+            ADDDISCOUNTRATIO = #{ADDDISCOUNTRATIO}
+            , ADDDISCOUNTAMOUNT = #{ADDDISCOUNTAMOUNT}
+            , ADDDISCOUNTREASON = #{ADDDISCOUNTREASON}
+            , NOTE = #{NOTE}
+            , ADDPOINT1 = #{ADDPOINT1}
+            , ADDPOINT2 = #{ADDPOINT2}
+            , ADDPOINT3 = #{ADDPOINT3}
+        <if test="EXAMTYPE != null and EXAMTYPE != ''">
+            , EXAMTYPE = #{EXAMTYPE}
+        </if>
+            , UPD_ID = #{UPD_ID}
+            , UPD_DT = SYSDATE
+            , RECEIPTTYPE = #{RECEIPTTYPE}
+        WHERE IDENTYID = #{IDENTYID}
+    </update>
+
+    <insert id="offererPaymentInsert" parameterType="hashMap" flushCache="true">
+        INSERT INTO TB_TAPPROVALS(
+            TID, IDENTYID, PAYMENTAMOUNT, PAYMENTTYPE
+            , CARDKIND, REG_ID, REG_DT, UPD_ID, UPD_DT
+        ) VALUES (
+            #{TID}, #{IDENTYID}, #{PAYMENTAMOUNT}, #{PAYMENTTYPE}
+            , #{CARDKIND}, #{REG_ID}, SYSDATE, #{UPD_ID}, SYSDATE
+        )
+    </insert>
+
+    <update id="offererPaymentUpdate" parameterType="hashMap" flushCache="true">
+        UPDATE TB_TORDERS 
+        SET PAYMENTSTATE = #{PAYMENTSTATE} 
+        WHERE IDENTYID = #{IDENTYID}
+    </update>
+
+    <update id="offererPrintUpdate" parameterType="hashMap" flushCache="true">
+        UPDATE TB_TORDERS
+        SET
+            PRINTFLAG = 1
+            , PRINTUSER = #{PRINTUSER}
+            , PRINTTIME = SYSDATE
+        WHERE IDENTYID = #{IDENTYID}
+    </update>
+
+    <insert id="offererTrefundInsert" parameterType="hashMap" flushCache="true">
+        INSERT INTO TB_TREFUND (
+            ID
+            , TID
+            , REFUNDAMOUNT
+            , REFUNDTYPE
+        <if test="DEPOSITBANK != null and DEPOSITBANK != ''">
+            , DEPOSITBANK
+        </if>
+        <if test="ACCOUNTNUMBER != null and ACCOUNTNUMBER != ''">
+            , ACCOUNTNUMBER
+        </if>
+        <if test="REFUNDREASON != null and REFUNDREASON != ''">
+            , REFUNDREASON
+        </if>
+            , REG_ID
+            , REG_DT
+            , UPD_ID
+            , UPD_DT
+        ) VALUES (
+            SEQ_TREFUND_ID.NEXTVAL
+            , #{TID}
+            , #{REFUNDAMOUNT}
+            , #{REFUNDTYPE}
+        <if test="DEPOSITBANK != null and DEPOSITBANK != ''">
+            , #{DEPOSITBANK}
+        </if>
+        <if test="ACCOUNTNUMBER != null and ACCOUNTNUMBER != ''">
+            , #{ACCOUNTNUMBER}
+        </if>
+        <if test="REFUNDREASON != null and REFUNDREASON != ''">
+            , #{REFUNDREASON}
+        </if>
+            , #{REG_ID}
+            , SYSDATE
+            , #{UPD_ID}
+            , SYSDATE
+        )
+    </insert>
+
+    <delete id="offererTrefundDelete" parameterType="hashMap">
+        DELETE FROM TB_TREFUND WHERE TID = #{TID}
+    </delete>
+
+    <select id="offererCurrentCnt" parameterType="hashMap" resultType="String">
+        SELECT COUNT(*) FROM TB_TORDERS WHERE EXAMTYPE = 1 AND EXAMCODE = #{EXAMCODE}
+    </select>
+
+    <update id="offererPaymentCardUpdate" parameterType="hashMap" flushCache="true">
+        UPDATE TB_TAPPROVALS
+        SET
+            PAYMENTTYPE = #{PAYMENTTYPE}
+            <if test="CARDKIND != null and CARDKIND != ''">
+            ,CARDKIND = #{CARDKIND}
+            </if>
+            <if test="PAYMENTSTATE != null and PAYMENTSTATE != ''">
+            ,PAYMENTSTATE = #{PAYMENTSTATE}
+            </if>
+	        <if test="PAYMENTSTATE == '3'">
+            ,PAYMENTAMOUNT = 0
+	        </if>
+        WHERE IDENTYID = #{IDENTYID}
+    </update>
+
+</mapper>

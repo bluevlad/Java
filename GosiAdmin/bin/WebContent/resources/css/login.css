@@ -1,0 +1,37 @@
+@charset "utf-8";
+
+.skip, legend{position:absolute;left:-5000px}
+.skip, legend{visibility:hidden;width:0;height:0;font-size:0;line-height:0;overflow:hidden}
+html, body{margin:0;padding:0;height:100%}
+* html, .admWrap{min-height:100%}
+.admWrap{background:#464b58}
+.admWrap .admInner{position:absolute;top:50%;left:0;width:100%;margin-top:-260px}
+.admWrap .admHeader{height:80px;padding-top:53px;background:url(../img/adm_bg_h.png) no-repeat 50% 100%}
+.admWrap .admHeader h1{float:none;width:670px;margin:20px auto 0;text-align:center}
+.admWrap .admHeader h1 img{position:inherit;left:inherit;top:inherit}
+.admWrap .admContainer{height:285px;background:url(../img/adm_bg_ct.jpg) no-repeat 50% 0}
+.admWrap .admFooter{padding:20px 0;text-align:center}
+.admWrap .admForm{width:313px;margin:0 auto;padding:60px 20px 0 336px}
+.admWrap .admForm h2{padding:0 0 14px}
+.logForm{position:relative;width:313px;height:90px}
+.logForm .ln1{margin-bottom:4px}
+.logForm .ln2{margin-bottom:10px}
+.logForm .ln1 label, .logForm .ln2 label{display:inline-block;width:50px;height:13px;font-size:0;vertical-align:middle;margin-right:5px}
+.logForm .ln1 label{background:url(../img/adm_t2.png) no-repeat}
+.logForm .ln2 label{background:url(../img/adm_t3.png) no-repeat}
+.logForm .ln1 input, .logForm .ln2 input{width:142px;height:28px;padding:0 5px;border:1px solid #acacac;line-height:28px;vertical-align:middle}
+.logForm .ln3 label{display:inline-block;width:61px;height:12px;background:url(../img/adm_t4.png) no-repeat;font-size:0;vertical-align:middle}
+.logForm .ln3 input{margin:0 5px 0 0;}
+.logForm .ln3{padding-left:55px}
+.logForm .btn{position:absolute;top:0;right:0;width:98px;height:64px}
+.logForm .btn a{display:block;height:64px;background:url(../img/adm_btn_login.png) no-repeat;font-size:0}
+
+/*인증팝업*/
+.cf-pop {width:100%; height:100%}
+.cf-pop-close {position:absolute; right:5px; top:5px; padding:5px; display:inline-block; cursor:pointer}
+.cf-popcontent {height:auto; width:auto}
+.cf-popcontent h3 {background:#555; font-size:140%; color:#fff; height:40px; line-height:40px; padding-left:10px}
+.cf-popcontent .cfBox {padding:1em}
+.cf-popcontent .sub-s-title {color:#0d73ae; padding:10px 0}
+.cf-popcontent input {width:150px; height:30px; line-height:30px; border:1px solid #ccc; font-size:14px; vertical-align:middle}
+.cf-popcontent a {display:inline-block; background:#0d73ae;  height:28px; line-height:28px; padding:0 10px; border:1px #03304a solid; color:#fff; font-weight:bold}
