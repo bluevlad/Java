@@ -116,7 +116,7 @@ public class LectureVO implements Serializable {
     /** 교재구분 */
     private String bookFlag;
 	/** 교재코드 */
-	private String rscId;
+	private String bookCd;
     /** 도서명 */
     private String bookNm;
 
@@ -777,18 +777,18 @@ lecTeacher attribute 를 리턴한다.
 		this.bookFlag = bookFlag;
 	}
 	/**
-	 * rscId attribute 를 리턴한다.
+	 * bookCd attribute 를 리턴한다.
 	 * @return String
 	 */
-	public String getRscId() {
-		return rscId;
+	public String getBookCd() {
+		return bookCd;
 	}
 	/**
-	 * rscId attribute 값을 설정한다.
-	 * @param rscId String
+	 * bookCd attribute 값을 설정한다.
+	 * @param bookCd String
 	 */
-	public void setRscId(String rscId) {
-		this.rscId = rscId;
+	public void setBookCd(String bookCd) {
+		this.bookCd = bookCd;
 	}
 	/**
 	 * bookNm attribute 를 리턴한다.

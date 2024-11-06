@@ -7,39 +7,68 @@
 
     <formset>
 
-        <form name="MemberVO"> 
-			<field property="userNm" depends="required,maxlength">
-        		<arg0 key="member.userNm" resource="true"/><!-- 성명 -->
+        <form name="LectureVO"> 
+			<field property="subjectCd" depends="required,maxlength">
+        		<arg0 key="lec.subjectCd" resource="true"/><!-- 과목코드 -->
         		<arg1 key="20" resource="true"/>
 				<var>
 				<var-name>maxlength</var-name>
 				<var-value>20</var-value>
 				</var>
 			</field>
-			<field property="userPwd" depends="required,maxlength">
-        		<arg0 key="member.userPwd" resource="true"/><!-- 비밀번호 -->
-        		<arg1 key="20" resource="true"/>
-				<var>
-				<var-name>maxlength</var-name>
-				<var-value>20</var-value>
-				</var>
-			</field>
-			<field property="email" depends="required,maxlength">
-        		<arg0 key="member.email" resource="true"/><!-- 이메일 -->
+			<field property="subjectNm" depends="required,maxlength">
+        		<arg0 key="lec.subjectNm" resource="true"/><!-- 과목명 -->
         		<arg1 key="100" resource="true"/>
 				<var>
-				<var-name>maxlength</var-name>
-				<var-value>100</var-value>
+					<var-name>maxlength</var-name>
+					<var-value>100</var-value>
 				</var>
 			</field>
-			<field property="isokSms" depends="required">
-        		<arg0 key="comUssOlpQtm.isUse" resource="true"/><!-- 사용여부 -->
-			</field> 
-			<field property="isokEmail" depends="required">
-        		<arg0 key="member.isokSms" resource="true"/><!-- 문자수신여부 -->
-			</field> 
+			<field property="lecCd" depends="required,maxlength">
+        		<arg0 key="lec.lecture.lecCd" resource="true"/><!-- 강의코드 -->
+        		<arg1 key="20" resource="true"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>20</var-value>
+				</var>
+			</field>
+			<field property="lecTitle" depends="required,maxlength">
+        		<arg0 key="lec.lecture.lecTitle" resource="true"/><!-- 강의명 -->
+        		<arg1 key="100" resource="true"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>100</var-value>
+				</var>
+			</field>
+			<field property="lecSchedule" depends="required,integer">
+        		<arg0 key="lec.lecture.lecSchedule" resource="true"/><!-- 강의예정회차 -->
+			</field>
+			<field property="lecCount" depends="required,integer">
+        		<arg0 key="lecCount" resource="true"/><!-- 강의수 -->
+			</field>
+			<field property="lecPeriod" depends="required,integer">
+        		<arg0 key="lecPeriod" resource="true"/><!-- 강의일수 -->
+			</field>
+			<field property="lecPrice" depends="required,integer">
+        		<arg0 key="lecPrice" resource="true"/><!-- 강의원가 -->
+			</field>
+			<field property="lecDiscount" depends="required,integer">
+        		<arg0 key="lecDiscount" resource="true"/><!-- 할인율 -->
+			</field>
+			<field property="lecMovie" depends="required,integer">
+        		<arg0 key="lecMovie" resource="true"/><!-- 수강료 -->
+			</field>
+			<field property="lecPoint" depends="required,integer">
+        		<arg0 key="lecPoint" resource="true"/><!-- 포인트 -->
+			</field>
 			<field property="isUse" depends="required">
-        		<arg0 key="member.isokEmail" resource="true"/><!-- 이메일수신여부 -->
+        		<arg0 key="lec.isUse" resource="true"/><!-- 사용여부 -->
+			</field> 
+			<field property="useOn" depends="required">
+        		<arg0 key="lec.useOn" resource="true"/><!-- 온라인여부 -->
+			</field> 
+			<field property="useOff" depends="required">
+        		<arg0 key="lec.useOff" resource="true"/><!-- 오프라인여부 -->
 			</field> 
 		</form>
 

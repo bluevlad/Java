@@ -99,21 +99,23 @@ public class LectureController {
 	@RequestMapping(value="/academy/leture/lecture/Detail.do")
 	public String detail(@ModelAttribute("LectureVO") LectureVO LectureVO, @RequestParam Map<?, ?> commandMap, ModelMap model) throws Exception { 
 
-		LectureVO = lectureservice.selectLectureDetail(LectureVO);
-		model.addAttribute("LectureVO", LectureVO); 
-		model.addAttribute("viewlist", lectureservice.selectLectureViewList(LectureVO));
-		model.addAttribute("viewbooklist", lectureservice.selectLectureViewBookList(LectureVO));
-        model.addAttribute("SEARCHGUBN", "T");
-		model.addAttribute("kindlist", subjectService.selectCategoryList(LectureVO));
-        model.addAttribute("SEARCHCODEISUSE", "Y");
-		model.addAttribute("formlist", lecFormService.getFormList(LectureVO)); 
-		model.addAttribute("subjectteacherlist", lectureservice.selectSubjectTeacherList(LectureVO));
-		model.addAttribute("lectureOrderCount", lectureservice.selectLectureOrderCnt(LectureVO));
-		model.addAttribute("rdelyn", "Y"); // 현재 선택글 삭제가능여부
-		model.addAttribute("sdelyn", "Y"); // 관련글  삭제 가능여부 
+		model.addAttribute("LectureVO", lectureservice.selectLectureDetail(LectureVO)); 
+		String leccode = LectureVO.getLecCd();
+		LectureVO.setLecCd("D201101435");
+		model.addAttribute("viewbooklist", lectureservice.selectLectureViewBookList(LectureVO)); //주교재
+		LectureVO.setLecCd(leccode);
+//		model.addAttribute("viewlist", lectureservice.selectLectureViewList(LectureVO));
+//      model.addAttribute("SEARCHGUBN", "T");
+//		model.addAttribute("kindlist", subjectService.selectCategoryList(LectureVO));
+//      model.addAttribute("SEARCHCODEISUSE", "Y");
+//		model.addAttribute("formlist", lecFormService.getFormList(LectureVO)); 
+//		model.addAttribute("subjectteacherlist", lectureservice.selectSubjectTeacherList(LectureVO));
+//		model.addAttribute("lectureOrderCount", lectureservice.selectLectureOrderCnt(LectureVO));
+//		model.addAttribute("rdelyn", "Y"); // 현재 선택글 삭제가능여부
+//		model.addAttribute("sdelyn", "Y"); // 관련글  삭제 가능여부 
 		  
-		  return "egovframework/com/academy/lecture/lecture/Detail"; 
-	  }
+		return "egovframework/com/academy/lecture/lecture/Detail"; 
+	}
 		  
 		  
 		  /*

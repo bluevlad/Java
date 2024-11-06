@@ -24,7 +24,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>${pageTitle} <spring:message code="title.create" /></title><!-- 시험 등록 -->
+<title>${pageTitle} <spring:message code="title.update" /></title><!-- 시험 등록 -->
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
 <script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/showModalDialog.js'/>" ></script>

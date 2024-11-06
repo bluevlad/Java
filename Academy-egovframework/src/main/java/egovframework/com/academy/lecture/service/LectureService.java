@@ -9,7 +9,7 @@ public interface LectureService {
 
 	int selectLectureListCount(LectureVO LectureVO) throws Exception;
 
-	LectureVO selectLectureDetail(LectureVO LectureVO) throws Exception;
+	public LectureVO selectLectureDetail(LectureVO LectureVO) throws Exception;
 
 	LectureVO selectLectureViewList(LectureVO LectureVO) throws Exception;
 
