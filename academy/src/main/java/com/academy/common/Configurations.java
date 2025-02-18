@@ -1,30 +1,29 @@
 ﻿package com.academy.common;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties; 
+import java.io.InputStreamReader;
+import java.util.Properties;
+
+import org.springframework.core.io.ClassPathResource; 
 
 public class Configurations {
 
-	public Map configMap = new HashMap();
 	private Properties props;
 
 	public String getProperty(String sName) {
 
 		String sValue = "";
-
 		try {
-
-			String path = System.getProperty("user.dir");
-			System.out.println(path);
-			InputStream is = new FileInputStream(new File(path+"/Config/config.properties"));
+			ClassPathResource resource = new ClassPathResource("application.properties");
+			BufferedReader br = new BufferedReader(new InputStreamReader(resource.getInputStream()));
+			String s = br.readLine();
+			InputStream is = new FileInputStream(new File(s));
 			Properties props = new Properties();
-
 			props.load(is); 
 			sValue = props.getProperty(sName);
 		} catch (FileNotFoundException e) {

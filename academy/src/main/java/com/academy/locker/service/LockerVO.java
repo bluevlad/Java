@@ -1,8 +1,12 @@
 package com.academy.locker.service;
 
+import java.io.Serializable;
+
+import com.academy.common.CommonVO;
+
 /**
 *
-* 시험정보 VO 클래스
+* 사물함 VO 클래스
 * @author rainend
 * @version 1.0
 * @see
@@ -11,11 +15,11 @@ package com.academy.locker.service;
 *
 *  	  수정일           수정자                수정내용
 *  ---------------    --------------    ---------------------------
-*  2020.04.21			rainend			시험정보 등록
+*  2025.02.01			rainend			 사물함 정보 등록
 * </pre>
 */
 
-public class LockerVO {
+public class LockerVO extends CommonVO implements Serializable {
 
 	private static final long serialVersionUID = 638950577710720796L;
 

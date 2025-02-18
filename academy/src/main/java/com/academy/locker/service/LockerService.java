@@ -19,5 +19,9 @@ public class LockerService {
 	public ArrayList<JSONObject> selectLockerList(LockerVO lockerVO) {
 		return lockerMapper.selectLockerList(lockerVO);
 	}
+	
+	public JSONObject getLocker(LockerVO lockerVO) {
+		return lockerMapper.getLocker(lockerVO);
+	}
 
 }
