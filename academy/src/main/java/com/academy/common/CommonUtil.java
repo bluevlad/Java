@@ -6,7 +6,10 @@
 
 package com.academy.common;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
+import java.util.Locale;
 
 public class CommonUtil {
 	public static final String FOLDER_SEPARATOR = "/";
@@ -82,6 +85,19 @@ public class CommonUtil {
         } catch (Exception nf) {}
         return parseInt;
     }
+    public static int parseInt(Object obj) {
+        int parseInt = 0;
+        try {
+			if(obj != null) {
+				if (obj instanceof String) {
+					parseInt = Integer.parseInt(String.valueOf(obj).trim());
+				} else {
+					parseInt = Integer.parseInt(obj.toString().trim());
+				}
+			}
+        } catch (Exception nf) {}
+        return parseInt;
+    }
     
     /**
      * 
@@ -98,6 +114,19 @@ public class CommonUtil {
         } catch (Exception nf) {}
         return parseInt;
     }
+    public static long parseLong(Object obj) {
+        int parseInt = 0;
+        try {
+			if(obj != null) {
+				if (obj instanceof String) {
+					parseInt = Integer.parseInt(String.valueOf(obj).trim());
+				} else {
+					parseInt = Integer.parseInt(obj.toString().trim());
+				}
+			}
+        } catch (Exception nf) {}
+        return parseInt;
+    }
 
     /**
      * 스트링을 float 변환. NumberFormatException, NullPointerException 을 검사하기 위해, Exception 발생시 0 리턴
@@ -109,6 +138,19 @@ public class CommonUtil {
         		parseFloat = Float.parseFloat(str.trim());
 	    	}
         }catch(Exception nf) {}
+        return parseFloat;
+    }
+    public static float parseFloat(Object obj) {
+    	float parseFloat = 0.0f;
+        try {
+			if(obj != null) {
+				if (obj instanceof String) {
+	        		parseFloat = Float.parseFloat(String.valueOf(obj).trim());
+				} else {
+	        		parseFloat = Float.parseFloat(obj.toString().trim());
+				}
+			}
+        } catch (Exception nf) {}
         return parseFloat;
     }
 
@@ -288,5 +330,52 @@ public class CommonUtil {
         }
         return escapedBuffer.toString();
     }
+
+	/**
+	 * 현재년도
+	 * 
+	 * @return
+	 */
+	public static String getCurrentYear() {
+		SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat ( "yyyy", Locale.KOREA );
+		Date currentTime = new Date ( );
+		String mTime = mSimpleDateFormat.format ( currentTime );
+		
+		return mTime;
+	}
+
+	/**
+	 * 현재월
+	 * 
+	 * @return
+	 */
+	public static String getCurrentMonth() {
+		SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat ( "MM", Locale.KOREA );
+		Date currentTime = new Date ( );
+		String mTime = mSimpleDateFormat.format ( currentTime );
+		
+		return mTime;
+	}
+
+	public static String getCurrentDate() {
+		SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat ( "yyyyMMdd", Locale.KOREA );
+		Date currentDate = new Date ( );
+		String mDate = mSimpleDateFormat.format ( currentDate );
+		
+		return mDate;
+	}
+	
+	/**
+	 * 현재년월일시분초밀리세컨드
+	 * 
+	 * @return
+	 */
+	public static String getCurrentDateTime() {
+		SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat ( "yyyyMMddHHmmssSSS", Locale.KOREA );
+		Date currentTime = new Date ( );
+		String mTime = mSimpleDateFormat.format ( currentTime );
+		
+		return mTime;
+	}
     
 }

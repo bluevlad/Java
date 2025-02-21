@@ -29,12 +29,65 @@ public interface LockerMapper {
      * @param CommonVO 검색조건
      * @return List 사물함 목록정보
      */
-	ArrayList<JSONObject> selectLockerList(LockerVO lockerVO);
+	public ArrayList<JSONObject> selectLockerList(LockerVO lockerVO);
+	public int selectLockerListTotCnt(LockerVO lockerVO);
 
-    /**
-     * @param CommonVO 검색조건
-     * @return List 사물함 개별정보
-     */
-	JSONObject getLocker(LockerVO lockerVO);
+	public JSONObject getLocker(LockerVO lockerVO);
+
+    public void insertLocker(LockerVO lockerVO);
+
+    public void updateLocker(LockerVO lockerVO);
+
+    public void insertLockerNum(LockerVO lockerVO);
+
+	public ArrayList<JSONObject> selectLockerNumList(LockerVO lockerVO);
+
+    public int selectLockerNumUseCount(LockerVO lockerVO);
+
+	public JSONObject selectLockerNumRentDetail(LockerVO lockerVO);
+
+	public JSONObject selectLockerNumRentOrderDetail(LockerVO lockerVO);
+
+	public JSONObject selectLockerOrderDetail(LockerVO lockerVO);
+
+	public ArrayList<JSONObject> selectLockerNumRentOrderList(LockerVO lockerVO);
+
+    public void updateLockerFlag(LockerVO lockerVO);
+
+    public int getOrderSeq(LockerVO lockerVO);
+
+    public void insertOrderItem(LockerVO lockerVO);
+
+    public void insertOrders(LockerVO lockerVO);
+
+    public void insertApprovals(LockerVO lockerVO);
+
+    public void insertLockerRent(LockerVO lockerVO);
+
+    public int getLockerRentSeq(LockerVO lockerVO);
+
+    public void updateLockerNum(LockerVO lockerVO);
+
+    public void updateLockerNumRent(LockerVO lockerVO);
+
+    public void updateApprovals(LockerVO lockerVO);
+
+    public void updateLockerNumChange(LockerVO lockerVO);
+
+    public void updateLockerNumReset(LockerVO lockerVO);
+
+    public void updateLockerRentChange(LockerVO lockerVO);
+
+    public void updateLockerNumRentRefund(LockerVO lockerVO);
+
+    public void deleteLockerRentByOrderId(LockerVO lockerVO);
+
+    public void deleteLockerOrder(LockerVO lockerVO);
+
+    public void insertOrderRefund(LockerVO lockerVO);
+
+    public void insertOrderItemLocker(LockerVO lockerVO);
+
+    public void updateOrderApprovalsRefund(LockerVO lockerVO);
 
 }

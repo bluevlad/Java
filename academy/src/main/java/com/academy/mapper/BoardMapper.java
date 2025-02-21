@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.json.simple.JSONObject;
 
 import com.academy.board.service.BoardVO;
+import com.academy.locker.service.LockerVO;
 
 /**
  * 게시판정보에 관한 데이터 접근 클래스를 정의한다.
@@ -30,6 +31,7 @@ public interface BoardMapper {
      * @return List 게시판 목록정보
      */
 	ArrayList<JSONObject> selectBoardList(BoardVO boardVO);
+	int selectBoardListTotCnt(BoardVO boardVO);
 
     /**
      * @param BoardVO 검색조건

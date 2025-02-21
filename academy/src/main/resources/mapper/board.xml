@@ -8,6 +8,11 @@
 		LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
 	</select>
 
+	<select id="selectBoardListTotCnt">
+		SELECT COUNT(*) TOTAL_CNT
+		FROM acm_notifications
+	</select>
+
 	<select id="getBoard">
 		SELECT BOARD_ID, BOARD_TITLE, BOARD_MEMO, IS_USE, REG_DT, REG_ID, UPD_DT, UPD_ID
 		FROM acm_notifications an

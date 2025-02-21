@@ -18,7 +18,6 @@ import com.academy.common.CommonVO;
 *  2025.02.01			rainend			 사물함 정보 등록
 * </pre>
 */
-
 public class LockerVO extends CommonVO implements Serializable {
 
 	private static final long serialVersionUID = 638950577710720796L;
@@ -73,6 +72,16 @@ public class LockerVO extends CommonVO implements Serializable {
 	/** 예치금환불 */
 	private int depositRefund;
 
+    /** 주문코드 */
+    private String orderno;
+    /** 상품코드 */
+    private String itemno;
+    /** 할인사유 */
+    private String priceDiscountReason;
+    /** 주문구분 */
+    private String orderType;
+    /** 주문년도 */
+    private String orderYear;
     
 	/**
 	 * boxCd attribute 를 리턴한다.
@@ -417,4 +426,75 @@ public class LockerVO extends CommonVO implements Serializable {
 		this.depositRefund = depositRefund;
 	}
 
+	/**
+	 * orderno attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getOrderno() {
+		return orderno;
+	}
+	/**
+	 * orderno attribute 값을 설정한다.
+	 * @param orderno String
+	 */
+	public void setOrderno(String orderno) {
+		this.orderno = orderno;
+	}
+	/**
+	 * itemno attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getItemno() {
+		return itemno;
+	}
+	/**
+	 * itemno attribute 값을 설정한다.
+	 * @param itemno String
+	 */
+	public void setItemno(String itemno) {
+		this.itemno = itemno;
+	}
+	/**
+	 * priceDiscountReason attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getPriceDiscountReason() {
+		return priceDiscountReason;
+	}
+	/**
+	 * priceDiscountReason attribute 값을 설정한다.
+	 * @param priceDiscountReason String
+	 */
+	public void setPriceDiscountReason(String priceDiscountReason) {
+		this.priceDiscountReason = priceDiscountReason;
+	}
+	/**
+	 * orderType attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getOrderType() {
+		return orderType;
+	}
+	/**
+	 * orderType attribute 값을 설정한다.
+	 * @param orderType String
+	 */
+	public void setOrderType(String orderType) {
+		this.orderType = orderType;
+	}
+	/**
+	 * orderYear attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getOrderYear() {
+		return orderYear;
+	}
+	/**
+	 * orderYear attribute 값을 설정한다.
+	 * @param orderYear String
+	 */
+	public void setOrderYear(String orderYear) {
+		this.orderYear = orderYear;
+	}
+	
 }

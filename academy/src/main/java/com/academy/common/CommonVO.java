@@ -27,6 +27,8 @@ public class CommonVO implements Serializable {
     private String searchKeyword = "";
     /** 검색사용여부 */
     private String searchUseYn = "";
+    /** 전제갯수 */
+    private int totalCnt = 0;
     /** 현재페이지 */
     private int pageIndex = 1;
     /** 페이지갯수 */
@@ -93,6 +95,21 @@ public class CommonVO implements Serializable {
    	 */
    	public void setSearchUseYn(String searchUseYn) {
    		this.searchUseYn = searchUseYn;
+   	}
+
+   	/**
+   	 * totalCnt attribute 를 리턴한다.
+   	 * @return int
+   	 */
+   	public int getTotalCnt() {
+   		return pageIndex;
+   	}
+   	/**
+   	 * totalCnt attribute 값을 설정한다.
+   	 * @param totalCnt int
+   	 */
+   	public void setTotalCnt(int totalCnt) {
+   		this.totalCnt = totalCnt;
    	}
 
    	/**
