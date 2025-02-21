@@ -56,7 +56,7 @@ public class BoxManageController {
     protected EgovPropertyService propertyService;
 
 	/**
-	 * 시험문제 목록화면 이동
+	 * 사물함 목록화면 이동
 	 * @return String
 	 * @exception Exception
 	 */
