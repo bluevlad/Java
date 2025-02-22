@@ -15,7 +15,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,13 +34,6 @@ public class LockerApi extends CORSFilter {
     public LockerApi(LockerService lockerService) {
         this.lockerService = lockerService;
     }
-
-    @Value("${pageUnit}")
-    private int pageUnit;
-
-    @Value("${pageSize}")
-    private int pageSize;
-
     
 	// 0. Spring Security 사용자권한 처리 - 추후 해당 부분 모두 추가
 	/*
@@ -140,13 +132,13 @@ public class LockerApi extends CORSFilter {
 	 * @throws Exception
 	 */
 	@GetMapping(value="/api/lockerUpdate")
-	public String Update(@ModelAttribute("LockerVO") LockerVO lockerVO, @RequestParam Map<?, ?> commandMap, BindingResult bindingResult, ModelMap model) throws Exception {
+	public String Update(@ModelAttribute("LockerVO") LockerVO lockerVO) throws Exception {
 
 		// 0. Spring Security 사용자권한 처리
 
 		lockerService.updateLocker(lockerVO);
 
-		return "forward:/academy/box/List.do";
+		return "OK";
 	}
 
 	/**
@@ -206,7 +198,7 @@ public class LockerApi extends CORSFilter {
 	 */
 	@GetMapping(value = "/api/UpdateLockerFlag")
 	@ResponseBody
-	public String checkUser(@ModelAttribute("LockerVO") LockerVO lockerVO, @RequestParam Map<?, ?> commandMap, ModelMap model) throws Exception {
+	public String checkUser(@ModelAttribute("LockerVO") LockerVO lockerVO) throws Exception {
 		
     	// 0. Spring Security 사용자권한 처리
 
@@ -397,7 +389,7 @@ public class LockerApi extends CORSFilter {
 	 * @return String
 	 * @throws Exception
 	 */
-	@GetMapping(value = "/academy/box/Change.pop")
+	@GetMapping(value = "/api/lockerChange.pop")
 	public String boxChange(@ModelAttribute("LockerVO") LockerVO lockerVO, @RequestParam Map<?, ?> commandMap, ModelMap model) throws Exception {
 		
 		/** paging */
@@ -436,7 +428,7 @@ public class LockerApi extends CORSFilter {
 	 * @return String
 	 * @throws Exception
 	 */
-	@GetMapping("/academy/box/ChangePop")
+	@GetMapping("/api/lockerChangePop")
 	public ModelAndView changePop(@ModelAttribute("LockerVO") LockerVO lockerVO, @RequestParam Map<?, ?> commandMap) throws Exception {
 
     	ModelAndView ret = new ModelAndView("jsonView");
@@ -527,9 +519,9 @@ public class LockerApi extends CORSFilter {
 	 * @return String
 	 * @throws Exception
 	 */
-	@GetMapping(value = "/academy/box/DeleteOrder.do")
+	@GetMapping(value = "/api/lockerDeleteOrder")
 	@Transactional( readOnly=false,  rollbackFor=Exception.class)
-	public String DeleteOrder(@ModelAttribute("LockerVO") LockerVO lockerVO, @RequestParam Map<?, ?> commandMap, BindingResult bindingResult, ModelMap model) throws Exception {
+	public String DeleteOrder(@ModelAttribute("LockerVO") LockerVO lockerVO) throws Exception {
 
 		// 0. Spring Security 사용자권한 처리
 
@@ -546,7 +538,7 @@ public class LockerApi extends CORSFilter {
 			lockerService.deleteLockerOrder(lockerVO);
 		}
 		
-			return "forward:/academy/box/boxRentWrite.do";
+		return "OK";
 
 	}
 
@@ -565,9 +557,9 @@ public class LockerApi extends CORSFilter {
 	 * @return String
 	 * @throws Exception
 	 */
-	@GetMapping(value = "/academy/box/Refund.do")
+	@GetMapping(value = "/api/lockerRefund")
 	@Transactional( readOnly=false,  rollbackFor=Exception.class)
-	public String boxRefund(@ModelAttribute("LockerVO") LockerVO lockerVO, @RequestParam Map<?, ?> commandMap, BindingResult bindingResult, ModelMap model) throws Exception {
+	public String boxRefund(@ModelAttribute("LockerVO") LockerVO lockerVO) throws Exception {
 
 		// 0. Spring Security 사용자권한 처리
 		
@@ -592,7 +584,7 @@ public class LockerApi extends CORSFilter {
 
 		lockerService.updateLockerNumReset(lockerVO);
 
-		return "forward:/academy/box/boxRentWrite.do";
+		return "OK";
 	}
 
 }

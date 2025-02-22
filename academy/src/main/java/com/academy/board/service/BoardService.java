@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 
-import com.academy.locker.service.LockerVO;
 import com.academy.mapper.BoardMapper;
 
 @Service
@@ -15,6 +14,10 @@ public class BoardService {
 	
 	public BoardService(BoardMapper boardMapper) {
 		this.boardMapper = boardMapper;
+	}
+	
+	public ArrayList<JSONObject> selectBoardIdAll(BoardVO boardVO) {
+		return boardMapper.selectBoardIdAll(boardVO);
 	}
 	
 	public ArrayList<JSONObject> selectBoardList(BoardVO boardVO) {

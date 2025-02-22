@@ -1,6 +1,8 @@
 package com.academy.board;
 
 import java.io.IOException;
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
@@ -25,14 +27,25 @@ public class BoardApi/* extends CORSFilter*/ {
         this.boardService = boardService;
     }
 
-    @Value("${pageUnit}")
-    private int pageUnit;
-
-    @Value("${pageSize}")
-    private int pageSize;
+	@GetMapping(value = "/api/getBoardAll")
+	public String[] all() throws Exception, IOException, ParseException { 
+		
+		BoardVO boardVO = new BoardVO();
+		
+		ArrayList<JSONObject> arrayJson = new ArrayList<JSONObject>();
+		arrayJson = boardService.selectBoardIdAll(boardVO);
+		
+		String[] strArray = new String[arrayJson.size()];
+		for (int k = 0; k < arrayJson.size(); k++) {
+		    JSONObject tempJson = arrayJson.get(k);
+			strArray[k] = tempJson.get("BOARD_ID").toString();
+		}
+		 
+		return strArray;
+	}
 
 	@GetMapping(value = "/api/getBoardList")
-	public JSONObject list(@RequestParam Map<?, ?> commandMap, ModelMap model) throws Exception, IOException, ParseException { 
+	public ArrayList<JSONObject> list(@RequestParam Map<?, ?> commandMap, ModelMap model) throws Exception, IOException, ParseException { 
 		
 		JSONObject jsonObject = new JSONObject();
 
@@ -54,7 +67,7 @@ public class BoardApi/* extends CORSFilter*/ {
 		paginationInfo.setTotalRecordCount(totCnt);
 		model.addAttribute("paginationInfo", paginationInfo);
 		
-		return jsonObject;
+		return boardService.selectBoardList(boardVO);
 	}
 
 	@GetMapping(value = "/api/getBoard")

@@ -2,8 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.academy.mapper.BoardMapper">
 
+	<select id="selectBoardIdAll">
+		SELECT BOARD_ID FROM acm_notifications
+	</select>
+
 	<select id="selectBoardList">
-		SELECT BOARD_ID, BOARD_TITLE, BOARD_MEMO, IS_USE, REG_DT, REG_ID, UPD_DT, UPD_ID
+		SELECT BOARD_ID, BOARD_TITLE, BOARD_MEMO, IS_USE, REG_DT, REG_ID, UPD_DT, UPD_ID, BOARD_BY, descendants, score, url
 		FROM acm_notifications
 		LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
 	</select>
@@ -14,7 +18,7 @@
 	</select>
 
 	<select id="getBoard">
-		SELECT BOARD_ID, BOARD_TITLE, BOARD_MEMO, IS_USE, REG_DT, REG_ID, UPD_DT, UPD_ID
+		SELECT BOARD_ID, BOARD_TITLE, BOARD_MEMO, IS_USE, REG_DT, REG_ID, UPD_DT, UPD_ID, BOARD_BY, descendants, score, url
 		FROM acm_notifications an
 		WHERE an.BOARD_ID = #{boardId}
 	</select>

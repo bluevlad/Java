@@ -37,9 +37,9 @@
 	<update id="updateLocker">
 		UPDATE ACM_BOX 
 		SET 		
-			BOX_NM    = #{boxNm},
-			BOX_PRICE   = #{boxPrice},
-			DEPOSIT   = #{deposit},
+			BOX_NM = #{boxNm},
+			BOX_PRICE = #{boxPrice},
+			DEPOSIT = #{deposit},
 			UPD_DT = now(),
 			UPD_ID = #{updId}
 		WHERE 
