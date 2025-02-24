@@ -1,16 +1,15 @@
 package com.academy.board;
 
 import java.io.IOException;
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.academy.board.service.BoardService;
@@ -79,9 +78,9 @@ public class BoardApi/* extends CORSFilter*/ {
 		BoardVO boardVO = new BoardVO();
 		boardVO.setBoardId(boardId);
 		
-		jsonObject.put("item", boardService.getBoard(boardVO));
+//		jsonObject.put("item", boardService.getBoard(boardVO));
 
-		return jsonObject;
+		return boardService.getBoard(boardVO);
 	}
 
 }
