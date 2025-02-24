@@ -3,6 +3,7 @@ package com.academy.locker;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -56,7 +57,7 @@ public class LockerApi extends CORSFilter {
 	 * @exception Exception
 	 */
 	@GetMapping(value = "/api/getLockerList")
-	public JSONObject list(@RequestParam Map<?, ?> commandMap, ModelMap model) throws Exception, IOException, ParseException { 
+	public ArrayList<JSONObject> list(@RequestParam Map<?, ?> commandMap, ModelMap model) throws Exception, IOException, ParseException { 
 		
 		JSONObject jsonObject = new JSONObject();
 		LockerVO lockerVO = new LockerVO();
@@ -77,7 +78,7 @@ public class LockerApi extends CORSFilter {
 		paginationInfo.setTotalRecordCount(totCnt);
 		model.addAttribute("paginationInfo", paginationInfo);
 		
-		return jsonObject;
+		return lockerService.selectLockerList(lockerVO);
 	}
 
 	/**
@@ -125,7 +126,7 @@ public class LockerApi extends CORSFilter {
 
 	/**
 	 * 사물함정보를 변경한다.
-	 * @param LockerVO
+	 * @param ExamVO
 	 * @param commandMap
 	 * @param bindingResult
 	 * @param model
