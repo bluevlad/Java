@@ -38,11 +38,11 @@ public class CORSFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
             throws IOException, ServletException {
  
-      ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Origin", "*");
-      ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Methods","GET, OPTIONS, HEAD, PUT, POST, DELETE");
       ((HttpServletResponse) servletResponse).setHeader("Access-Control-Max-Age", "3600"); 
-      ((HttpServletResponse) servletResponse).setHeader("Access-Control-Allow-Headers", "x-requested-with, origin, content-type, accept");
+      ((HttpServletResponse) servletResponse).setHeader("Access-Control-Allow-Headers", "x-requested-with, authorization, origin, content-type, accept");
       ((HttpServletResponse) servletResponse).setHeader("Access-Control-Allow-Credentials", "true");
+      ((HttpServletResponse) servletResponse).setHeader("Access-Control-Allow-Origin", "*");
+      ((HttpServletResponse) servletResponse).setHeader("Access-Control-Allow-Methods","GET, OPTIONS, HEAD, PUT, POST, DELETE");
     		
       
         HttpServletRequest request = (HttpServletRequest) servletRequest;

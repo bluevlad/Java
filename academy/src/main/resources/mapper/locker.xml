@@ -3,9 +3,9 @@
 <mapper namespace="com.academy.mapper.LockerMapper">
 
 	<select id="selectLockerList">
-		SELECT BOX_CD, BOX_NM, BOX_COUNT, BOX_PRICE, DEPOSIT, ROW_COUNT, ROW_NUM, UPD_DT, UPD_ID, START_NUM, END_NUM,
-		(SELECT COUNT(BOX_NUM) FROM ACM_BOX_NUM WHERE BOX_CD = AB.BOX_CD AND BOX_FLAG = 'Y') AS USE_CNT,
-		(SELECT COUNT(BOX_NUM) FROM ACM_BOX_NUM WHERE BOX_CD = AB.BOX_CD AND BOX_FLAG = 'N') AS NOT_CNT
+		SELECT box_cd, box_nm, box_count, box_price, deposit, row_count, row_num, upd_dt, upd_id, start_num, end_num,
+		(SELECT COUNT(BOX_NUM) FROM ACM_BOX_NUM WHERE BOX_CD = AB.BOX_CD AND BOX_FLAG = 'Y') AS use_cnt,
+		(SELECT COUNT(BOX_NUM) FROM ACM_BOX_NUM WHERE BOX_CD = AB.BOX_CD AND BOX_FLAG = 'N') AS not_cnt
 		FROM ACM_BOX AB
 		ORDER BY AB.BOX_CD ASC
 		LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
@@ -17,9 +17,9 @@
 	</select>
 
 	<select id="getLocker">
-		SELECT BOX_CD, BOX_NM, BOX_COUNT, BOX_PRICE, DEPOSIT, ROW_COUNT, ROW_NUM, UPD_DT, UPD_ID, START_NUM, END_NUM,
-		(SELECT COUNT(BOX_NUM) FROM ACM_BOX_NUM WHERE BOX_CD = AB.BOX_CD AND BOX_FLAG = 'Y') AS USE_CNT,
-		(SELECT COUNT(BOX_NUM) FROM ACM_BOX_NUM WHERE BOX_CD = AB.BOX_CD AND BOX_FLAG = 'N') AS NOT_CNT
+		SELECT box_cd, box_nm, box_count, box_price, deposit, row_count, row_num, upd_dt, upd_id, start_num, end_num,
+		(SELECT COUNT(BOX_NUM) FROM ACM_BOX_NUM WHERE BOX_CD = AB.BOX_CD AND BOX_FLAG = 'Y') AS use_cnt,
+		(SELECT COUNT(BOX_NUM) FROM ACM_BOX_NUM WHERE BOX_CD = AB.BOX_CD AND BOX_FLAG = 'N') AS not_cnt
 		FROM ACM_BOX AB
 		WHERE AB.BOX_CD = #{boxCd}
 	</select>
