@@ -102,7 +102,7 @@ public class CommonVO implements Serializable {
    	 * @return int
    	 */
    	public int getTotalCnt() {
-   		return pageIndex;
+   		return totalCnt;
    	}
    	/**
    	 * totalCnt attribute 값을 설정한다.

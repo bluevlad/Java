@@ -51,13 +51,12 @@ public class CommonUtil {
      * Object의 값이 null 이거나 ""이면 default 값을 리턴하는 메소드 <br>
      * @author : rainend
      */
+    public static Object nvl(Object obj) {
+        return empty(obj) ? "" : obj;
+    }
     
     public static Object nvl(Object obj, Object def) {
         return empty(obj) ? def : obj;
-    }
-    
-    public static Object nvl(Object obj) {
-        return empty(obj) ? "" : obj;
     }
 
     /**

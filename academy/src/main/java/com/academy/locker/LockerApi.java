@@ -10,7 +10,6 @@ import java.util.Map;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -57,11 +56,16 @@ public class LockerApi extends CORSFilter {
 	 * @exception Exception
 	 */
 	@GetMapping(value = "/api/getLockerList")
-	public ArrayList<JSONObject> list(@RequestParam Map<?, ?> commandMap, ModelMap model) throws Exception, IOException, ParseException { 
+	public ArrayList<JSONObject> list(@ModelAttribute("LockerVO") LockerVO lockerVO, @RequestParam Map<?, ?> commandMap, ModelMap model) throws Exception, IOException, ParseException { 
 		
 		JSONObject jsonObject = new JSONObject();
-		LockerVO lockerVO = new LockerVO();
 		
+		String curPage = "1";
+		if(!CommonUtil.empty(commandMap.get("curPage"))){
+			curPage = (String)commandMap.get("curPage");
+		}
+		lockerVO.setPageIndex(CommonUtil.parseInt(curPage));
+
 		/** paging */
 		PaginationInfo paginationInfo = new PaginationInfo();
 		paginationInfo.setCurrentPageNo(lockerVO.getPageIndex());
