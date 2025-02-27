@@ -3,9 +3,9 @@ package com.academy.locker;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
@@ -56,9 +56,9 @@ public class LockerApi extends CORSFilter {
 	 * @exception Exception
 	 */
 	@GetMapping(value = "/api/getLockerList")
-	public ArrayList<JSONObject> list(@ModelAttribute("LockerVO") LockerVO lockerVO, @RequestParam Map<?, ?> commandMap, ModelMap model) throws Exception, IOException, ParseException { 
-		
-		JSONObject jsonObject = new JSONObject();
+	public JSONObject list(@ModelAttribute("LockerVO") LockerVO lockerVO, @RequestParam Map<?, ?> commandMap) throws Exception, IOException, ParseException { 
+				
+		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
 		
 		String curPage = "1";
 		if(!CommonUtil.empty(commandMap.get("curPage"))){
@@ -80,9 +80,11 @@ public class LockerApi extends CORSFilter {
 
 		int totCnt = lockerService.selectLockerListTotCnt(lockerVO);
 		paginationInfo.setTotalRecordCount(totCnt);
-		model.addAttribute("paginationInfo", paginationInfo);
-		
-		return lockerService.selectLockerList(lockerVO);
+		jsonObject.put("paginationInfo", paginationInfo);
+
+		JSONObject jObject = new JSONObject(jsonObject);
+
+		return jObject;
 	}
 
 	/**

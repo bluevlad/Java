@@ -7,7 +7,7 @@
 	</select>
 
 	<select id="selectBoardList">
-		SELECT BOARD_ID, BOARD_TITLE, BOARD_MEMO, IS_USE, REG_DT, REG_ID, UPD_DT, UPD_ID, BOARD_BY, descendants, score, url
+		SELECT board_id, board_title, board_memo, is_use, reg_dt, reg_id, upd_dt, upd_id, board_by, descendants, score, url
 		FROM acm_notifications
 		LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
 	</select>
@@ -18,7 +18,7 @@
 	</select>
 
 	<select id="getBoard">
-		SELECT BOARD_ID, BOARD_TITLE, BOARD_MEMO, IS_USE, REG_DT, REG_ID, UPD_DT, UPD_ID, BOARD_BY, descendants, score, url
+		SELECT board_id, board_title, board_memo, is_use, reg_dt, reg_id, upd_dt, upd_id, board_by, descendants, score, url
 		FROM acm_notifications an
 		WHERE an.BOARD_ID = #{boardId}
 	</select>
