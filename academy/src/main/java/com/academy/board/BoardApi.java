@@ -1,13 +1,14 @@
 package com.academy.board;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,29 +27,16 @@ public class BoardApi extends CORSFilter {
         this.boardService = boardService;
     }
 
-	@GetMapping(value = "/api/getBoardAll")
-	public String[] all() throws Exception, IOException, ParseException { 
-		
-		BoardVO boardVO = new BoardVO();
-		
-		ArrayList<JSONObject> arrayJson = new ArrayList<JSONObject>();
-		arrayJson = boardService.selectBoardIdAll(boardVO);
-		
-		String[] strArray = new String[arrayJson.size()];
-		for (int k = 0; k < arrayJson.size(); k++) {
-		    JSONObject tempJson = arrayJson.get(k);
-			strArray[k] = tempJson.get("BOARD_ID").toString();
-		}
-		 
-		return strArray;
-	}
-
 	@GetMapping(value = "/api/getBoardList")
-	public ArrayList<JSONObject> list(@RequestParam Map<?, ?> commandMap, ModelMap model) throws Exception, IOException, ParseException { 
+	public JSONObject list(@ModelAttribute("BoardVO") BoardVO boardVO, @RequestParam Map<?, ?> commandMap) throws Exception, IOException, ParseException { 
 		
-		JSONObject jsonObject = new JSONObject();
-
-		BoardVO boardVO = new BoardVO();
+		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
+		
+		String curPage = "1";
+		if(!CommonUtil.empty(commandMap.get("curPage"))){
+			curPage = (String)commandMap.get("curPage");
+		}
+		boardVO.setPageIndex(CommonUtil.parseInt(curPage));
 	    
 		/** paging */
 		PaginationInfo paginationInfo = new PaginationInfo();
@@ -64,9 +52,11 @@ public class BoardApi extends CORSFilter {
 
 		int totCnt = boardService.selectBoardListTotCnt(boardVO);
 		paginationInfo.setTotalRecordCount(totCnt);
-		model.addAttribute("paginationInfo", paginationInfo);
+		jsonObject.put("paginationInfo", paginationInfo);
 		
-		return boardService.selectBoardList(boardVO);
+		JSONObject jObject = new JSONObject(jsonObject);
+		
+		return jObject;
 	}
 
 	@GetMapping(value = "/api/getBoard")

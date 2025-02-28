@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
@@ -56,10 +57,15 @@ public class ExamApi extends CORSFilter {
 	 * @exception Exception
 	 */
 	@GetMapping(value = "/api/getExamBankItemList")
-	public ArrayList<JSONObject> list(@RequestParam Map<?, ?> commandMap, ModelMap model) throws Exception, IOException, ParseException { 
+	public JSONObject list(@ModelAttribute("ExamVO") ExamVO examVO, @RequestParam Map<?, ?> commandMap) throws Exception, IOException, ParseException { 
 		
-		JSONObject jsonObject = new JSONObject();
-		ExamVO examVO = new ExamVO();
+		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
+		
+		String curPage = "1";
+		if(!CommonUtil.empty(commandMap.get("curPage"))){
+			curPage = (String)commandMap.get("curPage");
+		}
+		examVO.setPageIndex(CommonUtil.parseInt(curPage));
 		
 		/** paging */
 		PaginationInfo paginationInfo = new PaginationInfo();
@@ -71,13 +77,15 @@ public class ExamApi extends CORSFilter {
 		examVO.setLastIndex(paginationInfo.getLastRecordIndex());
 		examVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
 		
-		jsonObject.put("lockers", examService.selectExamBankItemlList(examVO));
+		jsonObject.put("exambank", examService.selectExamBankItemlList(examVO));
 
 		int totCnt = examService.selectExamBankItemListTotCnt(examVO);
 		paginationInfo.setTotalRecordCount(totCnt);
-		model.addAttribute("paginationInfo", paginationInfo);
+		jsonObject.put("paginationInfo", paginationInfo);
 		
-		return examService.selectExamBankItemlList(examVO);
+		JSONObject jObject = new JSONObject(jsonObject);
+
+		return jObject;
 	}
 
 	/**
