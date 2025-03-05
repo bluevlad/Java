@@ -16,10 +16,6 @@ public class BoardService {
 		this.boardMapper = boardMapper;
 	}
 	
-	public ArrayList<JSONObject> selectBoardIdAll(BoardVO boardVO) {
-		return boardMapper.selectBoardIdAll(boardVO);
-	}
-	
 	public ArrayList<JSONObject> selectBoardList(BoardVO boardVO) {
 		return boardMapper.selectBoardList(boardVO);
 	}
@@ -30,5 +26,17 @@ public class BoardService {
 	public JSONObject getBoard(BoardVO boardVO) {
 		return boardMapper.getBoard(boardVO);
 	}
+
+    public void insertBoard(BoardVO boardVO) {
+    	boardMapper.insertBoard(boardVO);
+    }
+
+    public void updateBoard(BoardVO boardVO) {
+    	boardMapper.updateBoard(boardVO);
+    }
+
+    public void deleteBoard(BoardVO boardVO) {
+    	boardMapper.deleteBoard(boardVO);
+    }
 
 }

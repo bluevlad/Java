@@ -1,12 +1,9 @@
 package com.academy.board;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,7 +25,7 @@ public class BoardApi extends CORSFilter {
     }
 
 	@GetMapping(value = "/api/getBoardList")
-	public JSONObject list(@ModelAttribute("BoardVO") BoardVO boardVO, @RequestParam Map<?, ?> commandMap) throws Exception, IOException, ParseException { 
+	public JSONObject list(@ModelAttribute("BoardVO") BoardVO boardVO, @RequestParam Map<?, ?> commandMap) throws Exception { 
 		
 		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
 		
@@ -60,17 +57,86 @@ public class BoardApi extends CORSFilter {
 	}
 
 	@GetMapping(value = "/api/getBoard")
-	public JSONObject view(@RequestParam Map<?, ?> commandMap, ModelMap model) throws Exception, IOException, ParseException { 
+	public JSONObject view(@ModelAttribute("BoardVO") BoardVO boardVO) throws Exception { 
 
-		int boardId = CommonUtil.parseInt(commandMap.get("boardId"));
-		JSONObject jsonObject = new JSONObject();
-				
-		BoardVO boardVO = new BoardVO();
-		boardVO.setBoardId(boardId);
+		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
 		
-//		jsonObject.put("item", boardService.getBoard(boardVO));
+		jsonObject.put("boardItem", boardService.getBoard(boardVO));
 
-		return boardService.getBoard(boardVO);
+		JSONObject jObject = new JSONObject(jsonObject);
+		
+		return jObject;
+	}
+
+	/**
+	 * 게시물 등록화면.
+	 * @throws Exception
+	 */
+	@GetMapping(value = "/api/insertBoard")
+	public JSONObject insert(@ModelAttribute("BoardVO") BoardVO boardVO) throws Exception { 
+
+		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
+		
+		try {
+			boardService.insertBoard(boardVO);
+			jsonObject.put("retMsg", "OK");
+		} catch (Exception e){
+			jsonObject.put("retMsg", "FAIL");
+			e.printStackTrace();
+		}
+		
+		JSONObject jObject = new JSONObject(jsonObject);
+
+		return jObject;
+	}
+
+	/**
+	 * 게시물 정보를 업데이트 한다.
+	 * @param lockerVO
+	 * @throws Exception
+	 */
+	@GetMapping(value="/api/updateBoard")
+	public JSONObject update(@ModelAttribute("BoardVO") BoardVO boardVO) throws Exception {
+		
+		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
+		
+		try {
+			boardService.updateBoard(boardVO);
+			jsonObject.put("retMsg", "OK");
+		} catch (Exception e){
+			jsonObject.put("retMsg", "FAIL");
+			e.printStackTrace();
+		}
+	
+		JSONObject jObject = new JSONObject(jsonObject);
+
+		return jObject;
+	}
+
+	/**
+	 * 사물함정보를 변경한다.
+	 * @param ExamVO
+	 * @param commandMap
+	 * @param bindingResult
+	 * @param model
+	 * @throws Exception
+	 */
+	@GetMapping(value="/api/deleteBoard")
+	public JSONObject delete(@ModelAttribute("BoardVO") BoardVO boardVO) throws Exception {
+
+		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
+		
+		try {
+			boardService.deleteBoard(boardVO);
+			jsonObject.put("retMsg", "OK");
+		} catch (Exception e){
+			jsonObject.put("retMsg", "FAIL");
+			e.printStackTrace();
+		}
+		
+		JSONObject jObject = new JSONObject(jsonObject);
+
+		return jObject;
 	}
 
 }

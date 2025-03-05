@@ -2,12 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.academy.mapper.BoardMapper">
 
-	<select id="selectBoardIdAll">
-		SELECT BOARD_ID FROM acm_notifications
-	</select>
-
 	<select id="selectBoardList">
-		SELECT board_id, board_title, board_memo, is_use, reg_dt, reg_id, upd_dt, upd_id, board_by, descendants, score, url
+		SELECT board_id, board_title, board_memo, is_use, reg_dt, reg_id, upd_dt, upd_id
 		FROM acm_notifications
 		LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
 	</select>
@@ -18,9 +14,36 @@
 	</select>
 
 	<select id="getBoard">
-		SELECT board_id, board_title, board_memo, is_use, reg_dt, reg_id, upd_dt, upd_id, board_by, descendants, score, url
+		SELECT board_id, board_title, board_memo, is_use, reg_dt, reg_id, upd_dt, upd_id
 		FROM acm_notifications an
 		WHERE an.BOARD_ID = #{boardId}
 	</select>
+
+	<insert id="insertBoard">
+		INSERT INTO acm_notifications (
+			BOARD_TITLE, BOARD_MEMO, IS_USE, REG_DT, REG_ID, UPD_DT, UPD_ID
+		) VALUES (
+			#{boardTitle}, #{boardMemo}, #{isUse}, now(), #{regId}, now(), #{updId}
+		)
+	</insert>
+
+	<update id="updateBoard">
+		UPDATE acm_notifications
+		SET 
+			BOARD_TITLE = #{boardTitle}, 
+			BOARD_MEMO = #{boardMemo}, 
+			UPD_DT = now(), 
+			UPD_ID = #{updId}
+		WHERE BOARD_ID = #{boardId}
+	</update>
+
+	<update id="deleteBoard">
+		UPDATE acm_notifications
+		SET 
+			IS_USE = 'N',
+			UPD_DT = now(), 
+			UPD_ID = #{updId}
+		WHERE BOARD_ID = #{boardId}
+	</update>
 
 </mapper>
