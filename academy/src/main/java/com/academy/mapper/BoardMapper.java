@@ -29,14 +29,19 @@ public interface BoardMapper {
      * @param BoardVO 검색조건
      * @return List 게시판 목록정보
      */
-	ArrayList<JSONObject> selectBoardIdAll(BoardVO boardVO);
-	ArrayList<JSONObject> selectBoardList(BoardVO boardVO);
-	int selectBoardListTotCnt(BoardVO boardVO);
+	public ArrayList<JSONObject> selectBoardList(BoardVO boardVO);
+	public int selectBoardListTotCnt(BoardVO boardVO);
 
     /**
      * @param BoardVO 검색조건
      * @return Object 게시판 개별정보
      */
-	JSONObject getBoard(BoardVO boardVO);
+	public JSONObject getBoard(BoardVO boardVO);
+
+    public void insertBoard(BoardVO boardVO);
+
+    public void updateBoard(BoardVO boardVO);
+
+    public void deleteBoard(BoardVO boardVO);
 
 }

@@ -1,11 +1,6 @@
 package com.academy.exam;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,14 +13,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.academy.common.CORSFilter;
 import com.academy.common.CommonUtil;
 import com.academy.common.PaginationInfo;
 import com.academy.exam.service.ExamService;
 import com.academy.exam.service.ExamVO;
-import com.academy.locker.service.LockerVO;
 
 @RestController
 public class ExamApi extends CORSFilter {
@@ -52,12 +45,12 @@ public class ExamApi extends CORSFilter {
 	 */
     
 	/**
-	 * 사물함 목록화면 이동
+	 * 문제은행 문제 목록화면 이동
 	 * @return String
 	 * @exception Exception
 	 */
 	@GetMapping(value = "/api/getExamBankItemList")
-	public JSONObject list(@ModelAttribute("ExamVO") ExamVO examVO, @RequestParam Map<?, ?> commandMap) throws Exception, IOException, ParseException { 
+	public JSONObject listItem(@ModelAttribute("ExamVO") ExamVO examVO, @RequestParam Map<?, ?> commandMap) throws Exception { 
 		
 		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
 		
@@ -77,7 +70,7 @@ public class ExamApi extends CORSFilter {
 		examVO.setLastIndex(paginationInfo.getLastRecordIndex());
 		examVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
 		
-		jsonObject.put("exambank", examService.selectExamBankItemlList(examVO));
+		jsonObject.put("exambankItemList", examService.selectExamBankItemlList(examVO));
 
 		int totCnt = examService.selectExamBankItemListTotCnt(examVO);
 		paginationInfo.setTotalRecordCount(totCnt);
@@ -89,70 +82,85 @@ public class ExamApi extends CORSFilter {
 	}
 
 	/**
-	 * 사물함 등록화면.
+	 * 문제은행 문제 상세정보.
 	 * @throws Exception
 	 */
 	@GetMapping(value = "/api/getExamBankItem")
-	public JSONObject get(@ModelAttribute("ExamVO") ExamVO examVO) throws Exception, IOException, ParseException { 
+	public JSONObject getItem(@ModelAttribute("ExamVO") ExamVO examVO) throws Exception, IOException, ParseException { 
 
-		JSONObject jsonObject = new JSONObject();
+		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
 		
-		jsonObject.put("item", examService.selectExamBankItemDetail(examVO));
+		jsonObject.put("examBankItem", examService.selectExamBankItemDetail(examVO));
 
-		return jsonObject;
+		JSONObject jObject = new JSONObject(jsonObject);
+		
+		return jObject;
 	}
 
 	/**
-	 * 사물함정보를 신규로 등록한다.
-	 * @param lockerVO
-	 * @param commandMap
-	 * @param bindingResult
-	 * @param model
+	 * 문제은행 문제 신규로 등록한다.
+	 * @param ExamVO
 	 * @throws Exception
 	 */
-	@GetMapping(value="/api/examBankItemInsert")
-	public String Insert(@ModelAttribute("ExamVO") ExamVO examVO, @RequestParam Map<?, ?> commandMap, BindingResult bindingResult, ModelMap model) throws Exception {
+	@GetMapping(value="/api/insertExamBankItem")
+	public JSONObject insertItem(@ModelAttribute("ExamVO") ExamVO examVO) throws Exception {
 		
     	// 0. Spring Security 사용자권한 처리
+		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
 		
-		examService.insertExamBankItem(examVO);
+		try {
+			examService.insertExamBankItem(examVO);
+			jsonObject.put("retMsg", "OK");
+		} catch (Exception e){
+			jsonObject.put("retMsg", "FAIL");
+			e.printStackTrace();
+		}
+		
+		JSONObject jObject = new JSONObject(jsonObject);
 
-		return "redirect:/academy/box/List.do";
+		return jObject;
 	}
 
 	/**
-	 * 사물함정보를 변경한다.
+	 * 문제은행 문제 정보를 변경한다.
 	 * @param ExamVO
-	 * @param commandMap
-	 * @param bindingResult
-	 * @param model
 	 * @throws Exception
 	 */
 	@GetMapping(value="/api/examBankItemUpdate")
-	public String Update(@ModelAttribute("ExamVO") ExamVO examVO) throws Exception {
-
-		// 0. Spring Security 사용자권한 처리
-
-		examService.updateExamBankItem(examVO);
-
-		return "OK";
-	}
-
-	/**
-	 * @Method Name : ExtendOrder
-	 * @작성일 : 2023. 09
-	 * @Method 설명 : 사물함 대여 연장 처리
-	 * @param model
-	 * @param request
-	 * @return String
-	 * @throws Exception
-	 */
-	@GetMapping(value = "/api/selectExamBank")
-	public ArrayList<JSONObject> ExtendOrder(@ModelAttribute("ExamVO") ExamVO examVO, @RequestParam Map<?, ?> commandMap, BindingResult bindingResult, ModelMap model) throws Exception {
+	public JSONObject updateItem(@ModelAttribute("ExamVO") ExamVO examVO) throws Exception {
 
 		// 0. Spring Security 사용자권한 처리
 		
-		JSONObject jsonObject = new JSONObject();
+		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
+		
+		try {
+			examService.updateExamBankItem(examVO);
+			jsonObject.put("retMsg", "OK");
+		} catch (Exception e){
+			jsonObject.put("retMsg", "FAIL");
+			e.printStackTrace();
+		}
+	
+		JSONObject jObject = new JSONObject(jsonObject);
+
+		return jObject;
+	}
+
+	/**
+	 * 문제은행 정보를 가져온다.
+	 * @param ExamVO
+	 * @throws Exception
+	 */
+	@GetMapping(value = "/api/selectExamBank")
+	public JSONObject list(@ModelAttribute("ExamVO") ExamVO examVO, @RequestParam Map<?, ?> commandMap, BindingResult bindingResult, ModelMap model) throws Exception {
+		
+		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
+		
+		String curPage = "1";
+		if(!CommonUtil.empty(commandMap.get("curPage"))){
+			curPage = (String)commandMap.get("curPage");
+		}
+		examVO.setPageIndex(CommonUtil.parseInt(curPage));
 		
 		/** paging */
 		PaginationInfo paginationInfo = new PaginationInfo();
@@ -164,85 +172,84 @@ public class ExamApi extends CORSFilter {
 		examVO.setLastIndex(paginationInfo.getLastRecordIndex());
 		examVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
 		
-		jsonObject.put("lockers", examService.selectExamBankList(examVO));
+		jsonObject.put("exambankList", examService.selectExamBankList(examVO));
 
 		int totCnt = examService.selectExamBankListTotCnt(examVO);
 		paginationInfo.setTotalRecordCount(totCnt);
-		model.addAttribute("paginationInfo", paginationInfo);
+		jsonObject.put("paginationInfo", paginationInfo);
 		
-		return examService.selectExamBankList(examVO);
+		JSONObject jObject = new JSONObject(jsonObject);
+
+		return jObject;
 	}
 
 
 	/**
-	 * @Method Name : boxChangePopProcess
-	 * @작성일 : 2013. 11.25
-	 * @Method 설명 : 사물함 변경 처리
-     * - TB_OFF_BOX_NUM 테이블을 업데이트한다. (신규 선택한 곳에 기존 자료를 업데이트한다)
-     * - TB_OFF_BOX_NUM 테이블을 업데이트한다. (기존 자료 공간을 초기화 업데이트한다)
-     * - TB_OFF_BOX_RENT 테이블을 업데이트한다. (기존 자료에 신규 사물함번호를 저장한다)
-	 * @param model
-	 * @param request
-	 * @return String
+	 * 문제은행 상세 정보를 가져온다.
+	 * @param ExamVO
 	 * @throws Exception
 	 */
 	@GetMapping("/api/getExamBank")
-	public ModelAndView changePop(@ModelAttribute("ExamVO") ExamVO examVO, @RequestParam Map<?, ?> commandMap) throws Exception {
+	public JSONObject get(@ModelAttribute("ExamVO") ExamVO examVO) throws Exception {
 
-    	ModelAndView ret = new ModelAndView("jsonView");
+		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
+		
+		jsonObject.put("examBank", examService.selectExamBankDetail(examVO));
 
-		JSONObject boxNumChange = examService.selectExamBankDetail(examVO);
-
-		ret.addObject("ret", "OK");
-		return ret;
+		JSONObject jObject = new JSONObject(jsonObject);
+		
+		return jObject;
 	}
 
 	/**
-	 * @Method Name : DeleteOrder
-	 * @작성일 : 2023. 11.
-	 * @Method 설명 : 사물함 대여 주문정보 삭제 처리
-	 * @param model
-	 * @param request
-	 * @return String
+	 * 문제은행 정보를 등록온다.
+	 * @param ExamVO
 	 * @throws Exception
 	 */
 	@GetMapping(value = "/api/inserExamBank")
-	@Transactional( readOnly=false,  rollbackFor=Exception.class)
-	public String DeleteOrder(@ModelAttribute("ExamVO") ExamVO examVO) throws Exception {
+	@Transactional( readOnly=false, rollbackFor=Exception.class)
+	public JSONObject insert(@ModelAttribute("ExamVO") ExamVO examVO) throws Exception {
+		
+    	// 0. Spring Security 사용자권한 처리
+		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
+		
+		try {
+			examService.insertExamBank(examVO);
+			jsonObject.put("retMsg", "OK");
+		} catch (Exception e){
+			jsonObject.put("retMsg", "FAIL");
+			e.printStackTrace();
+		}
+		
+		JSONObject jObject = new JSONObject(jsonObject);
 
-		// 0. Spring Security 사용자권한 처리
-
-		examService.insertExamBank(examVO);
-
-		return "OK";
-
+		return jObject;
 	}
 
 
 	/**
-	 * @Method Name : boxRefundProcess
-	 * @작성일 : 2023. 11.
-	 * @Method 설명 : 사물함 대여 환불 처리
-     * - ACM_ORDER_REFUND 테이블에 환불 정보를 인서트한다.(환불금액, 환불일, 유저아이디)
-     * - ACM_ORDER_ITEM 테이블에 환불 정보를 인서트한다.
-     * - ACM_ORDER_APPROVALS 테이블의 REFUND_PRICE, REFUND_DATE 항목에 환불금액을 저장한다.
-     * - ACM_BOX_RENT에서 업데이트 ( RENT_END, 승인:1, 키반납:Y, 사물함사용상태: 미사용)
-     * - ACM_BOX_NUM 사물함 상세정보의 BOX_FLAG = N, USERID = "" 초기화한다.
-	 * @param model
-	 * @param request
-	 * @return String
+	 * 문제은행 정보를 변경한다.
+	 * @param ExamVO
 	 * @throws Exception
 	 */
 	@GetMapping(value = "/api/updateExamBank")
-	@Transactional( readOnly=false,  rollbackFor=Exception.class)
-	public String boxRefund(@ModelAttribute("ExamVO") ExamVO examVO) throws Exception {
-
-		// 0. Spring Security 사용자권한 처리
+	@Transactional(readOnly=false,  rollbackFor=Exception.class)
+	public JSONObject update(@ModelAttribute("ExamVO") ExamVO examVO) throws Exception {
 		
-		// 1. 환불 테이블(TB_REFUND)에 삽입한다.
-		examService.updateExamBank(examVO); //테스트중
+    	// 0. Spring Security 사용자권한 처리
+		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
+		
+		try {
+			examService.updateExamBank(examVO);
+			jsonObject.put("retMsg", "OK");
+		} catch (Exception e){
+			jsonObject.put("retMsg", "FAIL");
+			e.printStackTrace();
+		}
+		
+		JSONObject jObject = new JSONObject(jsonObject);
 
-		return "OK";
+		return jObject;
 	}
 
 }

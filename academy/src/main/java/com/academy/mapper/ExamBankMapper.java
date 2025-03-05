@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.json.simple.JSONObject;
 
 import com.academy.exam.service.ExamVO;
-import com.academy.locker.service.LockerVO;
 
 /**
  * 시험문제은행에 관한 데이터 접근 클래스를 정의한다.
@@ -36,7 +35,6 @@ public interface ExamBankMapper {
     public void updateExamBankItem(ExamVO examVO);
 
 	public ArrayList<JSONObject> selectExamBankList(ExamVO examVO);
-
     public int selectExamBankListTotCnt(ExamVO examVO);
 
 	public JSONObject selectExamBankDetail(ExamVO examVO);
