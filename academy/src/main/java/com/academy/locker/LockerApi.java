@@ -93,12 +93,14 @@ public class LockerApi extends CORSFilter {
 	 */
 	@GetMapping(value = "/api/getLocker")
 	public JSONObject get(@ModelAttribute("LockerVO") LockerVO lockerVO) throws Exception, IOException, ParseException { 
-
-		JSONObject jsonObject = new JSONObject();
 		
+		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
+
 		jsonObject.put("item", lockerService.getLocker(lockerVO));
 
-		return jsonObject;
+		JSONObject jObject = new JSONObject(jsonObject);
+
+		return jObject;
 	}
 
 	/**
