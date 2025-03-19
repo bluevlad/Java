@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.academy.mapper.LoginMapper">
+
+	<!-- 일반 로그인 -->
+	<select id="">
+		SELECT user_id, user_nm, user_pwd, sex, user_role, admin_role, birth_day, email,
+			zip_code, address1, address2, user_point, memo, pic, is_use,
+			reg_dt, reg_id, upd_dt, upd_id, isok_sms, isok_email
+		FROM acm_member
+		WHERE user_id = #{id}
+		AND password = #{password}
+	</select>
+	
+	<!-- 아이디 찾기 -->
+	<select id="searchId">
+		SELECT user_id AS id
+		FROM acm_member
+		WHERE user_nm = #{name}
+		AND email = #{email}
+	</select>
+	
+	<!-- 비밀번호 찾기 -->
+	<select id="searchPassword">
+		SELECT user_pwd
+		FROM acm_member
+		WHERE user_id = #{id}
+		AND user_nm = #{name}
+		AND email = #{email}
+	</select>
+	
+	<!-- 변경된 비밀번호를 저장 -->
+	<update id="updatePassword">
+		UPDATE acm_member
+		SET user_pwd = #{password}
+		, upd_dt = sysdate()
+		WHERE user_id = #{id}
+	</update>
+	
+</mapper>

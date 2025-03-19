@@ -4,8 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,11 +21,14 @@ import com.academy.common.PaginationInfo;
 @RestController
 public class BoardApi extends CORSFilter {
 
-    private BoardService boardService;
+	private BoardService boardService;
 
     public BoardApi(BoardService boardService) {
         this.boardService = boardService;
     }
+
+    /** log */
+	private static final Logger LOGGER = LoggerFactory.getLogger(BoardApi.class);
 
 	@GetMapping(value = "/api/getBoardList")
 	public JSONObject list(@ModelAttribute("BoardVO") BoardVO boardVO, @RequestParam Map<?, ?> commandMap) throws Exception { 
@@ -72,11 +78,11 @@ public class BoardApi extends CORSFilter {
 	 * 게시물 등록화면.
 	 * @throws Exception
 	 */
-	@GetMapping(value = "/api/insertBoard")
+	@PostMapping(value = "/api/insertBoard")
 	public JSONObject insert(@ModelAttribute("BoardVO") BoardVO boardVO) throws Exception { 
 
 		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
-		
+
 		try {
 			boardService.insertBoard(boardVO);
 			jsonObject.put("retMsg", "OK");
@@ -95,7 +101,7 @@ public class BoardApi extends CORSFilter {
 	 * @param lockerVO
 	 * @throws Exception
 	 */
-	@GetMapping(value="/api/updateBoard")
+	@PostMapping(value="/api/updateBoard")
 	public JSONObject update(@ModelAttribute("BoardVO") BoardVO boardVO) throws Exception {
 		
 		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
@@ -121,7 +127,7 @@ public class BoardApi extends CORSFilter {
 	 * @param model
 	 * @throws Exception
 	 */
-	@GetMapping(value="/api/deleteBoard")
+	@PostMapping(value="/api/deleteBoard")
 	public JSONObject delete(@ModelAttribute("BoardVO") BoardVO boardVO) throws Exception {
 
 		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
