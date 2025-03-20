@@ -21,6 +21,8 @@ public class MemberVO extends CommonVO implements Serializable{
 	
 	private static final long serialVersionUID = 638950577710720796L;
 
+	/** 인증용 토큰 */
+	private String token;
 	/** 아이디 */
 	private String userId;
 	/** 이름 */
@@ -53,6 +55,13 @@ public class MemberVO extends CommonVO implements Serializable{
 	private String isokSms;
 	/** 이메일수신여부 */
 	private String isokEmail;
+
+	public String getToken() {
+		return token; 
+	}
+	public void setToken(String token) {
+		this.token = token; 
+	}
 
     // getter & setter
     public String getUserId() {
