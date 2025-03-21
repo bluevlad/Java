@@ -23,10 +23,15 @@ import com.academy.login.service.MemberVO;
 @Mapper
 public interface LoginMapper {
 
-	public JSONObject actionLogin(MemberVO memberVO);
+	public JSONObject getUser(MemberVO memberVO);
+
+    public void insertUser(MemberVO memberVO);
+    public void updateUser(MemberVO memberVO);
+
 	public JSONObject searchId(MemberVO memberVO);
 	public JSONObject searchPassword(MemberVO memberVO);
 
     public void updatePassword(MemberVO memberVO);
+    public void updateToken(MemberVO memberVO);
 
 }

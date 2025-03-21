@@ -4,14 +4,49 @@
 <mapper namespace="com.academy.mapper.LoginMapper">
 
 	<!-- 일반 로그인 -->
-	<select id="actionLogin">
+	<select id="getUser">
 		SELECT user_id, user_nm, user_pwd, sex, user_role, admin_role, birth_day, email,
 			zip_code, address1, address2, user_point, memo, pic, is_use,
-			reg_dt, reg_id, upd_dt, upd_id, isok_sms, isok_email
+			reg_dt, reg_id, upd_dt, upd_id, isok_sms, isok_email, token
 		FROM acm_member
 		WHERE user_id = #{userId}
+		<if test="userPwd != null and userPwd != '' ">
 		AND user_pwd = #{userPwd}
+		</if>
+		<if test="token != null and token != '' ">
+		AND token = #{token}
+		</if>
 	</select>
+
+	<insert id="insertUser">
+		INSERT INTO acm_member (
+		    user_id, user_nm, user_pwd, user_role, email, user_point, memo, is_use,
+		    reg_dt, reg_id, upd_dt, upd_id, isok_sms, isok_email
+		) VALUES (
+		    #{userId}, #{userNm}, #{userPwd}, 'USER', #{email}, 0, #{memo}, 'Y',
+		    NOW(), #{regId}, NOW(), #{updId}, #{isokSms}, #{isokEmail}
+		)
+	</insert>
+	
+	<!-- 로그인시 토큰 저장 -->
+	<update id="updateToken">
+		UPDATE acm_member
+		SET token = #{token}
+		WHERE user_id = #{userId}
+	</update>
+
+	<update id="updateUser">
+		UPDATE acm_member
+		SET
+		    user_pwd = #{userPwd},
+		    email = #{email},
+		    memo = #{memo},
+		    upd_dt = NOW(),
+		    upd_id = #{updId},
+		    isok_sms = #{isokSms},
+		    isok_email = #{isokEmail}
+		WHERE user_id = #{userId}
+	</update>
 	
 	<!-- 아이디 찾기 -->
 	<select id="searchId">

@@ -14,9 +14,17 @@ public class LoginService {
 		this.loginMapper = loginMapper;
 	}
 	
-	public JSONObject actionLogin(MemberVO memberVO) {
-		return loginMapper.actionLogin(memberVO);
+	public JSONObject getUser(MemberVO memberVO) {
+		return loginMapper.getUser(memberVO);
 	}
+	
+	public void insertUser(MemberVO memberVO) {
+		loginMapper.insertUser(memberVO);
+    }
+	public void updateUser(MemberVO memberVO) {
+		loginMapper.updateUser(memberVO);
+    }
+
 	public JSONObject searchId(MemberVO memberVO) {
 		return loginMapper.searchId(memberVO);
 	}
@@ -26,6 +34,10 @@ public class LoginService {
 	
 	public void updatePassword(MemberVO memberVO) {
 		loginMapper.updatePassword(memberVO);
+    }
+	
+	public void updateToken(MemberVO memberVO) {
+		loginMapper.updateToken(memberVO);
     }
 
 }

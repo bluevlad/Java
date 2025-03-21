@@ -4,19 +4,14 @@ import java.util.HashMap;
 import java.util.Optional;
 
 import org.json.simple.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.academy.common.CORSFilter;
 import com.academy.common.JwtUtil;
-import com.academy.login.service.AuthResponse;
 import com.academy.login.service.LoginService;
 import com.academy.login.service.MemberVO;
 
@@ -30,9 +25,6 @@ public class LoginApi extends CORSFilter {
         this.loginService = loginService;
         this.jwtUtil = jwtUtil;
     }
-
-	/** log */
-	private static final Logger LOGGER = LoggerFactory.getLogger(LoginApi.class);
 
 	/**
 	 * 일반(세션) 로그인을 처리한다
@@ -52,10 +44,13 @@ public class LoginApi extends CORSFilter {
                                     .map(Object::toString)
                                     .orElseThrow(() -> new IllegalArgumentException("User ID not found"));
 
-            jsonObject.put("userInfo", loginService.actionLogin(memberVO));
+            jsonObject.put("userInfo", loginService.getUser(memberVO));
             
             // JWT 토큰 생성
             String token = jwtUtil.generateToken(userId);
+            memberVO.setToken(token);
+			loginService.updateToken(memberVO);
+            
     		jsonObject.put("token", token);
             
 		} catch (Exception e){
@@ -68,27 +63,70 @@ public class LoginApi extends CORSFilter {
 	}
 
 	/**
-	 * 일반(세션) 로그인을 처리한다
-	 * @param vo - 아이디, 비밀번호가 담긴 LoginVO
+	 * 사용자 정보를 가져온다
+	 * @param vo - LoginVO
 	 * @return ResponseEntity - 로그인결과(세션정보)
 	 * @exception Exception
 	 */
 	@PostMapping(value = "/userInfo")
-	public ResponseEntity<?> getUser(@RequestHeader("Authorization") String authHeader) {
-	    try {
-	        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-	            return ResponseEntity.status(401).body("Invalid token format");
-	        }
+	public JSONObject getUser(@ModelAttribute("MemberVO") MemberVO memberVO) {
 
-	        // "Bearer " 부분 제거 후 토큰 추출
-	        String token = authHeader.substring(7);
-	        String userId = jwtUtil.extractUsername(token);
+		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
 
-	        return ResponseEntity.ok(userId);
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        return ResponseEntity.status(401).body("Invalid userInfo");
-	    }
+		try {
+            jsonObject.put("userInfo", loginService.getUser(memberVO));
+            
+		} catch (Exception e){
+			e.printStackTrace();
+			jsonObject.put("retMsg", "FAIL");
+		}
+
+		JSONObject jObject = new JSONObject(jsonObject);
+        return jObject;
+	}
+
+	/**
+	 * 회원가입
+	 * @throws Exception
+	 */
+	@PostMapping(value = "/api/insertUser")
+	public JSONObject insert(@ModelAttribute("MemberVO") MemberVO memberVO) throws Exception { 
+
+		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
+
+		try {
+			loginService.insertUser(memberVO);
+			jsonObject.put("retMsg", "OK");
+		} catch (Exception e){
+			jsonObject.put("retMsg", "FAIL");
+			e.printStackTrace();
+		}
+		
+		JSONObject jObject = new JSONObject(jsonObject);
+
+		return jObject;
+	}
+
+	/**
+	 * 회원정보 수정
+	 * @throws Exception
+	 */
+	@PostMapping(value="/api/updateUser")
+	public JSONObject update(@ModelAttribute("MemberVO") MemberVO memberVO) throws Exception {
+		
+		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
+		
+		try {
+			loginService.updateUser(memberVO);
+			jsonObject.put("retMsg", "OK");
+		} catch (Exception e){
+			jsonObject.put("retMsg", "FAIL");
+			e.printStackTrace();
+		}
+	
+		JSONObject jObject = new JSONObject(jsonObject);
+
+		return jObject;
 	}
 
 	/**
