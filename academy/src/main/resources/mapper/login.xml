@@ -42,7 +42,7 @@
 		    email = #{email},
 		    memo = #{memo},
 		    upd_dt = NOW(),
-		    upd_id = #{updId},
+		    upd_id = #{userId},
 		    isok_sms = #{isokSms},
 		    isok_email = #{isokEmail}
 		WHERE user_id = #{userId}

@@ -89,7 +89,7 @@ public class LoginApi extends CORSFilter {
 	 * 회원가입
 	 * @throws Exception
 	 */
-	@PostMapping(value = "/api/insertUser")
+	@PostMapping(value = "/insertUser")
 	public JSONObject insert(@ModelAttribute("MemberVO") MemberVO memberVO) throws Exception { 
 
 		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
@@ -111,7 +111,7 @@ public class LoginApi extends CORSFilter {
 	 * 회원정보 수정
 	 * @throws Exception
 	 */
-	@PostMapping(value="/api/updateUser")
+	@PostMapping(value="/updateUser")
 	public JSONObject update(@ModelAttribute("MemberVO") MemberVO memberVO) throws Exception {
 		
 		HashMap<String,Object> jsonObject = new HashMap<String,Object>();

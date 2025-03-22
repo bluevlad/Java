@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+	수정일          		수정자                          수정내용
+  ===========      ========    =================
+ *2025.02.00		rainend		시험문제은행관리
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.academy.mapper.ExamMapper">
+
+	<select id="selectExamList">
+		SELECT exam_id, exam_nm, exam_year, exam_round, exam_open, exam_end, exam_period, exam_time, 
+				is_use, use_flag, set_id, reg_dt, reg_id, upd_dt, upd_id
+		FROM acm_exam_mst
+		LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+	</select>
+
+	<select id="selectExamListTotCnt">
+		SELECT COUNT(*) TOTAL_CNT
+		FROM acm_exam_mst
+	</select>
+
+	<select id="selectExamDetail">
+        SELECT exam_id, exam_nm, exam_year, exam_round, exam_open, exam_end, exam_period, exam_time, 
+				is_use, use_flag, set_id, reg_dt, reg_id, upd_dt, upd_id
+		FROM acm_exam_mst
+		WHERE exam_id = #{examId}
+	</select>
+
+</mapper>

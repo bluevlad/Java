@@ -5,54 +5,26 @@ import java.util.ArrayList;
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 
-import com.academy.mapper.ExamBankMapper;
+import com.academy.mapper.ExamMapper;
 
 @Service
 public class ExamService {
 
-	private ExamBankMapper examBankMapper;
+	private ExamMapper examMapper;
 	
-	public ExamService(ExamBankMapper examBankMapper) {
-		this.examBankMapper = examBankMapper;
+	public ExamService(ExamMapper examMapper) {
+		this.examMapper = examMapper;
 	}
 	
-	public ArrayList<JSONObject> selectExamBankItemlList(ExamVO examVO) {
-		return examBankMapper.selectExamBankItemlList(examVO);
+	public ArrayList<JSONObject> selectExamList(ExamVO examVO) {
+		return examMapper.selectExamList(examVO);
 	}
-    public int selectExamBankItemListTotCnt(ExamVO examVO) {
-        return examBankMapper.selectExamBankItemListTotCnt(examVO);
+    public int selectExamListTotCnt(ExamVO examVO) {
+        return examMapper.selectExamListTotCnt(examVO);
     }
 	
-	public JSONObject selectExamBankItemDetail(ExamVO examVO) {
-		return examBankMapper.selectExamBankItemDetail(examVO);
+	public JSONObject selectExamDetail(ExamVO examVO) {
+		return examMapper.selectExamDetail(examVO);
 	}
-
-    public void insertExamBankItem(ExamVO examVO) {
-    	examBankMapper.insertExamBankItem(examVO);
-    }
-
-    public void updateExamBankItem(ExamVO examVO) {
-    	examBankMapper.updateExamBankItem(examVO);
-    }
-    
-    public ArrayList<JSONObject> selectExamBankList(ExamVO examVO) {
-		return examBankMapper.selectExamBankList(examVO);
-    }
-
-    public int selectExamBankListTotCnt(ExamVO examVO) {
-        return examBankMapper.selectExamBankListTotCnt(examVO);
-    }
-    
-	public JSONObject selectExamBankDetail(ExamVO examVO) {
-		return examBankMapper.selectExamBankDetail(examVO);
-	}
-
-    public void insertExamBank(ExamVO examVO) {
-    	examBankMapper.insertExamBank(examVO);
-    }
-
-    public void updateExamBank(ExamVO examVO) {
-    	examBankMapper.updateExamBank(examVO);
-    }
 
 }

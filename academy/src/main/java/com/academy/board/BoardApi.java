@@ -35,12 +35,6 @@ public class BoardApi extends CORSFilter {
 		
 		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
 		
-		String curPage = "1";
-		if(!CommonUtil.empty(commandMap.get("curPage"))){
-			curPage = (String)commandMap.get("curPage");
-		}
-		boardVO.setPageIndex(CommonUtil.parseInt(curPage));
-	    
 		/** paging */
 		PaginationInfo paginationInfo = new PaginationInfo();
 		paginationInfo.setCurrentPageNo(boardVO.getPageIndex());
