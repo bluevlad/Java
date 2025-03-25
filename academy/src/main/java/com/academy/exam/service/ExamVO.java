@@ -33,10 +33,10 @@ public class ExamVO extends CommonVO implements Serializable {
     private String isUse;
     private String useFlag;
     private int setId;
-    private String regDt;
-    private String regId;
-    private String updDt;
-    private String updId;
+    private String userId;
+    private String identyId;
+    private String answer;
+    private String correctYn;
     
     // Getter and Setter Methods
     public int getExamId() {
@@ -127,36 +127,36 @@ public class ExamVO extends CommonVO implements Serializable {
         this.setId = setId;
     }
 
-    public String getRegDt() {
-        return regDt;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setRegDt(String regDt) {
-        this.regDt = regDt;
+    public void setuUerId(String userId) {
+        this.userId = userId;
     }
 
-    public String getRegId() {
-        return regId;
+    public String getIdentyId() {
+        return identyId;
     }
 
-    public void setRegId(String regId) {
-        this.regId = regId;
+    public void setIdentyId(String identyId) {
+        this.identyId = identyId;
     }
 
-    public String getUpdDt() {
-        return updDt;
+    public String getAnswer() {
+        return answer;
     }
 
-    public void setUpdDt(String updDt) {
-        this.updDt = updDt;
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
 
-    public String getUpdId() {
-        return updId;
+    public String getCorrectYn() {
+        return correctYn;
     }
 
-    public void setUpdId(String updId) {
-        this.updId = updId;
+    public void setCorrectYn(String correctYn) {
+        this.correctYn = correctYn;
     }
     
 }

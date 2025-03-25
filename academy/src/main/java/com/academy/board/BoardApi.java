@@ -1,21 +1,16 @@
 package com.academy.board;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.json.simple.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.academy.board.service.BoardService;
 import com.academy.board.service.BoardVO;
 import com.academy.common.CORSFilter;
-import com.academy.common.CommonUtil;
 import com.academy.common.PaginationInfo;
 
 @RestController
@@ -27,11 +22,8 @@ public class BoardApi extends CORSFilter {
         this.boardService = boardService;
     }
 
-    /** log */
-	private static final Logger LOGGER = LoggerFactory.getLogger(BoardApi.class);
-
 	@GetMapping(value = "/api/getBoardList")
-	public JSONObject list(@ModelAttribute("BoardVO") BoardVO boardVO, @RequestParam Map<?, ?> commandMap) throws Exception { 
+	public JSONObject list(@ModelAttribute("BoardVO") BoardVO boardVO) throws Exception { 
 		
 		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
 		

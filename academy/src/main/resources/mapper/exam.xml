@@ -25,4 +25,24 @@
 		WHERE exam_id = #{examId}
 	</select>
 
+	<select id="selectExamQueList">
+		select  aebi.que_id, aebi.que_title, aebi.que_desc, aebi.que_file_id, aebi.ans_file_id, aebi.pass_ans,
+				aebi.que_range, aebi.que_level, aebi.que_count, aebi.que_type, aebi.pass_ans, aebi.ans_desc, 
+				aebi.is_use, aebi.reg_id, aebi.reg_dt, aebi.upd_id, aebi.upd_dt,
+				aebi.ans_view1, aebi.ans_view2, aebi.ans_view3, aebi.ans_view4, aebi.ans_view5
+		from acm_exam_mst aem, acm_exam_set aes, acm_exam_set_item aesi, acm_exam_bank_item aebi 
+		where aem.SET_ID = aes.SET_ID
+		and aes.SET_ID = aesi.SET_ID
+		and aesi.QUE_ID = aebi.QUE_ID
+		and aem.exam_id = #{examId}
+	</select>
+
+    <insert id="insertAnswer">
+		INSERT INTO acm_exam_answer( 
+			exam_id, IDENTY_ID, USER_ID, QUE_ID, ANSWER, REG_ID, REG_DT, UPD_ID, UPD_DT, CORRECTYN
+		) VALUES ( 
+			#{examId}, #{identyId}, #{userId}, #{queId}, #{answer}, #{regId}, now(), #{updId}, now(), #{correctYn}
+		)
+    </insert>
+
 </mapper>

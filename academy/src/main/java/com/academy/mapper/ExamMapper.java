@@ -29,5 +29,8 @@ public interface ExamMapper {
 	public int selectExamListTotCnt(ExamVO examVO);
 
 	public JSONObject selectExamDetail(ExamVO examVO);
+	public ArrayList<JSONObject> selectExamQueList(ExamVO examVO);
+
+    public void insertAnswer(ExamVO examVO);
 
 }

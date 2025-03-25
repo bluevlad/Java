@@ -1,19 +1,18 @@
 package com.academy.exam;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.academy.common.CORSFilter;
-import com.academy.common.CommonUtil;
 import com.academy.common.PaginationInfo;
+import com.academy.exam.service.ExamBankVO;
 import com.academy.exam.service.ExamService;
 import com.academy.exam.service.ExamVO;
 
@@ -27,20 +26,14 @@ public class ExamApi extends CORSFilter {
     }
     
 	/**
-	 * 문제은행 문제 목록화면 이동
+	 * 시험 목록화면 이동
 	 * @return String
 	 * @exception Exception
 	 */
 	@GetMapping(value = "/api/getExamList")
-	public JSONObject listItem(@ModelAttribute("ExamVO") ExamVO examVO, @RequestParam Map<?, ?> commandMap) throws Exception { 
+	public JSONObject listItem(@ModelAttribute("ExamVO") ExamVO examVO) throws Exception { 
 		
 		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
-		
-//		String curPage = "1";
-//		if(!CommonUtil.empty(commandMap.get("curPage"))){
-//			curPage = (String)commandMap.get("curPage");
-//		}
-//		examVO.setPageIndex(CommonUtil.parseInt(curPage));
 		
 		/** paging */
 		PaginationInfo paginationInfo = new PaginationInfo();
@@ -64,18 +57,56 @@ public class ExamApi extends CORSFilter {
 	}
 
 	/**
-	 * 문제은행 문제 상세정보.
+	 * 시험 상세정보.
 	 * @throws Exception
 	 */
 	@GetMapping(value = "/api/getExamView")
-	public JSONObject getItem(@ModelAttribute("ExamVO") ExamVO examVO) throws Exception, IOException, ParseException { 
+	public JSONObject getItem(@ModelAttribute("ExamVO") ExamVO examVO) throws Exception { 
 
 		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
 		
 		jsonObject.put("examDetail", examService.selectExamDetail(examVO));
+		jsonObject.put("QueList", examService.selectExamQueList(examVO));
 
 		JSONObject jObject = new JSONObject(jsonObject);
 		
+		return jObject;
+	}
+	
+	/**
+	 * @Method Name : insertExamResult
+	 * @작성일 : 2025. 03.
+	 * @Method 설명 : 시험 응시
+	 * @throws Exception
+	 */
+	@PostMapping(value="/api/insertExamResult")
+	public JSONObject insertExamResult(@ModelAttribute("ExamVO") ExamVO examVO, @RequestParam Map<?, ?> commandMap) throws Exception {
+		
+		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
+
+
+		try {
+
+			examVO.setAnswer(commandMap.get("que_id_").toString());
+
+			/*
+			 * int QUECOUNT =
+			 * Integer.parseInt(String.valueOf(surveyList.get(i).get("QUECOUNT")));
+			 * 
+			 * for(int j=1; j<=QUECOUNT;j++){ params.put("QSEQ", String.valueOf(j));
+			 * params.put("USER_ANSW",
+			 * CommonUtil.isNull(request.getParameter("ex_"+QUETYPE+"_"+QUEID+"_"+j),""));
+			 * serveyService.insertSurveyRstItem(params); }
+			 */				 
+			examService.insertAnswer(examVO);
+			jsonObject.put("retMsg", "OK");
+		} catch (Exception e){
+			jsonObject.put("retMsg", "FAIL");
+			e.printStackTrace();
+		}
+		
+		JSONObject jObject = new JSONObject(jsonObject);
+        
 		return jObject;
 	}
 
