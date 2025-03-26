@@ -1,22 +1,26 @@
 package com.academy.exam;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.academy.common.CORSFilter;
+import com.academy.common.CommonUtil;
 import com.academy.common.PaginationInfo;
-import com.academy.exam.service.ExamBankVO;
 import com.academy.exam.service.ExamService;
 import com.academy.exam.service.ExamVO;
 
 @RestController
+@RequestMapping("/api/exam")
 public class ExamApi extends CORSFilter {
 
     private ExamService examService;
@@ -30,7 +34,7 @@ public class ExamApi extends CORSFilter {
 	 * @return String
 	 * @exception Exception
 	 */
-	@GetMapping(value = "/api/getExamList")
+	@GetMapping(value = "/getExamList")
 	public JSONObject listItem(@ModelAttribute("ExamVO") ExamVO examVO) throws Exception { 
 		
 		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
@@ -60,7 +64,7 @@ public class ExamApi extends CORSFilter {
 	 * 시험 상세정보.
 	 * @throws Exception
 	 */
-	@GetMapping(value = "/api/getExamView")
+	@GetMapping(value = "/getExamView")
 	public JSONObject getItem(@ModelAttribute("ExamVO") ExamVO examVO) throws Exception { 
 
 		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
@@ -79,29 +83,41 @@ public class ExamApi extends CORSFilter {
 	 * @Method 설명 : 시험 응시
 	 * @throws Exception
 	 */
-	@PostMapping(value="/api/insertExamResult")
+	@PostMapping(value="/insertExamResult")
 	public JSONObject insertExamResult(@ModelAttribute("ExamVO") ExamVO examVO, @RequestParam Map<?, ?> commandMap) throws Exception {
 		
 		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
 
-
 		try {
-
-			examVO.setAnswer(commandMap.get("que_id_").toString());
-
-			/*
-			 * int QUECOUNT =
-			 * Integer.parseInt(String.valueOf(surveyList.get(i).get("QUECOUNT")));
-			 * 
-			 * for(int j=1; j<=QUECOUNT;j++){ params.put("QSEQ", String.valueOf(j));
-			 * params.put("USER_ANSW",
-			 * CommonUtil.isNull(request.getParameter("ex_"+QUETYPE+"_"+QUEID+"_"+j),""));
-			 * serveyService.insertSurveyRstItem(params); }
-			 */				 
-			examService.insertAnswer(examVO);
-			jsonObject.put("retMsg", "OK");
+				examVO.setExamId(CommonUtil.parseInt(commandMap.get("examId")));
+			    String userId = String.valueOf(commandMap.get("userId"));
+			    examVO.setuUerId(userId);
+			    examVO.setIdentyId(userId);
+			    examVO.setRegId(userId);
+			    examVO.setUpdId(userId);
+				
+			 	ArrayList<JSONObject> QueList = examService.selectExamQueList(examVO);
+			 	
+			 	HashMap<String, String> answersMap = new HashMap<String, String>();
+			 	
+		        for (int i = 0; i < QueList.size() ; i++) {
+		        	JSONObject QueItem = new JSONObject(QueList.get(i));
+		        	String queId = QueItem.get("que_id").toString();  // 문제 ID 가져오기
+		        	String userAnswer = answersMap.get("answers[" + queId + "]"); // 사용자가 선택한 답안 가져오기
+		        	
+		            examVO.setQueId(CommonUtil.parseInt(queId));
+		            examVO.setAnswer(userAnswer);
+					
+		            if (userAnswer != null && userAnswer.equals(QueItem.get("answer").toString())) {
+		                examVO.setCorrectYn("Y");
+		            } else {
+		                examVO.setCorrectYn("N");
+		            }
+					examService.insertAnswer(examVO);
+		        }
+			jsonObject.put("retMsg", "제출완료");
 		} catch (Exception e){
-			jsonObject.put("retMsg", "FAIL");
+			jsonObject.put("retMsg", "응시실패");
 			e.printStackTrace();
 		}
 		

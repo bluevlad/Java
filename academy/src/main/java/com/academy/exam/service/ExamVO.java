@@ -37,6 +37,8 @@ public class ExamVO extends CommonVO implements Serializable {
     private String identyId;
     private String answer;
     private String correctYn;
+	/** 문제번호 */
+	private int queId;
     
     // Getter and Setter Methods
     public int getExamId() {
@@ -158,5 +160,20 @@ public class ExamVO extends CommonVO implements Serializable {
     public void setCorrectYn(String correctYn) {
         this.correctYn = correctYn;
     }
+	
+	/**
+	 * queId attribute 를 리턴한다.
+	 * @return int
+	 */
+	public int getQueId() {
+		return queId;
+	}
+	/**
+	 * queId attribute 값을 설정한다.
+	 * @param queId int
+	 */
+	public void setQueId(int queId) {
+		this.queId = queId;
+	}
     
 }
