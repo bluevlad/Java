@@ -10,12 +10,14 @@
 		SELECT exam_id, exam_nm, exam_year, exam_round, exam_open, exam_end, exam_period, exam_time, 
 				is_use, use_flag, set_id, reg_dt, reg_id, upd_dt, upd_id
 		FROM acm_exam_mst
+		where is_use = 'Y'
 		LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
 	</select>
 
 	<select id="selectExamListTotCnt">
 		SELECT COUNT(*) TOTAL_CNT
 		FROM acm_exam_mst
+		where is_use = 'Y'
 	</select>
 
 	<select id="selectExamDetail">
@@ -37,12 +39,53 @@
 		and aem.exam_id = #{examId}
 	</select>
 
-    <insert id="insertAnswer">
-		INSERT INTO acm_exam_answer( 
+    <select id="getRequestExam">
+		SELECT
+			order_no, identy_id, exam_id, user_id, user_nm, req_type, exam_type, req_desc, pay_amount, 
+			discount_ratio, discount_amount, discount_reason, exam_status, exam_start, exam_end, exam_rest, exam_info, 
+			reg_id, reg_dt, upd_id, upd_dt
+        FROM acm_exam_req
+        WHERE ORDER_NO = #{orderNo}
+    </select>
+
+    <insert id="insertExamAnswer">
+		INSERT INTO acm_exam_answer ( 
 			exam_id, IDENTY_ID, USER_ID, QUE_ID, ANSWER, REG_ID, REG_DT, UPD_ID, UPD_DT, CORRECT_YN
 		) VALUES (
 			#{examId}, #{identyId}, #{userId}, #{queId}, #{answer}, #{regId}, now(), #{updId}, now(), #{correctYn}
 		)
     </insert>
+
+    <insert id="insertRequestExam">
+		INSERT INTO acm_exam_req (
+		    IDENTY_ID, EXAM_ID, USER_ID, USER_NM, REQ_TYPE, EXAM_TYPE, REQ_DESC, 
+		    PAY_AMOUNT, DISCOUNT_RATIO, DISCOUNT_AMOUNT, DISCOUNT_REASON, EXAM_STATUS,
+		    EXAM_START, EXAM_END, EXAM_REST, EXAM_INFO, REG_ID, REG_DT, UPD_ID, UPD_DT
+		) VALUES (
+		    #{identyId}, #{examId}, #{userId}, #{userNm}, #{reqType}, #{examType}, #{reqDesc}, 
+		    #{payAmount}, #{discountRatio}, #{discountAmount}, #{discountReason}, #{examStatus}, 
+		    now(), #{examEnd}, #{examRest}, #{examInfo}, #{regId}, NOW(), #{updId}, NOW()
+		)
+    </insert>
+
+    <update id="updateRequestExam">
+        UPDATE acm_exam_req
+        SET
+            REQ_TYPE = #{reqType},
+            EXAM_TYPE = #{examType},
+            REQ_DESC = #{reqDesc},
+            PAY_AMOUNT = #{payAmount},
+            DISCOUNT_RATIO = #{discountRatio},
+            DISCOUNT_AMOUNT = #{discountAmount},
+            DISCOUNT_REASON = #{discountReason},
+            EXAM_STATUS = #{examStatus},
+            EXAM_START = #{examStart},
+            EXAM_END = #{examEnd},
+            EXAM_REST = #{examRest},
+            EXAM_INFO = #{examInfo},
+            UPD_ID = #{updId},
+            UPD_DT = now()
+        WHERE ORDER_NO = #{orderNo}
+    </update>
 
 </mapper>

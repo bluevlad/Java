@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.apache.ibatis.annotations.Mapper;
 import org.json.simple.JSONObject;
 
+import com.academy.exam.service.ExamReqVO;
 import com.academy.exam.service.ExamVO;
 
 /**
@@ -31,6 +32,9 @@ public interface ExamMapper {
 	public JSONObject selectExamDetail(ExamVO examVO);
 	public ArrayList<JSONObject> selectExamQueList(ExamVO examVO);
 
-    public void insertAnswer(ExamVO examVO);
+	public JSONObject getRequestExam(ExamVO examVO);
+    public void insertExamAnswer(ExamVO examVO);
+    public void insertRequestExam(ExamReqVO examReqVO);
+    public void updateRequestExam(ExamReqVO examReqVO);
 
 }

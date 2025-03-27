@@ -2,7 +2,6 @@ package com.academy.exam;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.academy.common.CORSFilter;
 import com.academy.common.CommonUtil;
 import com.academy.common.PaginationInfo;
+import com.academy.exam.service.ExamReqVO;
 import com.academy.exam.service.ExamService;
 import com.academy.exam.service.ExamVO;
 
@@ -84,36 +84,54 @@ public class ExamApi extends CORSFilter {
 	 * @throws Exception
 	 */
 	@PostMapping(value="/insertExamResult")
-	public JSONObject insertExamResult(@ModelAttribute("ExamVO") ExamVO examVO, @RequestParam Map<?, ?> commandMap) throws Exception {
+	public JSONObject insertExamResult(
+				@ModelAttribute("ExamVO") ExamVO examVO, 
+				@ModelAttribute("ExamReqVO") ExamReqVO examReqVO, 
+				@RequestParam Map<?, ?> commandMap
+			) throws Exception {
 		
 		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
 
 		try {
 				examVO.setExamId(CommonUtil.parseInt(commandMap.get("examId")));
 			    String userId = String.valueOf(commandMap.get("userId"));
-			    examVO.setuUerId(userId);
+			    String userNm = String.valueOf(commandMap.get("userNm"));
+			    
+			    examVO.setUserId(userId);
 			    examVO.setIdentyId(userId);
 			    examVO.setRegId(userId);
 			    examVO.setUpdId(userId);
+			 	
+			    examReqVO.setUserId(userId);
+			    examReqVO.setIdentyId(userId);
+			    examReqVO.setRegId(userId);
+			    examReqVO.setUpdId(userId);
+			    examReqVO.setUserNm(userNm);
+			    examReqVO.setReqType("O");
+			    examReqVO.setExamType("O");
+			    examReqVO.setExamStatus("F");
+			 	
+			 	examService.insertRequestExam(examReqVO);
 				
 			 	ArrayList<JSONObject> QueList = examService.selectExamQueList(examVO);
 			 	
-			 	HashMap<String, String> answersMap = new HashMap<String, String>();
-			 	
 		        for (int i = 0; i < QueList.size() ; i++) {
-		        	JSONObject QueItem = new JSONObject(QueList.get(i));
+		        	
+		        	JSONObject QueItem = QueList.get(i);
+		        
 		        	String queId = QueItem.get("que_id").toString();  // 문제 ID 가져오기
-		        	String userAnswer = answersMap.get("answers[" + queId + "]"); // 사용자가 선택한 답안 가져오기
+		        	String answer = QueItem.get("pass_ans").toString();
+		        	String userAnswer = commandMap.get("answers[" + queId + "]").toString(); // 사용자가 선택한 답안 가져오기
 		        	
 		            examVO.setQueId(CommonUtil.parseInt(queId));
 		            examVO.setAnswer(userAnswer);
 					
-		            if (userAnswer != null && userAnswer.equals(QueItem.get("answer").toString())) {
+		            if (userAnswer != null && userAnswer.equals(answer)) {
 		                examVO.setCorrectYn("Y");
 		            } else {
 		                examVO.setCorrectYn("N");
 		            }
-					examService.insertAnswer(examVO);
+					examService.insertExamAnswer(examVO);
 		        }
 			jsonObject.put("retMsg", "제출완료");
 		} catch (Exception e){

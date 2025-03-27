@@ -30,9 +30,18 @@ public class ExamService {
 	public ArrayList<JSONObject> selectExamQueList(ExamVO examVO) {
 		return examMapper.selectExamQueList(examVO);
 	}
-
-    public void insertAnswer(ExamVO examVO) {
-    	examMapper.insertAnswer(examVO);
+	
+	public JSONObject getRequestExam(ExamVO examVO) {
+		return examMapper.getRequestExam(examVO);
+	}
+    public void insertExamAnswer(ExamVO examVO) {
+    	examMapper.insertExamAnswer(examVO);
+    }
+    public void insertRequestExam(ExamReqVO examReqVO) {
+    	examMapper.insertRequestExam(examReqVO);
+    }
+    public void updateRequestExam(ExamReqVO examReqVO) {
+    	examMapper.updateRequestExam(examReqVO);
     }
 
 }
