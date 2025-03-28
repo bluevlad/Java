@@ -26,14 +26,14 @@ import com.academy.board.service.BoardVO;
 public interface BoardMapper {
 
     /**
-     * @param BoardVO 검색조건
+     * @param MenuVO 검색조건
      * @return List 게시판 목록정보
      */
 	public ArrayList<JSONObject> selectBoardList(BoardVO boardVO);
 	public int selectBoardListTotCnt(BoardVO boardVO);
 
     /**
-     * @param BoardVO 검색조건
+     * @param MenuVO 검색조건
      * @return Object 게시판 개별정보
      */
 	public JSONObject getBoard(BoardVO boardVO);
