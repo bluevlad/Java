@@ -27,4 +27,6 @@ public interface MainMapper {
 
 	public ArrayList<JSONObject> selectRouterList(MenuVO menuVO);
 
+	public ArrayList<JSONObject> selectLeftMenuList(MenuVO menuVO);
+
 }

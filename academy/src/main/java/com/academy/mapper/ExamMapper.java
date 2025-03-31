@@ -32,9 +32,14 @@ public interface ExamMapper {
 	public JSONObject selectExamDetail(ExamVO examVO);
 	public ArrayList<JSONObject> selectExamQueList(ExamVO examVO);
 
-	public JSONObject getRequestExam(ExamVO examVO);
-    public void insertExamAnswer(ExamVO examVO);
-    public void insertRequestExam(ExamReqVO examReqVO);
+	public JSONObject getRequestExamUser(ExamReqVO examReqVO);
+	public JSONObject getRequestExam(ExamReqVO examReqVO);
+	public ArrayList<JSONObject> selectExamResultList(ExamVO examVO);
+
+	public void insertRequestExam(ExamReqVO examReqVO);
     public void updateRequestExam(ExamReqVO examReqVO);
+	
+    public void insertExamAnswer(ExamVO examVO);
+    public void deleteExamAnswer(ExamVO examVO);
 
 }

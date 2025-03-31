@@ -31,12 +31,15 @@ public class ExamService {
 		return examMapper.selectExamQueList(examVO);
 	}
 	
-	public JSONObject getRequestExam(ExamVO examVO) {
-		return examMapper.getRequestExam(examVO);
+	public JSONObject getRequestExamUser(ExamReqVO examReqVO) {
+		return examMapper.getRequestExamUser(examReqVO);
 	}
-    public void insertExamAnswer(ExamVO examVO) {
-    	examMapper.insertExamAnswer(examVO);
-    }
+	public JSONObject getRequestExam(ExamReqVO examReqVO) {
+		return examMapper.getRequestExam(examReqVO);
+	}
+	public ArrayList<JSONObject> selectExamResultList(ExamVO examVO) {
+		return examMapper.selectExamResultList(examVO);
+	}
     public void insertRequestExam(ExamReqVO examReqVO) {
     	examMapper.insertRequestExam(examReqVO);
     }
@@ -44,4 +47,11 @@ public class ExamService {
     	examMapper.updateRequestExam(examReqVO);
     }
 
+    public void insertExamAnswer(ExamVO examVO) {
+    	examMapper.insertExamAnswer(examVO);
+    }
+    public void deleteExamAnswer(ExamVO examVO) {
+    	examMapper.deleteExamAnswer(examVO);
+    }
+    
 }

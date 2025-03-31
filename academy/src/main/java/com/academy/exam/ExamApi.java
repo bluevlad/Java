@@ -64,13 +64,56 @@ public class ExamApi extends CORSFilter {
 	 * 시험 상세정보.
 	 * @throws Exception
 	 */
+	@PostMapping(value = "/getExamReq")
+	public JSONObject getExamReq(@ModelAttribute("ExamReqVO") ExamReqVO examReqVO) throws Exception { 
+
+		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
+
+		try {
+			JSONObject ReqExam = examService.getRequestExamUser(examReqVO);
+			if (ReqExam != null && !ReqExam.isEmpty()) {
+				jsonObject.put("retMsg", "Y");
+			} else {
+				jsonObject.put("retMsg", "N");
+			}
+		} catch (Exception e){
+			jsonObject.put("retMsg", "조회실패");
+			e.printStackTrace();
+		}
+				
+		JSONObject jObject = new JSONObject(jsonObject);
+		
+		return jObject;
+	}
+
+	/**
+	 * 시험 상세정보.
+	 * @throws Exception
+	 */
 	@GetMapping(value = "/getExamView")
-	public JSONObject getItem(@ModelAttribute("ExamVO") ExamVO examVO) throws Exception { 
+	public JSONObject getExamView(@ModelAttribute("ExamVO") ExamVO examVO) throws Exception { 
 
 		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
 		
 		jsonObject.put("examDetail", examService.selectExamDetail(examVO));
 		jsonObject.put("QueList", examService.selectExamQueList(examVO));
+
+		JSONObject jObject = new JSONObject(jsonObject);
+		
+		return jObject;
+	}
+
+	/**
+	 * 시험 상세정보.
+	 * @throws Exception
+	 */
+	@GetMapping(value = "/getExamEdit")
+	public JSONObject getExamEdit(@ModelAttribute("ExamVO") ExamVO examVO) throws Exception { 
+
+		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
+		
+		jsonObject.put("examDetail", examService.selectExamDetail(examVO));
+		jsonObject.put("QueList", examService.selectExamResultList(examVO));
 
 		JSONObject jObject = new JSONObject(jsonObject);
 		
@@ -111,7 +154,12 @@ public class ExamApi extends CORSFilter {
 			    examReqVO.setExamType("O");
 			    examReqVO.setExamStatus("F");
 			 	
-			 	examService.insertRequestExam(examReqVO);
+			    JSONObject ReqExam = examService.getRequestExamUser(examReqVO);
+				if (ReqExam != null && !ReqExam.isEmpty()) {
+				 	examService.deleteExamAnswer(examVO);
+				} else {
+				 	examService.insertRequestExam(examReqVO);
+				}
 				
 			 	ArrayList<JSONObject> QueList = examService.selectExamQueList(examVO);
 			 	

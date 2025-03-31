@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+	수정일          	수정자           수정내용
+  ===========      =========    =================
+ *2025.02.00		rainend		 공지사항
+-->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.academy.mapper.BoardMapper">
 
+	<!-- 공지사항 리스트 -->
 	<select id="selectBoardList">
 		SELECT board_id, board_title, board_memo, is_use, reg_dt, reg_id, upd_dt, upd_id
 		FROM acm_notifications
@@ -9,17 +15,20 @@
 		LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
 	</select>
 
+	<!-- 공지사항 게시물 수 -->
 	<select id="selectBoardListTotCnt">
 		SELECT COUNT(*) TOTAL_CNT
 		FROM acm_notifications
 	</select>
 
+	<!-- 공지사항 하나 가져오기 -->
 	<select id="getBoard">
 		SELECT board_id, board_title, board_memo, is_use, reg_dt, reg_id, upd_dt, upd_id
 		FROM acm_notifications an
 		WHERE an.BOARD_ID = #{boardId}
 	</select>
 
+	<!-- 공지사항 등록 -->
 	<insert id="insertBoard">
 		INSERT INTO acm_notifications (
 			BOARD_TITLE, BOARD_MEMO, IS_USE, REG_DT, REG_ID, UPD_DT, UPD_ID
@@ -28,6 +37,7 @@
 		)
 	</insert>
 
+	<!-- 공지사항 수정 -->
 	<update id="updateBoard">
 		UPDATE acm_notifications
 		SET 
@@ -38,6 +48,7 @@
 		WHERE BOARD_ID = #{boardId}
 	</update>
 
+	<!-- 공지사항 비활성화 -->
 	<update id="deleteBoard">
 		UPDATE acm_notifications
 		SET 

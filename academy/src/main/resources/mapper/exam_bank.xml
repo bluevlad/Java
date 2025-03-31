@@ -1,11 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?><!--
-	수정일          		수정자                          수정내용
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	수정일          	수정자           수정내용
   ===========      ========    =================
- *2025.02.00		rainend		시험문제은행관리
+ *2025.02.00		rainend		시험문제은행정보
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.academy.mapper.ExamBankMapper">
 
+	<!-- 문제은행 리스트 -->
 	<select id="selectExamBankItemlList">
 		SELECT que_id, que_title, que_desc, que_range, que_level, que_count, que_type, pass_ans, ans_desc, que_file_id, ans_file_id, 
 			ans_view1, ans_view2, ans_view3, ans_view4, ans_view5, is_use, reg_id, reg_dt, upd_id, upd_dt
@@ -13,11 +15,13 @@
 		LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
 	</select>
 
+	<!-- 문제은행 수 -->
 	<select id="selectExamBankItemListTotCnt">
 		SELECT COUNT(*) TOTAL_CNT
 		FROM acm_exam_bank_item
 	</select>
 
+	<!-- 문제은행 상세정보 -->
 	<select id="selectExamBankItemDetail">
         SELECT que_id, que_title, que_desc, que_range, que_level, que_count, que_type, pass_ans, ans_desc, que_file_id, ans_file_id, 
 			ans_view1, ans_view2, ans_view3, ans_view4, ans_view5, is_use, reg_id, reg_dt, upd_id, upd_dt
@@ -25,6 +29,7 @@
 		WHERE QUE_ID = #{queId}
 	</select>
 
+	<!-- 문제은행 추가 -->
 	<insert id="insertExamBankItem">
 		INSERT INTO acm_exam_bank_item (
 			que_title, que_desc, que_range, que_level, que_count, que_type, pass_ans, ans_desc, que_file_id, ans_file_id, 
@@ -35,6 +40,7 @@
 		)
 	</insert>
 
+	<!-- 문제은행 수정 -->
 	<update id="updateExamBankItem">
 		UPDATE acm_exam_bank_item
 		SET 

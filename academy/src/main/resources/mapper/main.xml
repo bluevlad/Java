@@ -8,4 +8,13 @@
 		where menu_exact = 'Y'
 	</select>
 
+	<select id="selectLeftMenuList">
+		SELECT menu_no, menu_id, menu_title, menu_type, menu_icon, menu_url, menu_classes, menu_target, 
+			menu_breadcrumbs, menu_external, menu_upper_id, menu_depth, menu_sort
+		FROM acm_menu_mst
+		where menu_left = 'Y'
+		and menu_upper_id = #{menuUpperId}
+		order by menu_sort
+	</select>
+
 </mapper>
