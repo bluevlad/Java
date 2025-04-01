@@ -1,6 +1,5 @@
 package com.academy.locker;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -9,12 +8,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +27,7 @@ import com.academy.locker.service.LockerService;
 import com.academy.locker.service.LockerVO;
 
 @RestController
+@RequestMapping("/api/locker")
 public class LockerApi extends CORSFilter {
 
     private LockerService lockerService;
@@ -35,36 +36,15 @@ public class LockerApi extends CORSFilter {
         this.lockerService = lockerService;
     }
     
-	// 0. Spring Security 사용자권한 처리 - 추후 해당 부분 모두 추가
-	/*
-	 * Boolean isAuthenticated = EgovUserDetailsHelper.isAuthenticated();
-	 * if(!isAuthenticated) { model.addAttribute("message",
-	 * egovMessageSource.getMessage("fail.common.login")); return
-	 * "egovframework/com/uat/uia/EgovLoginUsr"; }
-	 * 
-	 * //로그인 객체 선언 LoginVO loginVO =
-	 * (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
-	 * 
-	 * //아이디 설정 lockerVO.setRegId(loginVO == null ? "" :
-	 * EgovStringUtil.isNullToString(loginVO.getUniqId())); lockerVO.setUpdId(loginVO
-	 * == null ? "" : EgovStringUtil.isNullToString(loginVO.getUniqId()));
-	 */
-    
 	/**
 	 * 사물함 목록화면 이동
 	 * @return String
 	 * @exception Exception
 	 */
-	@GetMapping(value = "/api/getLockerList")
-	public JSONObject list(@ModelAttribute("LockerVO") LockerVO lockerVO, @RequestParam Map<?, ?> commandMap) throws Exception, IOException, ParseException { 
+	@GetMapping(value = "/getLockerList")
+	public JSONObject list(@ModelAttribute("LockerVO") LockerVO lockerVO) throws Exception { 
 				
 		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
-		
-		String curPage = "1";
-		if(!CommonUtil.empty(commandMap.get("curPage"))){
-			curPage = (String)commandMap.get("curPage");
-		}
-		lockerVO.setPageIndex(CommonUtil.parseInt(curPage));
 
 		/** paging */
 		PaginationInfo paginationInfo = new PaginationInfo();
@@ -91,12 +71,13 @@ public class LockerApi extends CORSFilter {
 	 * 사물함 등록화면.
 	 * @throws Exception
 	 */
-	@GetMapping(value = "/api/getLocker")
-	public JSONObject get(@ModelAttribute("LockerVO") LockerVO lockerVO) throws Exception, IOException, ParseException { 
+	@GetMapping(value = "/getLocker")
+	public JSONObject get(@ModelAttribute("LockerVO") LockerVO lockerVO) throws Exception { 
 		
 		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
 
-		jsonObject.put("item", lockerService.getLocker(lockerVO));
+		jsonObject.put("lockerDetail", lockerService.getLocker(lockerVO));
+		jsonObject.put("lockerNumList", lockerService.selectLockerNumList(lockerVO));
 
 		JSONObject jObject = new JSONObject(jsonObject);
 
@@ -111,8 +92,8 @@ public class LockerApi extends CORSFilter {
 	 * @param model
 	 * @throws Exception
 	 */
-	@GetMapping(value="/api/lockerInsert")
-	public String Insert(@ModelAttribute("LockerVO") LockerVO lockerVO, @RequestParam Map<?, ?> commandMap, BindingResult bindingResult, ModelMap model) throws Exception {
+	@PostMapping(value="/insertLocker")
+	public String insertLocker(@ModelAttribute("LockerVO") LockerVO lockerVO, @RequestParam Map<?, ?> commandMap, BindingResult bindingResult, ModelMap model) throws Exception {
 		
     	// 0. Spring Security 사용자권한 처리
 		
@@ -140,7 +121,7 @@ public class LockerApi extends CORSFilter {
 	 * @param model
 	 * @throws Exception
 	 */
-	@GetMapping(value="/api/lockerUpdate")
+	@GetMapping(value="/lockerUpdate")
 	public String Update(@ModelAttribute("LockerVO") LockerVO lockerVO) throws Exception {
 
 		// 0. Spring Security 사용자권한 처리
@@ -159,7 +140,7 @@ public class LockerApi extends CORSFilter {
 	 * @return String
 	 * @throws Exception
 	 */
-	@GetMapping(value = "/api/lockerRentWrite")
+	@GetMapping(value = "/lockerRentWrite")
 	public String boxRentWrite(@ModelAttribute("LockerVO") LockerVO lockerVO, @RequestParam Map<?, ?> commandMap, ModelMap model) throws Exception {
 
 		// 사물함 BOX_CD로 상세정보를 가져온다.
@@ -205,7 +186,7 @@ public class LockerApi extends CORSFilter {
 	 * @return String
 	 * @throws Exception
 	 */
-	@GetMapping(value = "/api/UpdateLockerFlag")
+	@GetMapping(value = "/UpdateLockerFlag")
 	@ResponseBody
 	public String checkUser(@ModelAttribute("LockerVO") LockerVO lockerVO) throws Exception {
 		
@@ -234,7 +215,7 @@ public class LockerApi extends CORSFilter {
 	 * @return String
 	 * @throws Exception
 	 */
-	@GetMapping(value = "/api/lockerExtendOrder")
+	@GetMapping(value = "/lockerExtendOrder")
 	@Transactional( readOnly=false,  rollbackFor=Exception.class)
 	public String ExtendOrder(@ModelAttribute("LockerVO") LockerVO lockerVO, @RequestParam Map<?, ?> commandMap, BindingResult bindingResult, ModelMap model) throws Exception {
 
@@ -305,7 +286,7 @@ public class LockerApi extends CORSFilter {
 	 * @return String
 	 * @throws Exception
 	 */
-	@GetMapping(value = "/api/lockerRentOrder")
+	@GetMapping(value = "/lockerRentOrder")
 	@Transactional(readOnly=false, rollbackFor=Exception.class)
 	public String RentOrder(@ModelAttribute("LockerVO") LockerVO lockerVO, @RequestParam Map<?, ?> commandMap, BindingResult bindingResult, ModelMap model) throws Exception {
 

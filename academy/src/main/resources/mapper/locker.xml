@@ -57,7 +57,7 @@
 
 	<!-- 사물함 세부정보를 가져온다.  -->
 	<select id="selectLockerNumList">
-		SELECT BOX_CD, BOX_NUM, ABN.USER_ID, AM.USER_NM, BOX_FLAG, ABN.UPD_DT, ABN.UPD_ID, RENT_SEQ, RENT_MEMO   
+		SELECT box_cd, box_num, abn.user_id, am.user_nm, box_flag, abn.upd_dt, abn.upd_id, rent_seq, rent_memo
 		FROM ACM_BOX_NUM ABN    
 		LEFT OUTER JOIN ACM_MEMBER AM ON ABN.USER_ID = AM.USER_ID
 		WHERE ABN.BOX_CD = #{boxCd}
@@ -73,9 +73,9 @@
 
 	<!-- 사물함 대여 신청 결제정보를 한개 가져온다.  -->
 	<select id="selectLockerNumRentDetail">
-		SELECT ABN.BOX_CD, ABN.BOX_NUM, ABN.USER_ID, ABN.BOX_FLAG, ABN.RENT_SEQ, ABR.RENT_MEMO,
-				DATE_FORMAT(ABR.RENT_START, "%Y-%m-%d") RENT_START, DATE_FORMAT(ABR.RENT_END , "%Y-%m-%d") RENT_END,
-				ABR.DEPOSIT, ABR.DEPOSIT_YN, ABR.ORDERNO, ABR.EXTEND_YN, ABR.KEY_YN, ABR.RENT_TYPE, ABR.PAY_GUBUN, ABR.DEPOSIT_REFUND
+		SELECT abn.box_cd, abn.box_num, abn.user_id, abn.box_flag, abn.rent_seq, abr.rent_memo,
+				DATE_FORMAT(ABR.RENT_START, "%Y-%m-%d") rent_start, DATE_FORMAT(ABR.RENT_END , "%Y-%m-%d") rent_end,
+				abr.deposit, abr.deposit_yn, abr.orderno, abr.extend_yn, abr.key_yn, abr.rent_type, abr.pay_gubun, abr.deposit_refund
 		FROM ACM_BOX AB INNER JOIN ACM_BOX_NUM ABN 
 		ON AB.BOX_CD = ABN.BOX_CD 
 		AND ABN.BOX_CD = #{boxCd}

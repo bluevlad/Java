@@ -6,6 +6,7 @@ import org.json.simple.JSONObject;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.academy.board.service.BoardService;
@@ -14,6 +15,7 @@ import com.academy.common.CORSFilter;
 import com.academy.common.PaginationInfo;
 
 @RestController
+@RequestMapping("/api/board")
 public class BoardApi extends CORSFilter {
 
 	private BoardService boardService;
@@ -22,7 +24,7 @@ public class BoardApi extends CORSFilter {
         this.boardService = boardService;
     }
 
-	@GetMapping(value = "/api/getBoardList")
+	@GetMapping(value = "/getBoardList")
 	public JSONObject list(@ModelAttribute("BoardVO") BoardVO boardVO) throws Exception { 
 		
 		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
@@ -48,7 +50,7 @@ public class BoardApi extends CORSFilter {
 		return jObject;
 	}
 
-	@GetMapping(value = "/api/getBoard")
+	@GetMapping(value = "/getBoard")
 	public JSONObject view(@ModelAttribute("BoardVO") BoardVO boardVO) throws Exception { 
 
 		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
@@ -64,7 +66,7 @@ public class BoardApi extends CORSFilter {
 	 * 게시물 등록화면.
 	 * @throws Exception
 	 */
-	@PostMapping(value = "/api/insertBoard")
+	@PostMapping(value = "/insertBoard")
 	public JSONObject insert(@ModelAttribute("BoardVO") BoardVO boardVO) throws Exception { 
 
 		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
@@ -87,7 +89,7 @@ public class BoardApi extends CORSFilter {
 	 * @param lockerVO
 	 * @throws Exception
 	 */
-	@PostMapping(value="/api/updateBoard")
+	@PostMapping(value="/updateBoard")
 	public JSONObject update(@ModelAttribute("BoardVO") BoardVO boardVO) throws Exception {
 		
 		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
@@ -113,7 +115,7 @@ public class BoardApi extends CORSFilter {
 	 * @param model
 	 * @throws Exception
 	 */
-	@PostMapping(value="/api/deleteBoard")
+	@PostMapping(value="/deleteBoard")
 	public JSONObject delete(@ModelAttribute("BoardVO") BoardVO boardVO) throws Exception {
 
 		HashMap<String,Object> jsonObject = new HashMap<String,Object>();

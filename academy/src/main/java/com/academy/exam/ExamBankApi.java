@@ -11,6 +11,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,6 +23,7 @@ import com.academy.exam.service.ExamService;
 import com.academy.exam.service.ExamVO;
 
 @RestController
+@RequestMapping("/api/exam")
 public class ExamBankApi extends CORSFilter {
 
     private ExamBankService examBankService;
@@ -30,27 +32,12 @@ public class ExamBankApi extends CORSFilter {
         this.examBankService = examBankService;
     }
     
-	// 0. Spring Security 사용자권한 처리 - 추후 해당 부분 모두 추가
-	/*
-	 * Boolean isAuthenticated = EgovUserDetailsHelper.isAuthenticated();
-	 * if(!isAuthenticated) { model.addAttribute("message",
-	 * egovMessageSource.getMessage("fail.common.login")); return
-	 * "egovframework/com/uat/uia/EgovLoginUsr"; }
-	 * 
-	 * //로그인 객체 선언 LoginVO loginVO =
-	 * (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
-	 * 
-	 * //아이디 설정 lockerVO.setRegId(loginVO == null ? "" :
-	 * EgovStringUtil.isNullToString(loginVO.getUniqId())); lockerVO.setUpdId(loginVO
-	 * == null ? "" : EgovStringUtil.isNullToString(loginVO.getUniqId()));
-	 */
-    
 	/**
 	 * 문제은행 문제 목록화면 이동
 	 * @return String
 	 * @exception Exception
 	 */
-	@GetMapping(value = "/api/getExamBankItemList")
+	@GetMapping(value = "/getExamBankItemList")
 	public JSONObject listItem(@ModelAttribute("ExamVO") ExamVO examVO, @RequestParam Map<?, ?> commandMap) throws Exception { 
 		
 		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
@@ -86,7 +73,7 @@ public class ExamBankApi extends CORSFilter {
 	 * 문제은행 문제 상세정보.
 	 * @throws Exception
 	 */
-	@GetMapping(value = "/api/getExamBankItem")
+	@GetMapping(value = "/getExamBankItem")
 	public JSONObject getItem(@ModelAttribute("ExamVO") ExamVO examVO) throws Exception, IOException, ParseException { 
 
 		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
@@ -103,7 +90,7 @@ public class ExamBankApi extends CORSFilter {
 	 * @param ExamVO
 	 * @throws Exception
 	 */
-	@GetMapping(value="/api/insertExamBankItem")
+	@GetMapping(value="/insertExamBankItem")
 	public JSONObject insertItem(@ModelAttribute("ExamVO") ExamVO examVO) throws Exception {
 		
     	// 0. Spring Security 사용자권한 처리
@@ -127,7 +114,7 @@ public class ExamBankApi extends CORSFilter {
 	 * @param ExamVO
 	 * @throws Exception
 	 */
-	@GetMapping(value="/api/examBankItemUpdate")
+	@GetMapping(value="/examBankItemUpdate")
 	public JSONObject updateItem(@ModelAttribute("ExamVO") ExamVO examVO) throws Exception {
 
 		// 0. Spring Security 사용자권한 처리
@@ -152,7 +139,7 @@ public class ExamBankApi extends CORSFilter {
 	 * @param ExamVO
 	 * @throws Exception
 	 */
-	@GetMapping(value = "/api/selectExamBank")
+	@GetMapping(value = "/selectExamBank")
 	public JSONObject list(@ModelAttribute("ExamVO") ExamVO examVO, @RequestParam Map<?, ?> commandMap, BindingResult bindingResult, ModelMap model) throws Exception {
 		
 		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
@@ -190,7 +177,7 @@ public class ExamBankApi extends CORSFilter {
 	 * @param ExamVO
 	 * @throws Exception
 	 */
-	@GetMapping("/api/getExamBank")
+	@GetMapping("/getExamBank")
 	public JSONObject get(@ModelAttribute("ExamVO") ExamVO examVO) throws Exception {
 
 		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
@@ -207,7 +194,7 @@ public class ExamBankApi extends CORSFilter {
 	 * @param ExamVO
 	 * @throws Exception
 	 */
-	@GetMapping(value = "/api/inserExamBank")
+	@GetMapping(value = "/inserExamBank")
 	@Transactional( readOnly=false, rollbackFor=Exception.class)
 	public JSONObject insert(@ModelAttribute("ExamVO") ExamVO examVO) throws Exception {
 		
@@ -233,7 +220,7 @@ public class ExamBankApi extends CORSFilter {
 	 * @param ExamVO
 	 * @throws Exception
 	 */
-	@GetMapping(value = "/api/updateExamBank")
+	@GetMapping(value = "/updateExamBank")
 	@Transactional(readOnly=false,  rollbackFor=Exception.class)
 	public JSONObject update(@ModelAttribute("ExamVO") ExamVO examVO) throws Exception {
 		

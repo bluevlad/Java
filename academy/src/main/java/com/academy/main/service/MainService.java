@@ -19,5 +19,9 @@ public class MainService {
 	public ArrayList<JSONObject> selectRouterList(MenuVO menuVO) {
 		return mainMapper.selectRouterList(menuVO);
 	}
+	
+	public ArrayList<JSONObject> selectLeftMenuList(MenuVO menuVO) {
+		return mainMapper.selectLeftMenuList(menuVO);
+	}
 
 }
