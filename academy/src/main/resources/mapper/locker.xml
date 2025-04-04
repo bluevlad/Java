@@ -24,37 +24,6 @@
 		WHERE AB.BOX_CD = #{boxCd}
 	</select>
 
-	<!-- 사물함 등록 처리 -->
-	<insert id="insertLocker">
-		INSERT INTO ACM_BOX(
-			BOX_CD, BOX_NM, BOX_COUNT, BOX_PRICE, DEPOSIT, ROW_COUNT, ROW_NUM, UPD_DT, UPD_ID, START_NUM, END_NUM
-		)VALUES(
-			#{boxCd}, #{boxNm}, #{boxCount}, #{boxPrice}, #{deposit}, #{rowCount}, #{rowNum}, now(), #{updId}, #{startNum}, #{endNum}
-		)
-	</insert>
-		
-	<!-- 사물함 정보를 업데이트한다. -->
-	<update id="updateLocker">
-		UPDATE ACM_BOX 
-		SET 		
-			BOX_NM = #{boxNm},
-			BOX_PRICE = #{boxPrice},
-			DEPOSIT = #{deposit},
-			UPD_DT = now(),
-			UPD_ID = #{updId}
-		WHERE 
-			BOX_CD = #{boxCd}
-	</update>
-
-	<!-- 사물함 등록 처리 -->
-	<insert id="insertLockerNum">
-		INSERT INTO ACM_BOX_NUM(
-			BOX_CD, BOX_NUM, USER_ID, BOX_FLAG, UPD_DT, UPD_ID
-		)VALUES(
-			#{boxCd}, #{boxNum}, '', 'N', now(), #{updId}
-		)
-	</insert>
-
 	<!-- 사물함 세부정보를 가져온다.  -->
 	<select id="selectLockerNumList">
 		SELECT box_cd, box_num, abn.user_id, am.user_nm, box_flag, abn.upd_dt, abn.upd_id, rent_seq, rent_memo
@@ -63,6 +32,87 @@
 		WHERE ABN.BOX_CD = #{boxCd}
 		ORDER BY ABN.BOX_NUM ASC
 	</select>
+	
+	<!-- 사물함 대여 결제정보 테이블에서 최종 SEQ를 조회 -->
+	<select id="getLockerRentSeq">
+		SELECT IFNULL(MAX(RENT_SEQ),0)+1
+		FROM ACM_BOX_RENT
+		WHERE BOX_CD = #{boxCd} AND BOX_NUM = #{boxNum}
+	</select>
+	 
+	<!-- 사물함 대여 결제정보 테이블에서 최종 SEQ를 조회 -->
+	<select id="getOrderNo" statementType="CALLABLE">
+	    {CALL GET_ORDERNO(
+	        #{prdType, mode=IN, jdbcType=VARCHAR},
+	        #{orderNo, mode=OUT, jdbcType=VARCHAR}
+	    )}
+	</select>
+	
+	<select id="getOrderSeq">
+		SELECT IFNULL(MAX(MAX_ID),0)+1
+		FROM ACM_ORDER_SEQ
+		WHERE ORDER_TYPE = #{orderType} AND ORDER_YEAR = #{orderYear}
+	</select>
+
+	<!-- 오프라인 사물함 대여 주문 등록 처리-->
+	<insert id="insertOrders">
+		INSERT INTO ACM_ORDERS (
+			ORDER_NO, USER_ID, USER_NM, ZIP_CODE, ADDRESS1, ADDRESS2, EMAIL, REG_DT, REG_ID
+		 ) SELECT  
+			#{orderNo}, #{userId}, USER_NM, ZIP_CODE, ADDRESS1, ADDRESS2, EMAIL, now(), #{regId}
+		FROM ACM_MEMBER
+			WHERE USER_ID = #{userId}
+	</insert>
+	
+	<!-- 오프라인 사물함 대여 결제정보 등록처리-->
+	<insert id="insertOrderPay">
+		INSERT INTO ACM_ORDER_PAY (
+			ORDER_NO, PRICE, PRICE_CARD, PRICE_CASH, PRICE_DISCOUNT, PRICE_DISCOUNT_REASON, 
+			ADD_PRICE, PAY_CD, USE_POINT, REG_DT
+		) VALUES ( 
+			#{orderNo}, #{payTotal}, #{priceCard}, #{priceCash}, #{priceDiscount}, #{priceDiscountReason}, 
+			#{addPrice}, #{payCd}, #{usePoint}, now()
+		)
+	</insert>
+	 
+	<!--  오프라인 사물함 대여 주문 세부정보 등록 처리-->
+	<insert id="insertOrderItem">
+		INSERT INTO ACM_ORDER_ITEM ( 
+			ORDER_NO, ITEM_NO, ORDER_CNT, PRICE, STATUS_CD, IS_CANCEL, CONFIRM_DT, MEMO,
+			CONFIRM_ID, PRD_TYPE, REG_DT, REG_ID, UPD_DT, UPD_ID		
+		) VALUES (
+			#{orderNo}, #{itemNo}, #{orderCnt}, #{payTotal}, #{statusCd}, 0, now(), #{memo},
+			#{confirmId}, #{prdType}, now(), #{regId}, now(), #{updId}
+		)
+	</insert>
+	
+	<!-- 사물함 등록 처리 -->
+	<insert id="insertLockerRent">
+		INSERT INTO ACM_BOX_RENT(
+			BOX_CD, BOX_NUM, RENT_SEQ, USER_ID, RENT_START, RENT_END, DEPOSIT, DEPOSIT_YN, EXTEND_YN, KEY_YN,     
+			RENT_MEMO, UPD_DT, UPD_ID, RENT_TYPE, ORDER_NO    
+		)VALUES(
+			#{boxCd}, #{boxNum}, #{rentSeq}, #{userId}, now(), now()+30, #{deposit}, #{depositYn}, #{extendYn}, #{keyYn},
+			#{rentMemo}, now(), #{updId}, #{rentType}, #{orderNo}
+		)
+	</insert>
+
+	<!-- 사물함 상세 정보를 업데이트한다. -->
+	<update id="updateLockerNum">
+		UPDATE ACM_BOX_NUM
+		SET 
+			USER_ID = #{userId},
+			BOX_FLAG = #{boxFlag},
+			RENT_SEQ = #{rentSeq},
+			RENT_MEMO = #{rentMemo},
+			UPD_DT = now(),
+			UPD_ID = #{updId}
+		WHERE BOX_CD = #{boxCd} 
+		AND BOX_NUM = #{boxNum}
+	</update>
+
+
+	
 
 	<!-- 사물함 상세정보 테이블에서 사용중인 사물함 갯수를 조회 -->
 	<select id="selectLockerNumUseCount">
@@ -151,81 +201,6 @@
 			BOX_CD = #{boxCd} AND BOX_NUM = #{boxNum}
 	</update>
 	 
-	<!-- 사물함 대여 결제정보 테이블에서 최종 SEQ를 조회 -->
-	<select id="getOrderSeq">
-		SELECT IFNULL(MAX(MAX_ID),0)+1
-		FROM ACM_ORDER_SEQ
-		WHERE ORDER_TYPE = #{orderType} AND ORDER_YEAR = #{orderYear}
-	</select>
-	 
-	 
-	<!--  오프라인 사물함 대여 주문 세부정보 등록 처리-->
-	<insert id="insertOrderItem">
-		INSERT INTO ACM_ORDER_ITEM ( 
-			ORDERNO, ITEMNO, CNT, PRICE, STATUSCODE, ISCANCEL, CONFIRM_DT, MEMO,
-			CONFIRMID, OPEN_ADMIN_ID, PTYPE, REG_DT, REG_ID, UPD_DT, UPD_ID		
-		) VALUES (
-			#{orderno}, #{itemno}, 1, #{payTotal}, 'DLV105', 0, now(), #{memo},
-			#{regId}, #{regId}, 'B', now(), #{regId}, now(), #{updId} 
-		)
-	</insert>
-	
-	<!-- 오프라인 사물함 대여 주문 등록 처리-->
-	<insert id="insertOrders">
-		INSERT INTO ACM_ORDERS (
-			ORDERNO, USER_ID, USER_NM, ZIP_CODE, ADDRESS1, ADDRESS2, EMAIL, REG_DT, REG_ID
-		 ) SELECT  
-			#{orderno}, #{userId}, USER_NM, ZIP_CODE, ADDRESS1, ADDRESS2, EMAIL, now(), #{regId}
-		FROM ACM_MEMBER
-			WHERE USER_ID = #{userId}
-	</insert>
-	
-	<!-- 오프라인 사물함 대여 결제정보 등록처리-->
-	<insert id="insertApprovals">
-		INSERT INTO ACM_ORDER_APPROVALS (
-			ORDERNO, PRICE, PRICE_CARD, PRICE_CASH, PRICE_DISCOUNT, PRICE_DISCOUNT_REASON, PRICE_DISCOUNT_TYPE, 
-			ADDPRICE, PAYCODE, POINT, REG_DT
-		) VALUES ( 
-			#{orderno}, #{payTotal}, #{priceCard}, #{priceCash}, #{priceDiscount}, #{priceDiscountReason}, 'W', 
-			0, #{payGubun}, 0, now()
-		)
-	</insert>
-	
-	<!-- 사물함 등록 처리 -->
-	<insert id="insertLockerRent">
-		INSERT INTO ACM_BOX_RENT(
-			BOX_CD, BOX_NUM, RENT_SEQ, USER_ID, RENT_START, RENT_END, DEPOSIT, DEPOSIT_YN, EXTEND_YN, KEY_YN,     
-			RENT_MEMO, UPD_DT, UPD_ID, RENT_TYPE, PAY_GUBUN, ORDERNO    
-		)VALUES(
-			#{boxCd}, #{boxNum}, #{rentSeq}, #{userId}, #{rentStart}, #{rentEnd}, #{deposit}, #{depositYn}, #{extendYn}, #{keyYn},
-			#{rentMemo}, now(), #{updId}, #{rentType}, #{payGubun}, #{orderno}
-		)
-	</insert>
-	
-	<!-- 사물함 대여 결제정보 테이블에서 최종 SEQ를 조회 -->
-	<select id="getLockerRentSeq">
-		SELECT IFNULL(MAX(RENT_SEQ),0)+1
-		FROM ACM_BOX_RENT
-		WHERE BOX_CD = #{boxCd} AND BOX_NUM = #{boxNum}
-	</select>
-
-	<!-- 사물함 상세 정보를 업데이트한다. -->
-	<update id="updateLockerNum">
-		UPDATE ACM_BOX_NUM 
-		SET 
-			USER_ID    = #{userId},
-			BOX_FLAG  = #{boxFlag},
-			<if test="rentSeq !=null">
-			RENT_SEQ  = #{rentSeq},
-			</if> 
-			<if test="rentMemo !=null">
-			RENT_MEMO = #{rentMemo},
-			</if>
-			UPD_DT = now(),
-			UPD_ID = #{updId}
-		WHERE BOX_CD = #{boxCd} 
-		AND BOX_NUM = #{boxNum}
-	</update>
 
 	<!-- 사물함 대여 신청 정보를 업데이트한다. -->
 	<update id="updateLockerNumRent">

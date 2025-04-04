@@ -30,23 +30,31 @@ public class OrdersVO extends CommonVO implements Serializable {
 	/** 이메일 */
 	private String email;
     /** 주문번호 */
-    private String orderno;
+    private String orderNo;
     /** 주문번호 */
-    private String itemno;
+    private String itemNo;
     /** 주문상태 */
-    private String statuscode;
+    private String statusCd;
     /** 취소일시 */
     private String cancelDt;
     /** 취소여부 */
     private String isCancel;
     /** 주문방법 */
     private String orderType;
+    /** 주문상품구분 */
+    private String prdType;
+	/** 상품주문개수 */
+	private int orderCnt;
 	/** 상품금액 */
 	private int price;
+	/** 추가금액(배송료) */
+	private int addPrice;
 	/** 결제금액 */
 	private int payTotal;
 	/** 할인금액 */
 	private int priceDiscount;
+	/** 사용포인트 */
+	private int usePoint;
 	/** 카드결제금액 */
 	private int priceCard;
 	/** 현금결제금액 */
@@ -54,11 +62,11 @@ public class OrdersVO extends CommonVO implements Serializable {
     /** 할인사유 */
     private String priceDiscountReason;
     /** 결제구분 */
-    private String payGubun;
+    private String payCd;
     /** 주문상품정보 */
     private String memo;
 	/** 결제승인 id */
-	private String confirmid;
+	private String confirmId;
 	/** 환불금액 */
 	private int refundPrice;
     /** 환불일시 */
@@ -117,46 +125,46 @@ public class OrdersVO extends CommonVO implements Serializable {
 		this.email = email;
 	}
 	/**
-	 * orderno attribute 를 리턴한다.
+	 * orderNo attribute 를 리턴한다.
 	 * @return String
 	 */
-	public String getOrderno() {
-		return orderno;
+	public String getOrderNo() {
+		return orderNo;
 	}
 	/**
-	 * orderno attribute 값을 설정한다.
-	 * @param orderno String
+	 * orderNo attribute 값을 설정한다.
+	 * @param orderNo String
 	 */
-	public void setOrderno(String orderno) {
-		this.orderno = orderno;
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
 	}
 	/**
-	 * itemno attribute 를 리턴한다.
+	 * itemNo attribute 를 리턴한다.
 	 * @return String
 	 */
-	public String getItemno() {
-		return itemno;
+	public String getItemNo() {
+		return itemNo;
 	}
 	/**
 	 * itemno attribute 값을 설정한다.
-	 * @param itemno String
+	 * @param itemNo String
 	 */
-	public void setItemno(String itemno) {
-		this.itemno = itemno;
+	public void setItemNo(String itemNo) {
+		this.itemNo = itemNo;
 	}
 	/**
-	 * statuscode attribute 를 리턴한다.
+	 * statusCd attribute 를 리턴한다.
 	 * @return String
 	 */
-	public String getStatuscode() {
-		return statuscode;
+	public String getStatusCd() {
+		return statusCd;
 	}
 	/**
-	 * statuscode attribute 값을 설정한다.
-	 * @param statuscode String
+	 * statusCd attribute 값을 설정한다.
+	 * @param statusCd String
 	 */
-	public void setStatuscode(String statuscode) {
-		this.statuscode = statuscode;
+	public void setStatusCd(String statusCd) {
+		this.statusCd = statusCd;
 	}
 	/**
 	 * cancelDt attribute 를 리턴한다.
@@ -201,6 +209,34 @@ public class OrdersVO extends CommonVO implements Serializable {
 		this.orderType = orderType;
 	}
 	/**
+	 * prdType attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getPrdType() {
+		return prdType;
+	}
+	/**
+	 * prdType attribute 값을 설정한다.
+	 * @param orderType String
+	 */
+	public void setPrdType(String prdType) {
+		this.prdType = prdType;
+	}
+	/**
+	 * orderCnt attribute 를 리턴한다.
+	 * @return int
+	 */
+	public int getOrderCnt() {
+		return orderCnt;
+	}
+	/**
+	 * orderCnt attribute 값을 설정한다.
+	 * @param orderCnt int
+	 */
+	public void setOrderCnt(int orderCnt) {
+		this.orderCnt = orderCnt;
+	}
+	/**
 	 * price attribute 를 리턴한다.
 	 * @return int
 	 */
@@ -213,6 +249,20 @@ public class OrdersVO extends CommonVO implements Serializable {
 	 */
 	public void setPrice(int price) {
 		this.price = price;
+	}
+	/**
+	 * addPrice attribute 를 리턴한다.
+	 * @return int
+	 */
+	public int getAddPrice() {
+		return addPrice;
+	}
+	/**
+	 * addPrice attribute 값을 설정한다.
+	 * @param price int
+	 */
+	public void setAddPrice(int addPrice) {
+		this.addPrice = addPrice;
 	}
 	/**
 	 * payTotal attribute 를 리턴한다.
@@ -241,6 +291,20 @@ public class OrdersVO extends CommonVO implements Serializable {
 	 */
 	public void setPriceDiscount(int priceDiscount) {
 		this.priceDiscount = priceDiscount;
+	}
+	/**
+	 * usePoint attribute 를 리턴한다.
+	 * @return int
+	 */
+	public int getUsePoint() {
+		return usePoint;
+	}
+	/**
+	 * usePoint attribute 값을 설정한다.
+	 * @param usePoint int
+	 */
+	public void setUsePoint(int usePoint) {
+		this.usePoint = usePoint;
 	}
 	/**
 	 * priceCard attribute 를 리턴한다.
@@ -285,18 +349,18 @@ public class OrdersVO extends CommonVO implements Serializable {
 		this.priceDiscountReason = priceDiscountReason;
 	}
 	/**
-	 * payGubun attribute 를 리턴한다.
+	 * payCd attribute 를 리턴한다.
 	 * @return String
 	 */
-	public String getPayGubun() {
-		return payGubun;
+	public String getPayCd() {
+		return payCd;
 	}
 	/**
-	 * payGubun attribute 값을 설정한다.
+	 * payCd attribute 값을 설정한다.
 	 * @param payGubun String
 	 */
-	public void setPayGubun(String payGubun) {
-		this.payGubun = payGubun;
+	public void setPayCd(String payCd) {
+		this.payCd = payCd;
 	}
 	/**
 	 * memo attribute 를 리턴한다.
@@ -313,18 +377,18 @@ public class OrdersVO extends CommonVO implements Serializable {
 		this.memo = memo;
 	}
 	/**
-	 * confirmid attribute 를 리턴한다.
+	 * confirmId attribute 를 리턴한다.
 	 * @return String
 	 */
-	public String getConfirmid() {
-		return confirmid;
+	public String getConfirmId() {
+		return confirmId;
 	}
 	/**
-	 * confirmid attribute 값을 설정한다.
-	 * @param confirmid String
+	 * confirmId attribute 값을 설정한다.
+	 * @param confirmId String
 	 */
-	public void setConfirmid(String confirmid) {
-		this.confirmid = confirmid;
+	public void setConfirmId(String confirmId) {
+		this.confirmId = confirmId;
 	}
 	/**
 	 * refundPrice attribute 를 리턴한다.

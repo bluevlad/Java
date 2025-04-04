@@ -26,7 +26,39 @@ public class LockerService {
 	public JSONObject getLocker(LockerVO lockerVO) {
 		return lockerMapper.getLocker(lockerVO);
 	}
+    public ArrayList<JSONObject> selectLockerNumList(LockerVO lockerVO) {
+		return lockerMapper.selectLockerNumList(lockerVO);
+    }
 
+    public int getLockerRentSeq(LockerVO lockerVO) {
+        return lockerMapper.getLockerRentSeq(lockerVO);
+    }
+    public String getOrderNo(OrdersVO ordersVO) {
+        return lockerMapper.getOrderNo(ordersVO);
+    }
+    public void updateOrderSeq(LockerVO lockerVO) {
+    	lockerMapper.updateOrderSeq(lockerVO);
+    }
+
+    public void insertOrders(OrdersVO ordersVO) {
+    	lockerMapper.insertOrders(ordersVO);
+    }
+    public void insertOrderPay(OrdersVO ordersVO) {
+    	lockerMapper.insertOrderPay(ordersVO);
+    }
+    public void insertOrderItem(OrdersVO ordersVO) {
+    	lockerMapper.insertOrderItem(ordersVO);
+    }
+    
+    public void insertLockerRent(LockerVO lockerVO) {
+    	lockerMapper.insertLockerRent(lockerVO);
+    }
+    public void updateLockerNum(LockerVO lockerVO) {
+    	lockerMapper.updateLockerNum(lockerVO);
+    }
+
+    
+    
     public void insertLocker(LockerVO lockerVO) {
     	lockerMapper.insertLocker(lockerVO);
     }
@@ -37,10 +69,6 @@ public class LockerService {
 
     public void insertLockerNum(LockerVO lockerVO) {
     	lockerMapper.insertLockerNum(lockerVO);
-    }
-    
-    public ArrayList<JSONObject> selectLockerNumList(LockerVO lockerVO) {
-		return lockerMapper.selectLockerNumList(lockerVO);
     }
 
     public int selectLockerNumUseCount(LockerVO lockerVO) {
@@ -65,34 +93,6 @@ public class LockerService {
 
     public void updateLockerFlag(LockerVO lockerVO) {
     	lockerMapper.updateLockerFlag(lockerVO);
-    }
-
-    public int getOrderSeq(LockerVO lockerVO) {
-        return lockerMapper.getOrderSeq(lockerVO);
-    }
-
-    public void insertOrderItem(LockerVO lockerVO) {
-    	lockerMapper.insertOrderItem(lockerVO);
-    }
-
-    public void insertOrders(LockerVO lockerVO) {
-    	lockerMapper.insertOrders(lockerVO);
-    }
-
-    public void insertApprovals(LockerVO lockerVO) {
-    	lockerMapper.insertApprovals(lockerVO);
-    }
-
-    public void insertLockerRent(LockerVO lockerVO) {
-    	lockerMapper.insertLockerRent(lockerVO);
-    }
-
-    public int getLockerRentSeq(LockerVO lockerVO) {
-        return lockerMapper.getLockerRentSeq(lockerVO);
-    }
-
-    public void updateLockerNum(LockerVO lockerVO) {
-    	lockerMapper.updateLockerNum(lockerVO);
     }
 
     public void updateLockerNumRent(LockerVO lockerVO) {

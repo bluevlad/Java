@@ -25,6 +25,7 @@ import com.academy.common.CommonUtil;
 import com.academy.common.PaginationInfo;
 import com.academy.locker.service.LockerService;
 import com.academy.locker.service.LockerVO;
+import com.academy.locker.service.OrdersVO;
 
 @RestController
 @RequestMapping("/api/locker")
@@ -62,9 +63,7 @@ public class LockerApi extends CORSFilter {
 		paginationInfo.setTotalRecordCount(totCnt);
 		jsonObject.put("paginationInfo", paginationInfo);
 
-		JSONObject jObject = new JSONObject(jsonObject);
-
-		return jObject;
+		return new JSONObject(jsonObject);
 	}
 
 	/**
@@ -72,109 +71,89 @@ public class LockerApi extends CORSFilter {
 	 * @throws Exception
 	 */
 	@GetMapping(value = "/getLocker")
-	public JSONObject get(@ModelAttribute("LockerVO") LockerVO lockerVO) throws Exception { 
+	public JSONObject getLocker(@ModelAttribute("LockerVO") LockerVO lockerVO) throws Exception { 
 		
 		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
 
 		jsonObject.put("lockerDetail", lockerService.getLocker(lockerVO));
 		jsonObject.put("lockerNumList", lockerService.selectLockerNumList(lockerVO));
 
-		JSONObject jObject = new JSONObject(jsonObject);
-
-		return jObject;
+		return new JSONObject(jsonObject);
 	}
 
 	/**
-	 * 사물함정보를 신규로 등록한다.
-	 * @param lockerVO
-	 * @param commandMap
-	 * @param bindingResult
-	 * @param model
-	 * @throws Exception
-	 */
-	@PostMapping(value="/insertLocker")
-	public String insertLocker(@ModelAttribute("LockerVO") LockerVO lockerVO, @RequestParam Map<?, ?> commandMap, BindingResult bindingResult, ModelMap model) throws Exception {
-		
-    	// 0. Spring Security 사용자권한 처리
-		
-		lockerService.insertLocker(lockerVO);
-
-		int boxCount = CommonUtil.parseInt(commandMap.get("boxCount").toString());	// 사물함 총 갯수
-		int startNum = CommonUtil.parseInt(commandMap.get("startNum").toString());	// 시작번호
-		int endNum = CommonUtil.parseInt(commandMap.get("endNum").toString());	// 종료번호
-
-		if (boxCount > 0){
-			for( int i = startNum; i <= endNum; i++ ) {
-				lockerVO.setBoxNum(i);
-				lockerService.insertLockerNum(lockerVO);
-			}
-		}
-
-		return "redirect:/academy/box/List.do";
-	}
-
-	/**
-	 * 사물함정보를 변경한다.
-	 * @param ExamVO
-	 * @param commandMap
-	 * @param bindingResult
-	 * @param model
-	 * @throws Exception
-	 */
-	@GetMapping(value="/lockerUpdate")
-	public String Update(@ModelAttribute("LockerVO") LockerVO lockerVO) throws Exception {
-
-		// 0. Spring Security 사용자권한 처리
-
-		lockerService.updateLocker(lockerVO);
-
-		return "OK";
-	}
-
-	/**
-	 * @Method Name : lockerRentWrite
-	 * @작성일 : 2023. 09
+	 * @Method Name : insertLockerRent
+	 * @작성일 : 2025. 04
 	 * @Method 설명 : 사물함 대여 신청 등록
-	 * @param model
-	 * @param request
-	 * @return String
 	 * @throws Exception
 	 */
-	@GetMapping(value = "/lockerRentWrite")
-	public String boxRentWrite(@ModelAttribute("LockerVO") LockerVO lockerVO, @RequestParam Map<?, ?> commandMap, ModelMap model) throws Exception {
-
-		// 사물함 BOX_CD로 상세정보를 가져온다.
-        model.addAttribute("rentSeq", commandMap.get("rentSeq") == null ? "" : (String)commandMap.get("rentSeq"));
-        lockerVO.setRentSeq(CommonUtil.parseInt(commandMap.get("rentSeq").toString()));
-
-        JSONObject lockerNumRentDetail = null;
-        JSONObject lockerNumRentOrderDetail = null;
-		if (lockerVO.getRentSeq() > 0) {
-			// 사물함 대여 신청 정보(현재)
-			lockerNumRentDetail = lockerService.selectLockerNumRentDetail(lockerVO);
-			
-			// 사물함 대여 현재 결제 정보를 가져온다
-			if (lockerNumRentDetail != null){
-				lockerVO.setOrderno(lockerNumRentDetail.get("Orderno").toString());
-				lockerNumRentOrderDetail = lockerService.selectLockerNumRentOrderDetail(lockerVO);
-			}
-		}
-
-		if (lockerNumRentOrderDetail != null){
-			model.addAttribute("WMODE", "EDT");
-		} else {
-			model.addAttribute("WMODE", "INS");
-		}
-
-		JSONObject BoxDetail = lockerService.getLocker(lockerVO);
-        model.addAttribute("lockerVO", BoxDetail);
+	@PostMapping(value = "/insertLockerRent")
+	@Transactional(rollbackFor = Exception.class)
+	public JSONObject insertLockerRent(
+				@ModelAttribute("LockerVO") LockerVO lockerVO,
+				@ModelAttribute("OrdersVO") OrdersVO ordersVO,
+				@RequestParam Map<?, ?> commandMap, ModelMap model
+			) throws Exception {
 		
-		// 사물함 대여 결제 이력들
-		model.addAttribute("boxNumRentOrderList", lockerService.selectLockerNumRentOrderList(lockerVO));
-		model.addAttribute("boxNumRentDetail", lockerNumRentDetail);
-		model.addAttribute("boxNumRentOrderDetail", lockerNumRentOrderDetail);
+		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
 
-		return "egovframework/com/academy/box/RentWrite";
+		try {
+
+			String userId = String.valueOf(commandMap.get("userId"));
+			String boxPrice = String.valueOf(commandMap.get("boxPrice"));
+		    
+		    lockerVO.setBoxCd(String.valueOf(commandMap.get("boxCd")));
+		    lockerVO.setBoxNum(CommonUtil.parseInt(commandMap.get("boxNum")));
+		    
+		    /** 주문 정보 입력 시작 **/
+		    ordersVO.setPrdType("B");
+		    lockerService.getOrderNo(ordersVO); //주문번호 생성
+//		    ordersVO.setOrderNo(ordCd);
+
+		    ordersVO.setUserId(userId);
+		    ordersVO.setRegId(userId);
+		    ordersVO.setUpdId(userId);
+		    
+		    lockerService.insertOrders(ordersVO);
+		    
+		    ordersVO.setPayTotal(CommonUtil.parseInt(boxPrice));
+
+		    /** 주문 상세 결제 정보 입력 시작 **/
+		    ordersVO.setPriceCard(CommonUtil.parseInt(boxPrice));
+		    ordersVO.setPayCd("PAY110"); //결제 구분 - 카드
+
+		    lockerService.insertOrderPay(ordersVO);
+
+		    /** 주문 상세 정보 입력 시작 **/
+		    String itmno = "B" + lockerVO.getBoxCd() + lockerVO.getBoxNum();
+		    ordersVO.setItemNo(itmno);
+		    ordersVO.setOrderCnt(1);
+		    ordersVO.setStatusCd("105"); //주문완료 처리
+		    ordersVO.setMemo("사물함 온라인 예약 주문");
+		    ordersVO.setConfirmId(userId); //주문자를 승인자로 설정
+		    ordersVO.setPrdType("B"); //상품구분 사물함
+		    
+		    lockerService.insertOrderItem(ordersVO);
+		    
+		    /** 사물함 대여 정보 입력 **/
+		    lockerVO.setRentSeq(lockerService.getLockerRentSeq(lockerVO)); //해당 사물함 신규 대여번호
+		    lockerVO.setDeposit(10000); //해당 사물함 예치금
+		    lockerVO.setDepositYn("Y"); //해당 사물함 예치금 결제 여부
+		    lockerVO.setRentMemo("온라인 대여");
+		    lockerVO.setRentType("ON");
+		    
+		    lockerService.insertLockerRent(lockerVO);
+		    lockerVO.setBoxFlag("Y");
+		    lockerService.updateLockerNum(lockerVO);
+		    
+			jsonObject.put("retMsg", "대여완료");
+		} catch (Exception e){
+			jsonObject.put("retMsg", "대여실패");
+			e.printStackTrace();
+			throw e; // 예외를 다시 던져야 rollback이 적용됩니다
+		}
+
+		return new JSONObject(jsonObject);
 	}
 
 	/**
@@ -227,18 +206,18 @@ public class LockerApi extends CORSFilter {
 		lockerVO.setOrderType("B");
 		lockerVO.setOrderYear(CommonUtil.getCurrentYear());
 
-		int seq = lockerService.getOrderSeq(lockerVO);
-		String orderNo = lockerVO.getOrderType()+lockerVO.getOrderYear()+seq+"";
+//		int seq = lockerService.getOrderSeq(lockerVO);
+//		String orderNo = lockerVO.getOrderType()+lockerVO.getOrderYear()+seq+"";
 		
-		lockerVO.setOrderno(orderNo);
-		lockerVO.setItemno(lockerVO.getBoxCd()+"-"+lockerVO.getBoxNum());
+//		lockerVO.setOrderNo(orderNo);
+		lockerVO.setItemNo(lockerVO.getBoxCd()+"-"+lockerVO.getBoxNum());
 
-		lockerService.insertOrders(lockerVO);
+//		lockerService.insertOrders(lockerVO);
 
 		// 3. 오프라인 사물함 대여 결제정보 등록처리
-		lockerService.insertApprovals(lockerVO);
+//		lockerService.insertApprovals(lockerVO);
 
-		lockerService.insertOrderItem(lockerVO);
+//		lockerService.insertOrderItem(lockerVO);
 
 		// 4. 사물함 대여정보테이블(TB_OFF_BOX_RENT)에 추가
 		// 기간을 연장한다. = 기존 종료일 + 2개월
@@ -318,18 +297,18 @@ public class LockerApi extends CORSFilter {
 			lockerVO.setOrderType("B");
 			lockerVO.setOrderYear(CommonUtil.getCurrentYear());
 
-			int seq = lockerService.getOrderSeq(lockerVO);
-			String orderNo = lockerVO.getOrderType()+lockerVO.getOrderYear()+seq+"";
+//			int seq = lockerService.getOrderSeq(lockerVO);
+//			String orderNo = lockerVO.getOrderType()+lockerVO.getOrderYear()+seq+"";
 			
-			lockerVO.setOrderno(orderNo);
+//			lockerVO.setOrderNo(orderNo);
 
-			lockerVO.setItemno(lockerVO.getBoxCd()+"-"+lockerVO.getBoxNum());
+			lockerVO.setItemNo(lockerVO.getBoxCd()+"-"+lockerVO.getBoxNum());
 //			lockerVO.setMemo("사물함 데스크에서 신청");
 			
 			// 2. 오프라인 사물함 대여 주문 세부정보 등록 처리
 //			lockerVO.setIsCancel("0");
 //			lockerVO.setStatuscode("DLV105");
-			lockerService.insertOrderItem(lockerVO);
+//			lockerService.insertOrderItem(lockerVO);
 
 			// 3. 오프라인 사물함 대여 주문 등록 처리
 			if ("OF".equals(lockerVO.getRentType())){
@@ -338,10 +317,10 @@ public class LockerApi extends CORSFilter {
 				lockerVO.setOrderType("0");
 			}
 
-			lockerService.insertOrders(lockerVO);
+//			lockerService.insertOrders(lockerVO);
 
 			// 3. 오프라인 사물함 대여 결제정보 등록처리
-			lockerService.insertApprovals(lockerVO);
+//			lockerService.insertApprovals(lockerVO);
 
 			int rentSeq = lockerService.getLockerRentSeq(lockerVO);
 			lockerVO.setRentSeq(rentSeq);
@@ -482,7 +461,7 @@ public class LockerApi extends CORSFilter {
         String orderno = commandMap.get("orderno") == null ? "" : (String)commandMap.get("orderno");
         String statuscode = commandMap.get("statuscode") == null ? "" : (String)commandMap.get("statuscode");
 		
-		lockerVO.setOrderno(orderno);
+		lockerVO.setOrderNo(orderno);
 //		lockerVO.setStatuscode(statuscode);
 		
 //		params.put("CALLPOSITION", CommonUtil.isNull(request.getParameter("CALLPOSITION"), "ORDERLIST"));

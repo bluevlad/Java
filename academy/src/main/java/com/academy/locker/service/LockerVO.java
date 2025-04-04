@@ -73,15 +73,17 @@ public class LockerVO extends CommonVO implements Serializable {
 	private int depositRefund;
 
     /** 주문코드 */
-    private String orderno;
+    private String orderNo;
     /** 상품코드 */
-    private String itemno;
+    private String itemNo;
     /** 할인사유 */
     private String priceDiscountReason;
     /** 주문구분 */
     private String orderType;
     /** 주문년도 */
     private String orderYear;
+	/** 회원 id */
+	private String userId;
     
 	/**
 	 * boxCd attribute 를 리턴한다.
@@ -427,32 +429,32 @@ public class LockerVO extends CommonVO implements Serializable {
 	}
 
 	/**
-	 * orderno attribute 를 리턴한다.
+	 * orderNo attribute 를 리턴한다.
 	 * @return String
 	 */
-	public String getOrderno() {
-		return orderno;
+	public String getOrderNo() {
+		return orderNo;
 	}
 	/**
-	 * orderno attribute 값을 설정한다.
+	 * orderNo attribute 값을 설정한다.
 	 * @param orderno String
 	 */
-	public void setOrderno(String orderno) {
-		this.orderno = orderno;
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
 	}
 	/**
-	 * itemno attribute 를 리턴한다.
+	 * itemNo attribute 를 리턴한다.
 	 * @return String
 	 */
-	public String getItemno() {
-		return itemno;
+	public String getItemNo() {
+		return itemNo;
 	}
 	/**
-	 * itemno attribute 값을 설정한다.
-	 * @param itemno String
+	 * itemNo attribute 값을 설정한다.
+	 * @param itemNo String
 	 */
-	public void setItemno(String itemno) {
-		this.itemno = itemno;
+	public void setItemNo(String itemNo) {
+		this.itemNo = itemNo;
 	}
 	/**
 	 * priceDiscountReason attribute 를 리턴한다.
@@ -495,6 +497,20 @@ public class LockerVO extends CommonVO implements Serializable {
 	 */
 	public void setOrderYear(String orderYear) {
 		this.orderYear = orderYear;
+	}
+	/**
+	 * userId attribute 를 리턴한다.
+	 * @return String
+	 */
+	public String getUserId() {
+		return userId;
+	}
+	/**
+	 * userId attribute 값을 설정한다.
+	 * @param userId String
+	 */
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 	
 }

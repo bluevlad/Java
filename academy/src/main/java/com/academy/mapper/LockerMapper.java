@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.json.simple.JSONObject;
 
 import com.academy.locker.service.LockerVO;
+import com.academy.locker.service.OrdersVO;
 
 /**
  * 사물함정보에 관한 데이터 접근 클래스를 정의한다.
@@ -33,14 +34,26 @@ public interface LockerMapper {
 	public int selectLockerListTotCnt(LockerVO lockerVO);
 
 	public JSONObject getLocker(LockerVO lockerVO);
+	public ArrayList<JSONObject> selectLockerNumList(LockerVO lockerVO);
 
+    public int getLockerRentSeq(LockerVO lockerVO);
+    public String getOrderNo(OrdersVO ordersVO);
+    public void updateOrderSeq(LockerVO lockerVO);
+
+    public void insertOrders(OrdersVO ordersVO);
+    public void insertOrderItem(OrdersVO ordersVO);
+    public void insertOrderPay(OrdersVO ordersVO);
+
+    public void insertLockerRent(LockerVO lockerVO);
+    public void updateLockerNum(LockerVO lockerVO);
+
+    
+	
     public void insertLocker(LockerVO lockerVO);
 
     public void updateLocker(LockerVO lockerVO);
 
     public void insertLockerNum(LockerVO lockerVO);
-
-	public ArrayList<JSONObject> selectLockerNumList(LockerVO lockerVO);
 
     public int selectLockerNumUseCount(LockerVO lockerVO);
 
@@ -53,20 +66,6 @@ public interface LockerMapper {
 	public ArrayList<JSONObject> selectLockerNumRentOrderList(LockerVO lockerVO);
 
     public void updateLockerFlag(LockerVO lockerVO);
-
-    public int getOrderSeq(LockerVO lockerVO);
-
-    public void insertOrderItem(LockerVO lockerVO);
-
-    public void insertOrders(LockerVO lockerVO);
-
-    public void insertApprovals(LockerVO lockerVO);
-
-    public void insertLockerRent(LockerVO lockerVO);
-
-    public int getLockerRentSeq(LockerVO lockerVO);
-
-    public void updateLockerNum(LockerVO lockerVO);
 
     public void updateLockerNumRent(LockerVO lockerVO);
 
