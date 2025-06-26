@@ -3,14 +3,17 @@
 <mapper namespace="com.academy.mapper.DashBoardMapper">
 
 	<select id="myRentLocker">
-		SELECT abn.box_cd, abn.box_num, abn.user_id, abn.box_flag, abn.rent_seq, abr.rent_memo,
-				DATE_FORMAT(ABR.RENT_START, "%Y-%m-%d") rent_start, DATE_FORMAT(ABR.RENT_END , "%Y-%m-%d") rent_end,
-				abr.deposit, abr.deposit_yn, abr.order_no, abr.extend_yn, abr.key_yn, abr.rent_type
+		SELECT ab.box_cd, ab.box_nm, 
+		       abn.box_num, abn.user_id, abn.box_flag, abn.rent_seq, abr.rent_memo,
+		       DATE_FORMAT(ABR.RENT_START, "%Y-%m-%d") rent_start, DATE_FORMAT(ABR.RENT_END, "%Y-%m-%d") rent_end,
+		       (now() BETWEEN ABR.RENT_START AND ABR.RENT_END) rest_yn,
+		       abr.deposit, abr.deposit_yn, abr.order_no, abr.extend_yn, abr.key_yn, abr.rent_type
 		FROM ACM_BOX AB, ACM_BOX_NUM ABN, ACM_BOX_RENT ABR
 		WHERE AB.BOX_CD = ABN.BOX_CD 
 		AND AB.BOX_CD = ABR.BOX_CD
 		AND ABN.BOX_NUM = ABR.BOX_NUM
         and abr.USER_ID = #{userId}
+        order by ABR.RENT_END DESC
 	</select>
 
 </mapper>

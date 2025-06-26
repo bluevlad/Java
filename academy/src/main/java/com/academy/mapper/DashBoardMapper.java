@@ -1,5 +1,7 @@
 package com.academy.mapper;
 
+import java.util.ArrayList;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.json.simple.JSONObject;
 
@@ -27,6 +29,6 @@ public interface DashBoardMapper {
      * @param CommonVO 검색조건
      * @return List 사물함 목록정보
      */
-	public JSONObject myRentLocker(LockerVO lockerVO);
+	public  ArrayList<JSONObject> myRentLocker(LockerVO lockerVO);
 
 }

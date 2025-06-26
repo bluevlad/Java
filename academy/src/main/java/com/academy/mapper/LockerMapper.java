@@ -47,6 +47,9 @@ public interface LockerMapper {
     public void insertLockerRent(LockerVO lockerVO);
     public void updateLockerNum(LockerVO lockerVO);
 
+    public void insertOrderRefund(OrdersVO ordersVO);
+	public JSONObject selectLockerOrderDetail(LockerVO lockerVO);
+
     
 	
     public void insertLocker(LockerVO lockerVO);
@@ -60,9 +63,6 @@ public interface LockerMapper {
 	public JSONObject selectLockerNumRentDetail(LockerVO lockerVO);
 
 	public JSONObject selectLockerNumRentOrderDetail(LockerVO lockerVO);
-
-	public JSONObject selectLockerOrderDetail(LockerVO lockerVO);
-
 	public ArrayList<JSONObject> selectLockerNumRentOrderList(LockerVO lockerVO);
 
     public void updateLockerFlag(LockerVO lockerVO);
@@ -82,8 +82,6 @@ public interface LockerMapper {
     public void deleteLockerRentByOrderId(LockerVO lockerVO);
 
     public void deleteLockerOrder(LockerVO lockerVO);
-
-    public void insertOrderRefund(LockerVO lockerVO);
 
     public void insertOrderItemLocker(LockerVO lockerVO);
 

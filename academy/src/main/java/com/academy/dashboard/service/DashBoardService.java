@@ -1,5 +1,7 @@
 package com.academy.dashboard.service;
 
+import java.util.ArrayList;
+
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +17,7 @@ public class DashBoardService {
         this.dashBoardMapper = dashBoardMapper;
     }
 	
-	public JSONObject myRentLocker(LockerVO lockerVO) {
+	public ArrayList<JSONObject> myRentLocker(LockerVO lockerVO) {
 		return dashBoardMapper.myRentLocker(lockerVO);
 	}
 	

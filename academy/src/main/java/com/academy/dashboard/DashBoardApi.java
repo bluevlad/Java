@@ -40,9 +40,7 @@ public class DashBoardApi extends CORSFilter {
 		
 		jsonObject.put("myRentLocker", dashBoardService.myRentLocker(lockerVO));
 
-		JSONObject jObject = new JSONObject(jsonObject);
-
-		return jObject;
+		return new JSONObject(jsonObject);
 	}
     
 }

@@ -71,6 +71,8 @@ public class LockerVO extends CommonVO implements Serializable {
     private String rentType;
 	/** 예치금환불 */
 	private int depositRefund;
+	/** 대여기간 잔여 여부 */
+	private int restYn;
 
     /** 주문코드 */
     private String orderNo;
@@ -426,6 +428,20 @@ public class LockerVO extends CommonVO implements Serializable {
 	 */
 	public void setDepositRefund(int depositRefund) {
 		this.depositRefund = depositRefund;
+	}
+	/**
+	 * restYn attribute 를 리턴한다.
+	 * @return int
+	 */
+	public int getRestYn() {
+		return restYn;
+	}
+	/**
+	 * restYn attribute 값을 설정한다.
+	 * @param restYn int
+	 */
+	public void setRestYn(int restYn) {
+		this.restYn = restYn;
 	}
 
 	/**

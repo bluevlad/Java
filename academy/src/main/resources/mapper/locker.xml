@@ -92,7 +92,7 @@
 			BOX_CD, BOX_NUM, RENT_SEQ, USER_ID, RENT_START, RENT_END, DEPOSIT, DEPOSIT_YN, EXTEND_YN, KEY_YN,     
 			RENT_MEMO, UPD_DT, UPD_ID, RENT_TYPE, ORDER_NO    
 		)VALUES(
-			#{boxCd}, #{boxNum}, #{rentSeq}, #{userId}, now(), now()+30, #{deposit}, #{depositYn}, #{extendYn}, #{keyYn},
+			#{boxCd}, #{boxNum}, #{rentSeq}, #{userId}, now(), DATE_ADD(NOW(), INTERVAL 29 DAY), #{deposit}, #{depositYn}, #{extendYn}, #{keyYn},
 			#{rentMemo}, now(), #{updId}, #{rentType}, #{orderNo}
 		)
 	</insert>
@@ -107,6 +107,85 @@
 			RENT_MEMO = #{rentMemo},
 			UPD_DT = now(),
 			UPD_ID = #{updId}
+		WHERE BOX_CD = #{boxCd}
+		AND BOX_NUM = #{boxNum}
+	</update>
+
+	<!-- 사물함 대여 신청 결제정보를 한개 가져온다.  -->
+	<select id="selectLockerNumRentDetail">
+		SELECT abn.box_cd, abn.box_num, abn.user_id, abn.box_flag, abn.rent_seq, abr.rent_memo,
+				DATE_FORMAT(ABR.RENT_START, "%Y-%m-%d") rent_start, DATE_FORMAT(ABR.RENT_END , "%Y-%m-%d") rent_end,
+				abr.deposit, abr.deposit_yn, abr.order_no, abr.extend_yn, abr.key_yn, abr.rent_type
+		FROM ACM_BOX AB INNER JOIN ACM_BOX_NUM ABN 
+		ON AB.BOX_CD = ABN.BOX_CD 
+		AND ABN.BOX_CD = #{boxCd}
+		AND ABN.BOX_NUM = #{boxNum}
+		LEFT OUTER JOIN ACM_BOX_RENT ABR
+		ON AB.BOX_CD = ABR.BOX_CD
+		AND ABN.BOX_NUM = ABR.BOX_NUM
+		AND ABR.RENT_SEQ = #{rentSeq}
+		<if test="userId !=null and userId == '' ">
+		AND ABR.USER_ID = #{userId}
+		</if>
+	</select>
+	
+	<!-- 사물함 환불 처리 -->
+	<insert id="insertOrderRefund">
+		INSERT INTO ACM_ORDER_REFUND(
+			ORDER_NO, REFUND_PAY, REFUND_DT,
+			<if test="accBankName !=null and accBankName != '' ">
+			ACC_BANK_NAME,
+			</if>
+			<if test="accBankNum !=null and accBankNum != '' ">
+			ACC_BANK_NUM,
+			</if>
+			REG_DT
+		)VALUES(
+			#{orderNo}, #{refundPrice}, #{refundDt},
+			<if test="accBankName !=null and accBankName != '' ">
+			#{accBankName},
+			</if>
+			<if test="accBankNum !=null and accBankNum != '' ">
+			#{accBankNum},
+			</if>
+			now()
+		)
+	</insert>
+
+	<!-- 사물함 대여 신청 정보를 업데이트한다. -->
+	<update id="updateLockerNumRent">
+		UPDATE ACM_BOX_RENT 
+		SET 
+			RENT_END = now(),
+			<if test="deposit !=null and deposit != '' ">
+			DEPOSIT	       = #{deposit},
+			</if>
+			<if test="depositYn !=null and depositYn != '' ">
+			DEPOSIT_YN     = #{depositYn},
+			</if>
+			<if test="extendYn !=null and extendYn != '' ">
+			EXTEND_YN      = #{extendYn},
+			</if>
+			<if test="keyYn !=null and keyYn != '' ">
+			KEY_YN	       = #{keyYn},
+			</if>
+			UPD_ID = #{updId},
+			UPD_DT = now()
+		WHERE BOX_CD = #{boxCd} 
+		AND BOX_NUM = #{boxNum} 
+		AND RENT_SEQ = #{rentSeq}
+	</update>
+
+	<!-- 사물함 상세 테이블에 환불정보를 업데이트한다. -->
+	<update id="updateLockerNumReset">
+		UPDATE ACM_BOX_NUM 
+		SET 
+			USER_ID    = NULL,
+			BOX_FLAG  = 'N',
+			RENT_SEQ  = NULL,
+			RENT_MEMO = NULL,
+			UPD_DT = now(),
+			UPD_ID = #{updId}
 		WHERE BOX_CD = #{boxCd} 
 		AND BOX_NUM = #{boxNum}
 	</update>
@@ -119,33 +198,6 @@
 		SELECT COUNT(BOX_NUM)
 		FROM ACM_BOX_NUM			
 		WHERE BOX_CD = #{boxCd} AND BOX_FLAG = 'Y'
-	</select>
-
-	<!-- 사물함 대여 신청 결제정보를 한개 가져온다.  -->
-	<select id="selectLockerNumRentDetail">
-		SELECT abn.box_cd, abn.box_num, abn.user_id, abn.box_flag, abn.rent_seq, abr.rent_memo,
-				DATE_FORMAT(ABR.RENT_START, "%Y-%m-%d") rent_start, DATE_FORMAT(ABR.RENT_END , "%Y-%m-%d") rent_end,
-				abr.deposit, abr.deposit_yn, abr.orderno, abr.extend_yn, abr.key_yn, abr.rent_type, abr.pay_gubun, abr.deposit_refund
-		FROM ACM_BOX AB INNER JOIN ACM_BOX_NUM ABN 
-		ON AB.BOX_CD = ABN.BOX_CD 
-		AND ABN.BOX_CD = #{boxCd}
-		AND ABN.BOX_NUM = #{boxNum}
-		LEFT OUTER JOIN ACM_BOX_RENT ABR
-		ON AB.BOX_CD = ABR.BOX_CD
-		AND ABN.BOX_NUM = ABR.BOX_NUM
-		AND ABR.RENT_SEQ = #{rentSeq}
-	</select>
-
-	<!-- 사물함 대여 현재 결제 정보를 가져온다.  -->
-	<select id="selectLockerNumRentOrderDetail">
-		SELECT TOO.ORDERNO, TOO.USER_NM, TOO.REG_DT, TOO.OFF_LINE, TOO.USER_ID,
-       		TOA.PAYCODE, TOA.PRICE, TOA.PRICE_CARD, TOA.PRICE_CASH, TOA.PRICE_BANK, TOA.PAYNAME, 
-       		TOA.PRICE_DISCOUNT, TOA.PRICE_DISCOUNT_REASON
-		FROM ACM_ORDERS TOO, ACM_ORDER_ITEM TOM, ACM_ORDER_APPROVALS TOA
-		WHERE TOO.ORDERNO = TOM.ORDERNO
-		AND TOM.ORDERNO = TOA.ORDERNO
-		AND TOM.ISCANCEL= 0
-		AND TOO.ORDERNO = #{orderno}
 	</select>
 
 	<!-- 사물함 대여 현재 결제 정보를 가져온다.  -->
@@ -202,54 +254,6 @@
 	</update>
 	 
 
-	<!-- 사물함 대여 신청 정보를 업데이트한다. -->
-	<update id="updateLockerNumRent">
-		UPDATE ACM_BOX_RENT 
-		SET 
-			<if test="userId !=null and userId != '' ">
-			USER_ID	       = #{userId},
-			</if>
-			<if test="rentStart !=null and rentStart != '' ">
-			RENT_START     = #{rentStart},
-			</if>
-			<if test="rentEnd !=null and rentEnd != '' ">
-			RENT_END       = #{rentEnd},
-			</if>
-			<if test="deposit !=null and deposit != '' ">
-			DEPOSIT	       = #{deposit},
-			</if>
-			<if test="depositYn !=null and depositYn != '' ">
-			DEPOSIT_YN     = #{depositYn},
-			</if>
-			<if test="extendYn !=null and extendYn != '' ">
-			EXTEND_YN      = #{extendYn},
-			</if>
-			<if test="keyYn !=null and keyYn != '' ">
-			KEY_YN	       = #{keyYn},
-			</if>
-			<if test="updId !=null and updId != '' ">
-			UPD_ID      = #{updId},
-			</if>
-			<if test="rentType !=null and rentType != '' ">
-			RENT_TYPE      = #{rentType},
-			</if>
-			<if test="orderno !=null and orderno != '' ">
-			ORDERNO       = #{orderno},
-			</if>
-			<if test="payGubun !=null and payGubun != '' ">
-			PAY_GUBUN      = #{payGubun},
-			</if>
-			<if test="depositRefund !=null and depositRefund != '' ">
-			DEPOSIT_REFUND = #{depositRefund},
-			</if>
-			<if test="rentMemo !=null and rentMemo != '' ">
-			RENT_MEMO      = #{rentMemo},	
-			</if>
-			UPD_DT      = now()
-		WHERE 
-			BOX_CD = #{boxCd} AND BOX_NUM = #{boxNum} AND RENT_SEQ = #{rentSeq}
-	</update>
-
 	<!-- 사물함 대여신청 결제정보를 업데이트한다. -->
 	<update id="updateApprovals">
 		UPDATE acm_order_approvals 
@@ -275,23 +279,6 @@
 		RENT_MEMO = #{rentMemo}
 		WHERE BOX_CD = #{boxCd}
 		AND BOX_NUM = #{boxNum}
-	</update>
-
-	<!-- 사물함 상세 테이블에 환불정보를 업데이트한다. -->
-	<update id="updateLockerNumReset">
-		UPDATE ACM_BOX_NUM 
-		SET 
-			USER_ID    = '',
-			BOX_FLAG  = 'N',
-			RENT_SEQ  = NULL,
-			RENT_MEMO = '',
-			UPD_DT = now(),
-			UPD_ID = #{updId}
-		WHERE 
-			BOX_CD = #{usedBoxCd} AND BOX_NUM = #{usedBoxNum}
-			<if test="rentSeq !=null and rentSeq != '' ">
-			AND RENT_SEQ = #{rentSeq}
-			</if>
 	</update>
 
 	<!-- 사물함 변경시 정보를 업데이트한다. -->
@@ -331,29 +318,6 @@
 		        #{orderno, mode=IN}
 		)
 	</update>
-	
-	<!-- 사물함 환불 처리 -->
-	<insert id="insertOrderRefund">
-		INSERT INTO ACM_ORDER_REFUND(
-			ORDERNO, REFUND_PAY, REFUND_DT,
-			<if test="accBankName !=null and accBankName != '' ">
-			ACC_BANK_NAME,
-			</if>
-			<if test="accBankNum !=null and accBankNum != '' ">
-			ACC_BANK_NUM,
-			</if>
-			REG_DT
-		)VALUES(
-			#{orderno}, #{refundPrice}, #{refundDt},
-			<if test="accBankName !=null and accBankName != '' ">
-			#{accBankName},
-			</if>
-			<if test="accBankNum !=null and accBankNum != '' ">
-			#{accBankNum},
-			</if>
-			now()
-		)
-	</insert>
 	 
 	<!--  오프라인 사물함 대여 주문 세부정보 등록 처리-->
 	<insert id="insertOrderItemLocker">

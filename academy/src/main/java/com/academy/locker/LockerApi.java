@@ -141,6 +141,7 @@ public class LockerApi extends CORSFilter {
 		    lockerVO.setDepositYn("Y"); //해당 사물함 예치금 결제 여부
 		    lockerVO.setRentMemo("온라인 대여");
 		    lockerVO.setRentType("ON");
+		    lockerVO.setOrderNo(ordersVO.getOrderNo()); //대여정보에 주문번호 설정
 		    
 		    lockerService.insertLockerRent(lockerVO);
 		    lockerVO.setBoxFlag("Y");
@@ -358,7 +359,7 @@ public class LockerApi extends CORSFilter {
 	 * @return String
 	 * @throws Exception
 	 */
-	@GetMapping(value = "/api/lockerChange.pop")
+	@GetMapping(value = "/lockerChange.pop")
 	public String boxChange(@ModelAttribute("LockerVO") LockerVO lockerVO, @RequestParam Map<?, ?> commandMap, ModelMap model) throws Exception {
 		
 		/** paging */
@@ -397,7 +398,7 @@ public class LockerApi extends CORSFilter {
 	 * @return String
 	 * @throws Exception
 	 */
-	@GetMapping("/api/lockerChangePop")
+	@GetMapping("/lockerChangePop")
 	public ModelAndView changePop(@ModelAttribute("LockerVO") LockerVO lockerVO, @RequestParam Map<?, ?> commandMap) throws Exception {
 
     	ModelAndView ret = new ModelAndView("jsonView");
@@ -488,7 +489,7 @@ public class LockerApi extends CORSFilter {
 	 * @return String
 	 * @throws Exception
 	 */
-	@GetMapping(value = "/api/lockerDeleteOrder")
+	@GetMapping(value = "/lockerDeleteOrder")
 	@Transactional( readOnly=false,  rollbackFor=Exception.class)
 	public String DeleteOrder(@ModelAttribute("LockerVO") LockerVO lockerVO) throws Exception {
 
@@ -513,8 +514,8 @@ public class LockerApi extends CORSFilter {
 
 
 	/**
-	 * @Method Name : boxRefundProcess
-	 * @작성일 : 2023. 11.
+	 * @Method Name : lockerRefundProcess
+	 * @작성일 : 2025. 06.
 	 * @Method 설명 : 사물함 대여 환불 처리
      * - ACM_ORDER_REFUND 테이블에 환불 정보를 인서트한다.(환불금액, 환불일, 유저아이디)
      * - ACM_ORDER_ITEM 테이블에 환불 정보를 인서트한다.
@@ -526,34 +527,55 @@ public class LockerApi extends CORSFilter {
 	 * @return String
 	 * @throws Exception
 	 */
-	@GetMapping(value = "/api/lockerRefund")
+	@PostMapping(value = "/lockerRefund")
 	@Transactional( readOnly=false,  rollbackFor=Exception.class)
-	public String boxRefund(@ModelAttribute("LockerVO") LockerVO lockerVO) throws Exception {
+	public JSONObject lockerRefund(@ModelAttribute("LockerVO") LockerVO lockerVO,
+					@ModelAttribute("OrdersVO") OrdersVO ordersVO,
+					@RequestParam Map<?, ?> commandMap) throws Exception {
+		
+		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
 
 		// 0. Spring Security 사용자권한 처리
+		String userId = String.valueOf(commandMap.get("userId"));
+		String boxCd = String.valueOf(commandMap.get("boxCd"));
+		String boxNum = String.valueOf(commandMap.get("boxNum"));
+		String rentSeq = String.valueOf(commandMap.get("rentSeq"));
+		lockerVO.setUserId(userId);
+		lockerVO.setBoxCd(boxCd);
+		lockerVO.setBoxNum(CommonUtil.parseInt(boxNum));
+		lockerVO.setRentSeq(CommonUtil.parseInt(rentSeq));
 		
-		// 1. 환불 테이블(TB_REFUND)에 삽입한다.
-		lockerService.insertOrderRefund(lockerVO); //테스트중
+		JSONObject lockerOrderDetail  = lockerService.selectLockerOrderDetail(lockerVO);
 
-		// 2. TB_OFF_ORDER_MGNT_NO에 삽입한다.
-//		lockerVO.setConfirmid(loginVO.getUniqId());
-//		lockerVO.setIsCancel("2");
-//		lockerVO.setStatuscode("DLV230"); // 환불완료
+		try {
+		
+			if (lockerOrderDetail != null) {
+				
+				// 1. 환불 테이블(ACM_ORDER_REFUND)에 삽입한다.
+				ordersVO.setOrderNo(lockerOrderDetail.get("order_no").toString());
+				ordersVO.setRefundPrice(0);
+				ordersVO.setRefundDt(CommonUtil.getCurrentDateTime());
+				ordersVO.setRefundMemo("본인이 직접 환불"); // 환불메모 입력
+				lockerService.insertOrderRefund(ordersVO); //환불정보 입력
+		
+			    // 2. ACM_BOX_RENT에서 업데이트
+				lockerService.updateLockerNumRentRefund(lockerVO);
+		
+				// 5. TB_OFF_BOX_NUM 사물함 상세정보의 BOX_FLAG = N, USERID = "" 초기화한다.
+				lockerVO.setUpdId(userId);
+				lockerService.updateLockerNumReset(lockerVO);
+				jsonObject.put("retMsg", "환불완료");
+			}else {
+				jsonObject.put("retMsg", "환불실패");
+			}
+			
+		} catch (Exception e){
+			jsonObject.put("retMsg", "시스템오류");
+			e.printStackTrace();
+			throw e; // 예외를 다시 던져야 rollback이 적용됩니다
+		}
 
-		lockerService.insertOrderItemLocker(lockerVO);
-
-		// 3. 오프라인 사물함 대여 결제정보 등록처리
-		lockerService.updateOrderApprovalsRefund(lockerVO);
-
-	    // 4. TB_OFF_BOX_RENT에서 업데이트 ( RENT_END, 승인:1, 키반납:Y, 사물함사용상태: 미사용)
-		lockerService.updateLockerNumRentRefund(lockerVO);
-
-		// 5. TB_OFF_BOX_NUM 사물함 상세정보의 BOX_FLAG = N, USERID = "" 초기화한다.
-		lockerVO.setBoxFlag("N");
-
-		lockerService.updateLockerNumReset(lockerVO);
-
-		return "OK";
+		return new JSONObject(jsonObject);
 	}
 
 }

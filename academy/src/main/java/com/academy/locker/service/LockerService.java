@@ -57,7 +57,15 @@ public class LockerService {
     	lockerMapper.updateLockerNum(lockerVO);
     }
 
-    
+    public void insertOrderRefund(OrdersVO ordersVO) {
+    	lockerMapper.insertOrderRefund(ordersVO);
+    }
+	public JSONObject selectLockerOrderDetail(LockerVO lockerVO) {
+		return lockerMapper.selectLockerOrderDetail(lockerVO);
+	}
+
+
+	
     
     public void insertLocker(LockerVO lockerVO) {
     	lockerMapper.insertLocker(lockerVO);
@@ -79,14 +87,10 @@ public class LockerService {
 		return lockerMapper.selectLockerNumRentDetail(lockerVO);
 	}
 
+
 	public JSONObject selectLockerNumRentOrderDetail(LockerVO lockerVO) {
 		return lockerMapper.selectLockerNumRentOrderDetail(lockerVO);
 	}
-
-	public JSONObject selectLockerOrderDetail(LockerVO lockerVO) {
-		return lockerMapper.selectLockerOrderDetail(lockerVO);
-	}
-
 	public ArrayList<JSONObject> selectLockerNumRentOrderList(LockerVO lockerVO) {
 		return lockerMapper.selectLockerNumRentOrderList(lockerVO);
 	}
@@ -125,10 +129,6 @@ public class LockerService {
 
     public void deleteLockerOrder(LockerVO lockerVO) {
     	lockerMapper.deleteLockerOrder(lockerVO);
-    }
-
-    public void insertOrderRefund(LockerVO lockerVO) {
-    	lockerMapper.insertOrderRefund(lockerVO);
     }
 
     public void insertOrderItemLocker(LockerVO lockerVO) {
