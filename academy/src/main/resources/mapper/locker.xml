@@ -132,7 +132,8 @@
 	<!-- 사물함 환불 처리 -->
 	<insert id="insertOrderRefund">
 		INSERT INTO ACM_ORDER_REFUND(
-			ORDER_NO, REFUND_PAY, REFUND_DT,
+			ORDER_NO, REFUND_PAY, 
+			REFUND_DT,
 			<if test="accBankName !=null and accBankName != '' ">
 			ACC_BANK_NAME,
 			</if>
@@ -141,7 +142,8 @@
 			</if>
 			REG_DT
 		)VALUES(
-			#{orderNo}, #{refundPrice}, #{refundDt},
+			#{orderNo}, #{refundPrice}, 
+			CONCAT(DATE_FORMAT(STR_TO_DATE(LEFT(#{refundDt}, 14), '%Y%m%d%H%i%s'), '%Y-%m-%d %H:%i:%s'),'.', RIGHT(#{refundDt}, 3)),	
 			<if test="accBankName !=null and accBankName != '' ">
 			#{accBankName},
 			</if>

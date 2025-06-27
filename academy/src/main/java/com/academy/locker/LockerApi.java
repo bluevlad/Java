@@ -536,23 +536,23 @@ public class LockerApi extends CORSFilter {
 		HashMap<String,Object> jsonObject = new HashMap<String,Object>();
 
 		// 0. Spring Security 사용자권한 처리
-		String userId = String.valueOf(commandMap.get("userId"));
-		String boxCd = String.valueOf(commandMap.get("boxCd"));
-		String boxNum = String.valueOf(commandMap.get("boxNum"));
-		String rentSeq = String.valueOf(commandMap.get("rentSeq"));
+		String userId = String.valueOf(commandMap.get("rainend"));
+		String boxCd = String.valueOf(commandMap.get("box_cd"));
+		String boxNum = String.valueOf(commandMap.get("box_num"));
+		String rentSeq = String.valueOf(commandMap.get("rent_seq"));
 		lockerVO.setUserId(userId);
 		lockerVO.setBoxCd(boxCd);
 		lockerVO.setBoxNum(CommonUtil.parseInt(boxNum));
 		lockerVO.setRentSeq(CommonUtil.parseInt(rentSeq));
 		
-		JSONObject lockerOrderDetail  = lockerService.selectLockerOrderDetail(lockerVO);
+		JSONObject LockerNumRentDetail  = lockerService.selectLockerNumRentDetail(lockerVO);
 
 		try {
 		
-			if (lockerOrderDetail != null) {
+			if (LockerNumRentDetail != null) {
 				
 				// 1. 환불 테이블(ACM_ORDER_REFUND)에 삽입한다.
-				ordersVO.setOrderNo(lockerOrderDetail.get("order_no").toString());
+				ordersVO.setOrderNo(LockerNumRentDetail.get("order_no").toString());
 				ordersVO.setRefundPrice(0);
 				ordersVO.setRefundDt(CommonUtil.getCurrentDateTime());
 				ordersVO.setRefundMemo("본인이 직접 환불"); // 환불메모 입력
