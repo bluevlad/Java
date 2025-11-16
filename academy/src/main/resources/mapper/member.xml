@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	수정일          	수정자           수정내용
+  ===========      ========    =================
+ *2025.03.00		rainend		시험응시
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.academy.mapper.ExamMapper">
+
+	<!-- 시험정보 리스트 -->
+	<select id="selectExamList">
+		SELECT aem.exam_id, exam_nm, exam_year, exam_round, aem.exam_open, aem.exam_end, exam_period, exam_time, 
+				is_use, use_flag, set_id, aem.reg_dt, aem.reg_id, aem.upd_dt, aem.upd_id, aer.user_id
+		FROM acm_exam_mst aem
+		left outer join acm_exam_req aer
+		on aem.EXAM_ID = aer.EXAM_ID
+		and aer.USER_ID = #{userId}
+		where aem.is_use = 'Y'
+		LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+	</select>
+
+	<!-- 시험정보 수 -->
+	<select id="selectExamListTotCnt">
+		SELECT COUNT(*) TOTAL_CNT
+		FROM acm_exam_mst
+		where is_use = 'Y'
+	</select>
+
+	<!-- 시험정보 상세정보 -->
+	<select id="selectExamDetail">
+        SELECT exam_id, exam_nm, exam_year, exam_round, exam_open, exam_end, exam_period, exam_time, 
+				is_use, use_flag, set_id, reg_dt, reg_id, upd_dt, upd_id
+		FROM acm_exam_mst
+		WHERE exam_id = #{examId}
+	</select>
+
+	<!-- 시험정보 문제 리스트 -->
+	<select id="selectExamQueList">
+		select  aebi.que_id, aebi.que_title, aebi.que_desc, aebi.que_file_id, aebi.ans_file_id, aebi.pass_ans,
+				aebi.que_range, aebi.que_level, aebi.que_count, aebi.que_type, aebi.pass_ans, aebi.ans_desc,
+				aebi.is_use, aebi.reg_id, aebi.reg_dt, aebi.upd_id, aebi.upd_dt,
+				aebi.ans_view1, aebi.ans_view2, aebi.ans_view3, aebi.ans_view4, aebi.ans_view5
+		from acm_exam_mst aem, acm_exam_set aes, acm_exam_set_item aesi, acm_exam_bank_item aebi 
+		where aem.SET_ID = aes.SET_ID
+		and aes.SET_ID = aesi.SET_ID
+		and aesi.QUE_ID = aebi.QUE_ID
+		and aem.exam_id = #{examId}
+	</select>
+
+	<!-- 시험 응시 내역 -->
+    <select id="getRequestExam">
+		SELECT
+			order_no, identy_id, exam_id, user_id, user_nm, req_type, exam_type, req_desc, pay_amount, 
+			discount_ratio, discount_amount, discount_reason, exam_status, exam_start, exam_end, exam_rest, exam_info, 
+			reg_id, reg_dt, upd_id, upd_dt
+        FROM acm_exam_req
+        WHERE ORDER_NO = #{orderNo}
+    </select>
+
+	<!-- 시험 응시 내역 사용자 ID 기준 -->
+    <select id="getRequestExamUser">
+		SELECT
+			order_no, identy_id, exam_id, user_id, user_nm, req_type, exam_type, req_desc, pay_amount, 
+			discount_ratio, discount_amount, discount_reason, exam_status, exam_start, exam_end, exam_rest, exam_info, 
+			reg_id, reg_dt, upd_id, upd_dt
+        FROM acm_exam_req
+        WHERE exam_id = #{examId}
+        and user_id = #{userId}
+    </select>
+
+	<!-- 시험 응시 답안지 내역 -->
+	<select id="selectExamResultList">
+		select  aebi.que_id, aebi.que_title, aebi.que_desc, aebi.que_file_id, aebi.ans_file_id, aebi.pass_ans,
+				aebi.que_range, aebi.que_level, aebi.que_count, aebi.que_type, aebi.pass_ans, aebi.ans_desc,
+				aebi.is_use, aebi.reg_id, aebi.reg_dt, aebi.upd_id, aebi.upd_dt,
+				aebi.ans_view1, aebi.ans_view2, aebi.ans_view3, aebi.ans_view4, aebi.ans_view5,
+				aea.answer, aea.correct_yn
+		from acm_exam_mst aem, acm_exam_set aes, acm_exam_set_item aesi, acm_exam_bank_item aebi, acm_exam_answer aea 
+		where aem.SET_ID = aes.SET_ID
+		and aes.SET_ID = aesi.SET_ID
+		and aesi.QUE_ID = aebi.QUE_ID
+		and aebi.QUE_ID = aea.QUE_ID
+		and aem.EXAM_ID = aea.EXAM_ID
+		and aem.exam_id = #{examId}
+        and aea.user_id = #{userId}
+	</select>
+
+	<!-- 시험 응시 답안지 등록 -->
+    <insert id="insertExamAnswer">
+		INSERT INTO acm_exam_answer ( 
+			exam_id, IDENTY_ID, USER_ID, QUE_ID, ANSWER, REG_ID, REG_DT, UPD_ID, UPD_DT, CORRECT_YN
+		) VALUES (
+			#{examId}, #{identyId}, #{userId}, #{queId}, #{answer}, #{regId}, now(), #{updId}, now(), #{correctYn}
+		)
+    </insert>
+
+	<!-- 시험 응시 답안지 내역 삭제 -->
+    <delete id="deleteExamAnswer">
+		DELETE from acm_exam_answer
+		where exam_id = #{examId}
+		and USER_ID = #{userId}
+    </delete>
+
+	<!-- 시험 응시 내역 등록 -->
+    <insert id="insertRequestExam">
+		INSERT INTO acm_exam_req (
+		    IDENTY_ID, EXAM_ID, USER_ID, USER_NM, REQ_TYPE, EXAM_TYPE, REQ_DESC, 
+		    PAY_AMOUNT, DISCOUNT_RATIO, DISCOUNT_AMOUNT, DISCOUNT_REASON, EXAM_STATUS,
+		    EXAM_START, EXAM_END, EXAM_REST, EXAM_INFO, REG_ID, REG_DT, UPD_ID, UPD_DT
+		) VALUES (
+		    #{identyId}, #{examId}, #{userId}, #{userNm}, #{reqType}, #{examType}, #{reqDesc}, 
+		    #{payAmount}, #{discountRatio}, #{discountAmount}, #{discountReason}, #{examStatus}, 
+		    now(), #{examEnd}, #{examRest}, #{examInfo}, #{regId}, NOW(), #{updId}, NOW()
+		)
+    </insert>
+
+	<!-- 시험 응시 내역 수정 -->
+    <update id="updateRequestExam">
+        UPDATE acm_exam_req
+        SET
+            REQ_TYPE = #{reqType},
+            EXAM_TYPE = #{examType},
+            REQ_DESC = #{reqDesc},
+            PAY_AMOUNT = #{payAmount},
+            DISCOUNT_RATIO = #{discountRatio},
+            DISCOUNT_AMOUNT = #{discountAmount},
+            DISCOUNT_REASON = #{discountReason},
+            EXAM_STATUS = #{examStatus},
+            EXAM_START = #{examStart},
+            EXAM_END = #{examEnd},
+            EXAM_REST = #{examRest},
+            EXAM_INFO = #{examInfo},
+            UPD_ID = #{updId},
+            UPD_DT = now()
+        WHERE ORDER_NO = #{orderNo}
+    </update>
+
+</mapper>
